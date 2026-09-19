@@ -994,6 +994,42 @@ def test_28_sha_pek_full_chain():
     assert any("[e" in s.get("via", "") for s in bed_chain)
 
 
+# ================================================ E5: evolve swap =========
+def test_29_termination_swap():
+    """E5: a grounded part with both routes admissible gets print AND catalog
+    terminations tried as ordinary fail-closed edges; the evidence vector
+    carries each route's mass so selection can compare."""
+    from fluxkernel.strategy.evolve import termination_swap
+    eng = fresh()
+    t = terms(eng, "mass")
+    eng.node("reference-printer", "Resource", "unbounded-fdm-printer",
+             contract(eng, t))
+    eng.node("mm", "Part", "motor-mount", contract(
+        eng, t, guarantees=[{"id": "gm", "stmt": "motor mount",
+                             "bounds": {"mass_g": {"<=": 9000}}}]))
+    sketch = {"pts": {"p0": [0, 0], "p1": [60, 0], "p2": [60, 40], "p3": [0, 40]},
+              "constraints": [["fix", "p0", 0, 0], ["dist", "p0", "p1", 60],
+                              ["dist", "p1", "p2", 40],
+                              ["horiz", "p0", "p1"], ["vert", "p1", "p2"]]}
+    r0 = eng.refine("mm", {"name": "ground-sketch", "args": {"sketch": sketch}},
+                    out_name="mm-sk")
+    assert r0["state"] == "promoted", r0["reason"]
+    r1 = eng.refine("mm-sk",
+                    {"name": "extrude", "args": {"height": 5, "material": "pla"}},
+                    out_name="mm-solid")
+    assert r1["state"] == "promoted", r1["reason"]
+
+    swaps = termination_swap(eng, "mm-solid", "reference-printer")
+    assert swaps["print"]["state"] == "promoted", swaps["print"]
+    assert swaps["catalog"]["state"] == "promoted", swaps["catalog"]
+    # both routes leave comparable mass evidence for selection pressure
+    pr_ev = eng.store.get_object(eng.store.resolve("mm-solid-swap-pr"))["payload"]["evidence"]
+    cat_ev = eng.store.get_object(eng.store.resolve("mm-solid-swap-cat"))["payload"]["evidence"]
+    pr_mass = next(e["mass_g"] for e in pr_ev if e.get("solver") == "print/estimate")
+    assert pr_mass > 0
+    assert any("catalog" in str(e.get("solver", "")) for e in cat_ev)
+
+
 # ================================================ discipline ==============
 def test_layer_discipline():
     """core/ and store/ import ZERO third-party packages (relative imports

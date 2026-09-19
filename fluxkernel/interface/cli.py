@@ -650,6 +650,8 @@ def build_parser() -> argparse.ArgumentParser:
     s.add_argument("--max-steps", type=int, default=256)
     s.set_defaults(fn=cmd_realize)
     s = sub.add_parser("evolve"); s.add_argument("goal")
+    s.add_argument("--printer", default=None,
+                   help="print resource for termination-swap mutations")
     s.add_argument("--pop", type=int, default=8); s.add_argument("--gen", type=int, default=3)
     s.add_argument("--select-by", default="cost,mass_g")
     s.add_argument("--archive", default="")

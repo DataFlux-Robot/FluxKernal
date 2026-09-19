@@ -84,6 +84,21 @@ def run_evolve(eng, a) -> int:
             print(f"  topology mutation: decompose {parent} -> "
                   f"{r['state']} ({r['reason'] or 'ok'})")
 
+        # E5: termination swap — "print it or buy it" is itself a searchable
+        # decision.  Both attempts are ordinary fail-closed edges; the
+        # evidence vector (mass/cost) is what selection compares.
+        if rng.random() < 0.4 and keep and getattr(a, "printer", None):
+            cand = keep[0]["name"]
+            try:
+                _, cnode = eng.dag.get_node(cand)
+                if (cnode.payload().get("ground") or {}).get("construction"):
+                    swaps = termination_swap(eng, cand, a.printer)
+                    ok = {k: v["state"] for k, v in swaps.items() if v}
+                    if ok:
+                        print(f"  termination swap on {cand}: {ok}")
+            except Exception:
+                pass
+
         # MAP-elites: bin on the first two metrics (4x4 default grid)
         for c in candidates:
             cell = tuple(min(3, int(abs(c["metrics"][m]) / _scale(m))) for m in metrics[:2])
@@ -155,3 +170,29 @@ def _metric_of(evidence, name):
 
 def _scale(metric: str) -> float:
     return {"cost": 100.0, "mass_g": 500.0, "range_km": 1000.0}.get(metric, 10.0)
+
+
+def termination_swap(eng, ref: str, printer: str) -> dict:
+    """E5 mutation operator: re-decide a grounded part's terminal route.
+
+    Tries BOTH admissible terminations as ordinary edges (print on the
+    declared resource; exact from the catalog via the goal's guarantee
+    query) and returns their results for evidence-vector selection.  Each
+    attempt fail-closes independently — an unprintable or uncatalogued
+    route simply rejects and stays as informative evidence."""
+    from ..semantics.operators import _realize_query
+    _, node = eng.dag.get_node(ref)
+    payload = node.payload()
+    query = _realize_query({"spec": payload.get("spec") or {}})
+    outs = {}
+    try:
+        outs["print"] = eng.print_part(ref, printer, out_name=f"{ref}-swap-pr")
+    except Exception as e:
+        outs["print"] = {"state": "rejected", "reason": str(e)}
+    if query:
+        try:
+            outs["catalog"] = eng.exact(ref, "catalog", query,
+                                        out_name=f"{ref}-swap-cat")
+        except Exception as e:
+            outs["catalog"] = {"state": "rejected", "reason": str(e)}
+    return outs

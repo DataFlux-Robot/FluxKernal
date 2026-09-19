@@ -124,7 +124,7 @@ L0  store/       objstore.py（内容寻址对象存储，`.fk/` 目录）
 
 ## 11. 测试与验收
 
-`python -m pytest tests/ -q` → **29 passed**（验收测试 1–20 + 分层纪律 + 进化回归 21–28：闭合判定/洞坍缩/证据覆盖/print 终止/打印机自举/仿真矩阵/realize 终止集/全链案例）。覆盖：黄金向量、fail-closed/I3、精确链接/I1、谱系命名稳定、草图残差、几何体积 600mm³±1e-6 + STEP/STL 回读、端到端、integrate 三性质、co-design 两性质、C1–C4 生成判定 + 超容 rejected + 矛盾暴露、lint 闸门 + L4 拒收、elicit 六步、realize 终止性、evolve 三性质。
+`python -m pytest tests/ -q` → **30 passed**（验收测试 1–20 + 分层纪律 + 进化回归 21–29：闭合判定/洞坍缩/证据覆盖/print 终止/打印机自举/仿真矩阵/realize 终止集/全链案例/termination-swap）。覆盖：黄金向量、fail-closed/I3、精确链接/I1、谱系命名稳定、草图残差、几何体积 600mm³±1e-6 + STEP/STL 回读、端到端、integrate 三性质、co-design 两性质、C1–C4 生成判定 + 超容 rejected + 矛盾暴露、lint 闸门 + L4 拒收、elicit 六步、realize 终止性、evolve 三性质。
 
 规模：git 追踪 56 文件，Python 6107 行，标准库为主；OCP（cadquery-ocp）与 numpy 仅在 L2/策略层。
 
