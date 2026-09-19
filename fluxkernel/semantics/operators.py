@@ -696,33 +696,166 @@ class Engine:
                             node_name=out_name)
 
     # -------------------------------------------------------------- realize --
-    def realize(self, root: str, until: str = "standard-part",
-                max_steps: int = 64) -> dict:
-        """Combinator tactic: repeat (decompose <;> try-exact <;> eval) until
-        every open leaf goal closes by exact/procure. Terminates: no new
-        decompositions are invented; bounded by max_steps."""
-        from .goals import open_goals_under
-        closed = []
+    # per-layer default evaluators (E2/E3): kind -> (solver, fidelity)
+    LAYER_SOLVERS = {
+        "wing": ("aero-2d", 1),
+        "point-mass": ("mission-analysis", 1),
+        "epu": ("prop-map", 1),
+        "motor": ("prop-map", 1),
+        "rib": ("beam-fe", 1),
+        "bed": ("beam-fe", 1),
+        "assembly": ("mass-rollup", 2),
+    }
+
+    def realize(self, root: str, until: str = "termination-set",
+                max_steps: int = 128, printer: str | None = None) -> dict:
+        """Termination-set-aware combinator (E3).  Deepest-open-goal loop:
+
+            catalog hit          -> exact, fallback procure
+            grounded structural  -> print on the declared print resource
+                                    (termination b; manufacture fallback)
+            Resource, undecomposed -> forced device development: decompose
+                                    with strictly-split budgets (PRSI round)
+            otherwise            -> decompose (budget split flow-down)
+
+        Each closed leaf additionally gets its layer-default eval evidence
+        when a solver is mapped for its kind.  Termination: every step
+        either closes a goal or decomposes into strictly smaller budget
+        shares; failed (goal, action) pairs are never retried; bounded by
+        max_steps.  `until="standard-part"` restricts closing to
+        exact/procure (legacy behaviour, no print, no invented splits)."""
+        from .goals import open_goals_under, depth_of
+        printer_d = None
+        if until == "termination-set" and printer:
+            try:
+                printer_d = self.store.resolve(printer)
+            except KeyError:
+                printer_d = None
+        done: list[dict] = []
+        failed: set[tuple[str, str]] = set()
+        parents = {}
+        actions_all = ("exact", "procure", "print", "decompose", "manufacture")
+        splits_left = 8          # cap on invented decompositions (depth bound)
         for _ in range(max_steps):
-            open_leaves = [g for g in open_goals_under(self.dag, root)
-                           if g["role"] in ("Part", "Component")]
-            if not open_leaves:
-                return {"done": True, "closed": closed, "steps": len(closed)}
-            progressed = False
-            for g in open_leaves:
-                query = _realize_query(g)
-                for op in ("exact", "procure"):
-                    res = getattr(self, op)(g["ref"], "catalog", query)
-                    closed.append({"goal": g["ref"], "op": op,
-                                   "state": res["state"]})
+            goals = open_goals_under(self.dag, root)
+            if not goals:
+                return {"done": True, "closed": done, "steps": len(done)}
+            term_set = until == "termination-set"
+            actions = ("exact", "procure") if not term_set else actions_all
+            live = [g2 for g2 in goals
+                    if any((g2["ref"], a) not in failed for a in actions)]
+            if not live:
+                remaining = [{"kind": g2["kind"], "role": g2["role"],
+                              "termination": g2.get("termination")}
+                             for g2 in goals]
+                reason = "no catalog hit for remaining leaves" \
+                    if not term_set \
+                    else "no admissible action for remaining goals"
+                return {"done": False, "closed": done, "steps": len(done),
+                        "reason": reason, "remaining": remaining}
+            live.sort(key=lambda g: -depth_of(self.dag, g["ref"], parents))
+            g = live[0]
+            payload = self.store.get_object(g["ref"])["payload"]
+            kind = str(payload.get("kind") or "")
+            grounded = bool((payload.get("ground") or {}).get("construction"))
+            acted = False
+
+            # 1. catalog closure
+            query = _realize_query(g)
+            for op in ("exact", "procure"):
+                if (g["ref"], op) in failed:
+                    continue
+                res = getattr(self, op)(g["ref"], "catalog", query)
+                done.append({"goal": g["ref"], "op": op, "state": res["state"]})
+                if res["state"] == "promoted":
+                    acted = True
+                    self._layer_eval(g["ref"], kind)
+                    break
+                failed.add((g["ref"], op))
+            if acted:
+                continue
+
+            # 2. print closure of a grounded structural part
+            if term_set and grounded and printer_d and \
+                    (g["ref"], "print") not in failed:
+                res = self.print_part(g["ref"], printer_d)
+                done.append({"goal": g["ref"], "op": "print",
+                             "state": res["state"]})
+                if res["state"] == "promoted":
+                    self._layer_eval(g["ref"], kind)
+                    continue
+                failed.add((g["ref"], "print"))
+                # fall through to manufacture for Part inputs
+                if payload.get("role") == "Part" and \
+                        (g["ref"], "manufacture") not in failed:
+                    res = self.manufacture(g["ref"])
+                    done.append({"goal": g["ref"], "op": "manufacture",
+                                 "state": res["state"]})
                     if res["state"] == "promoted":
-                        progressed = True
-                        break
-            if not progressed:
-                return {"done": False, "closed": closed, "steps": len(closed),
-                        "reason": "no catalog hit for remaining leaves"}
-        return {"done": False, "closed": closed, "steps": len(closed),
-                "reason": "max_steps exceeded"}
+                        continue
+                    failed.add((g["ref"], "manufacture"))
+
+            # 3. forced decompose (budget strictly split -> smaller goals);
+            #    only when a budget exists to shrink (termination measure)
+            has_budget = bool((g["spec"] or {}).get("budget"))
+            if term_set and has_budget and splits_left > 0 and \
+                    (g["ref"], "decompose") not in failed:
+                splits_left -= 1
+                res = self._auto_decompose(g, payload)
+                done.append({"goal": g["ref"], "op": "decompose",
+                             "state": res["state"]})
+                if res["state"] == "promoted":
+                    continue
+                failed.add((g["ref"], "decompose"))
+
+            # this goal was picked, every applicable action ran, and it is
+            # still open -> exhausted for this run (guards that skipped
+            # print/manufacture/decompose count as tried)
+            for a in actions:
+                failed.add((g["ref"], a))
+        goals = open_goals_under(self.dag, root)
+        return {"done": False, "closed": done, "steps": len(done),
+                "reason": "max_steps exceeded",
+                "remaining": [{"kind": g2["kind"], "role": g2["role"]}
+                              for g2 in goals]}
+
+    def _layer_eval(self, ref: str, kind: str) -> None:
+        """Best-effort layer evidence after a closure (never fatal)."""
+        mapping = self.LAYER_SOLVERS.get(kind)
+        if not mapping:
+            return
+        solver, fidelity = mapping
+        try:
+            self.evaluate(ref, solver, fidelity=fidelity)
+        except DagError:
+            pass
+
+    def _auto_decompose(self, g: dict, payload: dict) -> dict:
+        """Invent a strictly-smaller decomposition for an undecomposed goal:
+        equal budget split over kind-suffixed children (E3 termination
+        measure: each child's share is parent/n <= parent/2).  Resources
+        pivot to System (PRSI: a machine is developed as a system)."""
+        spec = g["spec"] or {}
+        budget = spec.get("budget") or {}
+        role = payload.get("role")
+        out_role = "System" if role == "Resource" else role
+        child_role = "Component" if role in ("System", "Resource", "Intent") \
+            else "Part"
+        n = 3
+        base = str(payload.get("kind") or g.get("kind") or "sub")
+        names = [f"{base}-{i + 1}" for i in range(n)]
+        flow = {}
+        for name in names:
+            fb = {}
+            for q, b in budget.items():
+                p = parse_bound(b)
+                share = (p["hi"] if p["hi"] is not None else p["lo"]) / n
+                fb[q] = ["<=", share] if p["hi"] is not None else [">=", share]
+            flow[name] = ({"budget": fb} if fb else {})
+        return self.refine(
+            g["ref"], {"name": "decompose",
+                       "args": {"into": names, "flow_down": flow}},
+            out_name=f"{g.get('ref_name', base)}-split", out_role=out_role)
 
     # ------------------------------------------------------------- private --
     def _referenced_media(self, child_list) -> list[tuple[str, dict]]:

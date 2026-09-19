@@ -92,11 +92,15 @@ def _is_grounded(payload: dict) -> bool:
 
 
 def _closed_nodes(dag, consumers: dict[str, list[dict]] | None = None) -> set[str]:
-    """Recursive closure fixpoint (review P1).  A node closes by:
+    """Recursive closure fixpoint (review P1 + E1 termination set).  A node
+    closes by:
 
-    leaf     — grounded (sketch/solid/process executable detail), or consumed
-               by a promoted exact/procure edge (catalog), or by a promoted
-               print edge (E1 termination set);
+    leaf     — a terminal production route is assigned: consumed by a
+               promoted exact/procure edge (catalog), a print edge
+               (termination b) or a manufacture edge (process family); a
+               Process node's own executable detail (takt/cost ground)
+               closes it.  Mere geometric grounding does NOT close a Part —
+               an unassigned grounded part stays open as machining-needed;
     composed — produced by a promoted compose edge whose inputs are all
                closed and whose rollup-met (soft) obligations all hold;
     split    — a promoted decompose scope/child group whose children are all
@@ -129,11 +133,14 @@ def _closed_nodes(dag, consumers: dict[str, list[dict]] | None = None) -> set[st
         elif e.get("op") == "compose":
             composed_by[e.get("output", "")] = e
 
-    def _terminally_consumed(d: str) -> bool:
+    def _production_assigned(d: str, payload: dict) -> bool:
+        g = payload.get("ground") or {}
+        if g.get("type") in ("process", "process-op"):
+            return True                        # executable process detail
         for e in consumers.get(d, []):
             if e.get("state") != "promoted":
                 continue
-            if e.get("op") in ("exact", "procure"):
+            if e.get("op") in ("exact", "procure", "manufacture"):
                 return True
             if (e.get("transform") or {}).get("name") == "print":
                 return True
@@ -147,7 +154,7 @@ def _closed_nodes(dag, consumers: dict[str, list[dict]] | None = None) -> set[st
             if d in closed or d not in alive:
                 continue
             ok = False
-            if _is_grounded(payload) or _terminally_consumed(d):
+            if _production_assigned(d, payload):
                 ok = True                                   # leaf termination
             if not ok and d in composed_by:
                 e = composed_by[d]
@@ -166,8 +173,11 @@ def _closed_nodes(dag, consumers: dict[str, list[dict]] | None = None) -> set[st
                     ok = True                               # fully decomposed
             if not ok:
                 for e in consumers.get(d, []):
+                    # decompose child edges are structural, not replacements:
+                    # the scope only closes via the all-kids-closed rule
                     if (e.get("state") == "promoted"
                             and e.get("op") in _REPLACE_OPS
+                            and (e.get("transform") or {}).get("name") != "decompose"
                             and len(e.get("inputs") or []) == 1
                             and e.get("output") in closed):
                         ok = True                           # realized downstream

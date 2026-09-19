@@ -382,11 +382,15 @@ def cmd_print(a):
 # ----------------------------------------------------------- combinators --
 def cmd_realize(a):
     eng = _engine()
-    res = eng.realize(a.root, until=a.until, max_steps=a.max_steps)
+    res = eng.realize(a.root, until=a.until, max_steps=a.max_steps,
+                      printer=a.printer)
     for line in eng.journal:
         print(line)
     print(f"realize done={res['done']} steps={res['steps']}"
           + (f" reason={res.get('reason')}" if res.get("reason") else ""))
+    for r in res.get("remaining") or []:
+        print(f"  remaining: {r.get('kind')} ({r.get('role')}, "
+              f"{r.get('termination', '?')})")
     return 0 if res["done"] else 1
 
 
@@ -640,9 +644,10 @@ def build_parser() -> argparse.ArgumentParser:
     s.add_argument("--out"); s.set_defaults(fn=cmd_print)
 
     s = sub.add_parser("realize"); s.add_argument("root")
-    s.add_argument("--until", default="standard-part"); s.add_argument("--max-steps",
-                                                                       type=int,
-                                                                       default=64)
+    s.add_argument("--until", default="standard-part")
+    s.add_argument("--printer", default=None,
+                   help="print resource ref for termination-set mode")
+    s.add_argument("--max-steps", type=int, default=256)
     s.set_defaults(fn=cmd_realize)
     s = sub.add_parser("evolve"); s.add_argument("goal")
     s.add_argument("--pop", type=int, default=8); s.add_argument("--gen", type=int, default=3)

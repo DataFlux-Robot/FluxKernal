@@ -885,6 +885,77 @@ def test_26_simulator_matrix():
     assert "range_km" in met and "ld_ratio" in met
 
 
+# ================================================ E3: realize upgrade =====
+def test_27_realize_termination_set():
+    """E3: with a print resource, an unattended realize closes a designed
+    tree to OPEN (0) via catalog + print; without one it reports the
+    remaining goals honestly; budget-less nodes are never auto-split."""
+    eng = fresh()
+    t = terms(eng, "mass")
+    eng.node("reference-printer", "Resource", "unbounded-fdm-printer",
+             contract(eng, t))
+    eng.node("holder", "Intent", "tool", contract(eng, t))
+    eng.refine("holder", {"name": "decompose",
+                "args": {"into": ["bracket", "screw"],
+                         "roles": {"bracket": "Part", "screw": "Part"},
+                         "flow_down": {
+                             "bracket": {"guarantees": [
+                                 {"id": "gb", "stmt": "plate bracket",
+                                  "bounds": {"rib_height_mm": {"=": 40}}}]},
+                             "screw": {"guarantees": [
+                                 {"id": "gs", "stmt": "m8 screw",
+                                  "bounds": {"dia_mm": {"=": 8}}}]}
+                         }}}, out_name="tool-v1", out_role="System")
+    sketch = {"pts": {"p0": [0, 0], "p1": [80, 0], "p2": [80, 40], "p3": [0, 40]},
+              "constraints": [["fix", "p0", 0, 0], ["dist", "p0", "p1", 80],
+                              ["dist", "p1", "p2", 40],
+                              ["horiz", "p0", "p1"], ["vert", "p1", "p2"]]}
+    eng.refine("tool-v1/bracket",
+               {"name": "ground-sketch", "args": {"sketch": sketch}},
+               out_name="bracket-sk")
+    eng.refine("bracket-sk",
+               {"name": "extrude", "args": {"height": 4, "material": "pla"}},
+               out_name="bracket-solid")
+
+    # no printer declared -> bracket cannot terminate, honest failure
+    # (the sketch->solid chain above it stays open too — nothing realizes it)
+    res = eng.realize("tool-v1", until="termination-set", max_steps=32)
+    assert res["done"] is False
+    kinds = {r["kind"]: r["termination"] for r in res["remaining"]}
+    assert "bracket" in kinds and "tool" in kinds, res["remaining"]
+    assert kinds.get("part") == "machining-needed", res["remaining"]
+
+    # with the printer: everything closes (catalog screw came from pass 1,
+    # the printed bracket from pass 2)
+    res2 = eng.realize("tool-v1", until="termination-set", max_steps=32,
+                       printer="reference-printer")
+    assert res2["done"] is True, res2
+    ops = {c["op"] for c in res["closed"] + res2["closed"]
+           if c["state"] == "promoted"}
+    assert "print" in ops and "exact" in ops
+    view = goalsview.goals_view(eng.dag)
+    # the printer Resource itself stays open here (it is the tool, not the
+    # target; its own one-round self-closure is test_25's subject)
+    assert [g for g in view["open"] if g["kind"] != "unbounded-fdm-printer"] == []
+
+    # budget-less node is never auto-split (termination measure needs a
+    # shrinking budget): forced-development attempts stay bounded
+    eng2 = fresh()
+    t2 = terms(eng2, "mass")
+    eng2.node("press", "Resource", "press", contract(
+        eng2, t2, budget={"mass_kg": ["<=", 300]}))
+    r = eng2.refine("press", {"name": "decompose",
+                    "args": {"into": ["ram", "frame"]}}, out_name="press-v1",
+                    out_role="System")
+    assert r["state"] == "promoted", r["reason"]
+    res3 = eng2.realize("press-v1", until="termination-set", max_steps=64)
+    assert res3["done"] is False            # nothing closable — reported
+    assert res3.get("remaining"), "must list what stayed open"
+    n_decomp = sum(1 for _, e in eng2.dag.iter_edges()
+                   if (e.get("transform") or {}).get("name") == "decompose")
+    assert n_decomp <= 12, "auto-split must stay bounded"
+
+
 # ================================================ discipline ==============
 def test_layer_discipline():
     """core/ and store/ import ZERO third-party packages (relative imports
