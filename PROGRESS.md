@@ -1,117 +1,91 @@
-# FluxKernel 实现进展报告
+# FluxKernel 开发进展报告
 
-日期：2026-09-19 · 仓库：`E:\DATA\vscode\fluxkernel` @ HEAD `99fd826`（22 提交）
-配套文档：`INTRODUCTION.md`（架构介绍，面向评审）、`REPORT.md`（初版交付报告）、`docs/design/`（设计文档系列）
+日期：2026-09-19（第三轮评审后更新）· 仓库：`E:\DATA\vscode\fluxkernel` · 29 次提交
+配套文档：`INTRODUCTION.md`（架构介绍，面向评审）· `REPORT.md`（初版交付报告）· `docs/design/`（设计文档系列）
 
-## 0. 当前快照
+> 定位回顾：面向 LLM 的**通用**机械系统工程内核 + CAD CLI（build123d 形态的 `.fcad` DSL + 33 子命令）。核不是几何而是**带证书的内容寻址精化图（CARG）**——几何是节点的求值投影。开发纪律：机制通用、内容（案例/目录/模板）为数据、内核 L0/L1 零第三方依赖且零改动。
+
+## 0. 当前快照（全部数字为本日复跑验证）
 
 | 指标 | 值 |
 |---|---|
-| 测试 | **36/36 全绿**（`pytest tests/ -q`，≈15s） |
-| 规模 | 60 个 git 追踪文件，Python 7378 行；内核 L0/L1 零第三方依赖（测试强制） |
-| CLI | 33 个子命令（新增 `print`）；`.fcad` DSL 新增 `(print ...)` 表单 |
-| 求解插件 | 13 个（新增 dfam-print、aero-2d、prop-map、beam-fe、mass-rollup） |
-| 标志案例 | SHA-PEK：**119 表单 / 314 对象（153 节点 + 153 边）/ 152 promoted + 1 故意 rejected / 22 条 print 边** |
-| 案例终态 | **`fk goals` = OPEN GOALS (0)**；`fk verify` 全绿；dc-bus 3700/4000W；cabin-air 平衡 |
-| 闭环验证 | 假设航程 5344.7 km（L/D=14）→ **实测复算 6127.3 km**（aero-2d 实测 L/D=16.05 覆写假设） |
+| 测试 | **36/36 全绿**（`pytest tests/ -q`，≈24s） |
+| 规模 | 64 个 git 追踪文件，Python 7875 行 |
+| CLI | 33 子命令；`.fcad` DSL 含 `(print ...)`、`:at`、`:machine`、`:template` |
+| 求解插件 | 14 个（几何 4 + 仿真 4 + 制造 4 + 任务 2）；目录 6 文件；**架构模板 2 个** |
+| 标志案例 SHA-PEK | **119 表单 / 314 对象（153 节点 + 153 边）/ 152 promoted + 1 故意 rejected / 22 条 print 边** |
+| 案例终态 | **OPEN GOALS (0)** · verify 全绿 · dc-bus 3820/4000W · 装配干涉门 = 0 干涉 |
+| 任务链 | 假设航程 5344.7 km（L/D=14）→ **闭环复算 6127.3 km**（aero-2d 实测 L/D=16.05 覆写假设；数字取自运行证据） |
+| 双代闭环 | printer→（机床结构件）+ catalog→（运动件）= 机床；**机床 `:machine`→rib-1 工序**——两条设备链都在 DAG 边的 inputs 里 |
 
-一句话：按"11 步 meta 展开"标准，**主链贯通且每一层有该层保真度的证据，全部环节落在双终止集上，制造递归经打印机自举在终止层闭合**；第三轮起几何与架构同源——机翼是就位的 wingbox、机床是 gantry 架构、样机派生自真实子树、生产算子身份进入边 inputs 受 I3 精确链接。
+## 1. 开发阶段总览
 
-## 1. 三个阶段
+### 阶段一：初版交付（`Initial commit`…`9cf6766`）
+五层内核（L0 内容寻址存储 / L1 数据模型与提交纪律 / L3 合同算术 C1–C4 + lint L1–L6 / L2 插件 / L4 CLI+DSL）+ 适配器 + evolve/watch 策略层；验收测试 1–20 全绿；SHA-PEK 案例首跑通（41 表单）；1:20 几何样机 + file:// 安全的自包含渲染器。
 
-### 阶段一：初版交付（commit 至 `c961ab1`…`9cf6766`）
-- M0→M3 全量：五层内核（L0 存储/L1 数据模型/L3 合同算术/L2 插件/L4 接口）+ 33 命令 CLI + `.fcad` DSL + 9 插件 + 适配器 + evolve/watch 策略层；验收测试 1–20 全绿。
-- SHA-PEK 案例首跑通：41 表单，航程 5344.7 km（评审方独立复算确认），机翼结构分解与机床链（PRSI 递归）落地。
-- 1:20 几何样机 + file:// 安全的自包含 canvas 渲染器。
+### 阶段二：首轮评审与进化 E0–E5（评审 v01 → 进化方案 v2.0，8 提交）
+评审在独立工作区复现全部声明，指出 P1–P5（闭合判定双向错误、传染过粗、证据密度不足、终止靠手工、显示小项）。进化落地：**递归闭合不动点**（被 compose 消费≠已实现；终态成品不误报）、**数据引用传染 + 坍缩洞标注**、evidence-coverage soft 义务、**双终止集**（dfam-print 硬门 + print 算子 + 打印机自举一轮）、**每层仿真矩阵**（aero-2d/prop-map/beam-fe/mass-rollup，公式可手算）、realize 终止集感知升级、evolve termination-swap。案例 41→75 表单，首达 OPEN(0)。
 
-### 阶段二：外部评审（fluxkernel_review_v01.md，Kimi）
-评审在独立工作区从零复现，结论：**INTRODUCTION 声明全部属实，骨架满足；但证据密度不足**。发现 P1–P5：
-- **P1** `fk goals` 闭合判定双向错误（终态成品误报 open；被 compose 消费的未实现件误报 closed）
-- **P2** sorry 传染链是图可达过近似且不分活跃/已坍缩
-- **P3** compose 不要求证据覆盖（"每层更详细的仿真验证"只有 fidelity-0 演示）
-- **P4** "拆到标准件"的终止性靠手工
-- **P5** why 双角色显示易误读、异常捕获策略未文档化等小项
+### 阶段三：二轮复核（评审 v02）
+独立复跑确认 E0–E5 全部兑现（"审阅意见全部被理解并正确实现，而非表面应付"），指出三个新缺口：**G1** 生产算子身份在 args 不在 inputs（I3 精确链接不覆盖打印机本身）；**G2** 铣床被开发却从未被使用（mill→rib 只在注释里）；**G3** 闭环航程报告值 6143 vs 证据值 6127.3（手算转抄）。
 
-### 阶段三：进化实施（进化方案 v2.0，E0–E5，8 提交）
+### 阶段四：三轮诊断与骨架层进化（评审 v03 → G1–G3 + E6，6 提交）
+用户观察"机翼没拆分、机床不像机床"被证实为更深层问题——**实现跳过了 Skeleton（几何架构）层**：e4d 组合的是未接地合同节点而非 skin-solid/spar-solid（真 bug）；机床分解只有 kind 名字。修复全部落地（§2）。
 
-| 里程碑 | 提交 | 核心改动 | 验收 |
-|---|---|---|---|
-| **E0** 语义修复 | `3fcd7aa`, `89937f1` | 闭合改为递归不动点（叶子=目录/打印/工艺分配；分解全子闭合；compose 全输入闭合+rollup 履行；realized-by 传递——分解作用域边实现其父、子边不算）；传染改数据引用传播+坍缩洞标注 `collapsed-at`；compose 增 evidence-coverage soft 义务→risks | 终态不再误报、skin/spar/bed 正确暴露（测试 21–23） |
-| **E1** 双终止集 | `b66865c` | dfam-print 硬门（壁厚/悬垂/顶点焊接连通域/翘曲）；`print` 算子（manufacture 特化，promoted 即过 DfAM）；printer.json BOM；**几何接地不再单独闭合——必须分配生产路线** | 测试 24–25（不可打印拒绝；打印机一轮自封闭 OPEN(0)） |
-| **E2** 仿真矩阵 | `f924548` | aero-2d/prop-map/beam-fe/mass-rollup 四插件（公式在 docstring 可手算，tier 如实）；mission `:overrides`；`_subtree_metrics` 子树证据收集 | 测试 26（公式独立复算） |
-| **E3** realize 升级 | `e02801d` | 最深优先终止集循环（catalog→print→manufacture→强制预算均分分解）；Resource 强制作为 System 完整开发；耗尽目标标记+分解封顶保证终止；顺带修复旧实现 docstring 与行为不符（`--until` 从未被使用） | 测试 27（无打印机诚实失败；有打印机 OPEN(0)） |
-| **E4** 案例全链 | `2003f54` | sha_pek 41→75 表单（详见 §2）；`fk why` 逐行带 DSL 边名（P5）；runner 边名绑定 | 测试 28 |
-| **E5** evolve 衔接 | `75d87bf` | termination-swap 变异（print↔catalog 双路线作普通 fail-closed 边尝试，证据向量做选择压力） | 测试 29 |
-| 可视化 | `330dbd2`, `99fd826` | 全几何场景 → 飞行器+加工设备双代闭环场景（§3） | 浏览器视觉验收通过 |
+## 2. 当前通用能力清单（本轮新增机制，全部零 trick）
 
-**内核零改动原则全程保持**：`core/`、`store/` 在整个进化中 0 行改动；print 作为 manufacture 语义特化、闭合谓词全部落在语义层（分层纪律测试持续绿）。
-
-### 阶段四：第二轮评审与骨架层进化（v02/v03，G1–G3 + E6，8 提交）
-
-v02（对 PROGRESS 的独立复核）：全部声明复现，指出 6143→6127.3 数字转抄误差（G3）与两个 PRSI 严格性缺口——**G1** 生产算子身份在 args 不在 inputs（I3 不覆盖打印机本身）、**G2** 铣床被开发却从未被使用（mill→rib 只存在于注释）。v03（用户观察驱动）：机翼"假分解"（compose e4d 引用未接地合同节点——真实 bug）、机床"名义分解"，根因是跳过 Skeleton 层。
-
-| 修复 | 内容 |
-|---|---|
-| G1/G2 | print 边 `inputs=[工件,打印机]`；manufacture `:machine` 槽把机床 digest 并入工艺边 inputs——**"这台铣床加工这个零件"成为 DAG 断言**，I3 守护算子实例 |
-| G3 | 报告数字一律取运行证据（6127.3 km） |
-| E6-1/S1 | **通用 Placement 系统**（build123d Location 类比）：`:at` 平移/绕轴旋转，入 construction 可重放；revolve 轴参数化 |
-| E6-1/S2 | **帧系统**：任意节点可携 `spec.frames`，`:at (:frame x)` 解析；compose 对 Part 输入发硬义务 `input-realized`（U2）——组合未实现零件从静默通过变 C0 拒绝 |
-| E6-4 | **架构模板库**（纯数据 `catalog/archetypes/*.json`）：`decompose :template wingbox/gantry-mill`，模板自带子件清单/合同/骨架帧/介质引用（名字加载时解析为 digest） |
-| E6-3 | **scale-instance 派生缩放**：从输入祖先子树收集全部接地几何缩放融合；construction 按值记录可重放；边 inputs 精确链接每个源——删除了 44 行手画平行样机分支 |
-| 案例 | 119 表单：wingbox 10 子件全部按骨架帧就位（装配经真实干涉门=零干涉）；gantry 铣床按架构模板展开（结构件打印、导轨/丝杠/伺服/主轴/CNC 目录）；rib-1 在已开发的铣床上加工 |
-
-## 2. SHA-PEK 案例终态（11 步覆盖度）
-
-对照评审的覆盖度表，修复后的状态：
-
-| 步骤 | 评审时 | 现在 |
+| 能力 | 机制 | 语义保证 |
 |---|---|---|
-| 1 模糊需求 | ✅ | ✅ 九槽合同 |
-| 2 单质点+参数态 | ✅ | ✅ 五洞→Breguet→坍缩→复检+故意失败样本 |
-| 3 展开多部件+子系统仿真 | ⚠️ 半 | ✅ wing=aero-2d(L/D≥14 硬断言)、epu=prop-map、rib=beam-fe、装配=mass-rollup——每层有证据 |
-| 4 方案坍缩+再拆 | ⚠️ 半 | ✅ wing 经 **wingbox 模板**分解（双蒙皮+双梁+6肋，骨架帧就位，装配零干涉）；fuselage→舱壳/座椅/hstab/fin；avionics 目录直闭 |
-| 6 拆到零件级 | ✅ | ✅ |
-| 7–9 零件→工艺→产线→机床需求 | ✅ | ✅ 保留 rib 完整制造分支（takt/OEE/dc-bus 账本 3700/4000W） |
-| 10–11 机床方案→零件 | ⚠️ bed 未闭合 | ✅ **gantry 模板开发铣床**（bed 1800×800/立柱/横梁/Z头打印，运动件目录）；rib-1 `:machine fab-mill` 在其上加工（mill→rib 链接入边 inputs） |
-| 终止性 | ⚠️ 手工 | ✅ **OPEN GOALS (0)**，全部叶子落在 {目录} ∪ {打印} |
-| 闭环验证（V 右腿） | 无 | ✅ compose 后 mission 复算：实测 L/D 16.05 替换假设 14 → 6127.3 km ≥ 1300 |
+| **Placement / Location** | `:at [dx,dy,dz]` 或 `((x y z) (ax ay az deg))` 施加于 extrude/revolve | 放置入 `construction` 并在 `rebuild_brep` 重放——谱系稳定；revolve 轴同步参数化（修掉硬编码 Y） |
+| **帧系统（Skeleton）** | 任意节点可携 `spec.frames`；`:at (:frame 名字)` 解析 | 布局单源：骨架帧经 decompose 的 `specs` 下发，子件相对父骨架接地 |
+| **算子身份链接（G1/G2）** | print 边 `inputs=[工件,打印机]`；`manufacture :machine` 槽并入工艺边 inputs | I1/I2/I3 精确链接覆盖**生产算子实例**——打印机/机床的产出边 rejected 时，使用它的边自动拒绝 |
+| **input-realized 硬门（E6-2b）** | compose 对 Part 角色输入的硬义务（U2） | 组合未实现零件 → C0 拒绝（本轮它抓到了案例里的真 bug）；Component 仍可合同级组合 |
+| **架构模板（E6-4）** | `decompose :template <名>` 加载 `catalog/archetypes/*.json` | 模板=纯数据（子件/角色/合同/骨架帧/介质引用，介质名字加载时解析为 digest）；显式 args 逐键覆盖 |
+| **派生缩放（E6-3）** | `scale-instance :ratio` 从输入祖先子树收集接地几何缩放融合 | construction 按值记录（boolean 模式）可重放；**边 inputs 精确链接每个源**——派生物可证明由这些件组成 |
 
-**打印机自举（E1-3 硬性要求）**：reference-printer 自身 decompose 一轮，机架由它**自己**打印（同 digest 自举边 `e53`），步进电机/控制板目录关闭——设备开发递归 ≥1 级且全闭合，o_i = t_(i+1) 在终止层成立。
+案例中已验证：wingbox 模板（双蒙皮+双梁+6 肋，全部按骨架帧就位，compose 经**真实干涉门**零干涉）；gantry-mill 模板（床身/立柱/横梁/Z头打印 + 导轨/丝杠/伺服/主轴/CNC 目录）；样机由真实子树 1:20 派生（手画平行几何分支已删除）。
 
-期间 fail-closed 的一次真实回报：把打印机废热误挂到客舱热介质（700W > 360W 允许值），被 `fk verify` 的介质复检当场抓住并修正。
+## 3. SHA-PEK 案例与 11 步覆盖度
 
-## 3. 可视化
-
-`preview/index.html`（file:// 双击即开，拖拽旋转/滚轮缩放）：飞行器样机 1:20（①）｜3 轴铣床身 800×600×60 + 床上翼肋工件（②③）｜打印机机架 600×600×8 立面（④）——按 ④打印→②床身→铣③翼肋→装①飞行器 的双代闭环排布；目录件（主轴/驱动/步进/控制板）无几何不渲染，图例如实注明。
+| 步骤 | 状态 | 证据 |
+|---|---|---|
+| 1 模糊需求 | ✅ | 九槽合同（可否证 goals/术语/禁项/免责） |
+| 2 单质点+参数态 | ✅ | 五洞→Breguet→坍缩→复检 + 故意失败样本永久保留 |
+| 3 子系统仿真 | ✅ | wing=aero-2d（L/D≥14 硬断言）、epu=prop-map、rib=beam-fe、装配=mass-rollup |
+| 4 坍缩+再拆 | ✅ | **wingbox 模板**分解（骨架就位+零干涉装配）；fuselage→舱壳/座椅/hstab/fin；avionics 目录直闭 |
+| 6–9 零件→工艺→产线→设备需求 | ✅ | rib-1 `:machine fab-mill` 加工；line takt/OEE 上卷 |
+| 10–11 设备方案→零件 | ✅ | **gantry 模板开发机床**；printer→结构件双代链接；全部叶子落双终止集 |
+| 终止性 | ✅ | OPEN GOALS (0)；闭合=递归谓词 |
+| 闭环验证 | ✅ | e63 mission 复算用实测 L/D → 6127.3 km ≥ 1300 |
 
 ## 4. 质量与验证
 
-- 测试 36 项 = 初版 1–20 + 分层纪律 + 回归 21–36（闭合/洞坍缩/证据覆盖/print 终止/打印机自举/仿真公式/realize/全链/termination-swap/算子身份 I3/Placement 重放/模板加载/scale-instance 派生）。
-- `fk verify`：promoted 边 hard 义务、证据存在性、MIND plant-model-current、term-stale、介质账本全库纯重算——当前全绿。
-- 数字可独立复算：Breguet、阻力极曲线 L/D、桨盘推力、梁应力/挠度、体积质量、账本——公式全部写在插件 docstring。
-- 谱系可审计：`fk why bed-printed` 逐行带边名（`[e42]`）回溯 18 级到 Intent。
+- **36 项测试** = 验收 1–20 + 分层纪律（core/store 零第三方 import）+ 回归 21–36：闭合判定/洞坍缩/证据覆盖/print 终止/打印机自举/仿真公式独立复算/realize 终止集/全链案例/termination-swap/**算子身份 I3/Placement 重放一致性/模板加载与介质解析/scale-instance 派生**。
+- `fk verify` 全库纯重算全绿（义务/证据/术语/介质账本）。
+- fail-closed 的真实回报记录：① 打印机废热误挂客舱介质被账本复检拦截；② input-realized 抓到 e4d 组合未实现件；③ dfam 连通门抓到装配多壳（后修正为"刻意装配=多壳作业"语义）；④ e5 的无证据 range rollup 被闭合规则暴露后删除（由 e2c/e63 硬断言把关）。
+- 数字纪律（G3）：报告数字一律取运行证据（本报告 6127.3 来自 store evidence）。
 
 ## 5. 已知限制与下一步
 
-诚实清单（继承 INTRODUCTION §13 并增补）：
-1. 闭环 overrides 在 `.fcad` 中是字面值（DSL 无动态引用）；与子树证据的一致性由测试 28 断言。下一步：DSL 引用语法 `:ld (from sha-pek-v1/wing ld_ratio)`。
-2. dfam-print 阈值从宽（壁厚 0.5mm/悬垂 60%/长宽比 12）；"不限尺寸打印"是需求层 Assume，物理成立性属证据 tier 问题。随案例积累收紧。
-3. 启发式仿真器是 tier-1 估算（非 CFD/FEA）；已如实标注，禁止冒充高保真。
-4. runner 捕获 `(ContractError, ValueError, RuntimeError, KeyError)`，插件 TypeError 会 crash（有意：bug 不吞成证据）。
-5. realize 的自动分解是预算均分启发（人写分解仍优于它）；evolve 的 termination-swap 只比较证据向量，未接成本模型。
-6. 单机单用户文件存储，无并发控制；rejected 永久保留（视为特性，无 GC）。
+1. 闭环 overrides 在 DSL 中是字面值（无动态引用）；一致性由测试断言。→ 下一步：DSL 引用语法。
+2. dfam-print 阈值从宽（壁厚 0.5/悬垂 60%/长宽比 12）；"不限尺寸打印"是需求层 Assume。→ 随案例标定收紧。
+3. 启发式仿真器是 tier-1 估算（公式在 docstring，禁止冒充高保真）。
+4. runner 异常捕获不含 TypeError（有意：bug 不吞成证据）。
+5. realize 的自动分解是预算均分启发；evolve 的 termination-swap 未接成本模型。
+6. 单机文件存储；rejected 永久保留（特性，无 GC）。
 
-建议下一步优先级：① 目录库扩充（真实供应商数据+tier 标注）→ ② DfAM 阈值标定与收紧 → ③ overrides 动态引用 → ④ evolve 接入成本/takt 选择压力。
+优先级建议：目录库真实数据扩充 → DfAM 标定 → overrides 动态引用 → evolve 成本压力 → 更多架构模板（其余机型/设备类）。
 
 ## 6. 复核命令
 
 ```bash
 cd E:\DATA\vscode\fluxkernel
-.venv\Scripts\python.exe -m pytest tests\ -q       # 30 passed
+.venv\Scripts\python.exe -m pytest tests\ -q       # 36 passed
 .venv\Scripts\fk.exe run examples\sha_pek.fcad     # rc=1（e2x 故意拒绝）
 .venv\Scripts\fk.exe goals                        # OPEN GOALS (0)
 .venv\Scripts\fk.exe verify                       # verify OK
-.venv\Scripts\fk.exe why bed-printed              # 经 [e42] print 边回溯到 Intent
-.venv\Scripts\fk.exe ledger dc-bus                # 3700/4000 W
-.venv\Scripts\fk.exe sorry --all                  # 10 洞全部 collapsed-at 标注
+.venv\Scripts\fk.exe why rib-1-solid              # 谱系：decompose [e4a] -> :at 接地 [e4c] -> beam-fe [e32]
+.venv\Scripts\fk.exe log                          # e5a 工艺计划与工序边的 inputs 含 fab-mill（G2 绑定）
+.venv\Scripts\fk.exe ledger dc-bus                # 3820/4000 W
+start preview\index.html                          # 真实分解可视化（wingbox/gantry/打印机/派生样机）
 ```
