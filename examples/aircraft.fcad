@@ -1,0 +1,93 @@
+;; examples/aircraft.fcad —— "我想飞，往返 A 到 B"
+;;
+;; End-to-end acceptance walkthrough (impl plan §9) in the v1.2 contract-native
+;; syntax. Intent -> point-mass holes -> Breguet eval -> decompose -> wing
+;; variants -> rib geometry -> manufacture -> line roll-up -> machine Resource
+;; -> machine as System (PRSI recursion) -> exact/procure from catalog ->
+;; compose back up the V right leg (C1-C4 + medium ledgers on the way).
+;; A failing form marks its edge rejected and the script CONTINUES; the
+;; exit code stays non-zero.
+
+;; ── semantic glossary (v1.2 §23: nouns must resolve before entering specs) ──
+(term aircraft "powered vehicle sustaining controlled atmosphere flight between two points")
+(term range "great-circle distance flown with reserves, km")
+(term payload "revenue mass carried including crew, kg")
+(term mass "structural + systems mass of the object, kg")
+(term power "electrical watts drawn from the DC bus under load")
+(term thermal "heat watts rejected into the cabin air")
+(term takt "minutes between finished units at the bottleneck")
+(term machining "material removal by multi-axis milling per drawing dims")
+
+;; ── shared media (v1.2 §19: shared buses/fields are first-class nodes) ──
+(node dc-bus :role Medium :kind dc-bus :spec (medium (capacity (power_w ("<=" 5000))) (margin 0.2)))
+(node cabin-air :role Medium :kind thermal-env :spec (medium (capacity (heat_w ("<=" 1200))) (margin 0.1)))
+
+;; ── step 1: the vague demand, contract-native ──
+(goal ac0 :kind aircraft
+  :spec (contract (goals (r1 "fly route A to B and back" :falsifiable t :measure "mission sim: range_km with reserves" :terms (range aircraft)) (p1 "carry paying payload" :falsifiable t :measure "W&B sheet at MTOW" :terms (payload))) (semantics aircraft range payload mass thermal) (assumes (env1 "sea-level std day at A and B" :bounds ((isa_temp_c (">=" -20)) (isa_temp_c ("<=" 45))))) (guarantees (gr1 "delivers range with reserves" :bounds ((range_km (">=" 2600)) (payload_kg (">=" 500))))) (budget (mass_kg ("<=" 2600))) (effluent (heat_w ("<=" 300 ":medium" cabin-air))) (forbidden (f1 "flutter below Vd/1.2" :check test) (f2 "CG outside envelope" :check inspection)) (not-responsible "airport ground handling" "crew licensing") (time-scale mission)))
+
+;; ── step 2: single point-mass model, ALL parameters are holes (sorry) ──
+(refine e1 :in (ac0) :out ac-point :role System :kind point-mass
+  :transform (point-mass-model))
+(eval e2 :target ac-point :with mission-analysis :fidelity 0 :expect ((range-margin-km (">" 0))))
+
+;; ── step 3: decompose into subsystems; contracts flow down (v1.2 §17.2) ──
+(refine e3 :in (ac-point) :out ac-v1 :role System
+  :transform (decompose
+    :into (wing engine nose tail fuselage)
+    :flow-down (
+      (wing :budget ((mass_kg ("<=" 700))) :guarantees ((gw1 "wing lifts MTOW at 1.3g" :bounds ((lift_n (">=" 34000)) (mass_kg ("<=" 700))))))
+      (engine :budget ((mass_kg ("<=" 550))) :guarantees ((ge1 "thrust for 3.2 m/s^2 climb" :bounds ((thrust_n (">=" 2600)) (mass_kg ("<=" 550))))))
+      (nose :budget ((mass_kg ("<=" 120))) :guarantees ((gn1 "houses avionics" :bounds ((mass_kg ("<=" 120))))))
+      (tail :budget ((mass_kg ("<=" 180))) :guarantees ((gt1 "static margin 5-15%" :bounds ((mass_kg ("<=" 180))))))
+      (fuselage :budget ((mass_kg ("<=" 900))) :guarantees ((gf1 "payload bay volume" :bounds ((mass_kg ("<=" 900)))))))
+    ))
+
+;; ── step 4: variant collapse then decompose the wing ──
+(refine e5 :in (ac-v1/wing) :out wing-v2 :kind wing
+  :transform (select-variant :choice cantilever))
+(refine e6 :in (wing-v2) :out wing-v3 :role Component
+  :transform (decompose
+    :into (skin tank rib)
+    :flow-down (
+      (skin :budget ((mass_kg ("<=" 280))) :guarantees ((gs1 "skin panels carry pressure" :bounds ((mass_kg ("<=" 280)) (skin_t_mm (">=" 0.8))))))
+      (tank :budget ((mass_kg ("<=" 180))) :guarantees ((gt1 "seals fuel at 0.3 bar" :bounds ((mass_kg ("<=" 180))))))
+      (rib :budget ((mass_kg ("<=" 12))) :guarantees ((gr1 "carries panel shear" :bounds ((mass_kg ("<=" 12)) (web_h_mm (">=" 19)))))))
+    ))
+;; the skin keeps a param hole: L6 requires a range — supplied here.
+(refine e6b :in (wing-v3/skin) :out skin-detailed :kind skin-panel
+  :transform (set-param-bounds)
+  :spec (contract (param-bounds (skin-t (>= 0.8) (<= 4.0))))
+  :params (skin-t (param skin-t)))
+
+;; ── step 5: rib geometry — sketch (bounded holes) -> extrude ──
+(refine e7 :in (wing-v3/rib) :out rib-sk :kind sketch
+  :transform (ground-sketch :sketch (sketch (pts (p0 (param hw) 0) (p1 (param hw) (param hh)) (p2 0 (param hh)) (p3 0 0)) (constraints (fix p3 0 0) (dist p0 p1 20) (dist p1 p2 10) (vert p0 p1) (horiz p1 p2))))
+  :spec (contract (param-bounds (hw (>= 8) (<= 12)) (hh (>= 18) (<= 22)))))
+(refine e8 :in (rib-sk) :out rib-solid :kind rib :transform (extrude :height 3 :material aluminum))
+(eval e8b :target rib-solid :with dfam-check :fidelity 0 :args (process fdm min_wall_mm 1.0) :expect ((min_dim_mm (">" 2))))
+
+;; ── steps 7-9: machined part -> process family -> line ──
+(manufacture e9 :in (rib-solid) :out rib-proc :transform (process-plan :into (stock milling-5axis inspection)))
+(compose e10 :in (rib-proc/stock rib-proc/milling-5axis rib-proc/inspection) :out rib-line :role Line :kind rib-line :transform (line-eval) :rollup ((takt_min ("<=" 12)) (oee (">=" 0.5))))
+
+;; ── steps 10-11: the LINE demands a machine — Resource ≅ System (PRSI) ──
+(refine e11 :in (rib-line) :out mill-req :role Resource :kind 5axis-mill-demand)
+(refine e12 :in (mill-req) :out mill-v1 :role System
+  :transform (decompose
+    :into (bed spindle-motor cnc-drive)
+    :flow-down (
+      (bed :budget ((mass_kg ("<=" 2000)) (power_w ("<=" 100 ":medium" dc-bus))) :guarantees ((gb1 "static stiffness" :bounds ((mass_kg ("<=" 2000))))))
+      (spindle-motor :budget ((mass_kg ("<=" 9)) (power_w ("<=" 3000 ":medium" dc-bus))) :guarantees ((gsm1 "spindle torque and speed" :bounds ((torque_nm (">=" 8)) (rpm (">=" 12000))))))
+      (cnc-drive :budget ((mass_kg ("<=" 40)) (power_w ("<=" 500 ":medium" dc-bus))) :guarantees ((gcd1 "drive bandwidth" :bounds ((power_w ("<=" 500)))))))
+    ))
+
+;; ── standard parts close goals directly: exact lemma + procure axiom ──
+(exact e13 :target mill-v1/spindle-motor :from catalog :match "torque_nm>=8 rpm>=12000" :out spindle-motor-std)
+(procure e14 :target mill-v1/cnc-drive :from catalog :match "power_w>=200 power_w<=600" :out cnc-drive-bought)
+
+;; ── the V right leg: compose back up, clearing flow-down obligations ──
+(compose e15 :in (mill-v1/bed spindle-motor-std cnc-drive-bought) :out mill-5axis :role Resource :kind 5axis-mill)
+(compose e16 :in (mill-5axis rib-proc) :out rib-line-v2 :role Line :kind rib-line)
+(compose e17 :in (skin-detailed wing-v3/tank rib-solid) :out wing-assy :role Component :kind wing-assembly)
+(compose e18 :in (wing-assy ac-v1/engine ac-v1/nose ac-v1/tail ac-v1/fuselage) :out ac-final :role System :kind aircraft :rollup ((range_km (">=" 2600))))

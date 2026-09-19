@@ -72,9 +72,12 @@ def _residuals(pts: dict, constraints: list) -> list:
 def ground_sketch(node_specs: list[dict], args: dict, ctx) -> tuple[dict, list, list]:
     """Plugin contract: (input node specs, transform args, ctx)
        -> (node_fields, evidence, obligations)"""
-    spec = node_specs[0]["spec"] if node_specs else args.get("sketch", {})
-    if "sketch" not in spec and "sketch" in args:
-        spec = {"sketch": args["sketch"]}
+    spec = node_specs[0].get("spec", {}) if node_specs else {}
+    if "sketch" not in spec:
+        arg_sk = args.get("sketch", {})
+        # the elaborator may hand us {"sketch": {...}} or the bare sketch body
+        spec = arg_sk if isinstance(arg_sk, dict) and "sketch" in arg_sk \
+            else {"sketch": arg_sk}
     pts_spec, params = _collect_params(spec)
     constraints = spec["sketch"].get("constraints", [])
 

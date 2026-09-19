@@ -13,14 +13,13 @@ from .registry import register
 
 @register("point-mass-model")
 def point_mass_model(node_specs, args, ctx):
-    """Intent -> point-mass parametric model; all key params stay as holes."""
+    """Intent -> point-mass parametric model; all key params stay as holes.
+    Hole names match the param_bounds keys so lint rule L6 passes."""
     spec = node_specs[0].get("spec", {}) if node_specs else {}
     fields = {"kind": "point-mass",
-              "params": {"mtow_kg": ["param", "mtow"],
-                         "fuel_frac": ["param", "ff"],
-                         "ld_ratio": ["param", "ld"],
-                         "sfc_kg_n_h": ["param", "sfc"],
-                         "cruise_ms": ["param", "v"]},
+              "params": {"mtow": ["param", "mtow"], "ff": ["param", "ff"],
+                         "ld": ["param", "ld"], "sfc": ["param", "sfc"],
+                         "v": ["param", "v"]},
               "spec": {**spec, "param_bounds": {
                   "mtow": {">=": 500, "<=": 8000},
                   "ff": {">=": 0.12, "<=": 0.45},
@@ -39,27 +38,28 @@ def mission_analysis(node_specs, args, ctx):
     """Breguet range from current params (holes fall back to param_bounds
     midpoints). Evidence carries range-km and range-margin-km for `expect`."""
     p = dict(node_specs[0].get("params", {})) if node_specs else {}
-    pb = (node_specs[0].get("spec", {}) or {}).get("param_bounds", {}) if node_specs else {}
+    pb = (node_specs[0].get("spec", {}) or {}).get("param_bounds", {}) if node_specs else []
 
-    def val(name, default):
-        v = p.get(name, default)
+    def val(key, default):
+        v = p.get(key, default)
         if isinstance(v, (list, tuple)) and v and v[0] == "param":
-            b = pb.get(v[1] if len(v) > 1 else name) or pb.get(name) or {}
+            b = pb.get(key) or {}
             lo = b.get(">=", default * 0.5) if isinstance(b, dict) else default * 0.5
             hi = b.get("<=", default * 1.5) if isinstance(b, dict) else default * 1.5
             return (lo + hi) / 2.0
         return float(v)
 
-    mtow = val("mtow_kg", 2000.0)
-    ff = val("fuel_frac", 0.25)
-    ld = val("ld_ratio", 15.0)
-    sfc = val("sfc_kg_n_h", 0.03 / 3.6)     # kg/(N·s)
-    v = val("cruise_ms", 90.0)
+    mtow = val("mtow", 2000.0)
+    ff = val("ff", 0.25)
+    ld = val("ld", 15.0)
+    sfc = val("sfc", 0.03 / 3.6)     # kg/(N·s)
+    v = val("v", 90.0)
     g = 9.81
     w1 = mtow * (1.0 - ff)
     range_km = (v / (g * sfc)) * ld * math.log(mtow / w1) / 1000.0 if w1 > 0 else 0.0
     req = None
-    for e in (node_specs[0].get("spec", {}) or {}).get("goals", []) if node_specs else []:
+    spec = node_specs[0].get("spec", {}) if node_specs else {}
+    for e in spec.get("goals", []):
         for q, b in (e.get("bounds") or {}).items():
             if q == "range_km" and isinstance(b, dict):
                 req = b.get(">=")

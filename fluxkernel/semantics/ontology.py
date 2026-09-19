@@ -40,7 +40,7 @@ ROLE_TRANSITIONS: dict[str, set[str]] = {
     "Component": {"Component", "Part", "Medium"},
     "Part":      {"Part", "Process"},          # manufacture: Part -> Process family
     "Process":   {"Process", "Line"},
-    "Line":      {"Resource", "Line", "System"},
+    "Line":      {"Resource", "Line", "System", "Process"},
     "Resource":  {"System", "Component", "Part"},   # machine re-enters as a System
     "Medium":    set(),                        # media are referenced, not decomposed
 }

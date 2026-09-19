@@ -321,14 +321,14 @@ def cmd_eval(a):
 
 def cmd_exact(a):
     eng = _engine()
-    res = eng.exact(a.goal, a.from_, a.match or "")
+    res = eng.exact(a.goal, a.from_, a.match or "", out_name=a.out)
     print(f"{res['state']}" + (f": {res['reason']}" if res["reason"] else ""))
     return 0 if res["state"] == "promoted" else 1
 
 
 def cmd_procure(a):
     eng = _engine()
-    res = eng.procure(a.goal, a.from_, a.match or "")
+    res = eng.procure(a.goal, a.from_, a.match or "", out_name=a.out)
     print(f"{res['state']}" + (f": {res['reason']}" if res["reason"] else ""))
     return 0 if res["state"] == "promoted" else 1
 
@@ -601,11 +601,13 @@ def build_parser() -> argparse.ArgumentParser:
     s = sub.add_parser("exact"); s.add_argument("goal"); s.add_argument("--from",
                                                                         dest="from_",
                                                                         default="catalog")
-    s.add_argument("--match", default=""); s.set_defaults(fn=cmd_exact)
+    s.add_argument("--match", default=""); s.add_argument("--out")
+    s.set_defaults(fn=cmd_exact)
     s = sub.add_parser("procure"); s.add_argument("goal"); s.add_argument("--from",
                                                                           dest="from_",
                                                                           default="catalog")
-    s.add_argument("--match", default=""); s.set_defaults(fn=cmd_procure)
+    s.add_argument("--match", default=""); s.add_argument("--out")
+    s.set_defaults(fn=cmd_procure)
     s = sub.add_parser("compose"); s.add_argument("inputs", nargs="+"); s.add_argument("--out",
                                                                                        required=True)
     s.add_argument("--role"); s.add_argument("--kind"); s.add_argument("--rollup")

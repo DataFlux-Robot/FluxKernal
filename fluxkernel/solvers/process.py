@@ -37,8 +37,12 @@ def process_plan(node_specs, args, ctx):
         ops = list(ops_rule)
     takt_min = sum(t for _, t, _ in ops) * (volume / 1000.0) ** 0.5 + 1.0
     cost = sum(c for _, _, c in ops)
+    scale = (volume / 1000.0) ** 0.5
+    op_details = [{"op": op, "takt_min": round(t * scale, 2), "cost": c}
+                  for op, t, c in ops]
     fields = {"kind": "process-plan",
               "ground": {"type": "process", "ops": [op for op, _, _ in ops],
+                         "op_details": op_details,
                          "takt_min": round(takt_min, 2), "cost": round(cost, 2)},
               "spec": {"guarantees": [{"id": "pp1", "stmt": "plan takt",
                                        "bounds": {"takt_min": ["<=", max(60.0, takt_min * 1.2)]}}]}}

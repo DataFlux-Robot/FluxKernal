@@ -28,16 +28,28 @@ def dfam_check(node_specs, args, ctx):
         import struct
         data = ctx.store.get_blob(stl_d)
         n = struct.unpack("<I", data[80:84])[0]
-        max_ang = math.cos(math.radians(90.0 - float(args.get("crit_angle_deg", 45))))
-        bad = 0
-        for i in range(min(n, 20000)):
+        crit = math.cos(math.radians(90.0 - float(args.get("crit_angle_deg", 45))))
+        tris = min(n, 20000)
+        # first pass: bed level = global min z
+        base_z = None
+        verts = []
+        for i in range(tris):
             off = 84 + i * 50
             if off + 50 > len(data):
+                tris = i
                 break
-            nx, ny, nz = struct.unpack("<fff", data[off:off + 12])
+            v = struct.unpack("<9f", data[off + 12:off + 48])
+            verts.append(v)
+            zmin_t = min(v[2], v[5], v[8])
+            base_z = zmin_t if base_z is None else min(base_z, zmin_t)
+        bad = 0
+        eps = 1e-6
+        for i, v in enumerate(verts):
+            nx, ny, nz = struct.unpack("<3f", data[84 + i * 50:84 + i * 50 + 12])
             vlen = math.sqrt(nx * nx + ny * ny + nz * nz) or 1.0
-            tris += 1
-            if (-nz / vlen) > -max_ang:   # downward-facing beyond critical angle
+            downward = (-nz / vlen) > crit           # steeper than critical angle
+            on_bed = min(v[2], v[5], v[8]) <= base_z + eps
+            if downward and not on_bed:
                 bad += 1
         overhang_pct = round(100.0 * bad / tris, 2) if tris else 0.0
 

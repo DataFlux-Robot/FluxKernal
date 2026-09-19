@@ -140,12 +140,14 @@ class Engine:
     # ------------------------------------------------------------- refine --
     def refine(self, goal, transform: dict, out_name: str | None = None,
                out_role: str | None = None, out_kind: str | None = None,
-               out_spec: dict | None = None, resources: dict | None = None) -> dict:
+               out_spec: dict | None = None, out_params: dict | None = None,
+               resources: dict | None = None) -> dict:
         """refine = one collapse step (add constraints / pick a variant / ground
         params). `goal` may be a single ref or a list of refs (boolean ops take
         multiple grounded inputs; the first is the primary parent for flow-down).
         transform {"name": "decompose"} fans out children like the .fcad
-        `(decompose :into ...)` form."""
+        `(decompose :into ...)` form. out_spec/out_params NARROW the parent
+        (deep-merge), never replace it."""
         goals = list(goal) if isinstance(goal, (list, tuple)) else [goal]
         resolved = [self._input(g) for g in goals]
         goal_d, goal_payload = resolved[0]
@@ -157,10 +159,19 @@ class Engine:
 
         # -- execute the transform (plugin if registered, else structural) --
         obligations: list[Obligation] = []
-        base_spec = out_spec if out_spec is not None else goal_payload.get("spec", {})
+        parent_spec = goal_payload.get("spec", {})
+        base_spec = _deep_merge(parent_spec, out_spec) if out_spec is not None \
+            else parent_spec
         from ..solvers import registry
         tname = transform.get("name", "")
-        if tname and tname in registry.available():
+        if tname == "param-perturb":
+            # kernel-native: collapse holes to the declared values
+            fields = {"params": _deep_merge(goal_payload.get("params") or {},
+                                            transform.get("args", {}).get("values") or {})}
+            evidence = [{"solver": "kernel/param-perturb", "tier": 0,
+                         "values": transform.get("args", {}).get("values", {})}]
+            plugin_obs = []
+        elif tname and tname in registry.available():
             try:
                 fields, evidence, plugin_obs = self._call_plugin(
                     transform, [p for _, p in resolved])
@@ -180,7 +191,8 @@ class Engine:
         child = Node(role=child_role,
                      kind=out_kind or fields.get("kind") or goal_payload.get("kind", "part"),
                      spec=child_spec,
-                     params=_deep_merge(goal_payload.get("params") or {},
+                     params=_deep_merge(_deep_merge(goal_payload.get("params") or {},
+                                                    out_params or {}),
                                         fields.get("params") or {}),
                      variants=fields.get("variants", goal_payload.get("variants", [])),
                      ground=fields.get("ground"),
@@ -199,7 +211,7 @@ class Engine:
         return res
 
     def _decompose(self, goal_d: str, goal_payload: dict, transform: dict,
-                   out_name: str | None, out_role: str,
+                   out_name: str | None, child_role: str,
                    resources: dict | None) -> dict:
         """decompose: output = refined parent state (records children), then one
         refine edge per child; children names bind as '<parent>/<slot>'."""
@@ -213,15 +225,16 @@ class Engine:
         roles = args.get("roles") or {}
         kinds = args.get("kinds") or {}
 
-        # parent output node: same contract + structural record of decomposition
+        # parent output node: same contract + structural record of decomposition;
+        # the DECLARED out_role wins (e.g. Resource demanded as System, PRSI §3.2)
         parent_out_spec = _deep_merge(parent_spec, {"decomposed_into": slots})
-        parent_node = Node(role=goal_payload.get("role", "System"),
+        parent_node = Node(role=child_role or goal_payload.get("role", "System"),
                            kind=goal_payload.get("kind", "system"),
                            spec=parent_out_spec,
                            params=goal_payload.get("params") or {},
                            variants=goal_payload.get("variants") or [])
         obligations = self._structural_obligations(goal_payload,
-                                                   goal_payload.get("role", "System"))
+                                                   child_role or goal_payload.get("role"))
         # budget allocation legality: Σ child slices ≤ parent budget per qty
         for qty, pb in contracts.qty_entries(parent_spec, "budget").items():
             pp = parse_bound(pb)
@@ -273,7 +286,8 @@ class Engine:
     # ------------------------------------------------------------- compose --
     def compose(self, inputs: list[str], out_name: str, out_role: str,
                 out_kind: str | None = None, out_spec: dict | None = None,
-                rollup: dict | None = None, resources: dict | None = None) -> dict:
+                rollup: dict | None = None, resources: dict | None = None,
+                transform_spec: dict | None = None) -> dict:
         children = [self._input(r) for r in inputs]
         child_list = [(d, p.get("spec") or {}) for d, p in children]
         base_spec = out_spec or {}
@@ -302,6 +316,29 @@ class Engine:
         evidence = []
         for d, p in children:
             evidence += p.get("evidence", [])
+        # if the compose declares a solver transform (e.g. line-eval), run it:
+        # the plugin grounds the composed system (takt/oee/capacity) and its
+        # evidence feeds the roll-up assertions
+        transform = {"name": "compose", "args": {}}
+        node_ground = None
+        node_kind = out_kind or "assembly"
+        tname = (transform_spec or {}).get("name", "")
+        if tname and tname != "compose":
+            from ..solvers import registry
+            if tname in registry.available():
+                transform = transform_spec
+                try:
+                    p_fields, p_evidence, p_obs = self._call_plugin(
+                        transform_spec, [p for _, p in children])
+                    evidence = evidence + p_evidence
+                    obligations += [o if isinstance(o, Obligation) else Obligation.from_dict(o)
+                                    for o in p_obs]
+                    node_ground = p_fields.get("ground")
+                    node_kind = out_kind or p_fields.get("kind") or node_kind
+                except (ContractError, ValueError, RuntimeError, KeyError) as e:
+                    obligations.append(Obligation(id="solver-ran", prop=str(e),
+                                                  holds=False, checker=tname,
+                                                  detail="E1"))
         if rollup:
             for qty, b in rollup.items():
                 val = _metric(evidence, qty)
@@ -312,14 +349,13 @@ class Engine:
                     holds=ok, checker="kernel", oclass="soft",
                     detail="" if ok else f"M1: roll-up {qty} not met"))
 
-        node = Node(role=out_role, kind=out_kind or "assembly", spec=spec)
+        node = Node(role=out_role, kind=node_kind, spec=spec, ground=node_ground)
         cert = Certificate(obligations=obligations, evaluator="kernel",
                            evidence=evidence or [{"solver": "kernel/compose",
                                                   "children": [d for d, _ in children],
                                                   "tier": 0}], executor="compose")
         return self._commit(self._make_edge("compose", [d for d, _ in children],
-                                            {"name": "compose",
-                                             "args": {"rollup": rollup or {}}}),
+                                            transform),
                             node, cert, ResourceVector(**(resources or {})),
                             node_name=out_name)
 
@@ -431,8 +467,11 @@ class Engine:
                  expect: dict | None = None, args: dict | None = None,
                  resources: dict | None = None) -> dict:
         """Weakened native_decide: run an L2 evaluation plugin; expect
-        assertions become machine-checked obligations (M1 on miss)."""
+        assertions become machine-checked obligations (M1 on miss). The
+        evaluated node is a NEW digest (evidence enters identity); the
+        target's name rebinds to it so later forms see the current state."""
         t_d, t_payload = self._input(target)
+        was_named = not target.startswith("fk1:")
         transform = {"name": solver,
                      "args": {**(args or {}), "fidelity": fidelity}}
         obligations: list[Obligation] = []
@@ -462,11 +501,14 @@ class Engine:
         cert = Certificate(obligations=obligations, evaluator=solver,
                            evidence=evidence, executor=solver)
         edge = self._make_edge("evaluate", [t_d], transform)
-        return self._commit(edge, node, cert, ResourceVector(**(resources or {})))
+        res = self._commit(edge, node, cert, ResourceVector(**(resources or {})))
+        if was_named and res["state"] in ("promoted", "verified", "evidenced"):
+            self.store.bind_name(target, res["node"])
+        return res
 
     # --------------------------------------------------- exact / procure --
     def _close_from_catalog(self, op: str, goal: str, catalog: str, match: str,
-                            tier: int) -> dict:
+                            tier: int, out_name: str | None = None) -> dict:
         g_d, g_payload = self._input(goal)
         obligations: list[Obligation] = []
         evidence: list[dict] = []
@@ -488,8 +530,9 @@ class Engine:
             obligations.append(Obligation(id="catalog-hit", prop=str(e), holds=False,
                                           checker="catalog", detail="E1: no catalog hit"))
         evidence = evidence or [{"solver": "catalog", "query": match, "tier": tier}]
-        spec = _deep_merge(fields.get("spec") or {}, _inherit_scaffolding(
-            g_payload.get("spec") or {}))
+        # the closed design keeps the goal's FULL contract (so lint still
+        # passes) and gains the entry's guarantees/catalog provenance
+        spec = _deep_merge(g_payload.get("spec") or {}, fields.get("spec") or {})
         node = Node(role=g_payload.get("role", "Part"),
                     kind=fields.get("kind") or g_payload.get("kind", "part"),
                     spec=spec, ground=fields.get("ground"),
@@ -498,24 +541,30 @@ class Engine:
                            evidence=evidence, executor=op)
         edge = self._make_edge(op, [g_d], {"name": "catalog-match",
                                            "args": {"from": catalog, "match": match}})
-        res = self._commit(edge, node, cert, ResourceVector())
+        res = self._commit(edge, node, cert, ResourceVector(), node_name=out_name)
         res["coverage"] = {g_d: evidence[0].get("solver", "catalog")}
         return res
 
-    def exact(self, goal: str, catalog: str, match: str) -> dict:
+    def exact(self, goal: str, catalog: str, match: str,
+              out_name: str | None = None) -> dict:
         """`exact lemma`: a catalog design closes the goal directly."""
-        return self._close_from_catalog("exact", goal, catalog, match, tier=1)
+        return self._close_from_catalog("exact", goal, catalog, match, tier=1,
+                                        out_name=out_name)
 
-    def procure(self, goal: str, catalog: str, match: str = "") -> dict:
+    def procure(self, goal: str, catalog: str, match: str = "",
+                out_name: str | None = None) -> dict:
         """Axiom introduction: purchased item; evidence tier=procured(2) ≠ verified."""
         return self._close_from_catalog("procure", goal, catalog,
-                                        match or g_default_query(goal), tier=2)
+                                        match or g_default_query(goal), tier=2,
+                                        out_name=out_name)
 
     # --------------------------------------------------------- manufacture --
     def manufacture(self, part: str, into: list[str] | None = None,
-                    args: dict | None = None, resources: dict | None = None) -> dict:
+                    args: dict | None = None, resources: dict | None = None,
+                    out_name: str | None = None) -> dict:
         """Part -> Process family: the part goal pivots into a new obligation
-        family (machining ops). Children bind as '<out>/<op>'."""
+        family (machining ops). Children bind as '<out>/<op>' and each op
+        carries its own grounded takt/cost so line-eval can roll them up."""
         p_d, p_payload = self._input(part)
         if p_payload.get("role") != "Part":
             raise DagError("T2", "manufacture requires a Part input")
@@ -529,27 +578,38 @@ class Engine:
             obligations += plugin_obs
         except KeyError:
             fields, evidence = {}, [{"solver": "kernel/structural", "tier": 0}]
-        plan_spec = _deep_merge(_inherit_scaffolding(p_payload.get("spec") or {}),
-                                fields.get("spec") or {})
+        plan_spec = _inherit_contract(p_payload.get("spec") or {}, {},
+                                      fields.get("spec") or {})
         node = Node(role="Process", kind=fields.get("kind") or "process-plan",
                     spec=plan_spec, ground=fields.get("ground"))
         obligations += self._structural_obligations(p_payload, "Process")
         cert = Certificate(obligations=obligations, evaluator="process",
                            evidence=evidence, executor="process-plan")
         res = self._commit(self._make_edge("manufacture", [p_d], transform),
-                           node, cert, ResourceVector(**(resources or {})))
+                           node, cert, ResourceVector(**(resources or {})),
+                           node_name=out_name)
         children = []
-        for op in (into or []):
-            op_spec = _inherit_contract(p_payload.get("spec") or {}, {}, {})
-            op_node = Node(role="Process", kind=op, spec=op_spec)
+        op_details = ((fields.get("ground") or {}).get("op_details")
+                      or [{"op": op, "takt_min": 1.0, "cost": 0.0} for op in (into or [])])
+        p_guarantees = (p_payload.get("spec") or {}).get("guarantees") or []
+        for det in op_details:
+            op = det.get("op", "?")
+            op_spec = _inherit_contract(p_payload.get("spec") or {},
+                                        {"guarantees": p_guarantees}, {})
+            op_node = Node(role="Process", kind=op, spec=op_spec,
+                           ground={"type": "process-op", "takt_min": det.get("takt_min", 1.0),
+                                   "cost": det.get("cost", 0.0)})
             c_cert = Certificate(
                 obligations=self._structural_obligations(p_payload, "Process"),
                 evaluator="process",
-                evidence=[{"solver": "kernel/structural", "op": op, "tier": 0}])
+                evidence=[{"solver": "process/rules", "op": op, "tier": 0,
+                           "takt_min": det.get("takt_min", 1.0),
+                           "cost": det.get("cost", 0.0)}])
             c_res = self._commit(
                 self._make_edge("refine", [res["node"]],
                                 {"name": "process-op", "args": {"op": op}}),
-                op_node, c_cert, ResourceVector(), node_name=f"{part}-proc/{op}")
+                op_node, c_cert, ResourceVector(),
+                node_name=f"{out_name or part}/{op}")
             children.append(c_res)
         res["children"] = children
         return res
@@ -700,8 +760,11 @@ def _holds_bound(val, bp: dict) -> bool:
 
 def _spec_superset(entry_spec: dict, goal_spec: dict) -> bool:
     """Does the catalog/integrated entry cover every quantity the goal demands?
-    For each demanded bound (budget dict entries + guarantee entry bounds +
-    assume entry bounds), some entry bound of the same qty must cover it."""
+
+    For each demanded bound (budget dict entries + guarantee/assume entry
+    bounds), some entry bound of the same qty must ADMIT it: the entry's
+    capability interval intersects the demand (a motor rated 3000–24000 rpm
+    satisfies 'rpm>=12000' — it can operate there). Disjoint = not covered."""
     demands: list[tuple[str, object]] = []
     for slot in ("budget", "assumes", "guarantees"):
         for q, b in contracts.qty_entries(goal_spec, slot).items():
@@ -718,12 +781,12 @@ def _spec_superset(entry_spec: dict, goal_spec: dict) -> bool:
                 supply.setdefault(q, []).append(b)
     for q, gb in demands:
         for cand in supply.get(q, []):
-            cov, _ = contracts.covers(gb, cand)
-            if cov:
-                break
+            _, disjoint = contracts.covers(gb, cand)
+            if not disjoint:
+                break          # some supply interval intersects the demand
         else:
             if supply.get(q):
-                return False   # qty supplied but none covers the demand
+                return False   # qty supplied but every interval misses the demand
             # qty not supplied at all: not promised => vacuous
     return True
 

@@ -357,6 +357,9 @@ def to_sexpstr(v, indent: int = 0) -> str:
     if isinstance(v, list):
         if v and v[0] == "param":
             return f"(param {v[1]})"
+        # keyword pairs render FLAT: [":k", val] -> ":k <val>" (DSL convention)
+        if len(v) == 2 and isinstance(v[0], str) and v[0].startswith(":"):
+            return f"{v[0]} {to_sexpstr(v[1])}"
         inner = " ".join(to_sexpstr(x) for x in v)
         return f"({inner})"
     if isinstance(v, bool):

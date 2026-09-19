@@ -45,6 +45,15 @@ def load_entries() -> list[dict]:
             for e in entries:
                 if isinstance(e, dict) and e.get("name"):
                     out.append(e)
+    # evolve results precipitate here (MAP-elites archive, kind=archive)
+    arch = Path.cwd() / ".fk" / "archive.json"
+    if arch.is_file():
+        try:
+            for e in json.loads(arch.read_text(encoding="utf-8")).get("entries", []):
+                if isinstance(e, dict) and e.get("name"):
+                    out.append(e)
+        except (OSError, json.JSONDecodeError):
+            pass
     # de-dup by name (first dir wins)
     seen = {}
     for e in out:

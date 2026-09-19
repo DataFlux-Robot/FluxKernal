@@ -318,11 +318,19 @@ def ledger(dag, medium_ref: str) -> dict:
 
 
 def _subsumed_allocations(dag) -> set[tuple[str, str, str]]:
-    """(node_digest, slot, qty) triples already rolled up into a promoted
-    compose/integrate parent that declares the same slot+qty."""
+    """(node_digest, slot, qty) triples already absorbed by a promoted
+    successor that re-declares the same slot+qty:
+      - compose/integrate: auto roll-up budgets contain the children's
+      - exact/procure: the closed design realizes the goal's allocations
+      - refine/evaluate: the successor's declaration replaces the
+        predecessor's (refine chains would otherwise double-book one
+        physical declaration across every stage)
+    """
     subsumed: set[tuple[str, str, str]] = set()
     for edge_d, e in dag.iter_edges():
-        if e.get("op") not in ("compose", "integrate") or e.get("state") != "promoted":
+        if e.get("op") not in ("compose", "integrate", "exact", "procure",
+                               "refine", "evaluate") \
+                or e.get("state") != "promoted":
             continue
         try:
             parent = dag.store.get_object(e.get("output", ""))["payload"]

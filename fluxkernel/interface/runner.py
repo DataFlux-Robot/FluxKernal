@@ -34,10 +34,10 @@ class Runner:
                 self.results.append(res)
                 if res.get("state") in ("rejected",) or res.get("error"):
                     failed += 1
-            except (FcadError, DagError, ContractError) as e:
-                self.results.append({"form": head, "error": str(e),
+            except Exception as e:   # fail-open script semantics: record, continue
+                self.results.append({"form": head, "error": f"{type(e).__name__}: {e}",
                                      "state": "rejected"})
-                self.engine.journal.append(f"{head:11s} ERROR {e}")
+                self.engine.journal.append(f"{head:11s} ERROR {type(e).__name__}: {e}")
                 failed += 1
         return 1 if failed else 0
 
@@ -130,22 +130,30 @@ class Runner:
         expect = kw.get("expect")
         expect = fcad.expect_from_sexpr(expect) if isinstance(expect, list) \
             else fcad.parse_expect(expect or "")
+        args = self._extra_args(kw)
+        if isinstance(kw.get("args"), list):
+            # flat keyword-value sequence: (process fdm min_wall_mm 1.0)
+            flat = kw["args"]
+            args.update({str(flat[i]): fcad._plain_value(flat[i + 1], self.store)
+                         for i in range(0, len(flat) - 1, 2)})
         return self.engine.evaluate(
             target, solver, fidelity=int(kw.get("fidelity", 0) or 0),
-            expect=expect, args=self._extra_args(kw),
+            expect=expect, args=args,
             resources=fcad.resources_from_sexpr(kw.get("resources", [])))
 
     def _form_exact(self, body):
         pos, kw = split_kwargs(body)
         target = kw.get("target") or (pos[0] if pos else None)
         return self.engine.exact(target, kw.get("from", "catalog"),
-                                 kw.get("match", "") or "")
+                                 kw.get("match", "") or "",
+                                 out_name=kw.get("out"))
 
     def _form_procure(self, body):
         pos, kw = split_kwargs(body)
         target = kw.get("target") or (pos[0] if pos else None)
         return self.engine.procure(target, kw.get("from", "catalog"),
-                                   kw.get("match", "") or "")
+                                   kw.get("match", "") or "",
+                                   out_name=kw.get("out"))
 
     def _extra_args(self, kw) -> dict:
         known = {"op", "in", "out", "target", "with", "from", "match", "expect",
@@ -171,6 +179,7 @@ class Runner:
                 out_name=out_name, out_role=kw.get("role"),
                 out_kind=kw.get("kind"),
                 out_spec=spec_from_sexpr(kw["spec"], self.store) if kw.get("spec") else None,
+                out_params=fcad.params_from_sexpr(kw.get("params", [])) or None,
                 resources=resources)
         if op == "compose":
             rollup = fcad.bounds_map(kw["rollup"], self.store) \
@@ -179,7 +188,8 @@ class Runner:
                 ins, out_name=out_name, out_role=kw.get("role", "System"),
                 out_kind=kw.get("kind"), out_spec=spec_from_sexpr(
                     kw["spec"], self.store) if kw.get("spec") else None,
-                rollup=rollup, resources=resources)
+                rollup=rollup, resources=resources,
+                transform_spec=transform if transform.get("name") != "compose" else None)
         if op == "integrate":
             closes = [str(x) for x in (kw.get("closes") or transform["args"].get("closes", []))]
             return self.engine.integrate(
@@ -198,5 +208,5 @@ class Runner:
                 str(x) for x in (kw.get("into") or [])]
             return self.engine.manufacture(ins[0] if ins else (pos[0] if pos else None),
                                            into=into, args=transform["args"],
-                                           resources=resources)
+                                           resources=resources, out_name=out_name)
         raise FcadError("S1", f"op {op!r} not reachable here")
