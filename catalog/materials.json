@@ -1,0 +1,30 @@
+{
+  "entries": [
+    {
+      "name": "al-2024-t3-sheet",
+      "kind": "material",
+      "supplier": "baosteel",
+      "tier": 1,
+      "bounds": {"thickness_mm": {">=": 0.3, "<=": 6.0}, "yield_mpa": {">=": 290},
+                 "density_g_cm3": {"=": 2.78}},
+      "ground": {"density_g_cm3": 2.78}
+    },
+    {
+      "name": "al-7075-t6-plate",
+      "kind": "material",
+      "supplier": "baosteel",
+      "tier": 1,
+      "bounds": {"thickness_mm": {">=": 4.0, "<=": 80.0}, "yield_mpa": {">=": 503},
+                 "density_g_cm3": {"=": 2.81}},
+      "ground": {"density_g_cm3": 2.81}
+    },
+    {
+      "name": "pla-fdm-filament",
+      "kind": "material",
+      "supplier": "polytiger",
+      "tier": 2,
+      "bounds": {"tensile_mpa": {">=": 46}, "density_g_cm3": {"=": 1.24}},
+      "ground": {"density_g_cm3": 1.24}
+    }
+  ]
+}

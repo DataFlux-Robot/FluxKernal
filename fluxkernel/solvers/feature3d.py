@@ -3,6 +3,14 @@
 This is a PROJECTION layer: it turns a grounded sketch node into a B-rep
 projection, computes mass properties, and exports STEP/STL blobs into the
 content-addressed store. The kernel core never sees TopoDS objects.
+
+Construction replay (lineage-stable naming, impl plan §8): nodes NEVER
+serialize a B-rep; they record HOW to rebuild it. References resolve through
+construction paths, not transient face indices, so they survive parameter
+changes. The recorded construction is complete and self-contained:
+  extrude:  {"op":"extrude", "height":h, "points":[[x,y],...], "material":m}
+  revolve:  {"op":"revolve", "angle_deg":a, "points":[...], "material":m}
+  boolean:  {"op":"boolean", "bop":"fuse|cut|common", "inputs":[<construction>,...]}
 """
 from __future__ import annotations
 
@@ -10,33 +18,31 @@ import math
 
 from .registry import register
 
+
+def _silence_occt_messenger():
+    """OCCT's STEP writer prints transfer statistics to stdout; remove the
+    default printer once so node digests and CLI output stay clean."""
+    try:
+        from OCP.Message import Message
+        msgr = Message.DefaultMessenger_s()
+        for p in list(msgr.Printers()):
+            msgr.RemovePrinter(p)
+    except Exception:
+        pass
+
+
+_silence_occt_messenger()
+
 _DENSITY_G_PER_MM3 = {"abs": 1.04e-3, "pla": 1.24e-3, "aluminum": 2.70e-3,
                       "steel": 7.85e-3, "titanium": 4.43e-3}
 
 
-def _ocp():
-    from OCP.gp import gp_Pnt, gp_Vec, gp_Ax1, gp_Dir
-    from OCP.BRepBuilderAPI import (BRepBuilderAPI_MakePolygon,
-                                    BRepBuilderAPI_MakeFace)
-    from OCP.BRepPrimAPI import BRepPrimAPI_MakePrism, BRepPrimAPI_MakeRevol
-    from OCP.BRepAlgoAPI import BRepAlgoAPI_Fuse, BRepAlgoAPI_Cut, BRepAlgoAPI_Common
-    from OCP.BRepGProp import BRepGProp
-    from OCP.GProp import GProp_GProps
-    from OCP.Bnd import Bnd_Box
-    from OCP.BRepBndLib import BRepBndLib
-    from OCP.BRepMesh import BRepMesh_IncrementalMesh
-    from OCP.StlAPI import StlAPI_Writer
-    from OCP.STEPControl import STEPControl_Writer, STEPControl_StepModelType
-    from OCP.IFSelect import IFSelect_ReturnStatus
-    return locals()
-
-
-def _face_from_points(pts: list[tuple[float, float]]):
+def _face_from_points(pts: list):
     from OCP.gp import gp_Pnt
     from OCP.BRepBuilderAPI import BRepBuilderAPI_MakePolygon, BRepBuilderAPI_MakeFace
     poly = BRepBuilderAPI_MakePolygon()
     for x, y in pts:
-        poly.Add(gp_Pnt(x, y, 0.0))
+        poly.Add(gp_Pnt(float(x), float(y), 0.0))
     poly.Close()
     return BRepBuilderAPI_MakeFace(poly.Wire()).Face()
 
@@ -50,7 +56,9 @@ def _props(shape) -> dict:
     BRepGProp.VolumeProperties_s(shape, vp)
     box = Bnd_Box()
     BRepBndLib.Add_s(shape, box)
-    xmin, ymin, zmin, xmax, ymax, zmax = box.Get()
+    cmin, cmax = box.CornerMin(), box.CornerMax()
+    xmin, ymin, zmin = cmin.X(), cmin.Y(), cmin.Z()
+    xmax, ymax, zmax = cmax.X(), cmax.Y(), cmax.Z()
     com = vp.CentreOfMass()
     return {"volume_mm3": vp.Mass(),
             "com": [com.X(), com.Y(), com.Z()],
@@ -80,7 +88,7 @@ def _write_blobs(shape, ctx) -> dict:
 def _profile_points(node_specs: list[dict], args: dict) -> list:
     src = node_specs[0] if node_specs else {}
     g = (src.get("ground") or {})
-    pts = g.get("points")
+    pts = g.get("points") or ((g.get("construction") or {}).get("points"))
     if not pts:
         raise ValueError("extrude/revolve requires an input with a grounded sketch2d")
     order = args.get("order") or list(pts.keys())
@@ -93,9 +101,12 @@ def extrude(node_specs, args, ctx):
     from OCP.BRepPrimAPI import BRepPrimAPI_MakePrism
     pts = _profile_points(node_specs, args)
     height = float(args["height"])
+    material = args.get("material", "abs")
     face = _face_from_points(pts)
     shape = BRepPrimAPI_MakePrism(face, gp_Vec(0, 0, height)).Shape()
-    return _finish_solid(shape, args, ctx, f"extrude h={height}")
+    cons = {"op": "extrude", "height": height,
+            "points": [[float(x), float(y)] for x, y in pts], "material": material}
+    return _finish_solid(shape, ctx, cons, desc=f"extrude h={height}")
 
 
 @register("revolve")
@@ -103,11 +114,14 @@ def revolve(node_specs, args, ctx):
     from OCP.gp import gp_Pnt, gp_Dir, gp_Ax1
     from OCP.BRepPrimAPI import BRepPrimAPI_MakeRevol
     pts = _profile_points(node_specs, args)
-    angle = math.radians(float(args.get("angle_deg", 360.0)))
+    angle_deg = float(args.get("angle_deg", 360.0))
+    material = args.get("material", "abs")
     face = _face_from_points(pts)
     ax = gp_Ax1(gp_Pnt(0, 0, 0), gp_Dir(0, 1, 0))  # profile revolves about Y axis
-    shape = BRepPrimAPI_MakeRevol(face, ax, angle).Shape()
-    return _finish_solid(shape, args, ctx, f"revolve {args.get('angle_deg', 360)}deg")
+    shape = BRepPrimAPI_MakeRevol(face, ax, math.radians(angle_deg)).Shape()
+    cons = {"op": "revolve", "angle_deg": angle_deg,
+            "points": [[float(x), float(y)] for x, y in pts], "material": material}
+    return _finish_solid(shape, ctx, cons, desc=f"revolve {angle_deg}deg")
 
 
 @register("boolean")
@@ -115,23 +129,25 @@ def boolean(node_specs, args, ctx):
     from OCP.BRepAlgoAPI import BRepAlgoAPI_Fuse, BRepAlgoAPI_Cut, BRepAlgoAPI_Common
     if len(node_specs) < 2:
         raise ValueError("boolean needs >=2 grounded inputs")
-    shapes = [_rebuild_brep(s) for s in node_specs]
-    op = args.get("op", "fuse")
-    a, b = shapes[0], shapes[1]
-    shape = {"fuse": BRepAlgoAPI_Fuse, "cut": BRepAlgoAPI_Cut,
-             "common": BRepAlgoAPI_Common}[op](a, b).Shape()
+    shapes = [rebuild_brep(s) for s in node_specs]
+    bop = args.get("bop", args.get("op", "fuse"))
+    ops = {"fuse": BRepAlgoAPI_Fuse, "cut": BRepAlgoAPI_Cut, "common": BRepAlgoAPI_Common}
+    shape = ops[bop](shapes[0], shapes[1]).Shape()
     for extra in shapes[2:]:
-        shape = {"fuse": BRepAlgoAPI_Fuse, "cut": BRepAlgoAPI_Cut,
-                 "common": BRepAlgoAPI_Common}[op](shape, extra).Shape()
-    return _finish_solid(shape, args, ctx, f"boolean/{op}")
+        shape = ops[bop](shape, extra).Shape()
+    cons = {"op": "boolean", "bop": bop,
+            "inputs": [(s.get("ground") or {}).get("construction")
+                       for s in node_specs]}
+    return _finish_solid(shape, ctx, cons, desc=f"boolean/{bop}")
 
 
-def _rebuild_brep(node_spec):
+def rebuild_brep(node_spec: dict):
     """Rebuild a B-rep from a node's recorded construction (projection replay).
 
-    Nodes never serialize TopoDS; they record HOW to rebuild. This is what makes
-    lineage-stable naming possible: references survive parameter changes because
-    they resolve through construction paths, not transient face indices.
+    Nodes never serialize TopoDS; they record HOW to rebuild. This is what
+    makes lineage-stable naming possible: references survive parameter
+    changes because they resolve through construction paths, not transient
+    face indices.
     """
     g = node_spec.get("ground") or {}
     cons = g.get("construction")
@@ -147,35 +163,31 @@ def _rebuild_brep(node_spec):
         from OCP.gp import gp_Pnt, gp_Dir, gp_Ax1
         from OCP.BRepPrimAPI import BRepPrimAPI_MakeRevol
         face = _face_from_points([tuple(p) for p in cons["points"]])
-        return BRepPrimAPI_MakeRevol(face, gp_Ax1(gp_Pnt(0, 0, 0), gp_Dir(0, 1, 0)),
-                                     math.radians(cons.get("angle_deg", 360.0))).Shape()
+        return BRepPrimAPI_MakeRevol(
+            face, gp_Ax1(gp_Pnt(0, 0, 0), gp_Dir(0, 1, 0)),
+            math.radians(cons.get("angle_deg", 360.0))).Shape()
     if kind == "boolean":
-        sub = [_rebuild_brep(s) for s in cons["inputs"]]
+        sub = [rebuild_brep({"ground": {"construction": c}}) for c in cons["inputs"]]
         from OCP.BRepAlgoAPI import BRepAlgoAPI_Fuse, BRepAlgoAPI_Cut, BRepAlgoAPI_Common
-        op = cons["bop"]
-        shape = {"fuse": BRepAlgoAPI_Fuse, "cut": BRepAlgoAPI_Cut,
-                 "common": BRepAlgoAPI_Common}[op](sub[0], sub[1]).Shape()
+        bop = cons["bop"]
+        ops = {"fuse": BRepAlgoAPI_Fuse, "cut": BRepAlgoAPI_Cut,
+               "common": BRepAlgoAPI_Common}
+        shape = ops[bop](sub[0], sub[1]).Shape()
         for extra in sub[2:]:
-            shape = {"fuse": BRepAlgoAPI_Fuse, "cut": BRepAlgoAPI_Cut,
-                     "common": BRepAlgoAPI_Common}[op](shape, extra).Shape()
+            shape = ops[bop](shape, extra).Shape()
         return shape
     raise ValueError(f"cannot replay construction op: {kind}")
 
 
-def _finish_solid(shape, args, ctx, desc):
+def _finish_solid(shape, ctx, cons: dict, desc: str):
     props = _props(shape)
-    material = args.get("material", "abs")
+    material = cons.get("material", "abs")
     density = _DENSITY_G_PER_MM3.get(material, 1.0e-3)
     mass_g = props["volume_mm3"] * density
     blobs = _write_blobs(shape, ctx)
-    cons = {"op": desc.split()[0].split("/")[0]}
-    # record replayable construction
-    if "height" in args or desc.startswith("extrude"):
-        cons = {"op": "extrude", "height": float(args["height"]),
-                "points": [list(map(float, p)) for p in _profile_points_cached(args)]}
     fields = {"kind": "part",
               "ground": {"type": "brep", "backend": "ocp", "blobs": blobs,
-                         "construction": cons if cons.get("points") else None,
+                         "construction": cons,
                          "volume_mm3": props["volume_mm3"], "mass_g": mass_g,
                          "com": props["com"], "bbox": props["bbox"],
                          "material": material}}
@@ -192,7 +204,3 @@ def _finish_solid(shape, args, ctx, desc):
          "holds": bool(blobs.get("step")), "checker": "feature3d", "detail": ""},
     ]
     return fields, evidence, obligations
-
-
-def _profile_points_cached(args):
-    return args.get("_profile_cache", [])

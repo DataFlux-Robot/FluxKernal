@@ -1,0 +1,28 @@
+{
+  "entries": [
+    {
+      "name": "gb70-m8x20-hex",
+      "kind": "fastener",
+      "supplier": "gb-catalog",
+      "tier": 2,
+      "bounds": {"dia_mm": {"=": 8}, "length_mm": {"=": 20}, "grade": {"=": 8.8}},
+      "ground": {"mass_g": 18.4}
+    },
+    {
+      "name": "gb70-m5x16-hex",
+      "kind": "fastener",
+      "supplier": "gb-catalog",
+      "tier": 2,
+      "bounds": {"dia_mm": {"=": 5}, "length_mm": {"=": 16}, "grade": {"=": 8.8}},
+      "ground": {"mass_g": 5.1}
+    },
+    {
+      "name": "gb97-m8-washer",
+      "kind": "fastener",
+      "supplier": "gb-catalog",
+      "tier": 2,
+      "bounds": {"dia_mm": {"=": 8}, "type": {"=": "washer"}},
+      "ground": {"mass_g": 2.2}
+    }
+  ]
+}

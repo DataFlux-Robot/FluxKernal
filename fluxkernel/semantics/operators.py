@@ -138,13 +138,17 @@ class Engine:
         return d
 
     # ------------------------------------------------------------- refine --
-    def refine(self, goal: str, transform: dict, out_name: str | None = None,
+    def refine(self, goal, transform: dict, out_name: str | None = None,
                out_role: str | None = None, out_kind: str | None = None,
                out_spec: dict | None = None, resources: dict | None = None) -> dict:
         """refine = one collapse step (add constraints / pick a variant / ground
-        params). transform {"name": "decompose"} fans out children like the
-        .fcad `(decompose :into ...)` form."""
-        goal_d, goal_payload = self._input(goal)
+        params). `goal` may be a single ref or a list of refs (boolean ops take
+        multiple grounded inputs; the first is the primary parent for flow-down).
+        transform {"name": "decompose"} fans out children like the .fcad
+        `(decompose :into ...)` form."""
+        goals = list(goal) if isinstance(goal, (list, tuple)) else [goal]
+        resolved = [self._input(g) for g in goals]
+        goal_d, goal_payload = resolved[0]
         child_role = out_role or goal_payload.get("role", "Component")
 
         if transform.get("name") == "decompose":
@@ -158,7 +162,8 @@ class Engine:
         tname = transform.get("name", "")
         if tname and tname in registry.available():
             try:
-                fields, evidence, plugin_obs = self._call_plugin(transform, [goal_payload])
+                fields, evidence, plugin_obs = self._call_plugin(
+                    transform, [p for _, p in resolved])
                 plugin_obs = [o if isinstance(o, Obligation) else Obligation.from_dict(o)
                               for o in plugin_obs]
             except (ContractError, ValueError, RuntimeError, KeyError) as e:
@@ -187,7 +192,7 @@ class Engine:
                                                        child_spec)
         cert = Certificate(obligations=obligations, evaluator="kernel",
                            evidence=evidence, executor=transform.get("name", "structural"))
-        edge = self._make_edge("refine", [goal_d], transform)
+        edge = self._make_edge("refine", [d for d, _ in resolved], transform)
         res = self._commit(edge, child, cert, ResourceVector(**(resources or {})),
                            edge_name=None, node_name=out_name)
         res["children"] = []

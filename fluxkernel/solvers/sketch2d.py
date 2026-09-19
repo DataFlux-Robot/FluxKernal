@@ -82,23 +82,32 @@ def ground_sketch(node_specs: list[dict], args: dict, ctx) -> tuple[dict, list, 
     n_eq = sum(2 if c[0] in ("fix", "symx") else 1 for c in constraints)
     dof = 2 * len(pts_spec) - n_eq
 
-    def fun(v):
-        return _residuals(_build_points(pts_spec, params, v), constraints)
+    if len(params) == 0:
+        # fully concrete sketch: no solving, just verify the constraints
+        grounded = _build_points(pts_spec, params, x0)
+        residual = float(np.linalg.norm(np.asarray(
+            _residuals(grounded, constraints), dtype=float)))
+        converged = residual < 1e-6
+        sol_x = x0
+    else:
+        def fun(v):
+            return _residuals(_build_points(pts_spec, params, v), constraints)
 
-    sol = least_squares(fun, x0, method="lm" if n_eq >= len(params) else "trf")
-    residual = float(np.linalg.norm(sol.fun))
-    grounded = _build_points(pts_spec, params, sol.x)
-    converged = bool(sol.success) and residual < 1e-6
+        sol = least_squares(fun, x0, method="lm" if n_eq >= len(params) else "trf")
+        residual = float(np.linalg.norm(sol.fun))
+        grounded = _build_points(pts_spec, params, sol.x)
+        converged = bool(sol.success) and residual < 1e-6
+        sol_x = sol.x
 
     fields = {"kind": "sketch",
               "spec": {"sketch": {"pts": {k: list(v) for k, v in grounded.items()},
                                   "constraints": constraints}},
-              "params": dict(zip(params, map(float, sol.x))),
+              "params": dict(zip(params, map(float, sol_x))),
               "ground": {"type": "sketch2d",
                          "points": {k: list(v) for k, v in grounded.items()}}}
     evidence = [{"solver": "sketch2d/least_squares", "converged": converged,
                  "residual": residual, "dof_estimate": dof,
-                 "params": dict(zip(params, map(float, sol.x)))}]
+                 "params": dict(zip(params, map(float, sol_x)))}]
     obligations = [
         {"id": "solver-converged", "prop": "sketch constraint system grounded",
          "holds": converged, "checker": "sketch2d",

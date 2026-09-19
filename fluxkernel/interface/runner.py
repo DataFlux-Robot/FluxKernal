@@ -167,7 +167,7 @@ class Runner:
         resources = fcad.resources_from_sexpr(kw.get("resources", []))
         if op == "refine":
             return self.engine.refine(
-                ins[0] if ins else (pos[0] if pos else None), transform,
+                ins or ([pos[0]] if pos else []), transform,
                 out_name=out_name, out_role=kw.get("role"),
                 out_kind=kw.get("kind"),
                 out_spec=spec_from_sexpr(kw["spec"], self.store) if kw.get("spec") else None,
