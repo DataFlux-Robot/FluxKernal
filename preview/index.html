@@ -1,0 +1,33 @@
+<!doctype html>
+<html><head><meta charset="utf-8"><title>fk watch</title>
+<meta http-equiv="refresh" content="2">
+<style>body{margin:0;background:#111;color:#ccc;font:13px monospace}</style>
+<script type="importmap">{"imports":{"three":"https://cdn.jsdelivr.net/npm/three@0.160.0/build/three.module.js"}}</script>
+</head><body>
+<div id="info">SHA-PEK 1:20 mockup — sha-pek-model</div>
+<script type="module">
+import * as THREE from 'three';
+const scene = new THREE.Scene();
+scene.background = new THREE.Color(0x181818);
+const camera = new THREE.PerspectiveCamera(45, innerWidth/innerHeight, 0.1, 10000);
+camera.position.set(120, 90, 120);
+const renderer = new THREE.WebGLRenderer();
+renderer.setSize(innerWidth, innerHeight);
+document.body.appendChild(renderer.domElement);
+scene.add(new THREE.AmbientLight(0xffffff, 0.5));
+const dl = new THREE.DirectionalLight(0xffffff, 1.0); dl.position.set(1, 2, 1.5);
+scene.add(dl);
+const loader = new THREE.STLLoader();
+loader.load('sha_pek_model.stl?ts=' + Date.now(), g => {
+  g.computeVertexNormals();
+  const mesh = new THREE.Mesh(g, new THREE.MeshStandardMaterial({color:0x7fb3d5, metalness:.3, roughness:.5}));
+  g.computeBoundingBox();
+  const c = g.boundingBox.getCenter(new THREE.Vector3());
+  mesh.position.sub(c);
+  scene.add(mesh);
+  const s = g.boundingBox.getSize(new THREE.Vector3()).length();
+  camera.position.set(s, s*0.7, s); camera.lookAt(0, 0, 0);
+});
+(function animate(){ requestAnimationFrame(animate);
+  renderer.render(scene, camera); })();
+</script></body></html>

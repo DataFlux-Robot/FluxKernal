@@ -82,3 +82,54 @@
 (compose e5 :in (sha-pek-v1/wing sha-pek-v1/fuselage sha-pek-v1/avionics epu-std)
   :out sha-pek-design :role System :kind light-aircraft
   :rollup ((range_km (>= 1300))))
+
+;; ══ geometric mockup branch: ground every subsystem as 1:20 scale ══
+;; Geometry is an EVALUATION PROJECTION of a node (design v0.1 §1.2): each
+;; mockup part is grounded sketch -> revolve/extrude with evidence, then
+;; assembled with placements + interference checking. Scale model in PLA/
+;; aluminum — the FLIGHT mass budgets stay on the ungrounded design branch;
+;; the mockup carries its own gram-scale hard budgets (fail-closed honesty).
+
+(refine e6 :in (sha-pek-design) :out model-0 :kind mockup
+  :transform (scale-mockup :ratio 0.05))
+
+(refine e7 :in (model-0) :out model-v1 :role System
+  :transform (decompose
+    :into (m-fuselage m-wing m-hstab m-fin m-motor)
+    :flow-down (
+      (m-fuselage :budget ((mass_g ("<=" 500))) :guarantees ((gf1 "fusiform body of revolution" :bounds ((mass_g ("<=" 500)) (length_mm (">=" 290))))))
+      (m-wing :budget ((mass_g ("<=" 300))) :guarantees ((gwm "flat-plate wing, high mounted" :bounds ((mass_g ("<=" 300)) (span_mm (">=" 500))))))
+      (m-hstab :budget ((mass_g ("<=" 30))) :guarantees ((ghs "flat-plate horizontal stabilizer" :bounds ((mass_g ("<=" 30))))))
+      (m-fin :budget ((mass_g ("<=" 10))) :guarantees ((gfn "vertical-plate fin, swept" :bounds ((mass_g ("<=" 10))))))
+      (m-motor :budget ((mass_g ("<=" 10))) :guarantees ((gmo "motor cylinder on the nose" :bounds ((mass_g ("<=" 10)))))))
+    ))
+
+(refine e10 :in (model-v1/m-fuselage) :out m-fuselage-sk :kind sketch
+  :transform (ground-sketch :sketch (sketch (pts (p0 0 0) (p1 9 30) (p2 20 75) (p3 27.5 150) (p4 27 225) (p5 19 280) (p6 11 300) (p7 0 300)) (constraints))))
+(refine e11 :in (m-fuselage-sk) :out m-fuselage-solid :kind fuselage
+  :transform (revolve :material pla))
+
+(refine e12 :in (model-v1/m-wing) :out m-wing-sk :kind sketch
+  :transform (ground-sketch :sketch (sketch (pts (w0 -275 0) (w1 275 0) (w2 275 60) (w3 -275 60)) (constraints))))
+(refine e13 :in (m-wing-sk) :out m-wing-solid :kind wing
+  :transform (extrude :height 6 :material pla))
+
+(refine e14 :in (model-v1/m-hstab) :out m-hstab-sk :kind sketch
+  :transform (ground-sketch :sketch (sketch (pts (h0 -60 0) (h1 60 0) (h2 60 30) (h3 -60 30)) (constraints))))
+(refine e15 :in (m-hstab-sk) :out m-hstab-solid :kind hstab
+  :transform (extrude :height 4 :material pla))
+
+(refine e16 :in (model-v1/m-fin) :out m-fin-sk :kind sketch
+  :transform (ground-sketch :sketch (sketch (pts (f0 0 275) (f1 -30 295) (f2 -30 305) (f3 0 305)) (constraints))))
+(refine e17 :in (m-fin-sk) :out m-fin-solid :kind fin
+  :transform (extrude :height 3 :material pla))
+
+(refine e18 :in (model-v1/m-motor) :out m-motor-sk :kind sketch
+  :transform (ground-sketch :sketch (sketch (pts (q0 0 -12) (q1 6 -12) (q2 6 0) (q3 0 0)) (constraints))))
+(refine e19 :in (m-motor-sk) :out m-motor-solid :kind motor
+  :transform (revolve :material aluminum))
+
+(compose e20 :in (m-fuselage-solid m-wing-solid m-hstab-solid m-fin-solid m-motor-solid)
+  :out sha-pek-model :role System :kind aircraft-mockup
+  :transform (assemble :placements ((0 0 0) (0 140 30) (0 285 20) (-1.5 0 25 0 1 0 90) (0 -8 0)))
+  :rollup ((mass_g (<= 1500))))
