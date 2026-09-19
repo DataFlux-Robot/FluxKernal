@@ -47,6 +47,14 @@ class Store:
     def has_object(self, digest: str) -> bool:
         return self._obj_path(digest).exists()
 
+    def list_objects(self, kind: str | None = None) -> list[str]:
+        """All object digests (optionally filtered by kind). For read-only scans."""
+        prefix = f"fk1_{kind}_" if kind else "fk1_"
+        suffix = ".json"
+        return [p.name[:-len(suffix)].replace("_", ":", 2)
+                for p in self.objects.iterdir()
+                if p.name.startswith(prefix) and p.name.endswith(suffix)]
+
     def put_blob(self, data: bytes) -> str:
         d = blob_digest(data)
         p = self.blobs / d.replace(":", "_")
