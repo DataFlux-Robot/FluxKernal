@@ -131,5 +131,5 @@
 
 (compose e20 :in (m-fuselage-solid m-wing-solid m-hstab-solid m-fin-solid m-motor-solid)
   :out sha-pek-model :role System :kind aircraft-mockup
-  :transform (assemble :placements ((0 0 0) (0 140 30) (0 285 20) (-1.5 0 25 0 1 0 90) (0 -8 0)))
+  :transform (assemble :placements ((0 0 0) (0 140 30) (0 285 20) (-1.5 0 25 0 1 0 90) (0 0 0)))
   :rollup ((mass_g (<= 1500))))

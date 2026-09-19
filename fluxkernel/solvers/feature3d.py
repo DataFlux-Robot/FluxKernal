@@ -80,7 +80,9 @@ def _write_blobs(shape, ctx) -> dict:
             out["step"] = ctx.store.put_blob(open(sp, "rb").read())
         BRepMesh_IncrementalMesh(shape, 0.1, False, 0.1, True)
         tp = os.path.join(td, "o.stl")
-        if StlAPI_Writer().Write(shape, tp):
+        sw = StlAPI_Writer()
+        sw.ASCIIMode = False          # binary STL (OCCT defaults to ASCII)
+        if sw.Write(shape, tp):
             out["stl"] = ctx.store.put_blob(open(tp, "rb").read())
     return out
 
