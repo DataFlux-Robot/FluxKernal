@@ -14,9 +14,13 @@ from .registry import register
 
 @register("cosim")
 def cosim(node_specs, args, ctx):
-    if len(node_specs) < 2:
-        raise ValueError("cosim needs >=2 inputs: BODY node then MIND node")
-    body, mind = node_specs[0], node_specs[1]
+    if len(node_specs) >= 2:
+        body, mind = node_specs[0], node_specs[1]
+    elif len(node_specs) == 1:
+        # co-grounded node: BODY projection + MIND params merged into one
+        body = mind = node_specs[0]
+    else:
+        raise ValueError("cosim needs a BODY node (+ MIND node or merged params)")
     b_ground = body.get("ground") or {}
     m_params = mind.get("params") or {}
 
@@ -29,27 +33,32 @@ def cosim(node_specs, args, ctx):
     fidelity = int(args.get("fidelity", 1))
     dt, T = 0.002, 2.0
     steps = int(T / dt)
-    x, v, worst = 0.0, 0.0, 0.0
+    x, v = 0.0, 0.0
+    peak = 0.0
     for _ in range(steps):
         e = 1.0 - x
-        f = kp * e - kd * v
+        f = kp * e - kd * v + k * x     # spring feedforward -> target reachable
         a = (f - c * v - k * x) / max(m, 1e-6)
         v += a * dt
         x += v * dt
-        worst = max(worst, abs(e))
-    settling_ok = worst < 0.5 and x > 0.9
-    tracking_error = round(worst, 4)
+        peak = max(peak, x)
+    # tracking error = steady-state miss; stability = settled near the target
+    tracking_error = round(abs(1.0 - x), 4)
+    overshoot = round(max(0.0, peak - 1.0), 4)
+    settling_ok = tracking_error < 0.05 and overshoot < 0.5
 
     evidence = [{"solver": "cosim/pd-surrogate", "tier": fidelity,
                  "tracking-error": tracking_error,
                  "tracking_error": tracking_error,
-                 "settled": x > 0.9, "final_x": round(x, 4),
+                 "overshoot": overshoot, "settled": settling_ok,
+                 "final_x": round(x, 4),
                  "plant_mass_kg": round(m, 4), "body_digest_ref": True}]
     obligations = [
         {"id": "plant-model-current", "prop": "plant taken from current BODY digest",
          "holds": True, "checker": "cosim", "detail": ""},
-        {"id": "closed-loop-stable", "prop": "worst tracking error < 0.5",
+        {"id": "closed-loop-stable",
+         "prop": "settles to the target (|1-x|<0.05, overshoot<0.5)",
          "holds": settling_ok, "checker": "cosim",
-         "detail": f"worst|e|={tracking_error}"},
+         "detail": f"|1-x|={tracking_error}, overshoot={overshoot}"},
     ]
     return {}, evidence, obligations

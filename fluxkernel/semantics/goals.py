@@ -122,6 +122,7 @@ def open_goals_under(dag, root_ref: str) -> list[dict]:
         if root_d in anc or g["ref"] == root_d:
             g = dict(g)
             g["ref_name"] = g["ref"]
+            g["spec"] = dag.store.get_object(g["ref"])["payload"].get("spec") or {}
             out.append(g)
     return out
 
@@ -202,6 +203,11 @@ def risks_view(dag) -> dict:
                                         f"({spec.get('plant_ref', '')[:20]}… != current)",
                               "blocks": [d for d in _dependents(dag, node_d)
                                          if d != node_d]})
+    # 7. explicitly declared open joints (fk elicit step 6 — never smoothed)
+    for node_d, payload in dag.iter_nodes():
+        for gap in (payload.get("spec") or {}).get("open_risks") or []:
+            risks.append({"kind": "open-joint", "ref": node_d,
+                          "detail": str(gap), "blocks": []})
     return {"risks": risks}
 
 

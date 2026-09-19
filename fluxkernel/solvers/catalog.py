@@ -33,7 +33,7 @@ def catalog_dirs() -> list[Path]:
     return [d for d in dirs if d.is_dir()] or [Path(__file__).resolve().parents[2] / "catalog"]
 
 
-def load_entries() -> list[dict]:
+def load_entries(archive_root=None) -> list[dict]:
     out = []
     for d in catalog_dirs():
         for f in sorted(glob.glob(str(d / "*.json"))):
@@ -45,15 +45,18 @@ def load_entries() -> list[dict]:
             for e in entries:
                 if isinstance(e, dict) and e.get("name"):
                     out.append(e)
-    # evolve results precipitate here (MAP-elites archive, kind=archive)
-    arch = Path.cwd() / ".fk" / "archive.json"
-    if arch.is_file():
-        try:
-            for e in json.loads(arch.read_text(encoding="utf-8")).get("entries", []):
-                if isinstance(e, dict) and e.get("name"):
-                    out.append(e)
-        except (OSError, json.JSONDecodeError):
-            pass
+    # evolve results precipitate here (MAP-elites archive, kind=archive);
+    # the store root carries the current workspace's archive
+    roots = [Path(archive_root)] if archive_root else [Path.cwd() / ".fk"]
+    for root in roots:
+        arch = Path(root) / "archive.json"
+        if arch.is_file():
+            try:
+                for e in json.loads(arch.read_text(encoding="utf-8")).get("entries", []):
+                    if isinstance(e, dict) and e.get("name"):
+                        out.append(e)
+            except (OSError, json.JSONDecodeError):
+                pass
     # de-dup by name (first dir wins)
     seen = {}
     for e in out:
@@ -97,11 +100,22 @@ def search(query: str) -> list[dict]:
             if all(_entry_admits(e, q, op, v) for q, op, v in preds)]
 
 
+def _search_roots(query: str, archive_root) -> list[dict]:
+    """Search including a specific workspace archive root (from=archive)."""
+    preds = parse_query(query)
+    entries = load_entries(archive_root=archive_root)
+    if not preds:
+        return entries
+    return [e for e in entries
+            if all(_entry_admits(e, q, op, v) for q, op, v in preds)]
+
+
 @register("catalog-match")
 def catalog_match(node_specs, args, ctx):
     query = args.get("match", "") or ""
     src = args.get("from", "catalog")
-    hits = search(query) if src in ("catalog", "archive") else []
+    hits = search(query) if src == "catalog" else \
+        _search_roots(query, getattr(ctx.store, "root", None))
     if not hits:
         raise ValueError(f"no catalog hit for {query!r} (from {src})")
     best = hits[0]

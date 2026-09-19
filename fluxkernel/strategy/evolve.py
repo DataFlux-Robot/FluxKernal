@@ -27,9 +27,10 @@ def run_evolve(eng, a) -> int:
     rng = random.Random(getattr(a, "seed", 7) or 7)
     metrics = [m.strip() for m in (a.select_by or "cost,mass_g").split(",") if m.strip()]
     pop, gens = int(a.pop), int(a.gen)
-    g_d, g_payload = eng.dag.get_node(a.goal)
+    g_d, g_node = eng.dag.get_node(a.goal)
+    g_payload = g_node.payload()
     base = a.goal
-    pb = (g_payload.spec or {}).get("param_bounds") or {}
+    pb = (g_payload.get("spec") or {}).get("param_bounds") or {}
     solver = _solver_for(g_payload)
 
     best_history = []
@@ -68,7 +69,8 @@ def run_evolve(eng, a) -> int:
         # the search space includes topology, not just parameters
         if rng.random() < 0.5 and keep:
             parent = keep[0]["name"]
-            p_d, p_payload = eng.dag.get_node(parent)
+            p_d, p_node = eng.dag.get_node(parent)
+            p_payload = p_node.payload()
             gs = (p_payload.get("spec") or {}).get("guarantees", [])
             bd = (p_payload.get("spec") or {}).get("budget", {}) or {}
             half = {k: (v * 0.5 if isinstance(v, (int, float)) else v)
@@ -97,8 +99,8 @@ def run_evolve(eng, a) -> int:
 
 
 def _write_archive(eng, archive, metrics):
-    """Archive entries land in .fk/archive.json which the catalog plugin also
-    reads — evolution results precipitate into the library (test 16)."""
+    """Archive entries land next to the store's object library; the catalog
+    plugin reads them — evolution results precipitate into the library."""
     entries = []
     for cell, rec in archive.items():
         bounds = {}
@@ -109,17 +111,17 @@ def _write_archive(eng, archive, metrics):
         entries.append({"name": f"archive/{rec['name']}", "kind": "archive",
                         "tier": 0, "bounds": bounds,
                         "ground": {"node": rec["node"], "metrics": rec["metrics"]}})
-    ARCHIVE_PATH.parent.mkdir(parents=True, exist_ok=True)
+    arch_path = Path(eng.store.root) / "archive.json"
     existing = []
-    if ARCHIVE_PATH.exists():
+    if arch_path.is_file():
         try:
-            existing = json.loads(ARCHIVE_PATH.read_text(encoding="utf-8")).get("entries", [])
+            existing = json.loads(arch_path.read_text(encoding="utf-8")).get("entries", [])
         except json.JSONDecodeError:
             existing = []
     by_name = {e["name"]: e for e in existing}
     by_name.update({e["name"]: e for e in entries})
-    ARCHIVE_PATH.write_text(json.dumps({"entries": list(by_name.values())}, indent=1),
-                            encoding="utf-8")
+    arch_path.write_text(json.dumps({"entries": list(by_name.values())}, indent=1),
+                         encoding="utf-8")
 
 
 def _sample(rng, bounds):

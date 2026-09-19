@@ -171,6 +171,13 @@ class Engine:
             evidence = [{"solver": "kernel/param-perturb", "tier": 0,
                          "values": transform.get("args", {}).get("values", {})}]
             plugin_obs = []
+        elif tname == "select-variant":
+            # kernel-native: collapse the variant space to the chosen variant
+            choice = transform.get("args", {}).get("choice")
+            fields = {"spec": {"variant": choice}, "variants": []}
+            evidence = [{"solver": "kernel/select-variant", "tier": 0,
+                         "choice": choice}]
+            plugin_obs = []
         elif tname and tname in registry.available():
             try:
                 fields, evidence, plugin_obs = self._call_plugin(
@@ -195,7 +202,7 @@ class Engine:
                                                     out_params or {}),
                                         fields.get("params") or {}),
                      variants=fields.get("variants", goal_payload.get("variants", [])),
-                     ground=fields.get("ground"),
+                     ground=fields.get("ground") or goal_payload.get("ground"),
                      supersedes=(transform.get("args") or {}).get("supersedes", []))
 
         obligations += self._structural_obligations(goal_payload, child_role)
@@ -370,7 +377,7 @@ class Engine:
         + C1–C4 over the union; every closed ancestor goal verified separately."""
         children = [self._input(r) for r in inputs]
         child_list = [(d, p.get("spec") or {}) for d, p in children]
-        spec = out_spec or _inherit_scaffolding(child_list[0][1] if child_list else {})
+        spec = out_spec or _auto_rollup_contract(child_list)
 
         obligations = []
         # union consistency: same qty, non-contradictory directions/bounds
@@ -793,3 +800,18 @@ def _spec_superset(entry_spec: dict, goal_spec: dict) -> bool:
 
 def g_default_query(goal: str) -> str:
     return goal
+
+
+def _realize_query(goal_view: dict) -> str:
+    """Derive a catalog query from a goal's guarantee bounds
+    ('torque_nm>=8 rpm>=12000' style)."""
+    parts = []
+    spec = goal_view.get("spec") or {}
+    for e in contracts.entry_bounds(spec, "guarantees"):
+        for q, b in (e.get("bounds") or {}).items():
+            p = parse_bound(b)
+            if p["hi"] is not None:
+                parts.append(f"{q}<={p['hi']:g}")
+            elif p["lo"] is not None:
+                parts.append(f"{q}>={p['lo']:g}")
+    return " ".join(parts)

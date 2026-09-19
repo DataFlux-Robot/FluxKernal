@@ -52,6 +52,9 @@ def parse_bound(b) -> dict:
             lo = v if b["op"] in (">=", "=", ">") else None
             hi = v if b["op"] in ("<=", "=", "<") else None
             return {"lo": lo, "hi": hi, "medium": b.get("medium")}
+        if "=" in b:                       # exact-value form {qty: {"=": v}}
+            v = float(b["="])
+            return {"lo": v, "hi": v, "medium": b.get("medium")}
         lo = float(b[">="]) if ">=" in b else None
         hi = float(b["<="]) if "<=" in b else None
         return {"lo": lo, "hi": hi, "medium": b.get("medium")}
@@ -359,7 +362,11 @@ def _medium_spec(dag, medium_ref: str) -> tuple[str, dict]:
 def check_ag_coverage(consumers: list[tuple[str, dict]],
                       providers: list[tuple[str, dict]]) -> list[Obligation]:
     """C1: every consumer Assume covered by some provider Guarantee (or the
-    provider set of the composed parent). Machine-decidable interval check."""
+    composed parent's own promises/environment). Machine-decidable interval
+    check. CONTRADICTION FIRST: a sibling guarantee on the same qty that is
+    disjoint from the assume makes the wiring physically impossible (the
+    rail cannot be both >=12 and <=5) — reported as K1 even when some other
+    provider (e.g. an environment passthrough) would nominally cover it."""
     out = []
     for c_d, c_spec in consumers:
         for entry in entry_bounds(c_spec, "assumes"):
@@ -370,15 +377,21 @@ def check_ag_coverage(consumers: list[tuple[str, dict]],
                         if q in (ge.get("bounds") or {}):
                             cov, contra = covers(ab, ge["bounds"][q])
                             results.append((cov, contra, p_d))
+                if any(k for _, k, _ in results):
+                    out.append(Obligation(
+                        id="ag-coverage",
+                        prop=f"{c_d[:20]}… assume [{entry.get('id')}] {q} "
+                             f"compatible with every provider guarantee",
+                        holds=False, checker="contracts",
+                        detail=f"K1: contradictory contract intervals on {q}"))
+                    continue
                 if any(c for c, _, _ in results):
                     continue   # covered by at least one provider
-                contra = any(k for _, k, _ in results)
                 out.append(Obligation(
                     id="ag-coverage",
                     prop=f"{c_d[:20]}… assume [{entry.get('id')}] {q} covered by a provider guarantee",
                     holds=False, checker="contracts",
-                    detail=("K1: contradictory contract intervals on " + q) if contra
-                    else f"no provider guarantee covers {bound_str(q, ab)}"))
+                    detail=f"no provider guarantee covers {bound_str(q, ab)}"))
     return out
 
 

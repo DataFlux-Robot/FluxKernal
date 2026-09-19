@@ -28,3 +28,4 @@ include = ["fluxkernel*"]
 
 [tool.pytest.ini_options]
 testpaths = ["tests"]
+python_files = ["run_tests.py", "test_*.py"]
