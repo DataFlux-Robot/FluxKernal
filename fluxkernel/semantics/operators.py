@@ -178,6 +178,23 @@ class Engine:
             evidence = [{"solver": "kernel/select-variant", "tier": 0,
                          "choice": choice}]
             plugin_obs = []
+        elif tname == "scale-instance":
+            # E6-3: derive a scaled instance of the WHOLE subtree — gather
+            # every grounded solid under the target (promoted edges only,
+            # digest-sorted for determinism) and hand them all to the
+            # plugin; the edge inputs exact-link every source shape
+            sub_ds, sub_payloads = self._subtree_solids(goal_d)
+            try:
+                fields, evidence, plugin_obs = self._call_plugin(
+                    transform, sub_payloads)
+                plugin_obs = [o if isinstance(o, Obligation) else Obligation.from_dict(o)
+                              for o in plugin_obs]
+                extra_inputs = sub_ds
+            except (ContractError, ValueError, RuntimeError, KeyError) as e:
+                fields, evidence = {}, []
+                plugin_obs = [Obligation(id="solver-ran", prop=str(e), holds=False,
+                                         checker=tname, detail="E1")]
+                extra_inputs = []
         elif tname and tname in registry.available():
             try:
                 fields, evidence, plugin_obs = self._call_plugin(
@@ -211,7 +228,9 @@ class Engine:
                                                        child_spec)
         cert = Certificate(obligations=obligations, evaluator="kernel",
                            evidence=evidence, executor=transform.get("name", "structural"))
-        edge = self._make_edge("refine", [d for d, _ in resolved], transform)
+        edge = self._make_edge(
+            "refine", [d for d, _ in resolved] + locals().get("extra_inputs", []),
+            transform)
         res = self._commit(edge, child, cert, ResourceVector(**(resources or {})),
                            edge_name=None, node_name=out_name)
         res["children"] = []
@@ -667,6 +686,30 @@ class Engine:
             children.append(c_res)
         res["children"] = children
         return res
+
+    def _subtree_solids(self, root: str) -> tuple[list[str], list[dict]]:
+        """Every grounded-solid payload in root's INPUT ancestry (the parts
+        this node was composed from), promoted edges only, digest-sorted
+        for determinism; root excluded."""
+        parents: dict[str, list[str]] = {}
+        for _, e in self.dag.iter_edges():
+            if e.get("state") == "promoted":
+                parents.setdefault(e.get("output", ""), []).extend(e.get("inputs", []))
+        seen, stack, found = set(), [root], []
+        while stack:
+            cur = stack.pop()
+            if cur in seen:
+                continue
+            seen.add(cur)
+            try:
+                payload = self.store.get_object(cur)["payload"]
+            except KeyError:
+                continue
+            if cur != root and (payload.get("ground") or {}).get("construction"):
+                found.append((cur, payload))
+            stack.extend(parents.get(cur, []))
+        found.sort(key=lambda x: x[0])
+        return [d for d, _ in found], [p for _, p in found]
 
     def _input_realized(self, d: str, payload: dict) -> bool:
         """A Part may enter a physical composition only when realized:

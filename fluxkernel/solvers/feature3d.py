@@ -211,6 +211,36 @@ def boolean(node_specs, args, ctx):
     return _finish_solid(shape, ctx, cons, desc=f"boolean/{bop}")
 
 
+@register("scale-instance")
+def scale_instance(node_specs, args, ctx):
+    """Derive a scaled instance of an assembly: every grounded solid among
+    the node_specs is scaled about the origin and fused into ONE solid.
+    The construction records the source constructions BY VALUE (boolean
+    pattern), so the projection replays without store access."""
+    from OCP.gp import gp_Trsf, gp_Pnt
+    from OCP.BRepBuilderAPI import BRepBuilderAPI_Transform
+    from OCP.BRepAlgoAPI import BRepAlgoAPI_Fuse
+    ratio = float(args.get("ratio", 1.0))
+    material = args.get("material", "pla")
+    shapes, cons_inputs = [], []
+    for s in node_specs:
+        g = (s.get("ground") or {})
+        if not g.get("construction"):
+            continue
+        tr = gp_Trsf()
+        tr.SetScale(gp_Pnt(0, 0, 0), ratio)
+        shapes.append(BRepBuilderAPI_Transform(rebuild_brep(s), tr, True).Shape())
+        cons_inputs.append(g["construction"])
+    if not shapes:
+        raise ValueError("scale-instance found no grounded solids in the subtree")
+    shape = shapes[0]
+    for extra in shapes[1:]:
+        shape = BRepAlgoAPI_Fuse(shape, extra).Shape()
+    cons = {"op": "scale-instance", "ratio": ratio, "material": material,
+            "inputs": cons_inputs}
+    return _finish_solid(shape, ctx, cons, desc=f"scale-instance r={ratio}")
+
+
 def rebuild_brep(node_spec: dict):
     """Rebuild a B-rep from a node's recorded construction (projection replay).
 
@@ -248,6 +278,20 @@ def rebuild_brep(node_spec: dict):
         shape = ops[bop](sub[0], sub[1]).Shape()
         for extra in sub[2:]:
             shape = ops[bop](shape, extra).Shape()
+        return shape
+    if kind == "scale-instance":
+        from OCP.gp import gp_Trsf, gp_Pnt
+        from OCP.BRepBuilderAPI import BRepBuilderAPI_Transform
+        from OCP.BRepAlgoAPI import BRepAlgoAPI_Fuse
+        ratio = float(cons.get("ratio", 1.0))
+        tr = gp_Trsf()
+        tr.SetScale(gp_Pnt(0, 0, 0), ratio)
+        sub = [BRepBuilderAPI_Transform(
+                   rebuild_brep({"ground": {"construction": c}}), tr, True).Shape()
+               for c in cons["inputs"]]
+        shape = sub[0]
+        for extra in sub[1:]:
+            shape = BRepAlgoAPI_Fuse(shape, extra).Shape()
         return shape
     raise ValueError(f"cannot replay construction op: {kind}")
 

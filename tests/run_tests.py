@@ -1214,7 +1214,68 @@ def test_34_archetype_templates():
         assert "S1" in str(e)
 
 
+
+# ================================================ D: derived instances ===
+def test_35_scale_instance_derives_from_subtree():
+    """E6-3: scale-instance derives a scaled assembly from the INPUT
+    ancestry — no parallel hand-drawn geometry; the edge exact-links every
+    source solid, and the derived bbox is the subtree bbox times ratio."""
+    eng = fresh()
+    t = terms(eng, "mass")
+    eng.node("ac", "Intent", "ac", contract(eng, t))
+    eng.refine("ac", {"name": "decompose",
+                "args": {"into": ["a", "b"],
+                         "roles": {"a": "Part", "b": "Part"},
+                         "flow_down": {
+                             "a": {"guarantees": [
+                                 {"id": "ga", "stmt": "a",
+                                  "bounds": {"mass_kg": {"<=": 90}}}]},
+                             "b": {"guarantees": [
+                                 {"id": "gb", "stmt": "b",
+                                  "bounds": {"mass_kg": {"<=": 90}}}]}
+                         }}}, out_name="ac-v1", out_role="System")
+    sk = {"pts": {"p0": [0, 0], "p1": [100, 0], "p2": [100, 50], "p3": [0, 50]},
+          "constraints": [["fix", "p0", 0, 0], ["dist", "p0", "p1", 100],
+                          ["dist", "p1", "p2", 50],
+                          ["horiz", "p0", "p1"], ["vert", "p1", "p2"]]}
+    eng.refine("ac-v1/a", {"name": "ground-sketch", "args": {"sketch": sk}},
+               out_name="a-sk")
+    r1 = eng.refine("a-sk", {"name": "extrude",
+                             "args": {"height": 4, "material": "pla",
+                                      "at": [[1000, 2000, 0]]}},
+                    out_name="a-solid")
+    assert r1["state"] == "promoted", r1["reason"]
+    sk2 = {"pts": {"q0": [0, 0], "q1": [60, 0], "q2": [60, 30], "q3": [0, 30]},
+           "constraints": [["fix", "q0", 0, 0], ["dist", "q0", "q1", 60],
+                           ["dist", "q1", "q2", 30],
+                           ["horiz", "q0", "q1"], ["vert", "q1", "q2"]]}
+    eng.refine("ac-v1/b", {"name": "ground-sketch", "args": {"sketch": sk2}},
+               out_name="b-sk")
+    r2 = eng.refine("b-sk", {"name": "extrude",
+                             "args": {"height": 6, "material": "pla",
+                                      "at": [[5000, 7000, 0]]}},
+                    out_name="b-solid")
+    assert r2["state"] == "promoted", r2["reason"]
+    res = eng.compose(["a-solid", "b-solid"], out_name="ac-assy",
+                      out_role="System")
+    assert res["state"] == "promoted", res["reason"]
+    r3 = eng.refine("ac-assy", {"name": "scale-instance",
+                                "args": {"ratio": 0.05, "material": "pla"}},
+                    out_name="ac-mini", out_role="Component")
+    assert r3["state"] == "promoted", r3["reason"]
+    # derived bbox = subtree bbox x ratio (both parts sit in ++ quadrant)
+    g = eng.store.get_object(eng.store.resolve("ac-mini"))["payload"]["ground"]
+    (x0, y0, z0), (x1, y1, z1) = g["bbox"]
+    assert abs(x0 - 1000 * 0.05) < 1e-6 and abs(x1 - 5060 * 0.05) < 1e-4
+    assert abs(y1 - 7030 * 0.05) < 1e-4 and abs(z1 - 6 * 0.05) < 1e-6
+    # the edge exact-links every source solid
+    pe = eng.dag.producing_edge(eng.store.resolve("ac-mini"))
+    for name in ("a-solid", "b-solid"):
+        assert eng.store.resolve(name) in pe.get("inputs", [])
+
+
 # ================================================ discipline ==============
+
 def test_layer_discipline():
     """core/ and store/ import ZERO third-party packages (relative imports
     stay inside the package by construction)."""

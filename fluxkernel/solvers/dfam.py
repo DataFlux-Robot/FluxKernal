@@ -147,7 +147,11 @@ def dfam_print(node_specs, args, ctx):
         comps = len({find(i) for i in range(len(vid))}) if vid else 1
 
     overhang_ok = overhang_pct <= float(args.get("max_overhang_pct", 60.0))
-    connected_ok = comps == 1
+    # a DELIBERATE assembly (fused from many named sources) prints as a
+    # job of several shells — each shell is one printed item; only a
+    # single part must be a single connected shell
+    deliberate_assembly = (g.get("construction") or {}).get("op") in         ("scale-instance", "boolean")
+    connected_ok = comps == 1 or deliberate_assembly
     height = dims[2]
     footprint = max(dims[0], dims[1], 1e-9)
     aspect = height / footprint
