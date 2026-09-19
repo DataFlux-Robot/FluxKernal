@@ -1,9 +1,18 @@
-"""Regenerate preview/index.html showing ALL grounded geometry of sha_pek:
+"""Regenerate preview/index.html: aircraft + fabrication equipment.
 
-  left   — assembled 1:20 mockup (5 parts, fin rotated 90°, as placed)
-  center — the same 5 parts in a manufactured-state exploded row
-           (the fin shows as a flat plate: rotation is an assembly op)
-  right  — the full-scale wing rib web (600x200x3 mm aluminum)
+Scene (all grounded geometry, along the fuselage axis which the viewer maps
+to screen-horizontal):
+
+  left   - ① the 1:20 aircraft mockup (5 parts, fin rotated, as assembled)
+  center - ② the 3-axis mill bed (800x600x60, printed) with ③ the wing-rib
+           workpiece (600x200x3) sitting on it — the machine that machines
+           the rib that goes into the aircraft
+  right  - ④ the reference printer frame (600x600x8) standing on edge —
+           the generation-0 capital that printed the mill's bed
+
+The two-generation loop this DAG actually contains: ④ prints ②, ② machines
+③, ③ assembles into ①.  Spindle/drive/stepper/board are catalog items and
+carry no geometry (honest rendering: only grounded shapes appear).
 
 One fused coarse-mesh STL -> self-contained canvas page (file://-safe).
 """
@@ -29,6 +38,8 @@ Runner(eng).run((REPO / "examples" / "sha_pek.fcad").read_text(encoding="utf-8")
 from OCP.gp import gp_Trsf, gp_Vec, gp_Pnt, gp_Dir, gp_Ax1
 from OCP.BRepBuilderAPI import BRepBuilderAPI_Transform
 from OCP.BRepAlgoAPI import BRepAlgoAPI_Fuse
+from OCP.Bnd import Bnd_Box
+from OCP.BRepBndLib import BRepBndLib
 
 
 def placed(name, translation, rotation=None):
@@ -62,21 +73,12 @@ ASSEMBLY = [
     ("m-motor-solid", ([0, 0, 0], None)),
 ]
 
-# scene layout — all three groups along the fuselage axis (world +Y), which
-# the viewer maps to screen-horizontal; the rib is stood up (rotY 90°) to show
-# its full 600x200 face instead of a 3mm edge
-ASSEMBLY_SHIFT_Y = -900
-EXPLODED = [
-    ("m-motor-solid", [0, 0, 0]),           # in front, as supplied
-    ("m-fuselage-solid", [0, 380, 0]),
-    ("m-wing-solid", [0, 830, 0]),          # flat plate, as made
-    ("m-hstab-solid", [0, 1180, 0]),
-    ("m-fin-solid", [0, 1430, 0]),          # flat, un-rotated
-]
-RIB = ([0, 1950, 660], ([0, 1, 0], 90.0))   # stood up at the row's end
-
-from OCP.Bnd import Bnd_Box
-from OCP.BRepBndLib import BRepBndLib
+ASSEMBLY_SHIFT_Y = -1050
+# mill: bed flat on the ground, rib workpiece lying on its top surface
+BED = [0, 250, 0]
+RIB_ON_BED = [-300, 150, 61.5]
+# printer frame stood on edge to show its full 600x600 face
+PFRAME = ([-4, 950, 600], ([0, 1, 0], 90.0))
 
 
 def group_box(entries):
@@ -96,12 +98,12 @@ def group_box(entries):
 
 asm = [(name, [t[0], t[1] + ASSEMBLY_SHIFT_Y, t[2]], rot)
        for name, (t, rot) in ASSEMBLY]
-exp = [(name, t, None) for name, t in EXPLODED]
-rib = [("rib-solid", RIB[0], RIB[1])]
-GROUPS = [asm, exp, rib]
+mill = [("bed-solid", BED, None), ("rib-solid", RIB_ON_BED, None)]
+printer = [("pframe-solid", PFRAME[0], PFRAME[1])]
+GROUPS = [asm, mill, printer]
 
-# Camera leveling: the preview page's default camera combines yaw+pitch, so a
-# wide flat row drifts diagonally on screen by sin(phi)sin(theta)/cos(phi) per
+# Camera leveling: the preview page's default camera (yaw+pitch) makes a
+# wide flat row drift diagonally on screen by sin(phi)sin(theta)/cos(phi) per
 # mm of world-Y.  Pre-offsetting each group's Z by -k*(Yc - scene_Y_center)
 # lands every group at the same screen height.  THETA/PHI must stay in sync
 # with the camera defaults in preview.py's _PAGE.
@@ -109,28 +111,32 @@ THETA, PHI = 0.55, 0.3
 K_LEVEL = math.sin(PHI) * math.sin(THETA) / math.cos(PHI)
 
 ylo = min(group_box(g0)[0][1] for g0 in GROUPS)
-yhi = max(group_box(g0)[1][1] for g0 in GROUPS)
+yhi = max(group_box(g1)[1][1] for g1 in GROUPS)
 CX = (ylo + yhi) / 2.0
 
-# per-group dz = band-center on the rib's mid-height + camera leveling
-rlo, rhi = group_box(rib)
-Z0 = (rlo[2] + rhi[2]) / 2.0
+# per-group dz = band-center on the printer frame's mid-height + leveling
+plo, phi_ = group_box(printer)
+Z0 = (plo[2] + phi_[2]) / 2.0
 dz_of = {}
-for key, g0 in zip(("asm", "exp", "rib"), GROUPS):
+for key, g0 in zip(("asm", "mill", "printer"), GROUPS):
     lo, hi = group_box(g0)
     yc, zc = (lo[1] + hi[1]) / 2.0, (lo[2] + hi[2]) / 2.0
     dz_of[key] = (Z0 - zc) - K_LEVEL * (yc - CX)
 
 shapes = [placed(name, [t[0], t[1], t[2] + dz_of[key]], rot)
-          for key, g0 in zip(("asm", "exp", "rib"), GROUPS)
+          for key, g0 in zip(("asm", "mill", "printer"), GROUPS)
           for name, t, rot in g0]
 
 # label anchors ride along with their group's dz so they stay glued to it
-# (the rib spans Z0-300 .. Z0+300 around its own dz)
 LABELS = [
-    ("① 整机装配 1:20", [-260, ASSEMBLY_SHIFT_Y + 150, Z0 + dz_of["asm"] + 120], 34),
-    ("② 分解零件 · 制造态", [0, 830, Z0 + dz_of["exp"] + 130], 34),
-    ("③ 翼肋 600×200×3 · 全尺寸", [40, 2010, Z0 + dz_of["rib"] + 310], 48),
+    ("① 飞行器样机 1:20",
+     [-260, ASSEMBLY_SHIFT_Y + 150, Z0 + dz_of["asm"] + 120], 34),
+    ("② 3轴铣床身 800×600×60 · 打印制造",
+     [-250, 40, Z0 + dz_of["mill"] + 50], 34),
+    ("③ 翼肋 600×200×3 · 床上工件",
+     [220, 460, Z0 + dz_of["mill"] + 60], 30),
+    ("④ 打印机机架 600×600·自举",
+     [0, 1230, Z0 + dz_of["printer"] + 320], 46),
 ]
 
 scene = fuse(shapes)
@@ -150,8 +156,9 @@ out.mkdir(exist_ok=True)
 (out / "sha_pek_all.stl").write_bytes(stl_bytes)
 (out / "index.html").write_text(
     render_page(stl_bytes,
-                "SHA-PEK — 全部已接地几何 (all grounded geometry)",
-                "① 装配体 ② 五零件分解列 ③ 全尺寸翼肋 · 同一场景按机身轴排布",
+                "SHA-PEK — 飞行器与加工设备 (aircraft + fabrication equipment)",
+                "双代闭环 ④→②→③→①：打印机造床身 · 床身铣翼肋 · 翼肋装机 · "
+                "主轴/电机/控制板为目录件（无几何）",
                 labels=LABELS),
     encoding="utf-8")
 n_tri = (len(stl_bytes) - 84) // 50
