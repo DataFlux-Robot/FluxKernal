@@ -1,0 +1,30 @@
+[build-system]
+requires = ["setuptools>=68"]
+build-backend = "setuptools.build_meta"
+
+[project]
+name = "fluxkernel"
+version = "0.1.0"
+description = "FluxKernel: content-addressed, certificate-carrying refinement-graph kernel for LLM-driven CAD + MBSE (fk CLI + .fcad DSL)"
+readme = "README.md"
+requires-python = ">=3.12"
+license = { text = "MIT" }
+# NOTE layer discipline: core/ and store/ import NOTHING third-party.
+# numpy/scipy/OCP are used only inside solvers/ (L2). Kept as optional extras
+# so the pure kernel (L0-L4 minus geometry) installs with zero dependencies.
+dependencies = []
+
+[project.optional-dependencies]
+solvers = ["numpy", "scipy"]
+geom = ["cadquery-ocp>=8.0"]
+all = ["numpy", "scipy", "cadquery-ocp>=8.0"]
+dev = ["pytest"]
+
+[project.scripts]
+fk = "fluxkernel.interface.cli:main"
+
+[tool.setuptools.packages.find]
+include = ["fluxkernel*"]
+
+[tool.pytest.ini_options]
+testpaths = ["tests"]
