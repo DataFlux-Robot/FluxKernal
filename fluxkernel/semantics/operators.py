@@ -312,6 +312,19 @@ class Engine:
         for d, p in children:
             obligations += self._structural_obligations({"role": out_role},
                                                         p.get("role", "Component"))
+        # E6-2b (review v03): a Part composed into a physical assembly
+        # must be REALIZED — grounded geometry or a terminal production
+        # route.  Composing contract-only paper Parts silently was the
+        # wing-assembly bug: the assembly branch and the grounding branch
+        # were two disconnected lines.
+        for d, p in children:
+            if p.get("role") == "Part" and not self._input_realized(d, p):
+                obligations.append(Obligation(
+                    id="input-realized",
+                    prop=f"Part input …{d[24:40]} realized (grounded or terminal)",
+                    holds=False, checker="kernel",
+                    detail="U2: composing an unrealized Part — ground it or "
+                           "close it via catalog/print first"))
         media = self._referenced_media(child_list)
         for m_d, _ in media:
             led = contracts.ledger(self.dag, m_d)
@@ -651,6 +664,27 @@ class Engine:
             children.append(c_res)
         res["children"] = children
         return res
+
+    def _input_realized(self, d: str, payload: dict) -> bool:
+        """A Part may enter a physical composition only when realized:
+        grounded geometry, produced by a terminal closure (exact/procure/
+        print), or assigned to a production route (manufacture family)."""
+        g = payload.get("ground") or {}
+        if g.get("construction"):
+            return True
+        pe = self.dag.producing_edge(d)
+        if pe is not None and (
+                pe.get("op") in ("exact", "procure")
+                or (pe.get("transform") or {}).get("name") == "print"):
+            return True
+        for _, e in self.dag.iter_edges():
+            if d not in (e.get("inputs") or []) or e.get("state") != "promoted":
+                continue
+            if e.get("op") in ("exact", "procure", "manufacture"):
+                return True
+            if (e.get("transform") or {}).get("name") == "print":
+                return True
+        return False
 
     # ---------------------------------------------------------- print (E1) --
     def print_part(self, part: str, printer: str, args: dict | None = None,

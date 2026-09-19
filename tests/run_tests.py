@@ -1146,6 +1146,34 @@ def test_32_placement_and_replay():
     assert r4["state"] == "rejected"
 
 
+# ================================================ S2: input realization ===
+def test_33_compose_requires_realized_part():
+    """E6-2b (review v03): composing a contract-only, ungrounded Part is a
+    correctness error -> hard obligation input-realized -> C0 rejection.
+    Components may still compose at contract level."""
+    eng = fresh()
+    t = terms(eng, "mass")
+    eng.node("wing", "Component", "wing", contract(eng, t))
+    eng.refine("wing", {"name": "decompose",
+                "args": {"into": ["skin", "spar"],
+                         "flow_down": {
+                             "skin": {"guarantees": [
+                                 {"id": "gs", "stmt": "skin",
+                                  "bounds": {"mass_kg": {"<=": 90}}}]},
+                             "spar": {"guarantees": [
+                                 {"id": "gp", "stmt": "spar",
+                                  "bounds": {"mass_kg": {"<=": 80}}}]}
+                         }}}, out_name="wing-v1", out_role="Component")
+    res = eng.compose(["wing-v1/skin", "wing-v1/spar"], out_name="wing-assy",
+                      out_role="Component")
+    assert res["state"] == "rejected", res["reason"]
+    assert "input-realized" in res["reason"]
+    # grounded Part passes the gate
+    _rib_chain(eng, width=10, name_prefix="real")
+    res2 = eng.compose(["real-solid"], out_name="ok-assy", out_role="Component")
+    assert res2["state"] == "promoted", res2["reason"]
+
+
 # ================================================ discipline ==============
 def test_layer_discipline():
     """core/ and store/ import ZERO third-party packages (relative imports

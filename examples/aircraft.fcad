@@ -60,6 +60,17 @@
   :spec (contract (param-bounds (skin-t (>= 0.8) (<= 4.0))))
   :params (skin-t (param skin-t)))
 
+;; grounded geometry for the skin panel and the tank (a composed Part
+;; must be realized — ground them before the wing assembly)
+(refine e6c :in (skin-detailed) :out skin-sk2 :kind sketch
+  :transform (ground-sketch :sketch (sketch (pts (s0 0 0) (s1 2400 0) (s2 2400 600) (s3 0 600)) (constraints))))
+(refine e6d :in (skin-sk2) :out skin-solid2 :kind skin-panel
+  :transform (extrude :height 2 :material aluminum))
+(refine e7t :in (wing-v3/tank) :out tank-sk :kind sketch
+  :transform (ground-sketch :sketch (sketch (pts (t0 0 0) (t1 800 0) (t2 800 400) (t3 0 400)) (constraints))))
+(refine e7u :in (tank-sk) :out tank-solid :kind tank
+  :transform (extrude :height 3 :material aluminum))
+
 ;; ── step 5: rib geometry — sketch (bounded holes) -> extrude ──
 (refine e7 :in (wing-v3/rib) :out rib-sk :kind sketch
   :transform (ground-sketch :sketch (sketch (pts (p0 (param hw) 0) (p1 (param hw) (param hh)) (p2 0 (param hh)) (p3 0 0)) (constraints (fix p3 0 0) (dist p0 p1 20) (dist p1 p2 10) (vert p0 p1) (horiz p1 p2))))
@@ -89,5 +100,5 @@
 ;; ── the V right leg: compose back up, clearing flow-down obligations ──
 (compose e15 :in (mill-v1/bed spindle-motor-std cnc-drive-bought) :out mill-5axis :role Resource :kind 5axis-mill)
 (compose e16 :in (mill-5axis rib-proc) :out rib-line-v2 :role Line :kind rib-line)
-(compose e17 :in (skin-detailed wing-v3/tank rib-solid) :out wing-assy :role Component :kind wing-assembly)
+(compose e17 :in (skin-solid2 tank-solid rib-solid) :out wing-assy :role Component :kind wing-assembly)
 (compose e18 :in (wing-assy ac-v1/engine ac-v1/nose ac-v1/tail ac-v1/fuselage) :out ac-final :role System :kind aircraft :rollup ((range_km (">=" 2600))))

@@ -102,12 +102,6 @@
   :transform (extrude :height 3 :material aluminum))
 
 ;; compose the wing subtree back (V right leg, one level down)
-(compose e4d :in (wing-v1/skin wing-v1/spar rib-solid)
-  :out wing-assy :role Component :kind wing-assembly)
-(compose e5 :in (wing-assy sha-pek-v1/fuselage sha-pek-v1/avionics epu-std)
-  :out sha-pek-design :role System :kind light-aircraft
-  :rollup ((range_km (>= 1300))))
-
 ;; ══ production branch: the machined rib demands a fabrication cell ══
 ;; Part -> process family -> line -> machine Resource -> machine as System
 ;; (PRSI recursion) -> catalog closures -> fab-mill compose. The DC-bus
@@ -134,6 +128,59 @@
   :match "power_w>=200 power_w<=600" :out fab-drive-bought)
 (compose e5g :in (fab-v1/bed fab-spindle-std fab-drive-bought)
   :out fab-mill :role Resource :kind 3axis-mill)
+;; E4: evidence density + dual termination set + printer bootstrap
+;; (evolution plan v2.0: every layer carries its fidelity of evidence;
+;;  structural parts converge on the shared printer capital; the printer
+;;  develops itself one full round — o_i = t_(i+1) at the termination layer)
+;; ══════════════════════════════════════════════════════════════════════
+
+;; ── E4.0 the shared print capital (PRSI convergence point) ──
+(term printer "unbounded-build-volume FDM capital printer")
+(term frame "stiff gantry frame of a machine tool")
+(node reference-printer :role Resource :kind unbounded-fdm-printer
+  :spec (contract
+    (goals (rp1 "print every structural part of this product tree"
+                :falsifiable t
+                :measure "dfam-print hard gate per printed part"
+                :terms (printer frame)))
+    (semantics printer frame)
+    (assumes (rp-a1 "build volume effectively unbounded (demand-layer promise, not kernel-verifiable)"
+                    :bounds ((dim_mm (>= 0)))))
+    (guarantees (rp-g1 "prints grounded parts that pass dfam-print"
+                       :bounds ((mass_g (<= 100000)))))
+    (budget (mass_kg (<= 60)))
+    (forbidden (rp-f1 "unattended overnight operation" :check test))
+    (not-responsible "filament supply logistics")
+    (time-scale fabrication)))
+
+;; ── E4.1 per-layer simulator evidence (E2 matrix) ──
+(eval e30 :target sha-pek-v1/wing :with aero-2d :fidelity 1
+  :ar 14 :s_m2 3.5 :mass_kg 1200 :cruise_ms 95
+  :expect ((ld_ratio (>= 14))))
+(eval e31 :target epu-std :with prop-map :fidelity 1
+  :torque_nm 50 :rpm 6000 :prop_d_m 0.6)
+(eval e32 :target rib-solid :with beam-fe :fidelity 1 :load_n 800)
+
+;; ── E4.2 wing structure closure: skin + spar grounded, then printed ──
+(refine e34 :in (wing-v1/skin) :out skin-sk :kind sketch
+  :transform (ground-sketch :sketch (sketch
+    (pts (k0 0 0) (k1 3000 0) (k2 3000 1500) (k3 0 1500)) (constraints))))
+(refine e35 :in (skin-sk) :out skin-solid :kind skin
+  :transform (extrude :height 2 :material aluminum))
+(print e36 :in (skin-solid) :printer reference-printer :out skin-printed)
+(refine e37 :in (wing-v1/spar) :out spar-sk :kind sketch
+  :transform (ground-sketch :sketch (sketch
+    (pts (s0 0 0) (s1 3000 0) (s2 3000 200) (s3 0 200)) (constraints))))
+(refine e38 :in (spar-sk) :out spar-solid :kind spar
+  :transform (extrude :height 30 :material aluminum))
+(print e39 :in (spar-solid) :printer reference-printer :out spar-printed)
+
+(compose e4d :in (skin-solid spar-solid rib-solid)
+  :out wing-assy :role Component :kind wing-assembly)
+(compose e5 :in (wing-assy sha-pek-v1/fuselage sha-pek-v1/avionics epu-std)
+  :out sha-pek-design :role System :kind light-aircraft
+  :rollup ((range_km (>= 1300))))
+
 ;; ══ geometric mockup branch: ground every subsystem as 1:20 scale ══
 ;; Geometry is an EVALUATION PROJECTION of a node (design v0.1 §1.2): each
 ;; mockup part is grounded sketch -> revolve/extrude with evidence, then
@@ -186,53 +233,6 @@
   :rollup ((mass_g (<= 1500))))
 
 ;; ══════════════════════════════════════════════════════════════════════
-;; E4: evidence density + dual termination set + printer bootstrap
-;; (evolution plan v2.0: every layer carries its fidelity of evidence;
-;;  structural parts converge on the shared printer capital; the printer
-;;  develops itself one full round — o_i = t_(i+1) at the termination layer)
-;; ══════════════════════════════════════════════════════════════════════
-
-;; ── E4.0 the shared print capital (PRSI convergence point) ──
-(term printer "unbounded-build-volume FDM capital printer")
-(term frame "stiff gantry frame of a machine tool")
-(node reference-printer :role Resource :kind unbounded-fdm-printer
-  :spec (contract
-    (goals (rp1 "print every structural part of this product tree"
-                :falsifiable t
-                :measure "dfam-print hard gate per printed part"
-                :terms (printer frame)))
-    (semantics printer frame)
-    (assumes (rp-a1 "build volume effectively unbounded (demand-layer promise, not kernel-verifiable)"
-                    :bounds ((dim_mm (>= 0)))))
-    (guarantees (rp-g1 "prints grounded parts that pass dfam-print"
-                       :bounds ((mass_g (<= 100000)))))
-    (budget (mass_kg (<= 60)))
-    (forbidden (rp-f1 "unattended overnight operation" :check test))
-    (not-responsible "filament supply logistics")
-    (time-scale fabrication)))
-
-;; ── E4.1 per-layer simulator evidence (E2 matrix) ──
-(eval e30 :target sha-pek-v1/wing :with aero-2d :fidelity 1
-  :ar 14 :s_m2 3.5 :mass_kg 1200 :cruise_ms 95
-  :expect ((ld_ratio (>= 14))))
-(eval e31 :target epu-std :with prop-map :fidelity 1
-  :torque_nm 50 :rpm 6000 :prop_d_m 0.6)
-(eval e32 :target rib-solid :with beam-fe :fidelity 1 :load_n 800)
-
-;; ── E4.2 wing structure closure: skin + spar grounded, then printed ──
-(refine e34 :in (wing-v1/skin) :out skin-sk :kind sketch
-  :transform (ground-sketch :sketch (sketch
-    (pts (k0 0 0) (k1 3000 0) (k2 3000 1500) (k3 0 1500)) (constraints))))
-(refine e35 :in (skin-sk) :out skin-solid :kind skin
-  :transform (extrude :height 2 :material aluminum))
-(print e36 :in (skin-solid) :printer reference-printer :out skin-printed)
-(refine e37 :in (wing-v1/spar) :out spar-sk :kind sketch
-  :transform (ground-sketch :sketch (sketch
-    (pts (s0 0 0) (s1 3000 0) (s2 3000 200) (s3 0 200)) (constraints))))
-(refine e38 :in (spar-sk) :out spar-solid :kind spar
-  :transform (extrude :height 30 :material aluminum))
-(print e39 :in (spar-solid) :printer reference-printer :out spar-printed)
-
 ;; ── E4.3 fuselage developed one level: cabin shell + seats; avionics
 ;;    closes straight from the catalog ("may split or not" — a catalog hit
 ;;    is a legal stopping point) ──
