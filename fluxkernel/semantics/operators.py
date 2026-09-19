@@ -276,9 +276,11 @@ class Engine:
                             "guarantees": [], "budget": {}, "effluent": {},
                             "forbidden": [], "not_responsible": [],
                             "time_scale": None}, base_spec)
-        # inherit scaffolding from first child when caller gave a bare spec
-        if children and not base_spec.get("semantics"):
-            spec = _deep_merge(_inherit_scaffolding(children[0][1].get("spec") or {}), spec)
+        # auto roll-up contract: a composed system inherits the union of its
+        # children's contracts (scaffolding verbatim; goals/guarantees union;
+        # internal assumes drop out; budgets/effluents sum per qty+medium)
+        if not out_spec and child_list:
+            spec = _auto_rollup_contract(child_list)
 
         obligations = []
         for d, p in children:
@@ -608,6 +610,47 @@ def _inherit_scaffolding(parent_spec: dict) -> dict:
     return {k: copy.deepcopy(p[k]) for k in
             ("semantics", "time_scale", "forbidden", "not_responsible")
             if p.get(k)}
+
+
+def _auto_rollup_contract(child_list: list[tuple[str, dict]]) -> dict:
+    """Derived contract of a composed system (used when the caller declares
+    none): union of goals/guarantees/forbidden; assumes that are NOT covered
+    by a sibling guarantee stay as the system's environmental assumes;
+    budgets/effluents sum per quantity (keeping medium refs)."""
+    spec = _inherit_scaffolding(child_list[0][1] if child_list else {})
+    goals, guarantees, assumes = [], [], []
+    for _, s in child_list:
+        goals += copy.deepcopy(s.get("goals") or [])
+        guarantees += copy.deepcopy(s.get("guarantees") or [])
+        assumes += copy.deepcopy(s.get("assumes") or [])
+    kept_assumes = []
+    for entry in assumes:
+        covered = False
+        for q, b in (entry.get("bounds") or {}).items():
+            for _, ps in child_list:
+                for ge in contracts.entry_bounds(ps, "guarantees"):
+                    if q in (ge.get("bounds") or {}):
+                        cov, _ = contracts.covers(b, ge["bounds"][q])
+                        covered = covered or cov
+        if not covered:
+            kept_assumes.append(entry)
+    spec["goals"] = goals
+    spec["guarantees"] = guarantees
+    spec["assumes"] = kept_assumes or assumes[:1]
+    for slot in ("budget", "effluent"):
+        sums: dict = {}
+        for _, s in child_list:
+            for q, b in contracts.qty_entries(s, slot).items():
+                p = parse_bound(b)
+                v = p["hi"] if p["hi"] is not None else p["lo"]
+                if v is None:
+                    continue
+                key = (q, p["medium"])
+                prev = sums.get(key)
+                sums[key] = prev + v if prev is not None else v
+        spec[slot] = {q: ({"op": "<=", "value": v, "medium": m} if m else ["<=", v])
+                      for (q, m), v in sums.items()}
+    return spec
 
 
 def _inherit_contract(parent_spec: dict, flow: dict, explicit: dict) -> dict:

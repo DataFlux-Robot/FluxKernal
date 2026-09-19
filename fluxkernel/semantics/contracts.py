@@ -49,7 +49,7 @@ def parse_bound(b) -> dict:
             if b["op"] not in BOUND_OPS:
                 raise ContractError("T2", f"bad bound op {b['op']!r}")
             v = float(b["value"])
-            lo = v if b["op"] in (">=", "=") else None
+            lo = v if b["op"] in (">=", "=", ">") else None
             hi = v if b["op"] in ("<=", "=", "<") else None
             return {"lo": lo, "hi": hi, "medium": b.get("medium")}
         lo = float(b[">="]) if ">=" in b else None
@@ -57,7 +57,7 @@ def parse_bound(b) -> dict:
         return {"lo": lo, "hi": hi, "medium": b.get("medium")}
     if isinstance(b, (list, tuple)) and len(b) == 2 and b[0] in BOUND_OPS:
         v = float(b[1])
-        lo = v if b[0] in (">=", "=") else None
+        lo = v if b[0] in (">=", "=", ">") else None
         hi = v if b[0] in ("<=", "=", "<") else None
         return {"lo": lo, "hi": hi, "medium": None}
     raise ContractError("T2", f"unparseable bound: {b!r}")
@@ -263,13 +263,18 @@ def ledger(dag, medium_ref: str) -> dict:
     """Derived medium account (v1.2 §19): sum of all REFERENCING nodes'
     budget/effluent declarations against capacity × (1 − margin).
 
-    Only physically real nodes count: state promoted or genesis.
+    Only physically real nodes count (state promoted/genesis). Roll-up
+    subsumption: when a promoted compose/integrate output declares its own
+    budget on the same (qty, medium), its input children's declarations are
+    already contained in the parent's — counting both would double-book.
     """
     m_d, m_spec = _medium_spec(dag, medium_ref)
     cap = {q: parse_bound(b) for q, b in (m_spec.get("capacity") or {}).items()}
     margin = float(m_spec.get("margin", 0.2))
     rows = {"budget": [], "effluent": []}
     sums = {"budget": {}, "effluent": {}}
+
+    subsumed = _subsumed_allocations(dag)
 
     for node_d, payload in dag.iter_nodes():
         state = dag.node_state(node_d)
@@ -285,8 +290,10 @@ def ledger(dag, medium_ref: str) -> dict:
                 if v is None:
                     continue
                 rows[slot].append({"node": node_d, "kind": payload.get("kind"),
-                                   "qty": q, "value": v})
-                sums[slot][q] = sums[slot].get(q, 0.0) + v
+                                   "qty": q, "value": v,
+                                   "subsumed": (node_d, slot, q) in subsumed})
+                if (node_d, slot, q) not in subsumed:
+                    sums[slot][q] = sums[slot].get(q, 0.0) + v
 
     obligations = []
     ok = {}
@@ -295,17 +302,38 @@ def ledger(dag, medium_ref: str) -> dict:
         if cap_v is None:
             continue
         allowed = cap_v * (1.0 - margin)
-        used = sums["budget"].get(q, 0.0)
-        ok[q] = used <= allowed + 1e-12
+        used_b = sums["budget"].get(q, 0.0)
+        used_e = sums["effluent"].get(q, 0.0)
+        ok[q] = (used_b <= allowed + 1e-12) and (used_e <= allowed + 1e-12)
         obligations.append(Obligation(
             id="medium-capacity",
-            prop=f"Σbudget[{q}]={used:g} ≤ capacity×(1−margin)={allowed:g} on {m_d[:24]}…",
+            prop=(f"Σbudget[{q}]={used_b:g}, Σeffluent[{q}]={used_e:g} "
+                  f"≤ capacity×(1−margin)={allowed:g} on {m_d[:24]}…"),
             holds=ok[q], checker="contracts",
             detail="" if ok[q] else "G2: medium over capacity"))
     return {"medium": m_d, "capacity": {q: (cp['hi'] if cp['hi'] is not None else cp['lo'])
                                         for q, cp in cap.items()},
             "margin": margin, "rows": rows, "sums": sums, "ok": ok,
             "obligations": obligations}
+
+
+def _subsumed_allocations(dag) -> set[tuple[str, str, str]]:
+    """(node_digest, slot, qty) triples already rolled up into a promoted
+    compose/integrate parent that declares the same slot+qty."""
+    subsumed: set[tuple[str, str, str]] = set()
+    for edge_d, e in dag.iter_edges():
+        if e.get("op") not in ("compose", "integrate") or e.get("state") != "promoted":
+            continue
+        try:
+            parent = dag.store.get_object(e.get("output", ""))["payload"]
+        except KeyError:
+            continue
+        p_spec = parent.get("spec") or {}
+        for slot in ("budget", "effluent"):
+            for q in qty_entries(p_spec, slot):
+                for i in e.get("inputs", []):
+                    subsumed.add((i, slot, q))
+    return subsumed
 
 
 def _medium_spec(dag, medium_ref: str) -> tuple[str, dict]:
@@ -348,8 +376,14 @@ def check_ag_coverage(consumers: list[tuple[str, dict]],
 
 def check_effluent_absorption(children: list[tuple[str, dict]],
                               media: list[tuple[str, dict]]) -> list[Obligation]:
-    """C3: downstream tolerance (sibling assumes / medium capacity) must absorb
-    upstream Effluent WORST values (never typical values)."""
+    """C3: downstream tolerance must absorb upstream Effluent WORST values
+    (never typical values). Medium-mediated effluent is absorbed by the
+    medium's capacity (checked by the ledger, C2) — only un-mediated effluent
+    demands an explicit sibling/downstream tolerance."""
+    media_cap_qtys = set()
+    for _, m_payload in media:
+        for q in ((m_payload.get("spec") or {}).get("capacity") or {}):
+            media_cap_qtys.add(q)
     out = []
     for u_d, u_spec in children:
         for q, eb in qty_entries(u_spec, "effluent").items():
@@ -357,6 +391,8 @@ def check_effluent_absorption(children: list[tuple[str, dict]],
             worst = p["hi"] if p["hi"] is not None else p["lo"]
             if worst is None:
                 continue
+            if p["medium"] and q in media_cap_qtys:
+                continue   # the medium's ledger owns this absorption
             tol = None
             for c_d, c_spec in children:
                 if c_d == u_d:
@@ -367,16 +403,11 @@ def check_effluent_absorption(children: list[tuple[str, dict]],
                             ap = parse_bound(ab)
                             if ap["lo"] is not None:
                                 tol = max(tol or 0.0, ap["lo"])
-            for m_d, m_spec in media:
-                for q2, ab in qty_entries(m_spec.get("spec") or {}, "assumes").items():
-                    if q2 == q:
-                        ap = parse_bound(ab)
-                        if ap["lo"] is not None:
-                            tol = max(tol or 0.0, ap["lo"])
             ok = tol is not None and tol >= worst - 1e-12
             out.append(Obligation(
                 id="effluent-absorption",
-                prop=f"effluent {q} worst={worst:g} absorbed (tolerance {tol if tol is not None else '∞'})",
+                prop=f"effluent {q} worst={worst:g} absorbed "
+                     f"(tolerance {tol if tol is not None else 'none declared'})",
                 holds=ok, checker="contracts",
                 detail="" if ok else "G3: downstream cannot swallow worst-case effluent"))
     return out

@@ -126,33 +126,34 @@ class DAG:
                               f"edge ({pe.get('state')})")
                     break
 
-        # -- lint gates: contract-incomplete nodes never rise above proposed --
+        # -- lint gates: contract-incomplete nodes never rise above proposed
+        # (v1.2 §18). Precedence: a C0 rejection always wins over the lint cap. --
         gate_failures: list[str] = []
+        hard_un: list[str] = []
         if reject is None:
-            for gate in self._gates:
-                gate_failures.extend(gate(node.payload()))
-
-        if reject is None and not gate_failures:
-            edge.state = "executed"
-            if cert.evidence:
-                edge.state = "evidenced"
             hard_un = [o.id for o in cert.obligations
                        if getattr(o, "oclass", "hard") == "hard" and o.holds is not True]
-            if not hard_un:
-                edge.state = "verified"
-                if cert.evidence:
-                    edge.state = "promoted"
-            else:
+            if hard_un:
                 reject = "C0: undischarged obligations: " + ",".join(hard_un)
-        elif gate_failures and reject is None:
-            # Node exists (with its certificate recorded) but is unsettled risk:
-            # never above proposed, surfaced by `fk risks`.
-            edge.state = "proposed"
-            edge.reason = "L*: " + ",".join(sorted(set(gate_failures)))
+            else:
+                for gate in self._gates:
+                    gate_failures.extend(gate(node.payload()))
 
         if reject is not None:
             edge.state = "rejected"
             edge.reason = reject
+        elif gate_failures:
+            # Node exists (certificate recorded) but is unsettled risk:
+            # never above proposed, surfaced by `fk risks`.
+            edge.state = "proposed"
+            edge.reason = "L*: " + ",".join(sorted(set(gate_failures)))
+        else:
+            edge.state = "executed"
+            if cert.evidence:
+                edge.state = "evidenced"
+            edge.state = "verified"
+            if cert.evidence:
+                edge.state = "promoted"
 
         edge.certificate = cert.to_dict()
         edge.resources = resources.to_dict()
