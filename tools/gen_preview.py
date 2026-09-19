@@ -1,20 +1,18 @@
-"""Regenerate preview/index.html: aircraft + fabrication equipment.
+"""Regenerate preview/index.html: the REAL decomposition, at real scale.
 
-Scene (all grounded geometry, along the fuselage axis which the viewer maps
-to screen-horizontal):
+Answers review v03's two observations directly — the wing you see IS the
+decomposed wingbox (two skins, two spars, six ribs, all at their skeleton
+frames), the machine IS a gantry mill (bed, columns, crossbeam, Z-head,
+with rib-1 standing on the bed as the workpiece).  Plus the printer frame
+and the 1:20 mockup DERIVED from the real subtree by scale-instance.
 
-  left   - ① the 1:20 aircraft mockup (5 parts, fin rotated, as assembled)
-  center - ② the 3-axis mill bed (800x600x60, printed) with ③ the wing-rib
-           workpiece (600x200x3) sitting on it — the machine that machines
-           the rib that goes into the aircraft
-  right  - ④ the reference printer frame (600x600x8) standing on edge —
-           the generation-0 capital that printed the mill's bed
+  group 1 — wingbox 3000x1500x200 (world coords, as grounded)
+  group 2 — gantry mill (shift +Y): bed/columns/crossbeam/z-head + rib-1
+  group 3 — reference printer frame, stood on edge
+  group 4 — derived 1:20 mockup (what the DAG declares, scaled)
 
-The two-generation loop this DAG actually contains: ④ prints ②, ② machines
-③, ③ assembles into ①.  Spindle/drive/stepper/board are catalog items and
-carry no geometry (honest rendering: only grounded shapes appear).
-
-One fused coarse-mesh STL -> self-contained canvas page (file://-safe).
+Catalog items (spindle/rails/screws/servos/CNC) carry no geometry —
+honest rendering: only grounded shapes appear.
 """
 import math
 import os
@@ -64,27 +62,35 @@ def fuse(shapes):
     return out
 
 
-# assembly placements exactly as the assemble edge declared them
-ASSEMBLY = [
-    ("m-fuselage-solid", ([0, 0, 0], None)),
-    ("m-wing-solid", ([0, 140, 30], None)),
-    ("m-hstab-solid", ([0, 285, 20], None)),
-    ("m-fin-solid", ([-1.5, 0, 25], ([0, 1, 0], 90.0))),
-    ("m-motor-solid", ([0, 0, 0], None)),
-]
+# ── group 1: the wingbox, exactly as its children were grounded ──
+WING = ["sku-solid", "skl-solid", "spf-solid", "spr-solid",
+        "rib-1-solid", "rib-2-solid", "rib-3-solid",
+        "rib-4-solid", "rib-5-solid", "rib-6-solid"]
+wing = [(n, [0, 0, 0], None) for n in WING]
 
-ASSEMBLY_SHIFT_Y = -1050
-# mill: bed flat on the ground, rib workpiece lying on its top surface
-BED = [0, 250, 0]
-RIB_ON_BED = [-300, 150, 61.5]
-# printer frame stood on edge to show its full 600x600 face
-PFRAME = ([-4, 950, 600], ([0, 1, 0], 90.0))
+# ── group 2: the gantry mill; rib-1 stands on the bed as the workpiece ──
+MILL_Y = 3200
+mill = [(n, [0, MILL_Y, 0], None) for n in
+        ("bed-solid", "colL-solid", "colR-solid", "beam-solid", "head-solid",
+         "xcar-solid", "ycar-solid", "zcar-solid")]
+# rib-1: translate its world frame onto the bed top (z 6 -> 60+MILL offset,
+# x/y centred on the bed) — standing web, like a part in a fixture
+rib = [("rib-1-solid", [-750, MILL_Y - 750, 54], None)]
+
+# ── group 3: the printer frame stood on edge ──
+PRT_Y = 6300
+printer = [("pframe-solid", [-4, PRT_Y, 600], ([0, 1, 0], 90.0))]
+
+# ── group 4: the DERIVED 1:20 mockup ──
+MK_Y = 7900
+mockup = [("mockup-solid", [0, MK_Y, 0], None)]
+
+GROUPS = [("wing", wing), ("mill", mill + rib),
+          ("printer", printer), ("mockup", mockup)]
 
 
 def group_box(entries):
-    """Combined bbox of a group of (name, translation, rotation) placements."""
-    lo = [1e30] * 3
-    hi = [-1e30] * 3
+    lo, hi = [1e30] * 3, [-1e30] * 3
     for name, tr, rot in entries:
         box = Bnd_Box()
         BRepBndLib.Add_s(placed(name, tr, rot), box)
@@ -96,52 +102,39 @@ def group_box(entries):
     return lo, hi
 
 
-asm = [(name, [t[0], t[1] + ASSEMBLY_SHIFT_Y, t[2]], rot)
-       for name, (t, rot) in ASSEMBLY]
-mill = [("bed-solid", BED, None), ("rib-solid", RIB_ON_BED, None)]
-printer = [("pframe-solid", PFRAME[0], PFRAME[1])]
-GROUPS = [asm, mill, printer]
-
-# Camera leveling: the preview page's default camera (yaw+pitch) makes a
-# wide flat row drift diagonally on screen by sin(phi)sin(theta)/cos(phi) per
-# mm of world-Y.  Pre-offsetting each group's Z by -k*(Yc - scene_Y_center)
-# lands every group at the same screen height.  THETA/PHI must stay in sync
-# with the camera defaults in preview.py's _PAGE.
+# camera leveling (see preview.py's camera defaults — keep in sync)
 THETA, PHI = 0.55, 0.3
 K_LEVEL = math.sin(PHI) * math.sin(THETA) / math.cos(PHI)
 
-ylo = min(group_box(g0)[0][1] for g0 in GROUPS)
-yhi = max(group_box(g1)[1][1] for g1 in GROUPS)
+ylo = min(group_box(g)[0][1] for _, g in GROUPS)
+yhi = max(group_box(g)[1][1] for _, g in GROUPS)
 CX = (ylo + yhi) / 2.0
 
-# per-group dz = band-center on the printer frame's mid-height + leveling
-plo, phi_ = group_box(printer)
-Z0 = (plo[2] + phi_[2]) / 2.0
+# band-center on the mill's mid-height (the tallest machine group)
+mlo, mhi = group_box(GROUPS[1][1])
+Z0 = (mlo[2] + mhi[2]) / 2.0
 dz_of = {}
-for key, g0 in zip(("asm", "mill", "printer"), GROUPS):
+for key, g0 in GROUPS:
     lo, hi = group_box(g0)
     yc, zc = (lo[1] + hi[1]) / 2.0, (lo[2] + hi[2]) / 2.0
     dz_of[key] = (Z0 - zc) - K_LEVEL * (yc - CX)
 
 shapes = [placed(name, [t[0], t[1], t[2] + dz_of[key]], rot)
-          for key, g0 in zip(("asm", "mill", "printer"), GROUPS)
-          for name, t, rot in g0]
+          for key, g0 in GROUPS for name, t, rot in g0]
 
-# label anchors ride along with their group's dz so they stay glued to it
 LABELS = [
-    ("① 飞行器样机 1:20",
-     [-260, ASSEMBLY_SHIFT_Y + 150, Z0 + dz_of["asm"] + 120], 34),
-    ("② 3轴铣床身 800×600×60 · 打印制造",
-     [-250, 40, Z0 + dz_of["mill"] + 50], 34),
-    ("③ 翼肋 600×200×3 · 床上工件",
-     [220, 460, Z0 + dz_of["mill"] + 60], 30),
-    ("④ 打印机机架 600×600·自举",
-     [0, 1230, Z0 + dz_of["printer"] + 320], 46),
+    ("① 机翼 wingbox 3000×1500 · 双蒙皮+双梁+6肋（骨架就位）",
+     [1500, 750, Z0 + dz_of["wing"] + 130], 34),
+    ("② gantry 铣床 · 床身/立柱/横梁/Z头 + rib-1 工件（打印制造）",
+     [-600, MILL_Y - 500, Z0 + dz_of["mill"] + 260], 34),
+    ("③ 打印机机架 600×600 · 自举",
+     [0, PRT_Y - 300, Z0 + dz_of["printer"] + 320], 44),
+    ("④ 派生样机 1:20 · scale-instance 自真实子树",
+     [0, MK_Y, Z0 + dz_of["mockup"] + 60], 34),
 ]
 
 scene = fuse(shapes)
 
-# coarse preview mesh
 from OCP.BRepMesh import BRepMesh_IncrementalMesh
 from OCP.StlAPI import StlAPI_Writer
 BRepMesh_IncrementalMesh(scene, 1.0, False, 1.0, True)
@@ -156,9 +149,9 @@ out.mkdir(exist_ok=True)
 (out / "sha_pek_all.stl").write_bytes(stl_bytes)
 (out / "index.html").write_text(
     render_page(stl_bytes,
-                "SHA-PEK — 飞行器与加工设备 (aircraft + fabrication equipment)",
-                "双代闭环 ④→②→③→①：打印机造床身 · 床身铣翼肋 · 翼肋装机 · "
-                "主轴/电机/控制板为目录件（无几何）",
+                "SHA-PEK — 真实分解：wingbox · gantry 铣床 · 打印机 · 派生样机",
+                "①=分解的机翼（非整板） ②=机床架构（床身+立柱+横梁+Z头） "
+                "③=打印机 ④=派生样机 · 目录件（主轴/导轨/丝杠/伺服/CNC）无几何不渲染",
                 labels=LABELS),
     encoding="utf-8")
 n_tri = (len(stl_bytes) - 84) // 50

@@ -7,15 +7,15 @@
 
 | 指标 | 值 |
 |---|---|
-| 测试 | **30/30 全绿**（`pytest tests/ -q`，≈16s） |
+| 测试 | **36/36 全绿**（`pytest tests/ -q`，≈15s） |
 | 规模 | 60 个 git 追踪文件，Python 7378 行；内核 L0/L1 零第三方依赖（测试强制） |
 | CLI | 33 个子命令（新增 `print`）；`.fcad` DSL 新增 `(print ...)` 表单 |
 | 求解插件 | 13 个（新增 dfam-print、aero-2d、prop-map、beam-fe、mass-rollup） |
-| 标志案例 | SHA-PEK：**75 表单 / 184 对象（90 节点 + 86 边）/ 85 promoted + 1 故意 rejected** |
+| 标志案例 | SHA-PEK：**119 表单 / 314 对象（153 节点 + 153 边）/ 152 promoted + 1 故意 rejected / 22 条 print 边** |
 | 案例终态 | **`fk goals` = OPEN GOALS (0)**；`fk verify` 全绿；dc-bus 3700/4000W；cabin-air 平衡 |
 | 闭环验证 | 假设航程 5344.7 km（L/D=14）→ **实测复算 6127.3 km**（aero-2d 实测 L/D=16.05 覆写假设） |
 
-一句话：按"11 步 meta 展开"标准，**主链贯通且每一层有该层保真度的证据，全部环节落在双终止集上，制造递归经打印机自举在终止层闭合**。
+一句话：按"11 步 meta 展开"标准，**主链贯通且每一层有该层保真度的证据，全部环节落在双终止集上，制造递归经打印机自举在终止层闭合**；第三轮起几何与架构同源——机翼是就位的 wingbox、机床是 gantry 架构、样机派生自真实子树、生产算子身份进入边 inputs 受 I3 精确链接。
 
 ## 1. 三个阶段
 
@@ -46,6 +46,20 @@
 
 **内核零改动原则全程保持**：`core/`、`store/` 在整个进化中 0 行改动；print 作为 manufacture 语义特化、闭合谓词全部落在语义层（分层纪律测试持续绿）。
 
+### 阶段四：第二轮评审与骨架层进化（v02/v03，G1–G3 + E6，8 提交）
+
+v02（对 PROGRESS 的独立复核）：全部声明复现，指出 6143→6127.3 数字转抄误差（G3）与两个 PRSI 严格性缺口——**G1** 生产算子身份在 args 不在 inputs（I3 不覆盖打印机本身）、**G2** 铣床被开发却从未被使用（mill→rib 只存在于注释）。v03（用户观察驱动）：机翼"假分解"（compose e4d 引用未接地合同节点——真实 bug）、机床"名义分解"，根因是跳过 Skeleton 层。
+
+| 修复 | 内容 |
+|---|---|
+| G1/G2 | print 边 `inputs=[工件,打印机]`；manufacture `:machine` 槽把机床 digest 并入工艺边 inputs——**"这台铣床加工这个零件"成为 DAG 断言**，I3 守护算子实例 |
+| G3 | 报告数字一律取运行证据（6127.3 km） |
+| E6-1/S1 | **通用 Placement 系统**（build123d Location 类比）：`:at` 平移/绕轴旋转，入 construction 可重放；revolve 轴参数化 |
+| E6-1/S2 | **帧系统**：任意节点可携 `spec.frames`，`:at (:frame x)` 解析；compose 对 Part 输入发硬义务 `input-realized`（U2）——组合未实现零件从静默通过变 C0 拒绝 |
+| E6-4 | **架构模板库**（纯数据 `catalog/archetypes/*.json`）：`decompose :template wingbox/gantry-mill`，模板自带子件清单/合同/骨架帧/介质引用（名字加载时解析为 digest） |
+| E6-3 | **scale-instance 派生缩放**：从输入祖先子树收集全部接地几何缩放融合；construction 按值记录可重放；边 inputs 精确链接每个源——删除了 44 行手画平行样机分支 |
+| 案例 | 119 表单：wingbox 10 子件全部按骨架帧就位（装配经真实干涉门=零干涉）；gantry 铣床按架构模板展开（结构件打印、导轨/丝杠/伺服/主轴/CNC 目录）；rib-1 在已开发的铣床上加工 |
+
 ## 2. SHA-PEK 案例终态（11 步覆盖度）
 
 对照评审的覆盖度表，修复后的状态：
@@ -54,11 +68,11 @@
 |---|---|---|
 | 1 模糊需求 | ✅ | ✅ 九槽合同 |
 | 2 单质点+参数态 | ✅ | ✅ 五洞→Breguet→坍缩→复检+故意失败样本 |
-| 3 展开多部件+子系统仿真 | ⚠️ 半 | ✅ wing=aero-2d(L/D≥14 硬断言)、epu=prop-map、rib=beam-fe、装配=mass-rollup——**每层有证据** |
-| 4 方案坍缩+再拆 | ⚠️ 半 | ✅ wing→skin/spar/rib 全部接地+打印；fuselage→舱壳(打印)+座椅(目录)；avionics 目录直闭（"可拆可不拆"演示） |
+| 3 展开多部件+子系统仿真 | ⚠️ 半 | ✅ wing=aero-2d(L/D≥14 硬断言)、epu=prop-map、rib=beam-fe、装配=mass-rollup——每层有证据 |
+| 4 方案坍缩+再拆 | ⚠️ 半 | ✅ wing 经 **wingbox 模板**分解（双蒙皮+双梁+6肋，骨架帧就位，装配零干涉）；fuselage→舱壳/座椅/hstab/fin；avionics 目录直闭 |
 | 6 拆到零件级 | ✅ | ✅ |
 | 7–9 零件→工艺→产线→机床需求 | ✅ | ✅ 保留 rib 完整制造分支（takt/OEE/dc-bus 账本 3700/4000W） |
-| 10–11 机床方案→零件 | ⚠️ bed 未闭合 | ✅ **bed 接地 800×600×60 并由 reference-printer 打印（printer→bed 双代链接）**；spindle/drive 目录关闭 |
+| 10–11 机床方案→零件 | ⚠️ bed 未闭合 | ✅ **gantry 模板开发铣床**（bed 1800×800/立柱/横梁/Z头打印，运动件目录）；rib-1 `:machine fab-mill` 在其上加工（mill→rib 链接入边 inputs） |
 | 终止性 | ⚠️ 手工 | ✅ **OPEN GOALS (0)**，全部叶子落在 {目录} ∪ {打印} |
 | 闭环验证（V 右腿） | 无 | ✅ compose 后 mission 复算：实测 L/D 16.05 替换假设 14 → 6127.3 km ≥ 1300 |
 
@@ -72,7 +86,7 @@
 
 ## 4. 质量与验证
 
-- 测试 30 项 = 初版 1–20 + 分层纪律 + 进化回归 21–29（闭合判定/洞坍缩/证据覆盖/print 终止/打印机自举/仿真公式复算/realize 终止集/全链案例/termination-swap）。
+- 测试 36 项 = 初版 1–20 + 分层纪律 + 回归 21–36（闭合/洞坍缩/证据覆盖/print 终止/打印机自举/仿真公式/realize/全链/termination-swap/算子身份 I3/Placement 重放/模板加载/scale-instance 派生）。
 - `fk verify`：promoted 边 hard 义务、证据存在性、MIND plant-model-current、term-stale、介质账本全库纯重算——当前全绿。
 - 数字可独立复算：Breguet、阻力极曲线 L/D、桨盘推力、梁应力/挠度、体积质量、账本——公式全部写在插件 docstring。
 - 谱系可审计：`fk why bed-printed` 逐行带边名（`[e42]`）回溯 18 级到 Intent。
