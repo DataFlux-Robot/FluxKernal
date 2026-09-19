@@ -1,0 +1,38 @@
+{
+  "entries": [
+    {
+      "name": "ga-seat-light",
+      "kind": "seat",
+      "supplier": "interiors-catalog",
+      "tier": 2,
+      "bounds": {
+        "mass_kg": {
+          ">=": 6,
+          "<=": 14
+        }
+      },
+      "ground": {
+        "mass_g": 8000.0
+      }
+    },
+    {
+      "name": "av-suite-basic",
+      "kind": "avionics",
+      "supplier": "interiors-catalog",
+      "tier": 1,
+      "bounds": {
+        "mass_kg": {
+          ">=": 2,
+          "<=": 8
+        },
+        "power_w": {
+          ">=": 20,
+          "<=": 120
+        }
+      },
+      "ground": {
+        "mass_g": 4000.0
+      }
+    }
+  ]
+}

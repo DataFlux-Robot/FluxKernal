@@ -406,8 +406,12 @@ def next_goal(dag) -> dict | None:
 
 
 def why(dag, ref: str) -> list[dict]:
-    """Lineage walk back to the genesis Intent (Lean: `#print ancestors`)."""
+    """Lineage walk back to the genesis Intent (Lean: `#print ancestors`).
+    Each hop is annotated with the DSL edge name when one is bound
+    (review P5 — the dual-role nodes read unambiguously with names)."""
     d = dag.store.resolve(ref)
+    edge_names = {dg: n for n, dg in dag.store.names().items()
+                  if dg.startswith("fk1:edge:") and not n.startswith("@")}
     chain = []
     seen = set()
     while d and d not in seen:
@@ -418,6 +422,9 @@ def why(dag, ref: str) -> list[dict]:
         pe = dag.producing_edge(d)
         if not pe:
             break
+        edge_d = dag.store.names().get(f"@lineage/{d}", "")
         chain[-1]["via"] = f"{pe.get('op')}/{pe.get('transform', {}).get('name', '')}"
+        if edge_names.get(edge_d):
+            chain[-1]["via"] += f" [{edge_names[edge_d]}]"
         d = (pe.get("inputs") or [None])[0]
     return chain

@@ -184,3 +184,117 @@
   :out sha-pek-model :role System :kind aircraft-mockup
   :transform (assemble :placements ((0 0 0) (0 140 30) (0 285 20) (-1.5 0 25 0 1 0 90) (0 0 0)))
   :rollup ((mass_g (<= 1500))))
+
+;; ══════════════════════════════════════════════════════════════════════
+;; E4: evidence density + dual termination set + printer bootstrap
+;; (evolution plan v2.0: every layer carries its fidelity of evidence;
+;;  structural parts converge on the shared printer capital; the printer
+;;  develops itself one full round — o_i = t_(i+1) at the termination layer)
+;; ══════════════════════════════════════════════════════════════════════
+
+;; ── E4.0 the shared print capital (PRSI convergence point) ──
+(term printer "unbounded-build-volume FDM capital printer")
+(term frame "stiff gantry frame of a machine tool")
+(node reference-printer :role Resource :kind unbounded-fdm-printer
+  :spec (contract
+    (goals (rp1 "print every structural part of this product tree"
+                :falsifiable t
+                :measure "dfam-print hard gate per printed part"
+                :terms (printer frame)))
+    (semantics printer frame)
+    (assumes (rp-a1 "build volume effectively unbounded (demand-layer promise, not kernel-verifiable)"
+                    :bounds ((dim_mm (>= 0)))))
+    (guarantees (rp-g1 "prints grounded parts that pass dfam-print"
+                       :bounds ((mass_g (<= 100000)))))
+    (budget (mass_kg (<= 60)))
+    (forbidden (rp-f1 "unattended overnight operation" :check test))
+    (not-responsible "filament supply logistics")
+    (time-scale fabrication)))
+
+;; ── E4.1 per-layer simulator evidence (E2 matrix) ──
+(eval e30 :target sha-pek-v1/wing :with aero-2d :fidelity 1
+  :ar 14 :s_m2 3.5 :mass_kg 1200 :cruise_ms 95
+  :expect ((ld_ratio (>= 14))))
+(eval e31 :target epu-std :with prop-map :fidelity 1
+  :torque_nm 50 :rpm 6000 :prop_d_m 0.6)
+(eval e32 :target rib-solid :with beam-fe :fidelity 1 :load_n 800)
+
+;; ── E4.2 wing structure closure: skin + spar grounded, then printed ──
+(refine e34 :in (wing-v1/skin) :out skin-sk :kind sketch
+  :transform (ground-sketch :sketch (sketch
+    (pts (k0 0 0) (k1 3000 0) (k2 3000 1500) (k3 0 1500)) (constraints))))
+(refine e35 :in (skin-sk) :out skin-solid :kind skin
+  :transform (extrude :height 2 :material aluminum))
+(print e36 :in (skin-solid) :printer reference-printer :out skin-printed)
+(refine e37 :in (wing-v1/spar) :out spar-sk :kind sketch
+  :transform (ground-sketch :sketch (sketch
+    (pts (s0 0 0) (s1 3000 0) (s2 3000 200) (s3 0 200)) (constraints))))
+(refine e38 :in (spar-sk) :out spar-solid :kind spar
+  :transform (extrude :height 30 :material aluminum))
+(print e39 :in (spar-solid) :printer reference-printer :out spar-printed)
+
+;; ── E4.3 fuselage developed one level: cabin shell + seats; avionics
+;;    closes straight from the catalog ("may split or not" — a catalog hit
+;;    is a legal stopping point) ──
+(refine e43 :in (sha-pek-v1/fuselage) :out fuselage-v1 :role Component
+  :transform (decompose
+    :into (cabin-shell seat)
+    :flow-down (
+      (cabin-shell :budget ((mass_kg ("<=" 200))) :guarantees ((gcs "cabin shell carries airload" :bounds ((mass_kg ("<=" 200))))))
+      (seat :budget ((mass_kg ("<=" 15))) :guarantees ((gst "two occupant seats" :bounds ((mass_kg ("<=" 15)))))))))
+(refine e47 :in (fuselage-v1/cabin-shell) :out cabin-sk :kind sketch
+  :transform (ground-sketch :sketch (sketch
+    (pts (c0 0 0) (c1 800 0) (c2 800 1400) (c3 0 1400)) (constraints))))
+(refine e48 :in (cabin-sk) :out cabin-solid :kind cabin-shell
+  :transform (extrude :height 3 :material aluminum))
+(print e49 :in (cabin-solid) :printer reference-printer :out cabin-printed)
+(exact e45 :target fuselage-v1/seat :from catalog
+  :match "mass_kg<=15" :out seat-std)
+(exact e46 :target sha-pek-v1/avionics :from catalog
+  :match "mass_kg<=40" :out av-std)
+
+;; ── E4.4 the mill's bed: grounded as a structural part and PRINTED by the
+;;    shared printer — generation 0 prints generation 1's machine tool
+;;    (printer -> bed link in the DAG), while spindle/drive stay catalog ──
+(refine e40 :in (fab-v1/bed) :out bed-sk :kind sketch
+  :transform (ground-sketch :sketch (sketch
+    (pts (b0 -400 -300) (b1 400 -300) (b2 400 300) (b3 -400 300)) (constraints))))
+(refine e41 :in (bed-sk) :out bed-solid :kind bed
+  :transform (extrude :height 60 :material aluminum))
+(print e42 :in (bed-solid) :printer reference-printer :out bed-printed)
+
+;; ── E4.5 the printer develops ITSELF one full round (E1-3 hard rule):
+;;    frame printed on itself (bootstrap), stepper/board from catalog ──
+(refine e50 :in (reference-printer) :out printer-v1 :role System
+  :transform (decompose
+    :into (p-frame p-stepper p-board)
+    :flow-down (
+      (p-frame :budget ((mass_g ("<=" 6000))) :guarantees ((gpf "stiff gantry frame" :bounds ((mass_g ("<=" 6000))))))
+      (p-stepper :budget ((mass_g ("<=" 400))) :guarantees ((gps "extruder stepper torque" :bounds ((torque_nm (">=" 0.35))))))
+      (p-board :budget ((mass_g ("<=" 300))) :guarantees ((gpb "4-axis motion board" :bounds ((axis_count (">=" 4)))))))))
+(refine e51 :in (printer-v1/p-frame) :out pframe-sk :kind sketch
+  :transform (ground-sketch :sketch (sketch
+    (pts (r0 0 0) (r1 600 0) (r2 600 600) (r3 0 600)) (constraints))))
+(refine e52 :in (pframe-sk) :out pframe-solid :kind frame
+  :transform (extrude :height 8 :material pla))
+(print e53 :in (pframe-solid) :printer reference-printer :out pframe-printed)
+(exact e54 :target printer-v1/p-stepper :from catalog
+  :match "torque_nm>=0.35" :out p-stepper-std)
+(procure e55 :target printer-v1/p-board :from catalog
+  :match "axis_count>=4" :out p-board-bought)
+
+;; ── E4.6 mockup parts terminate on the printer too (PLA, 1:20) ──
+(print e56 :in (m-fuselage-solid) :printer reference-printer :out mp-fuselage)
+(print e57 :in (m-wing-solid) :printer reference-printer :out mp-wing)
+(print e58 :in (m-hstab-solid) :printer reference-printer :out mp-hstab)
+(print e59 :in (m-fin-solid) :printer reference-printer :out mp-fin)
+(print e60 :in (m-motor-solid) :printer reference-printer :out mp-motor)
+
+;; ── E4.7 closed-loop re-verification (V-model right leg): assembly mass
+;;    evidence, then the top-level mission re-run with the MEASURED L/D
+;;    from e30's aero-2d evidence (ld 16.05) replacing the assumed 14 ──
+(eval e62 :target sha-pek-model :with mass-rollup :fidelity 2
+  :expect ((mass_g (<= 1500))))
+(eval e63 :target sha-pek-pm :with mission-analysis :fidelity 1
+  :overrides ((ld 16.05) (ff 0.28) (sfc 0.000008333) (v 95) (mtow 1200))
+  :expect ((range_km (>= 1300))))

@@ -128,18 +128,23 @@ class Runner:
 
     def _form_print(self, body):
         pos, kw = split_kwargs(body)
-        part = str(kw.get("in") or (pos[0] if pos else ""))
+        ins = [str(x) for x in (kw.get("in") or [])]
+        part = ins[0] if ins else (str(pos[0]) if pos else "")
         printer = str(kw.get("printer") or (pos[1] if len(pos) > 1 else ""))
         if not part or not printer:
             raise FcadError("S1", "(print <name> :in <part> :printer <printer>)")
         transform = self._transform(kw["transform"]) if kw.get("transform") \
             else {"name": "print", "args": {}}
         resources = fcad.resources_from_sexpr(kw.get("resources", []))
-        return self.engine.print_part(
+        return self._bind_edge_name(pos, self.engine.print_part(
             part, printer, args=transform.get("args") or {},
-            resources=resources, out_name=kw.get("out"))
+            resources=resources, out_name=kw.get("out")))
 
     def _form_eval(self, body):
+        pos, kw = split_kwargs(body)
+        return self._bind_edge_name(pos, self._form_eval_inner(body))
+
+    def _form_eval_inner(self, body):
         pos, kw = split_kwargs(body)
         target = kw.get("target") or (pos[0] if len(pos) > 0 else None)
         solver = kw.get("with") or (pos[1] if len(pos) > 1 else None)
@@ -160,16 +165,16 @@ class Runner:
     def _form_exact(self, body):
         pos, kw = split_kwargs(body)
         target = kw.get("target") or (pos[0] if pos else None)
-        return self.engine.exact(target, kw.get("from", "catalog"),
-                                 kw.get("match", "") or "",
-                                 out_name=kw.get("out"))
+        return self._bind_edge_name(pos, self.engine.exact(
+            target, kw.get("from", "catalog"), kw.get("match", "") or "",
+            out_name=kw.get("out")))
 
     def _form_procure(self, body):
         pos, kw = split_kwargs(body)
         target = kw.get("target") or (pos[0] if pos else None)
-        return self.engine.procure(target, kw.get("from", "catalog"),
-                                   kw.get("match", "") or "",
-                                   out_name=kw.get("out"))
+        return self._bind_edge_name(pos, self.engine.procure(
+            target, kw.get("from", "catalog"), kw.get("match", "") or "",
+            out_name=kw.get("out")))
 
     def _extra_args(self, kw) -> dict:
         known = {"op", "in", "out", "target", "with", "from", "match", "expect",
@@ -180,10 +185,28 @@ class Runner:
         for k, v in kw.items():
             if k in known:
                 continue
-            out[k.replace("-", "_")] = fcad._plain_value(v, self.store)
+            key = k.replace("-", "_")
+            if key in ("overrides", "values") and isinstance(v, list):
+                out[key] = fcad.pairs_to_map(v)   # ((k v) ...) -> dict
+            else:
+                out[key] = fcad._plain_value(v, self.store)
         return out
 
+    def _bind_edge_name(self, pos, res):
+        """Bind the DSL form name (pos[0], e.g. 'e42') to its edge digest so
+        `fk why` can annotate hops with designer-chosen names (review P5)."""
+        if pos and isinstance(pos[0], str) and isinstance(res, dict)                 and res.get("edge"):
+            try:
+                self.store.bind_name(pos[0], res["edge"])
+            except Exception:
+                pass
+        return res
+
     def _op(self, op: str, pos: list, kw: dict) -> dict:
+        res = self._op_inner(op, pos, kw)
+        return self._bind_edge_name(pos, res)
+
+    def _op_inner(self, op: str, pos: list, kw: dict) -> dict:
         ins = [str(x) for x in (kw.get("in") or [])]
         out_name = kw.get("out")
         transform = self._transform(kw["transform"]) if kw.get("transform") \

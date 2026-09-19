@@ -956,6 +956,44 @@ def test_27_realize_termination_set():
     assert n_decomp <= 12, "auto-split must stay bounded"
 
 
+# ================================================ E4: full-chain case =====
+def test_28_sha_pek_full_chain():
+    """E4 acceptance: the extended SHA-PEK case reaches OPEN GOALS (0) with
+    per-layer evidence, the printer bootstrap (it prints its own frame AND
+    the mill's bed — o_i = t_(i+1) at the termination layer), the closed-
+    loop mission re-check on measured L/D, and balanced media ledgers."""
+    eng = fresh()
+    rc = run_fcad(eng, (REPO / "examples" / "sha_pek.fcad").read_text(encoding="utf-8"))
+    assert rc == 1                        # exactly the deliberate e2x failure
+    view = goalsview.goals_view(eng.dag)
+    assert view["open"] == [], [(g["kind"], g["termination"]) for g in view["open"]]
+
+    # per-layer simulator evidence under the design tree
+    from fluxkernel.semantics.operators import _subtree_metrics
+    met = _subtree_metrics(eng.dag, "sha-pek-v1")
+    assert met.get("ld_ratio", 0) >= 14           # aero-2d, tier 1
+
+    # closed loop: the last mission re-check ran with the MEASURED L/D
+    pm_ev = eng.store.get_object(eng.store.resolve("sha-pek-pm"))["payload"]["evidence"]
+    final = [e for e in pm_ev if e.get("solver") == "mission/breguet"][-1]
+    assert final["range_km"] > 6000               # 16.05 measured vs 5345 assumed
+
+    # printer bootstrap: frame and mill-bed both printed on the same digest
+    for ref in ("pframe-printed", "bed-printed"):
+        chain = goalsview.why(eng.dag, ref)
+        assert any("print" in s.get("via", "") for s in chain), ref
+    printers = {e["transform"]["args"]["printer"]
+                for _, e in eng.dag.iter_edges()
+                if (e.get("transform") or {}).get("name") == "print"}
+    assert printers == {eng.store.resolve("reference-printer")}
+
+    # media ledgers within capacity; why annotated with DSL edge names (P5)
+    led = contracts.ledger(eng.dag, "dc-bus")
+    assert all(led["ok"].values())
+    bed_chain = goalsview.why(eng.dag, "bed-printed")
+    assert any("[e" in s.get("via", "") for s in bed_chain)
+
+
 # ================================================ discipline ==============
 def test_layer_discipline():
     """core/ and store/ import ZERO third-party packages (relative imports
