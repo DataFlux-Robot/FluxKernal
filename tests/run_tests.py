@@ -1030,6 +1030,53 @@ def test_29_termination_swap():
     assert any("catalog" in str(e.get("solver", "")) for e in cat_ev)
 
 
+# ================================================ G1/G2: operator identity =
+def test_30_print_edge_carries_printer_input():
+    """G1: the print resource enters the print edge's inputs, so I1/I2/I3
+    exact linking covers the production operator itself."""
+    eng = fresh()
+    _rib_chain(eng, width=10, name_prefix="pl")
+    t = terms(eng, "mass")
+    eng.node("reference-printer", "Resource", "unbounded-fdm-printer",
+             contract(eng, t))
+    res = eng.print_part("pl-solid", "reference-printer", out_name="pl-printed")
+    assert res["state"] == "promoted", res["reason"]
+    pe = eng.dag.producing_edge(eng.store.resolve("pl-printed"))
+    part_d = eng.store.resolve("pl-solid")
+    pr_d = eng.store.resolve("reference-printer")
+    assert pe.get("inputs") == [part_d, pr_d], pe.get("inputs")
+
+
+def test_31_machine_binding_i3():
+    """G2: :machine binds the machine tool into the process-plan and every
+    process-op edge's inputs; a machine produced by a non-promoted edge
+    rejects the op (I3 exact linking on the operator instance)."""
+    eng = fresh()
+    _rib_chain(eng, width=10, name_prefix="mb")
+    t = terms(eng, "mass")
+    eng.node("mill", "Resource", "3axis-mill", contract(eng, t))
+    # a mill whose producing edge is REJECTED (expect impossible); the
+    # name stays on the genesis node, so bind the rejected OUTPUT digest
+    r = eng.evaluate("mill", "aero-2d", fidelity=0,
+                     expect={"ld_ratio": {">=": 999999}},
+                     args={"ar": 14, "s_m2": 3.5})
+    assert r["state"] == "rejected"
+    bad_mill = r["node"]
+    res = eng.manufacture("mb-solid", into=["stock", "milling-3axis"],
+                          machine=bad_mill, out_name="mb-proc")
+    assert res["state"] == "rejected"
+    assert "I3" in res["reason"]
+    # with a healthy machine (genesis resource) the ops bind it in inputs
+    eng.node("good-mill", "Resource", "3axis-mill", contract(eng, t))
+    res2 = eng.manufacture("mb-solid", into=["milling-3axis"],
+                           machine="good-mill", out_name="mb2-proc")
+    assert res2["state"] == "promoted", res2["reason"]
+    good_d = eng.store.resolve("good-mill")
+    for c in res2["children"]:
+        pe = eng.dag.producing_edge(c["node"])
+        assert good_d in pe.get("inputs", [])
+
+
 # ================================================ discipline ==============
 def test_layer_discipline():
     """core/ and store/ import ZERO third-party packages (relative imports

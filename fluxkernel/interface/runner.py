@@ -247,5 +247,6 @@ class Runner:
                 str(x) for x in (kw.get("into") or [])]
             return self.engine.manufacture(ins[0] if ins else (pos[0] if pos else None),
                                            into=into, args=transform["args"],
-                                           resources=resources, out_name=out_name)
+                                           resources=resources, out_name=out_name,
+                                           machine=kw.get("machine"))
         raise FcadError("S1", f"op {op!r} not reachable here")

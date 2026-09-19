@@ -13,7 +13,7 @@
 | 求解插件 | 13 个（新增 dfam-print、aero-2d、prop-map、beam-fe、mass-rollup） |
 | 标志案例 | SHA-PEK：**75 表单 / 184 对象（90 节点 + 86 边）/ 85 promoted + 1 故意 rejected** |
 | 案例终态 | **`fk goals` = OPEN GOALS (0)**；`fk verify` 全绿；dc-bus 3700/4000W；cabin-air 平衡 |
-| 闭环验证 | 假设航程 5344.7 km（L/D=14）→ **实测复算 6143 km**（aero-2d 实测 L/D=16.05 覆写假设） |
+| 闭环验证 | 假设航程 5344.7 km（L/D=14）→ **实测复算 6127.3 km**（aero-2d 实测 L/D=16.05 覆写假设） |
 
 一句话：按"11 步 meta 展开"标准，**主链贯通且每一层有该层保真度的证据，全部环节落在双终止集上，制造递归经打印机自举在终止层闭合**。
 
@@ -60,7 +60,7 @@
 | 7–9 零件→工艺→产线→机床需求 | ✅ | ✅ 保留 rib 完整制造分支（takt/OEE/dc-bus 账本 3700/4000W） |
 | 10–11 机床方案→零件 | ⚠️ bed 未闭合 | ✅ **bed 接地 800×600×60 并由 reference-printer 打印（printer→bed 双代链接）**；spindle/drive 目录关闭 |
 | 终止性 | ⚠️ 手工 | ✅ **OPEN GOALS (0)**，全部叶子落在 {目录} ∪ {打印} |
-| 闭环验证（V 右腿） | 无 | ✅ compose 后 mission 复算：实测 L/D 16.05 替换假设 14 → 6143 km ≥ 1300 |
+| 闭环验证（V 右腿） | 无 | ✅ compose 后 mission 复算：实测 L/D 16.05 替换假设 14 → 6127.3 km ≥ 1300 |
 
 **打印机自举（E1-3 硬性要求）**：reference-printer 自身 decompose 一轮，机架由它**自己**打印（同 digest 自举边 `e53`），步进电机/控制板目录关闭——设备开发递归 ≥1 级且全闭合，o_i = t_(i+1) 在终止层成立。
 

@@ -586,15 +586,25 @@ class Engine:
     # --------------------------------------------------------- manufacture --
     def manufacture(self, part: str, into: list[str] | None = None,
                     args: dict | None = None, resources: dict | None = None,
-                    out_name: str | None = None) -> dict:
+                    out_name: str | None = None,
+                    machine: str | None = None) -> dict:
         """Part -> Process family: the part goal pivots into a new obligation
         family (machining ops). Children bind as '<out>/<op>' and each op
-        carries its own grounded takt/cost so line-eval can roll them up."""
+        carries its own grounded takt/cost so line-eval can roll them up.
+
+        `machine` (G2): the digest/name of the machine tool this plan runs
+        on.  It enters the plan edge's AND every process-op edge's inputs,
+        so the DAG asserts "this mill machines this part" and I3 exact
+        linking guards the machine's own producing edge."""
         p_d, p_payload = self._input(part)
         if p_payload.get("role") != "Part":
             raise DagError("T2", "manufacture requires a Part input")
+        m_d = self.store.resolve(machine) if machine else None
+        ops_inputs = lambda base: base + ([m_d] if m_d else [])
         transform = {"name": "process-plan",
-                     "args": {**(args or {}), "into": into or []}}
+                     "args": {**(args or {}),
+                              "into": into or [],
+                              **({"machine": m_d} if m_d else {})}}
         obligations: list[Obligation] = []
         try:
             fields, evidence, plugin_obs = self._call_plugin(transform, [p_payload])
@@ -610,9 +620,10 @@ class Engine:
         obligations += self._structural_obligations(p_payload, "Process")
         cert = Certificate(obligations=obligations, evaluator="process",
                            evidence=evidence, executor="process-plan")
-        res = self._commit(self._make_edge("manufacture", [p_d], transform),
-                           node, cert, ResourceVector(**(resources or {})),
-                           node_name=out_name)
+        res = self._commit(
+            self._make_edge("manufacture", ops_inputs([p_d]), transform),
+            node, cert, ResourceVector(**(resources or {})),
+            node_name=out_name)
         children = []
         op_details = ((fields.get("ground") or {}).get("op_details")
                       or [{"op": op, "takt_min": 1.0, "cost": 0.0} for op in (into or [])])
@@ -631,8 +642,10 @@ class Engine:
                            "takt_min": det.get("takt_min", 1.0),
                            "cost": det.get("cost", 0.0)}])
             c_res = self._commit(
-                self._make_edge("refine", [res["node"]],
-                                {"name": "process-op", "args": {"op": op}}),
+                self._make_edge("refine", ops_inputs([res["node"]]),
+                                {"name": "process-op",
+                                 "args": {"op": op,
+                                          **({"machine": m_d} if m_d else {})}}),
                 op_node, c_cert, ResourceVector(),
                 node_name=f"{out_name or part}/{op}")
             children.append(c_res)
@@ -691,9 +704,14 @@ class Engine:
             p_payload, p_payload.get("role"))
         cert = Certificate(obligations=obligations, evaluator="print",
                            evidence=evidence, executor="print")
-        return self._commit(self._make_edge("manufacture", [p_d], transform),
-                            node, cert, ResourceVector(**(resources or {})),
-                            node_name=out_name)
+        # G1: the print resource enters the edge inputs (inputs[0]=workpiece,
+        # inputs[1:]=operator instances) so the I1/I2/I3 exact-link checks
+        # cover the production operator itself — a printer whose producing
+        # edge went non-promoted rejects every print edge that uses it.
+        return self._commit(
+            self._make_edge("manufacture", [p_d, pr_d], transform),
+            node, cert, ResourceVector(**(resources or {})),
+            node_name=out_name)
 
     # -------------------------------------------------------------- realize --
     # per-layer default evaluators (E2/E3): kind -> (solver, fidelity)

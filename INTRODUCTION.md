@@ -108,7 +108,7 @@ L0  store/       objstore.py（内容寻址对象存储，`.fk/` 目录）
 
 - **184 个内容寻址对象** = 90 节点 + 86 边；**85 边 promoted + 1 边 rejected**（e2x：故意超容的对照表单，验证 fail-closed）。
 - 边算子分布：refine 55（含全部分解）/ manufacture 11（含 **10 条 print 边**）/ compose 5 / evaluate 8 / exact 5 / procure 2。
-- 任务分析链：point-mass → Breguet（SI sfc）→ param-perturb → **航程 5344.7 km ≥ 1300**（假设 L/D=14）；**闭环复算 6143 km**（fidelity 1，用 aero-2d 实测 L/D=16.05 覆写假设值——下层证据替换上层假设，指标仍成立）。
+- 任务分析链：point-mass → Breguet（SI sfc）→ param-perturb → **航程 5344.7 km ≥ 1300**（假设 L/D=14）；**闭环复算 6127.3 km**（fidelity 1，用 aero-2d 实测 L/D=16.05 覆写假设值——下层证据替换上层假设，指标仍成立）。
 - 每层证据（E2 仿真矩阵）：wing `aero-2d`（L/D≥14 硬断言）、epu `prop-map`（推力/电流）、rib `beam-fe`（截面惯量/应力/挠度 vs 屈服）、装配 `mass-rollup`（质量/质心/盒惯量）、整机 mission 复算。
 - 机翼结构：wing → skin/spar/rib；skin/spar 接地（3000×1500×2 铝蒙皮、3000×200×30 铝梁）后由 reference-printer 打印；翼肋保留完整制造分支（manufacture → 工艺 → 产线 → 机床）。
 - 机床链：rib `manufacture` → 产线 → fab 需求 → decompose（bed/spindle/drive on dc-bus）→ spindle/drive 目录关闭；**bed 接地 800×600×60 并由 reference-printer 打印——printer→bed 双代链接真实存在于 DAG**。
