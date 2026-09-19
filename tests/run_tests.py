@@ -804,6 +804,87 @@ def test_25_printer_recursion_selfclosure():
     assert view["open"] == [], [(g["kind"], g["termination"]) for g in view["open"]]
 
 
+# ================================================ E2: simulator matrix ====
+def test_26_simulator_matrix():
+    """Each role layer produces checkable, honestly-tiered evidence, and the
+    closed-loop overrides replace assumed values with subtree measurements."""
+    eng = fresh()
+    t = terms(eng, "mass", "aero")
+    # wing: aero-2d — hand-recomputable polar (CL=0.654, CDi=0.0113, LD=16.3)
+    eng.node("wing", "Component", "wing", contract(
+        eng, t, guarantees=[{"id": "gw", "stmt": "lifts",
+                             "bounds": {"ld_ratio": {">=": 14}}}]))
+    r = eng.evaluate("wing", "aero-2d", fidelity=1,
+                     expect={"ld_ratio": {">=": 14}},
+                     args={"ar": 14, "s_m2": 3.5, "mass_kg": 1200.0,
+                           "cruise_ms": 95.0})
+    assert r["state"] == "promoted", r["reason"]
+    ev = eng.store.get_object(eng.store.resolve("wing"))["payload"]["evidence"]
+    aero = next(e for e in ev if e["solver"] == "aero/2d")
+    q = 0.5 * 1.225 * 95.0 ** 2
+    cl = 1200.0 * 9.81 / (q * 3.5)
+    cdi = cl ** 2 / (3.14159265 * 14.0 * 0.85)
+    assert abs(aero["ld_ratio"] - cl / (0.028 + cdi)) < 0.05
+    assert aero["tier"] == 1
+
+    # propulsion: prop-map — shaft power and actuator-disk thrust
+    r2 = eng.evaluate("wing", "prop-map", fidelity=1,
+                      args={"torque_nm": 8.0, "rpm": 12000.0})
+    ev2 = eng.store.get_object(eng.store.resolve("wing"))["payload"]["evidence"]
+    pm = [e for e in ev2 if e["solver"] == "prop/map"][-1]
+    p = 8.0 * (12000.0 * 2 * 3.14159265 / 60.0)
+    assert abs(pm["shaft_w"] - p) < 1.0
+    a_d = 3.14159265 * 0.25 / 4.0
+    thrust = (2 * 1.225 * a_d) ** (1 / 3) * (p * 0.7) ** (2 / 3)
+    assert abs(pm["thrust_n"] - thrust) < 0.5
+
+    # structure: beam-fe on the grounded rib — section inertia from bbox
+    _rib_chain(eng, width=10, name_prefix="beam")
+    r3 = eng.evaluate("beam-solid", "beam-fe", fidelity=1)
+    assert r3["state"] == "promoted", r3["reason"]
+    ev3 = eng.store.get_object(eng.store.resolve("beam-solid"))["payload"]["evidence"]
+    bf = [e for e in ev3 if e["solver"] == "beam/plate"][-1]
+    # rib 20 span x 10 section-height x 3 thick: I = 3*10^3/12 = 250 mm^4
+    # (bbox convention: length x height x thickness)
+    assert abs(bf["i_mm4"] - 3.0 * 10.0 ** 3 / 12.0) < 1.0
+    assert bf["stress_mpa"] <= bf["yield_mpa"]
+
+    # assembly: mass-rollup over the rib (single grounded part)
+    r4 = eng.evaluate("beam-solid", "mass-rollup", fidelity=2)
+    assert r4["state"] == "promoted", r4["reason"]
+    ev4 = eng.store.get_object(eng.store.resolve("beam-solid"))["payload"]["evidence"]
+    mr = [e for e in ev4 if e["solver"] == "mass/rollup"][-1]
+    assert mr["mass_g"] > 0 and mr["tier"] == 2
+
+    # mission overrides: subtree measurement replaces the assumed mtow
+    eng.node("m-goal", "Intent", "m", contract(eng, t))
+    eng.refine("m-goal", {"name": "point-mass-model"}, out_name="m-pm",
+               out_role="System")
+    eng.refine("m-pm", {"name": "param-perturb",
+                        "args": {"values": {"mtow": 1200.0, "ff": 0.28,
+                                            "ld": 14.0, "sfc": 8.333e-6,
+                                            "v": 95.0}}}, out_name="m-pm2")
+    base = eng.evaluate("m-pm2", "mission-analysis", fidelity=1,
+                        args={"range_km": 1300.0})
+    evb = eng.store.get_object(eng.store.resolve("m-pm2"))["payload"]["evidence"]
+    rng_base = [e for e in evb if e["solver"] == "mission/breguet"][-1]["range_km"]
+    # Breguet range scales with L/D (not absolute mass): the closed loop
+    # feeds the aero-measured L/D down into the mission re-check
+    ov = eng.evaluate("m-pm2", "mission-analysis", fidelity=1,
+                      args={"range_km": 1300.0,
+                            "overrides": {"ld": 15.5, "mtow": 1000.0}})
+    evo = eng.store.get_object(eng.store.resolve("m-pm2"))["payload"]["evidence"]
+    breg = [e for e in evo if e["solver"] == "mission/breguet"][-1]
+    rng_ov = breg["range_km"]
+    assert rng_ov > rng_base, "higher L/D must fly farther (Breguet)"
+    assert abs(breg["mtow_kg"] - 1000.0) < 1e-6, "override must replace mtow"
+
+    # subtree metrics helper: collects evidence across the subtree
+    from fluxkernel.semantics.operators import _subtree_metrics
+    met = _subtree_metrics(eng.dag, "m-pm2")
+    assert "range_km" in met and "ld_ratio" in met
+
+
 # ================================================ discipline ==============
 def test_layer_discipline():
     """core/ and store/ import ZERO third-party packages (relative imports

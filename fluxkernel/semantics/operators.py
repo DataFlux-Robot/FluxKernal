@@ -61,7 +61,7 @@ def load_plugins() -> list[str]:
     failed = []
     from ..solvers import sketch2d, registry  # noqa: F401
     for mod in ("feature3d", "mission", "mate", "dfam", "process", "line",
-                "catalog", "cosim"):
+                "catalog", "cosim", "sims"):
         try:
             __import__(f"fluxkernel.solvers.{mod}", fromlist=["*"])
         except Exception as e:  # missing optional backend etc.
@@ -889,3 +889,36 @@ def _realize_query(goal_view: dict) -> str:
             elif p["lo"] is not None:
                 parts.append(f"{q}>={p['lo']:g}")
     return " ".join(parts)
+
+
+def _subtree_metrics(dag, root: str) -> dict:
+    """Numeric evidence collected from the subtree under root (E2): the
+    closed-loop re-verification reads lower-layer measured values through
+    this (last write wins, mirroring _metric)."""
+    try:
+        root_d = dag.store.resolve(root)
+    except KeyError:
+        return {}
+    kids: dict[str, list[str]] = {}
+    for _, e in dag.iter_edges():
+        if e.get("state") == "promoted":
+            for i in e.get("inputs", []):
+                kids.setdefault(i, []).append(e.get("output", ""))
+    seen, stack, metrics = set(), [root_d], {}
+    while stack:
+        cur = stack.pop()
+        if cur in seen:
+            continue
+        seen.add(cur)
+        try:
+            payload = dag.store.get_object(cur)["payload"]
+        except KeyError:
+            continue
+        for ev in payload.get("evidence") or []:
+            if not isinstance(ev, dict):
+                continue
+            for k, v in ev.items():
+                if isinstance(v, (int, float)) and not isinstance(v, bool):
+                    metrics[k] = v
+        stack.extend(kids.get(cur, []))
+    return metrics

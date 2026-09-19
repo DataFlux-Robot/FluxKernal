@@ -42,7 +42,11 @@ def mission_analysis(node_specs, args, ctx):
     p = dict(node_specs[0].get("params", {})) if node_specs else {}
     pb = (node_specs[0].get("spec", {}) or {}).get("param_bounds", {}) if node_specs else {}
 
+    ov = args.get("overrides") or {}
+
     def val(key, default):
+        if key in ov:
+            return float(ov[key])
         v = p.get(key, default)
         if isinstance(v, (list, tuple)) and v and v[0] == "param":
             b = pb.get(key) or {}
