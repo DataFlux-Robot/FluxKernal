@@ -21,11 +21,12 @@ canvas:active{cursor:grabbing}
 #hud b{color:#b7d9f0;font-weight:600}
 </style></head>
 <body>
-<div id="hud"><b>__TITLE__</b><br>drag = rotate &nbsp; wheel = zoom</div>
+<div id="hud"><b>__TITLE__</b><br>__LEGEND__<br>drag = rotate &nbsp; wheel = zoom</div>
 <canvas id="c"></canvas>
 <script>
 "use strict";
 const B64 = "__B64__";
+const LABELS = __LABELS__;
 
 function abFromB64(b64) {
   const bin = atob(b64);
@@ -94,7 +95,7 @@ for (let i = 0; i < verts.length; i += 3)
     if (c > mx[k]) mx[k] = c;
   }
 const cx = (mn[0] + mx[0]) / 2, cy = (mn[1] + mx[1]) / 2, cz = (mn[2] + mx[2]) / 2;
-const size = Math.max(mx[0] - mn[0], mx[1] - mn[1], mx[2] - mn[2]) || 1;
+const spanX = (mx[0] - mn[0]) || 1, spanY = (mx[1] - mn[1]) || 1;
 
 // ---- camera ----
 let theta = 0.55, phi = 0.3, zoom = 1;
@@ -112,7 +113,7 @@ function draw() {
   ctx.fillRect(0, 0, w, h);
   const ct = Math.cos(theta), st = Math.sin(theta);
   const cp = Math.cos(phi), sp = Math.sin(phi);
-  const scale = Math.min(w, h) * 0.78 * zoom / size;
+  const scale = Math.min(w / spanX, h / spanY) * 0.82 * zoom;
   for (let i = 0; i < verts.length; i += 3) {
     const x = verts[i] - cx, y = verts[i + 1] - cy, z = verts[i + 2] - cz;
     const x1 = ct * x + st * z, z1 = -st * x + ct * z;
@@ -140,9 +141,9 @@ function draw() {
     const t = order[k];
     const a = t * 9;
     const nx = rnorm[t * 3], ny = rnorm[t * 3 + 1], nz = rnorm[t * 3 + 2];
-    let sh = 0.32 + 0.68 * Math.max(0, nx * L[0] + ny * L[1] + nz * L[2]);
-    const r = Math.round(118 * sh + 18), g = Math.round(168 * sh + 22),
-          b = Math.round(205 * sh + 28);
+    let sh = 0.5 + 0.5 * Math.max(0, nx * L[0] + ny * L[1] + nz * L[2]);
+    const r = Math.round(148 * sh + 20), g = Math.round(196 * sh + 25),
+          b = Math.round(232 * sh + 30);
     ctx.fillStyle = "rgb(" + r + "," + g + "," + b + ")";
     ctx.beginPath();
     ctx.moveTo(rot[a] * scale + w / 2, h / 2 - rot[a + 1] * scale);
@@ -150,6 +151,31 @@ function draw() {
     ctx.lineTo(rot[a + 6] * scale + w / 2, h / 2 - rot[a + 7] * scale);
     ctx.closePath();
     ctx.fill();
+    ctx.lineWidth = 0.6;
+    ctx.strokeStyle = "rgba(10,15,22,0.35)";
+    ctx.stroke();
+  }
+  // group labels (world coords -> same permutation+rotation -> screen)
+  if (LABELS.length) {
+    ctx.font = (12 * devicePixelRatio) + "px monospace";
+    ctx.textAlign = "center";
+    for (const item of LABELS) {
+      const txt = item[0], p = item[1];
+      // permuted coords (x,y,z)->(y,z,x), made relative to the permuted center
+      const x = p[1] - cx, y = p[2] - cy, z = p[0] - cz;
+      const x1 = ct * x + st * z, z1 = -st * x + ct * z;
+      const sy = cp * y - sp * z1, sz = sp * y + cp * z1;
+      const sx = x1 * scale + w / 2, syp = h / 2 - sy * scale;
+      const lead = (item[2] || 26) * devicePixelRatio;
+      ctx.strokeStyle = "rgba(127,168,201,0.55)";
+      ctx.lineWidth = devicePixelRatio;
+      ctx.beginPath();
+      ctx.moveTo(sx, syp);
+      ctx.lineTo(sx, syp - lead);
+      ctx.stroke();
+      ctx.fillStyle = "#9fc3e6";
+      ctx.fillText(txt, sx, syp - lead - 6 * devicePixelRatio);
+    }
   }
 }
 
@@ -182,9 +208,15 @@ resize();
 """
 
 
-def render_page(stl_bytes: bytes, title: str) -> str:
-    """Self-contained preview HTML with the STL embedded as base64."""
+def render_page(stl_bytes: bytes, title: str, legend: str = "",
+                labels: list | None = None) -> str:
+    """Self-contained preview HTML with the STL embedded as base64.
+    labels: [(text, [world_x, world_y, world_z]), ...] drawn on the canvas."""
+    import json
     b64 = base64.b64encode(stl_bytes).decode("ascii")
     return (_PAGE.replace("__TITLE__", title.replace("&", "&amp;")
                           .replace("<", "&lt;"))
+            .replace("__LEGEND__", legend.replace("&", "&amp;")
+                     .replace("<", "&lt;"))
+            .replace("__LABELS__", json.dumps(labels or []))
             .replace("__B64__", b64))
