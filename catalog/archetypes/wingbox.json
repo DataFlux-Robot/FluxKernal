@@ -1,0 +1,433 @@
+{
+  "_doc": "Wing-box architecture: two skins closing a front/rear spar pair and a rib row, all placed in ONE skeleton layout (X=span 3000, Y=chord 1500, Z=height 200). Ribs span BETWEEN the spars (y 390..1110) so the assembled box is interference-free.",
+  "into": [
+    "skin-upper",
+    "skin-lower",
+    "spar-front",
+    "spar-rear",
+    "rib-1",
+    "rib-2",
+    "rib-3",
+    "rib-4",
+    "rib-5",
+    "rib-6"
+  ],
+  "roles": {
+    "skin-upper": "Part",
+    "skin-lower": "Part",
+    "spar-front": "Part",
+    "spar-rear": "Part",
+    "rib-1": "Part",
+    "rib-2": "Part",
+    "rib-3": "Part",
+    "rib-4": "Part",
+    "rib-5": "Part",
+    "rib-6": "Part"
+  },
+  "kinds": {
+    "skin-upper": "skin-panel",
+    "skin-lower": "skin-panel",
+    "spar-front": "spar",
+    "spar-rear": "spar",
+    "rib-1": "rib",
+    "rib-2": "rib",
+    "rib-3": "rib",
+    "rib-4": "rib",
+    "rib-5": "rib",
+    "rib-6": "rib"
+  },
+  "flow_down": {
+    "skin-upper": {
+      "budget": {
+        "mass_kg": [
+          "<=",
+          30
+        ]
+      },
+      "guarantees": [
+        {
+          "id": "gsu",
+          "stmt": "upper skin carries airload",
+          "bounds": {
+            "mass_kg": [
+              "<=",
+              30
+            ]
+          }
+        }
+      ]
+    },
+    "skin-lower": {
+      "budget": {
+        "mass_kg": [
+          "<=",
+          30
+        ]
+      },
+      "guarantees": [
+        {
+          "id": "gsl",
+          "stmt": "lower skin carries fuel pressure",
+          "bounds": {
+            "mass_kg": [
+              "<=",
+              30
+            ]
+          }
+        }
+      ]
+    },
+    "spar-front": {
+      "budget": {
+        "mass_kg": [
+          "<=",
+          50
+        ]
+      },
+      "guarantees": [
+        {
+          "id": "gspf",
+          "stmt": "front spar carries bending",
+          "bounds": {
+            "mass_kg": [
+              "<=",
+              50
+            ],
+            "bending_knm": [
+              "<=",
+              45
+            ]
+          }
+        }
+      ]
+    },
+    "spar-rear": {
+      "budget": {
+        "mass_kg": [
+          "<=",
+          50
+        ]
+      },
+      "guarantees": [
+        {
+          "id": "gspr",
+          "stmt": "rear spar carries bending",
+          "bounds": {
+            "mass_kg": [
+              "<=",
+              50
+            ],
+            "bending_knm": [
+              "<=",
+              45
+            ]
+          }
+        }
+      ]
+    },
+    "rib-1": {
+      "budget": {
+        "mass_kg": [
+          "<=",
+          3
+        ]
+      },
+      "guarantees": [
+        {
+          "id": "gwr1",
+          "stmt": "rib web carries panel shear",
+          "bounds": {
+            "mass_kg": [
+              "<=",
+              3
+            ],
+            "web_h_mm": [
+              ">=",
+              150
+            ]
+          }
+        }
+      ]
+    },
+    "rib-2": {
+      "budget": {
+        "mass_kg": [
+          "<=",
+          3
+        ]
+      },
+      "guarantees": [
+        {
+          "id": "gwr2",
+          "stmt": "rib web carries panel shear",
+          "bounds": {
+            "mass_kg": [
+              "<=",
+              3
+            ],
+            "web_h_mm": [
+              ">=",
+              150
+            ]
+          }
+        }
+      ]
+    },
+    "rib-3": {
+      "budget": {
+        "mass_kg": [
+          "<=",
+          3
+        ]
+      },
+      "guarantees": [
+        {
+          "id": "gwr3",
+          "stmt": "rib web carries panel shear",
+          "bounds": {
+            "mass_kg": [
+              "<=",
+              3
+            ],
+            "web_h_mm": [
+              ">=",
+              150
+            ]
+          }
+        }
+      ]
+    },
+    "rib-4": {
+      "budget": {
+        "mass_kg": [
+          "<=",
+          3
+        ]
+      },
+      "guarantees": [
+        {
+          "id": "gwr4",
+          "stmt": "rib web carries panel shear",
+          "bounds": {
+            "mass_kg": [
+              "<=",
+              3
+            ],
+            "web_h_mm": [
+              ">=",
+              150
+            ]
+          }
+        }
+      ]
+    },
+    "rib-5": {
+      "budget": {
+        "mass_kg": [
+          "<=",
+          3
+        ]
+      },
+      "guarantees": [
+        {
+          "id": "gwr5",
+          "stmt": "rib web carries panel shear",
+          "bounds": {
+            "mass_kg": [
+              "<=",
+              3
+            ],
+            "web_h_mm": [
+              ">=",
+              150
+            ]
+          }
+        }
+      ]
+    },
+    "rib-6": {
+      "budget": {
+        "mass_kg": [
+          "<=",
+          3
+        ]
+      },
+      "guarantees": [
+        {
+          "id": "gwr6",
+          "stmt": "rib web carries panel shear",
+          "bounds": {
+            "mass_kg": [
+              "<=",
+              3
+            ],
+            "web_h_mm": [
+              ">=",
+              150
+            ]
+          }
+        }
+      ]
+    }
+  },
+  "specs": {
+    "skin-upper": {
+      "frames": {
+        "build": [
+          [
+            0,
+            10,
+            196
+          ]
+        ]
+      }
+    },
+    "skin-lower": {
+      "frames": {
+        "build": [
+          [
+            0,
+            10,
+            0
+          ]
+        ]
+      }
+    },
+    "spar-front": {
+      "frames": {
+        "build": [
+          [
+            0,
+            390,
+            2
+          ],
+          [
+            1,
+            0,
+            0,
+            90
+          ]
+        ]
+      }
+    },
+    "spar-rear": {
+      "frames": {
+        "build": [
+          [
+            0,
+            1140,
+            2
+          ],
+          [
+            1,
+            0,
+            0,
+            90
+          ]
+        ]
+      }
+    },
+    "rib-1": {
+      "frames": {
+        "build": [
+          [
+            248.5,
+            390,
+            6
+          ],
+          [
+            1,
+            1,
+            1,
+            120
+          ]
+        ]
+      }
+    },
+    "rib-2": {
+      "frames": {
+        "build": [
+          [
+            748.5,
+            390,
+            6
+          ],
+          [
+            1,
+            1,
+            1,
+            120
+          ]
+        ]
+      }
+    },
+    "rib-3": {
+      "frames": {
+        "build": [
+          [
+            1248.5,
+            390,
+            6
+          ],
+          [
+            1,
+            1,
+            1,
+            120
+          ]
+        ]
+      }
+    },
+    "rib-4": {
+      "frames": {
+        "build": [
+          [
+            1748.5,
+            390,
+            6
+          ],
+          [
+            1,
+            1,
+            1,
+            120
+          ]
+        ]
+      }
+    },
+    "rib-5": {
+      "frames": {
+        "build": [
+          [
+            2248.5,
+            390,
+            6
+          ],
+          [
+            1,
+            1,
+            1,
+            120
+          ]
+        ]
+      }
+    },
+    "rib-6": {
+      "frames": {
+        "build": [
+          [
+            2748.5,
+            390,
+            6
+          ],
+          [
+            1,
+            1,
+            1,
+            120
+          ]
+        ]
+      }
+    }
+  }
+}

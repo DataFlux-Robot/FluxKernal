@@ -23,6 +23,28 @@
 (node dc-bus :role Medium :kind dc-bus
   :spec (medium (capacity (power_w (<= 5000))) (margin 0.2)))
 
+;; ── the shared print capital (PRSI convergence point) ──
+(term printer "unbounded-build-volume FDM capital printer")
+(term frame "stiff gantry frame of a machine tool")
+(node reference-printer :role Resource :kind unbounded-fdm-printer
+  :spec (contract
+    (goals (rp1 "print every structural part of this product tree"
+                :falsifiable t
+                :measure "dfam-print hard gate per printed part"
+                :terms (printer frame)))
+    (semantics printer frame)
+    (assumes (rp-a1 "build volume effectively unbounded (demand-layer promise, not kernel-verifiable)"
+                    :bounds ((dim_mm (>= 0)))))
+    (guarantees (rp-g1 "prints grounded parts that pass dfam-print"
+                       :bounds ((mass_g (<= 100000)))))
+    (budget (mass_kg (<= 60)))
+    (forbidden (rp-f1 "unattended overnight operation" :check test))
+    (not-responsible "filament supply logistics")
+    (time-scale fabrication)))
+
+;; the printer develops ITSELF one full round (E1-3 hard rule):
+;; frame printed on itself (bootstrap), stepper/board from catalog
+
 ;; ── the demand, contract-native ──
 (goal sha-pek :kind aircraft
   :spec (contract
@@ -81,105 +103,258 @@
 (exact e4 :target sha-pek-v1/epu :from catalog
   :match "torque_nm>=50 rpm>=2000" :out epu-std)
 
-;; ── compose back up the V right leg ──
-;; ── wing STRUCTURAL decomposition: skin / spar / rib (contracts flow down) ──
+;; ══ wing: the WINGBOX archetype (E6-4) — skeleton frames place every ══
+;; ══ child in ONE layout; children ground AT their frame (E6-1)        ══
 (refine e4a :in (sha-pek-v1/wing) :out wing-v1 :role Component
-  :transform (decompose
-    :into (skin spar rib)
-    :flow-down (
-      (skin :budget ((mass_kg ("<=" 120))) :guarantees ((gws "skin panels carry airload" :bounds ((mass_kg ("<=" 120))))))
-      (spar :budget ((mass_kg ("<=" 80))) :guarantees ((gwp "main spar carries bending" :bounds ((mass_kg ("<=" 80)) (bending_knm ("<=" 45))))))
-      (rib :budget ((mass_kg ("<=" 12))) :guarantees ((gwr "rib web carries panel shear" :bounds ((mass_kg ("<=" 12)) (web_h_mm (">=" 150)))))))
-    ))
+  :transform (decompose :template wingbox))
 
-;; ground the rib web: sketch (one bounded hole) -> 3mm aluminum extrusion
-(refine e4b :in (wing-v1/rib) :out rib-sk :kind sketch
+;; skins: 3000x1480x2 plates closing the box top and bottom
+(refine e34 :in (wing-v1/skin-upper) :out sku-sk :kind sketch
   :transform (ground-sketch :sketch (sketch
-    (pts (p0 (param hw) 0) (p1 (param hw) 200) (p2 0 200) (p3 0 0))
-    (constraints (fix p3 0 0) (dist p1 p2 600) (vert p0 p1) (horiz p1 p2))))
-  :spec (contract (param-bounds (hw (>= 500) (<= 700)))))
-(refine e4c :in (rib-sk) :out rib-solid :kind rib
-  :transform (extrude :height 3 :material aluminum))
+    (pts (k0 0 0) (k1 3000 0) (k2 3000 1480) (k3 0 1480)) (constraints))))
+(refine e35 :in (sku-sk) :out sku-solid :kind skin-panel
+  :transform (extrude :height 2 :material aluminum :at (:frame build)))
+(print e36 :in (sku-solid) :printer reference-printer :out sku-printed)
+(refine e34b :in (wing-v1/skin-lower) :out skl-sk :kind sketch
+  :transform (ground-sketch :sketch (sketch
+    (pts (k4 0 0) (k5 3000 0) (k6 3000 1480) (k7 0 1480)) (constraints))))
+(refine e35b :in (skl-sk) :out skl-solid :kind skin-panel
+  :transform (extrude :height 2 :material aluminum :at (:frame build)))
+(print e36b :in (skl-solid) :printer reference-printer :out skl-printed)
 
-;; compose the wing subtree back (V right leg, one level down)
-;; ══ production branch: the machined rib demands a fabrication cell ══
-;; Part -> process family -> line -> machine Resource -> machine as System
-;; (PRSI recursion) -> catalog closures -> fab-mill compose. The DC-bus
-;; ledger gates the cell's power draw (Σ ≤ capacity×(1−margin)).
-(manufacture e5a :in (rib-solid) :out rib-proc
-  :transform (process-plan :into (stock milling-3axis inspection)))
-(compose e5b :in (rib-proc/stock rib-proc/milling-3axis rib-proc/inspection)
-  :out rib-line :role Line :kind rib-line
-  :transform (line-eval)
-  :rollup ((takt_min (<= 60)) (oee (>= 0.5))))
-(refine e5c :in (rib-line) :out fab-req :role Resource :kind 3axis-mill-demand)
-(refine e5d :in (fab-req) :out fab-v1 :role System
-  :transform (decompose
-    :into (bed spindle-motor cnc-drive)
-    :flow-down (
-      (bed :budget ((mass_kg ("<=" 2000)) (power_w ("<=" 100 ":medium" dc-bus))) :guarantees ((gfb "static stiffness" :bounds ((mass_kg ("<=" 2000))))))
-      (spindle-motor :budget ((mass_kg ("<=" 9)) (power_w ("<=" 3000 ":medium" dc-bus))) :guarantees ((gfs "spindle torque and speed" :bounds ((torque_nm (">=" 8)) (rpm (">=" 12000))))))
-      (cnc-drive :budget ((mass_kg ("<=" 40)) (power_w ("<=" 500 ":medium" dc-bus))) :guarantees ((gfd "drive bandwidth" :bounds ((power_w ("<=" 500)))))))
-    ))
+;; spars: 3000x190 webs, stood upright at 25% / 75% chord
+(refine e37 :in (wing-v1/spar-front) :out spf-sk :kind sketch
+  :transform (ground-sketch :sketch (sketch
+    (pts (s0 0 0) (s1 3000 0) (s2 3000 190) (s3 0 190)) (constraints))))
+(refine e38 :in (spf-sk) :out spf-solid :kind spar
+  :transform (extrude :height 30 :material aluminum :at (:frame build)))
+(print e39 :in (spf-solid) :printer reference-printer :out spf-printed)
+(refine e37b :in (wing-v1/spar-rear) :out spr-sk :kind sketch
+  :transform (ground-sketch :sketch (sketch
+    (pts (s4 0 0) (s5 3000 0) (s6 3000 190) (s7 0 190)) (constraints))))
+(refine e38b :in (spr-sk) :out spr-solid :kind spar
+  :transform (extrude :height 30 :material aluminum :at (:frame build)))
+(print e39b :in (spr-solid) :printer reference-printer :out spr-printed)
 
-(exact e5e :target fab-v1/spindle-motor :from catalog
-  :match "torque_nm>=8 rpm>=12000" :out fab-spindle-std)
-(procure e5f :target fab-v1/cnc-drive :from catalog
-  :match "power_w>=200 power_w<=600" :out fab-drive-bought)
-(compose e5g :in (fab-v1/bed fab-spindle-std fab-drive-bought)
-  :out fab-mill :role Resource :kind 3axis-mill)
-;; E4: evidence density + dual termination set + printer bootstrap
-;; (evolution plan v2.0: every layer carries its fidelity of evidence;
-;;  structural parts converge on the shared printer capital; the printer
-;;  develops itself one full round — o_i = t_(i+1) at the termination layer)
-;; ══════════════════════════════════════════════════════════════════════
+;; ribs: 720x188 webs spanning BETWEEN the spars, one per station.
+;; rib-1 is reserved for the machining branch (milled on the gantry);
+;; rib-2..6 terminate on the printer.
+(refine e4b :in (wing-v1/rib-1) :out rib1-sk :kind sketch
+  :transform (ground-sketch :sketch (sketch
+    (pts (p0 0 0) (p1 720 0) (p2 720 188) (p3 0 188)) (constraints))))
+(refine e4c :in (rib1-sk) :out rib-1-solid :kind rib
+  :transform (extrude :height 3 :material aluminum :at (:frame build)))
+(refine e4b2 :in (wing-v1/rib-2) :out rib2-sk :kind sketch
+  :transform (ground-sketch :sketch (sketch
+    (pts (p4 0 0) (p5 720 0) (p6 720 188) (p7 0 188)) (constraints))))
+(refine e4c2 :in (rib2-sk) :out rib-2-solid :kind rib
+  :transform (extrude :height 3 :material aluminum :at (:frame build)))
+(print e4p2 :in (rib-2-solid) :printer reference-printer :out rib-2-printed)
+(refine e4b3 :in (wing-v1/rib-3) :out rib3-sk :kind sketch
+  :transform (ground-sketch :sketch (sketch
+    (pts (p8 0 0) (p9 720 0) (p10 720 188) (p11 0 188)) (constraints))))
+(refine e4c3 :in (rib3-sk) :out rib-3-solid :kind rib
+  :transform (extrude :height 3 :material aluminum :at (:frame build)))
+(print e4p3 :in (rib-3-solid) :printer reference-printer :out rib-3-printed)
+(refine e4b4 :in (wing-v1/rib-4) :out rib4-sk :kind sketch
+  :transform (ground-sketch :sketch (sketch
+    (pts (p12 0 0) (p13 720 0) (p14 720 188) (p15 0 188)) (constraints))))
+(refine e4c4 :in (rib4-sk) :out rib-4-solid :kind rib
+  :transform (extrude :height 3 :material aluminum :at (:frame build)))
+(print e4p4 :in (rib-4-solid) :printer reference-printer :out rib-4-printed)
+(refine e4b5 :in (wing-v1/rib-5) :out rib5-sk :kind sketch
+  :transform (ground-sketch :sketch (sketch
+    (pts (p16 0 0) (p17 720 0) (p18 720 188) (p19 0 188)) (constraints))))
+(refine e4c5 :in (rib5-sk) :out rib-5-solid :kind rib
+  :transform (extrude :height 3 :material aluminum :at (:frame build)))
+(print e4p5 :in (rib-5-solid) :printer reference-printer :out rib-5-printed)
+(refine e4b6 :in (wing-v1/rib-6) :out rib6-sk :kind sketch
+  :transform (ground-sketch :sketch (sketch
+    (pts (p20 0 0) (p21 720 0) (p22 720 188) (p23 0 188)) (constraints))))
+(refine e4c6 :in (rib6-sk) :out rib-6-solid :kind rib
+  :transform (extrude :height 3 :material aluminum :at (:frame build)))
+(print e4p6 :in (rib-6-solid) :printer reference-printer :out rib-6-printed)
 
-;; ── E4.0 the shared print capital (PRSI convergence point) ──
-(term printer "unbounded-build-volume FDM capital printer")
-(term frame "stiff gantry frame of a machine tool")
-(node reference-printer :role Resource :kind unbounded-fdm-printer
-  :spec (contract
-    (goals (rp1 "print every structural part of this product tree"
-                :falsifiable t
-                :measure "dfam-print hard gate per printed part"
-                :terms (printer frame)))
-    (semantics printer frame)
-    (assumes (rp-a1 "build volume effectively unbounded (demand-layer promise, not kernel-verifiable)"
-                    :bounds ((dim_mm (>= 0)))))
-    (guarantees (rp-g1 "prints grounded parts that pass dfam-print"
-                       :bounds ((mass_g (<= 100000)))))
-    (budget (mass_kg (<= 60)))
-    (forbidden (rp-f1 "unattended overnight operation" :check test))
-    (not-responsible "filament supply logistics")
-    (time-scale fabrication)))
-
-;; ── E4.1 per-layer simulator evidence (E2 matrix) ──
+;; ── per-layer simulator evidence (E2 matrix) ──
 (eval e30 :target sha-pek-v1/wing :with aero-2d :fidelity 1
   :ar 14 :s_m2 3.5 :mass_kg 1200 :cruise_ms 95
   :expect ((ld_ratio (>= 14))))
 (eval e31 :target epu-std :with prop-map :fidelity 1
   :torque_nm 50 :rpm 6000 :prop_d_m 0.6)
-(eval e32 :target rib-solid :with beam-fe :fidelity 1 :load_n 800)
+(eval e32 :target rib-1-solid :with beam-fe :fidelity 1 :load_n 800)
 
-;; ── E4.2 wing structure closure: skin + spar grounded, then printed ──
-(refine e34 :in (wing-v1/skin) :out skin-sk :kind sketch
-  :transform (ground-sketch :sketch (sketch
-    (pts (k0 0 0) (k1 3000 0) (k2 3000 1500) (k3 0 1500)) (constraints))))
-(refine e35 :in (skin-sk) :out skin-solid :kind skin
-  :transform (extrude :height 2 :material aluminum))
-(print e36 :in (skin-solid) :printer reference-printer :out skin-printed)
-(refine e37 :in (wing-v1/spar) :out spar-sk :kind sketch
-  :transform (ground-sketch :sketch (sketch
-    (pts (s0 0 0) (s1 3000 0) (s2 3000 200) (s3 0 200)) (constraints))))
-(refine e38 :in (spar-sk) :out spar-solid :kind spar
-  :transform (extrude :height 30 :material aluminum))
-(print e39 :in (spar-solid) :printer reference-printer :out spar-printed)
+;; wing assembly: children are ALREADY in world coordinates (each grounded
+;; at its skeleton frame) — identity placements + the real interference gate
+(compose e4d :in (sku-solid skl-solid spf-solid spr-solid
+                      rib-1-solid rib-2-solid rib-3-solid
+                      rib-4-solid rib-5-solid rib-6-solid)
+  :out wing-assy :role Component :kind wing-assembly
+  :transform (assemble :placements ((0 0 0) (0 0 0) (0 0 0) (0 0 0)
+                                    (0 0 0) (0 0 0) (0 0 0)
+                                    (0 0 0) (0 0 0) (0 0 0))))
 
-(compose e4d :in (skin-solid spar-solid rib-solid)
-  :out wing-assy :role Component :kind wing-assembly)
+;; ── fuselage developed one level: cabin shell + seats; avionics closes
+;;    straight from the catalog ("may split or not" — a catalog hit is a
+;;    legal stopping point) ──
+(refine e43 :in (sha-pek-v1/fuselage) :out fuselage-v1 :role Component
+  :transform (decompose
+    :into (cabin-shell seat)
+    :flow-down (
+      (cabin-shell :budget ((mass_kg ("<=" 200))) :guarantees ((gcs "cabin shell carries airload" :bounds ((mass_kg ("<=" 200))))))
+      (seat :budget ((mass_kg ("<=" 15))) :guarantees ((gst "two occupant seats" :bounds ((mass_kg ("<=" 15)))))))))
+(refine e47 :in (fuselage-v1/cabin-shell) :out cabin-sk :kind sketch
+  :transform (ground-sketch :sketch (sketch
+    (pts (c0 0 0) (c1 800 0) (c2 800 1400) (c3 0 1400)) (constraints))))
+(refine e48 :in (cabin-sk) :out cabin-solid :kind cabin-shell
+  :transform (extrude :height 3 :material aluminum))
+(print e49 :in (cabin-solid) :printer reference-printer :out cabin-printed)
+(exact e45 :target fuselage-v1/seat :from catalog
+  :match "mass_kg<=15" :out seat-std)
+(exact e46 :target sha-pek-v1/avionics :from catalog
+  :match "mass_kg<=40" :out av-std)
+
+;; ── compose the aircraft design (V right leg) ──
 (compose e5 :in (wing-assy sha-pek-v1/fuselage sha-pek-v1/avionics epu-std)
   :out sha-pek-design :role System :kind light-aircraft
   :rollup ((range_km (>= 1300))))
+
+;; ══ production branch: the aircraft design demands a machine tool; the ══
+;; ══ GANTRY-MILL archetype (E6-4) develops it; THEN the rib is milled   ══
+;; ══ on it (:machine, G2) and the line rolls the process up.            ══
+;; the production view of the AIRCRAFT (not its mass roll-up) demands the
+;; machine: budget narrows Intent's 1500kg envelope, not the aircraft's
+;; flown mass — the mill is not part of the aircraft's weight budget
+(refine e5c :in (sha-pek-v1) :out fab-req :role Resource :kind gantry-mill-demand
+  :spec (contract (budget (mass_kg (<= 1000)))))
+(refine e5d :in (fab-req) :out fab-v1 :role System
+  :transform (decompose :template gantry-mill))
+
+;; machine structure: bed / columns / crossbeam / z-head, grounded AT the
+;; archetype frames (one gantry layout) and printed by the shared printer
+(refine e40 :in (fab-v1/bed) :out bed-sk :kind sketch
+  :transform (ground-sketch :sketch (sketch
+    (pts (b0 0 0) (b1 1800 0) (b2 1800 800) (b3 0 800)) (constraints))))
+(refine e41 :in (bed-sk) :out bed-solid :kind bed
+  :transform (extrude :height 60 :material aluminum :at (:frame build)))
+(print e42 :in (bed-solid) :printer reference-printer :out bed-printed)
+(refine e40c :in (fab-v1/column-L) :out colL-sk :kind sketch
+  :transform (ground-sketch :sketch (sketch
+    (pts (l0 0 0) (l1 120 0) (l2 120 800) (l3 0 800)) (constraints))))
+(refine e41c :in (colL-sk) :out colL-solid :kind column
+  :transform (extrude :height 800 :material aluminum :at (:frame build)))
+(print e42c :in (colL-solid) :printer reference-printer :out colL-printed)
+(refine e40d :in (fab-v1/column-R) :out colR-sk :kind sketch
+  :transform (ground-sketch :sketch (sketch
+    (pts (l4 0 0) (l5 120 0) (l6 120 800) (l7 0 800)) (constraints))))
+(refine e41d :in (colR-sk) :out colR-solid :kind column
+  :transform (extrude :height 800 :material aluminum :at (:frame build)))
+(print e42d :in (colR-solid) :printer reference-printer :out colR-printed)
+(refine e40e :in (fab-v1/crossbeam) :out beam-sk :kind sketch
+  :transform (ground-sketch :sketch (sketch
+    (pts (m0 0 0) (m1 2040 0) (m2 2040 140) (m3 0 140)) (constraints))))
+(refine e41e :in (beam-sk) :out beam-solid :kind crossbeam
+  :transform (extrude :height 160 :material aluminum :at (:frame build)))
+(print e42e :in (beam-solid) :printer reference-printer :out beam-printed)
+(refine e40f :in (fab-v1/z-head) :out head-sk :kind sketch
+  :transform (ground-sketch :sketch (sketch
+    (pts (n0 0 0) (n1 220 0) (n2 220 220) (n3 0 220)) (constraints))))
+(refine e41f :in (head-sk) :out head-solid :kind spindle-head
+  :transform (extrude :height 300 :material aluminum :at (:frame build)))
+(print e42f :in (head-solid) :printer reference-printer :out head-printed)
+
+;; axis modules: rail/screw/servo from the catalog, carriage printed.
+;; (explicit decompose per axis — same motion-hardware pattern three times)
+(refine e5x :in (fab-v1/x-axis) :out xax-v1 :role Component
+  :transform (decompose
+    :into (x-rail x-screw x-servo x-carriage)
+    :flow-down (
+      (x-rail :budget ((mass_kg ("<=" 2))) :guarantees ((gxr "X rail travel" :bounds ((travel_mm (">=" 1700))))))
+      (x-screw :budget ((mass_kg ("<=" 0.5))) :guarantees ((gxs "X leadscrew" :bounds ((dia_mm ("=" 8))))))
+      (x-servo :budget ((mass_kg ("<=" 0.4))) :guarantees ((gxv "X servo torque" :bounds ((torque_nm (">=" 0.35))))))
+      (x-carriage :budget ((mass_kg ("<=" 1))) :guarantees ((gxc "X carriage stiffness" :bounds ((mass_kg ("<=" 1)))))))))
+(exact e5xr :target xax-v1/x-rail :from catalog :match "travel_mm>=1700" :out x-rail-std)
+(procure e5xs :target xax-v1/x-screw :from catalog :match "dia_mm=8" :out x-screw-bought)
+(exact e5xv :target xax-v1/x-servo :from catalog :match "torque_nm>=0.35" :out x-servo-std)
+(refine e5xc1 :in (xax-v1/x-carriage) :out xcar-sk :kind sketch
+  :transform (ground-sketch :sketch (sketch
+    (pts (u0 0 0) (u1 150 0) (u2 150 120) (u3 0 120)) (constraints))))
+(refine e5xc2 :in (xcar-sk) :out xcar-solid :kind carriage
+  :transform (extrude :height 80 :material pla :at ((300 -100 60))))
+(print e5xc3 :in (xcar-solid) :printer reference-printer :out xcar-printed)
+
+(refine e5y :in (fab-v1/y-axis) :out yax-v1 :role Component
+  :transform (decompose
+    :into (y-rail y-screw y-servo y-carriage)
+    :flow-down (
+      (y-rail :budget ((mass_kg ("<=" 2))) :guarantees ((gyr "Y rail travel" :bounds ((travel_mm (">=" 700))))))
+      (y-screw :budget ((mass_kg ("<=" 0.5))) :guarantees ((gys "Y leadscrew" :bounds ((dia_mm ("=" 8))))))
+      (y-servo :budget ((mass_kg ("<=" 0.4))) :guarantees ((gyv "Y servo torque" :bounds ((torque_nm (">=" 0.35))))))
+      (y-carriage :budget ((mass_kg ("<=" 1))) :guarantees ((gyc "Y carriage stiffness" :bounds ((mass_kg ("<=" 1)))))))))
+(exact e5yr :target yax-v1/y-rail :from catalog :match "travel_mm>=700" :out y-rail-std)
+(procure e5ys :target yax-v1/y-screw :from catalog :match "dia_mm=8" :out y-screw-bought)
+(exact e5yv :target yax-v1/y-servo :from catalog :match "torque_nm>=0.35" :out y-servo-std)
+(refine e5yc1 :in (yax-v1/y-carriage) :out ycar-sk :kind sketch
+  :transform (ground-sketch :sketch (sketch
+    (pts (v0 0 0) (v1 150 0) (v2 150 120) (v3 0 120)) (constraints))))
+(refine e5yc2 :in (ycar-sk) :out ycar-solid :kind carriage
+  :transform (extrude :height 80 :material pla :at ((-100 250 60))))
+(print e5yc3 :in (ycar-solid) :printer reference-printer :out ycar-printed)
+
+(refine e5z :in (fab-v1/z-axis) :out zax-v1 :role Component
+  :transform (decompose
+    :into (z-rail z-screw z-servo z-carriage)
+    :flow-down (
+      (z-rail :budget ((mass_kg ("<=" 2))) :guarantees ((gzr "Z rail travel" :bounds ((travel_mm (">=" 400))))))
+      (z-screw :budget ((mass_kg ("<=" 0.5))) :guarantees ((gzs "Z leadscrew" :bounds ((dia_mm ("=" 8))))))
+      (z-servo :budget ((mass_kg ("<=" 0.4))) :guarantees ((gzv "Z servo torque" :bounds ((torque_nm (">=" 0.35))))))
+      (z-carriage :budget ((mass_kg ("<=" 1))) :guarantees ((gzc "Z carriage rides the beam" :bounds ((mass_kg ("<=" 1)))))))))
+(exact e5zr :target zax-v1/z-rail :from catalog :match "travel_mm>=400" :out z-rail-std)
+(procure e5zs :target zax-v1/z-screw :from catalog :match "dia_mm=8" :out z-screw-bought)
+(exact e5zv :target zax-v1/z-servo :from catalog :match "torque_nm>=0.35" :out z-servo-std)
+(refine e5zc1 :in (zax-v1/z-carriage) :out zcar-sk :kind sketch
+  :transform (ground-sketch :sketch (sketch
+    (pts (w0 0 0) (w1 150 0) (w2 150 120) (w3 0 120)) (constraints))))
+(refine e5zc2 :in (zcar-sk) :out zcar-solid :kind carriage
+  :transform (extrude :height 80 :material pla :at ((-75 70 880))))
+(print e5zc3 :in (zcar-solid) :printer reference-printer :out zcar-printed)
+
+;; spindle + CNC from the catalog
+(exact e5e :target fab-v1/spindle :from catalog
+  :match "torque_nm>=8 rpm>=12000" :out fab-spindle-std)
+(procure e5f :target fab-v1/cnc :from catalog
+  :match "axis_count>=4" :out fab-cnc-bought)
+
+;; the machine exists — compose it
+(compose e5g :in (bed-solid colL-solid colR-solid beam-solid head-solid
+                      xax-v1 yax-v1 zax-v1 fab-spindle-std fab-cnc-bought)
+  :out fab-mill :role Resource :kind gantry-mill)
+
+;; NOW the rib is milled ON the developed machine (G2: the machine digest
+;; enters the process edges — "this mill machines this part" is a DAG fact)
+(manufacture e5a :in (rib-1-solid) :out rib-proc :machine fab-mill
+  :transform (process-plan :into (stock milling-3axis inspection)))
+(compose e5b :in (rib-proc/stock rib-proc/milling-3axis rib-proc/inspection)
+  :out rib-line :role Line :kind rib-line
+  :transform (line-eval)
+  :rollup ((takt_min (<= 65)) (oee (>= 0.5))))
+
+(refine e50 :in (reference-printer) :out printer-v1 :role System
+  :transform (decompose
+    :into (p-frame p-stepper p-board)
+    :flow-down (
+      (p-frame :budget ((mass_g ("<=" 6000))) :guarantees ((gpf "stiff gantry frame" :bounds ((mass_g ("<=" 6000))))))
+      (p-stepper :budget ((mass_g ("<=" 400))) :guarantees ((gps "extruder stepper torque" :bounds ((torque_nm (">=" 0.35))))))
+      (p-board :budget ((mass_g ("<=" 300))) :guarantees ((gpb "4-axis motion board" :bounds ((axis_count (">=" 4)))))))))
+(refine e51 :in (printer-v1/p-frame) :out pframe-sk :kind sketch
+  :transform (ground-sketch :sketch (sketch
+    (pts (r0 0 0) (r1 600 0) (r2 600 600) (r3 0 600)) (constraints))))
+(refine e52 :in (pframe-sk) :out pframe-solid :kind frame
+  :transform (extrude :height 8 :material pla))
+(print e53 :in (pframe-solid) :printer reference-printer :out pframe-printed)
+(exact e54 :target printer-v1/p-stepper :from catalog
+  :match "torque_nm>=0.35" :out p-stepper-std)
+(procure e55 :target printer-v1/p-board :from catalog
+  :match "axis_count>=4" :out p-board-bought)
 
 ;; ══ geometric mockup branch: ground every subsystem as 1:20 scale ══
 ;; Geometry is an EVALUATION PROJECTION of a node (design v0.1 §1.2): each
@@ -232,65 +407,14 @@
   :transform (assemble :placements ((0 0 0) (0 140 30) (0 285 20) (-1.5 0 25 0 1 0 90) (0 0 0)))
   :rollup ((mass_g (<= 1500))))
 
-;; ══════════════════════════════════════════════════════════════════════
-;; ── E4.3 fuselage developed one level: cabin shell + seats; avionics
-;;    closes straight from the catalog ("may split or not" — a catalog hit
-;;    is a legal stopping point) ──
-(refine e43 :in (sha-pek-v1/fuselage) :out fuselage-v1 :role Component
-  :transform (decompose
-    :into (cabin-shell seat)
-    :flow-down (
-      (cabin-shell :budget ((mass_kg ("<=" 200))) :guarantees ((gcs "cabin shell carries airload" :bounds ((mass_kg ("<=" 200))))))
-      (seat :budget ((mass_kg ("<=" 15))) :guarantees ((gst "two occupant seats" :bounds ((mass_kg ("<=" 15)))))))))
-(refine e47 :in (fuselage-v1/cabin-shell) :out cabin-sk :kind sketch
-  :transform (ground-sketch :sketch (sketch
-    (pts (c0 0 0) (c1 800 0) (c2 800 1400) (c3 0 1400)) (constraints))))
-(refine e48 :in (cabin-sk) :out cabin-solid :kind cabin-shell
-  :transform (extrude :height 3 :material aluminum))
-(print e49 :in (cabin-solid) :printer reference-printer :out cabin-printed)
-(exact e45 :target fuselage-v1/seat :from catalog
-  :match "mass_kg<=15" :out seat-std)
-(exact e46 :target sha-pek-v1/avionics :from catalog
-  :match "mass_kg<=40" :out av-std)
-
-;; ── E4.4 the mill's bed: grounded as a structural part and PRINTED by the
-;;    shared printer — generation 0 prints generation 1's machine tool
-;;    (printer -> bed link in the DAG), while spindle/drive stay catalog ──
-(refine e40 :in (fab-v1/bed) :out bed-sk :kind sketch
-  :transform (ground-sketch :sketch (sketch
-    (pts (b0 -400 -300) (b1 400 -300) (b2 400 300) (b3 -400 300)) (constraints))))
-(refine e41 :in (bed-sk) :out bed-solid :kind bed
-  :transform (extrude :height 60 :material aluminum))
-(print e42 :in (bed-solid) :printer reference-printer :out bed-printed)
-
-;; ── E4.5 the printer develops ITSELF one full round (E1-3 hard rule):
-;;    frame printed on itself (bootstrap), stepper/board from catalog ──
-(refine e50 :in (reference-printer) :out printer-v1 :role System
-  :transform (decompose
-    :into (p-frame p-stepper p-board)
-    :flow-down (
-      (p-frame :budget ((mass_g ("<=" 6000))) :guarantees ((gpf "stiff gantry frame" :bounds ((mass_g ("<=" 6000))))))
-      (p-stepper :budget ((mass_g ("<=" 400))) :guarantees ((gps "extruder stepper torque" :bounds ((torque_nm (">=" 0.35))))))
-      (p-board :budget ((mass_g ("<=" 300))) :guarantees ((gpb "4-axis motion board" :bounds ((axis_count (">=" 4)))))))))
-(refine e51 :in (printer-v1/p-frame) :out pframe-sk :kind sketch
-  :transform (ground-sketch :sketch (sketch
-    (pts (r0 0 0) (r1 600 0) (r2 600 600) (r3 0 600)) (constraints))))
-(refine e52 :in (pframe-sk) :out pframe-solid :kind frame
-  :transform (extrude :height 8 :material pla))
-(print e53 :in (pframe-solid) :printer reference-printer :out pframe-printed)
-(exact e54 :target printer-v1/p-stepper :from catalog
-  :match "torque_nm>=0.35" :out p-stepper-std)
-(procure e55 :target printer-v1/p-board :from catalog
-  :match "axis_count>=4" :out p-board-bought)
-
-;; ── E4.6 mockup parts terminate on the printer too (PLA, 1:20) ──
+;; mockup parts terminate on the printer too (PLA, 1:20)
 (print e56 :in (m-fuselage-solid) :printer reference-printer :out mp-fuselage)
 (print e57 :in (m-wing-solid) :printer reference-printer :out mp-wing)
 (print e58 :in (m-hstab-solid) :printer reference-printer :out mp-hstab)
 (print e59 :in (m-fin-solid) :printer reference-printer :out mp-fin)
 (print e60 :in (m-motor-solid) :printer reference-printer :out mp-motor)
 
-;; ── E4.7 closed-loop re-verification (V-model right leg): assembly mass
+;; ── closed-loop re-verification (V-model right leg): assembly mass
 ;;    evidence, then the top-level mission re-run with the MEASURED L/D
 ;;    from e30's aero-2d evidence (ld 16.05) replacing the assumed 14 ──
 (eval e62 :target sha-pek-model :with mass-rollup :fidelity 2

@@ -1,0 +1,34 @@
+{
+  "_doc": "Gantry 3-axis mill architecture: bed 1800x800x60, two columns, crossbeam, Z-head on the beam, three axis modules (rail/screw/servo = catalog, carriage = printed) and a catalog spindle + CNC. Frames place every structural child in ONE machine layout; the machine prints its structural parts on the shared printer and buys the motion hardware.",
+  "into": ["bed", "column-L", "column-R", "crossbeam", "z-head",
+           "x-axis", "y-axis", "z-axis", "spindle", "cnc"],
+  "roles": {"bed": "Part", "column-L": "Part", "column-R": "Part",
+            "crossbeam": "Part", "z-head": "Part",
+            "x-axis": "Component", "y-axis": "Component", "z-axis": "Component",
+            "spindle": "Part", "cnc": "Part"},
+  "kinds": {"bed": "bed", "column-L": "column", "column-R": "column",
+            "crossbeam": "crossbeam", "z-head": "spindle-head",
+            "x-axis": "axis-module", "y-axis": "axis-module", "z-axis": "axis-module",
+            "spindle": "motor", "cnc": "control-board"},
+  "flow_down": {
+    "bed": {"budget": {"mass_kg": ["<=", 300], "power_w": {"<=": 100, "medium": "dc-bus"}}, "guarantees": [{"id": "gfb", "stmt": "static stiffness", "bounds": {"mass_kg": ["<=", 300]}}]},
+    "column-L": {"budget": {"mass_kg": ["<=", 200], "power_w": {"<=": 20, "medium": "dc-bus"}}, "guarantees": [{"id": "gcl", "stmt": "column stiffness", "bounds": {"mass_kg": ["<=", 200]}}]},
+    "column-R": {"budget": {"mass_kg": ["<=", 200], "power_w": {"<=": 20, "medium": "dc-bus"}}, "guarantees": [{"id": "gcr", "stmt": "column stiffness", "bounds": {"mass_kg": ["<=", 200]}}]},
+    "crossbeam": {"budget": {"mass_kg": ["<=", 160], "power_w": {"<=": 20, "medium": "dc-bus"}}, "guarantees": [{"id": "gcb", "stmt": "gantry beam stiffness", "bounds": {"mass_kg": ["<=", 160]}}]},
+    "z-head": {"budget": {"mass_kg": ["<=", 60], "power_w": {"<=": 100, "medium": "dc-bus"}}, "guarantees": [{"id": "gzh", "stmt": "spindle head feed", "bounds": {"mass_kg": ["<=", 60]}}]},
+    "x-axis": {"budget": {"mass_kg": ["<=", 6], "power_w": {"<=": 80, "medium": "dc-bus"}}, "guarantees": [{"id": "gxa", "stmt": "X travel 1700mm", "bounds": {"travel_mm": [">=", 1700]}}]},
+    "y-axis": {"budget": {"mass_kg": ["<=", 6], "power_w": {"<=": 80, "medium": "dc-bus"}}, "guarantees": [{"id": "gya", "stmt": "Y travel 700mm", "bounds": {"travel_mm": [">=", 700]}}]},
+    "z-axis": {"budget": {"mass_kg": ["<=", 6], "power_w": {"<=": 80, "medium": "dc-bus"}}, "guarantees": [{"id": "gza", "stmt": "Z travel 400mm", "bounds": {"travel_mm": [">=", 400]}}]},
+    "spindle": {"budget": {"mass_kg": ["<=", 9], "power_w": {"<=": 3000, "medium": "dc-bus"}}, "guarantees": [{"id": "gfs", "stmt": "spindle torque and speed", "bounds": {"torque_nm": [">=", 8], "rpm": [">=", 12000]}}]},
+    "cnc": {"budget": {"mass_kg": ["<=", 1], "power_w": {"<=": 60, "medium": "dc-bus"}}, "guarantees": [{"id": "gnc", "stmt": "4-axis motion control", "bounds": {"axis_count": [">=", 4]}}]}
+  },
+  "specs": {
+    "bed": {"frames": {"build": [[-900, -400, 0]]}},
+    "column-L": {"frames": {"build": [[-900, -400, 60]]}},
+    "column-R": {"frames": {"build": [[900, -400, 60]]}},
+    "crossbeam": {"frames": {"build": [[-900, -70, 860]]}},
+    "z-head": {"frames": {"build": [[-110, -110, 560]]}},
+    "x-axis": {}, "y-axis": {}, "z-axis": {},
+    "spindle": {}, "cnc": {}
+  }
+}

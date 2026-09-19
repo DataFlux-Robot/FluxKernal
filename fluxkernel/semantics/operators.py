@@ -223,6 +223,9 @@ class Engine:
         """decompose: output = refined parent state (records children), then one
         refine edge per child; children names bind as '<parent>/<slot>'."""
         args = transform.get("args") or {}
+        if args.get("template") and not args.get("into"):
+            args = _merge_archetype(args, str(args["template"]), self.store)
+            transform = {**transform, "args": args}
         slots = args.get("into") or []
         if not slots:
             raise DagError("S1", "decompose requires :into [...] slots")
@@ -1059,6 +1062,47 @@ def _spec_superset(entry_spec: dict, goal_spec: dict) -> bool:
 
 def g_default_query(goal: str) -> str:
     return goal
+
+
+def _resolve_medium_names(flow: dict, store) -> None:
+    """Templates are data: budget/effluent media appear as NAMES; resolve
+    them to digests so ledger arithmetic sees the same bound form the
+    .fcad parser produces (in place)."""
+    for entry in flow.values():
+        if not isinstance(entry, dict):
+            continue
+        for slot in ("budget", "effluent"):
+            for b in (entry.get(slot) or {}).values():
+                if isinstance(b, dict) and b.get("medium")                         and not str(b["medium"]).startswith("fk1:"):
+                    try:
+                        b["medium"] = store.resolve(str(b["medium"]))
+                    except KeyError:
+                        pass
+
+
+def _merge_archetype(args: dict, name: str, store=None) -> dict:
+    """E6-4: merge a named architecture template into decompose args.
+
+    Templates are DATA (catalog/archetypes/<name>.json) — reusable
+    decomposition patterns (wingbox, gantry-mill, ...) carrying the child
+    list, roles/kinds, flow-down contracts and skeleton frames.  Explicit
+    args win over template content per key.  Nothing case-specific lives
+    in code."""
+    import json
+    from ..solvers.catalog import catalog_dirs
+    for d in catalog_dirs():
+        f = d / "archetypes" / f"{name}.json"
+        if f.is_file():
+            tpl = json.loads(f.read_text(encoding="utf-8"))
+            merged = dict(args)
+            for k, v in tpl.items():
+                if merged.get(k) in (None, [], {}):
+                    merged[k] = v
+            if store is not None:
+                _resolve_medium_names(merged.get("flow_down") or {}, store)
+            return merged
+    raise DagError("S1", f"unknown archetype template: {name!r} "
+                         f"(searched catalog/archetypes/)")
 
 
 def _realize_query(goal_view: dict) -> str:

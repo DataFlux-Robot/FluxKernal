@@ -1174,6 +1174,46 @@ def test_33_compose_requires_realized_part():
     assert res2["state"] == "promoted", res2["reason"]
 
 
+# ================================================ T: archetype templates =
+def test_34_archetype_templates():
+    """E6-4: decompose :template loads a data archetype (child list, roles,
+    flow-down contracts incl. media, skeleton frames) — the layout reaches
+    the children's spec.frames and the medium name resolves to a digest."""
+    eng = fresh()
+    t = terms(eng, "mass")
+    eng.node("dc-bus", "Medium", "dc-bus",
+             {"capacity": {"power_w": {"<=": 5000}}, "margin": 0.2})
+    eng.node("wing-goal", "Component", "wing", contract(
+        eng, t, budget={"mass_kg": ["<=", 260]}))
+    res = eng.refine("wing-goal",
+                     {"name": "decompose", "args": {"template": "wingbox"}},
+                     out_name="wb-v1", out_role="Component")
+    assert res["state"] == "promoted", res["reason"]
+    rib = eng.store.get_object(eng.store.resolve("wb-v1/rib-3"))["payload"]
+    frames = (rib.get("spec") or {}).get("frames") or {}
+    assert "build" in frames, "skeleton frame must flow to the child spec"
+
+    eng.node("mill-goal", "System", "demand", contract(
+        eng, t, budget={"mass_kg": ["<=", 1000]}))
+    res2 = eng.refine("mill-goal",
+                      {"name": "decompose", "args": {"template": "gantry-mill"}},
+                      out_name="mill-v1", out_role="System")
+    assert res2["state"] == "promoted", res2["reason"]
+    bed = eng.store.get_object(eng.store.resolve("mill-v1/bed"))["payload"]
+    pw = ((bed.get("spec") or {}).get("budget") or {}).get("power_w") or {}
+    assert str(pw.get("medium", "")).startswith("fk1:"), \
+        "template medium NAME must resolve to a digest"
+    # unknown template -> informative S1 script error (raised, not an edge)
+    from fluxkernel.core.dag import DagError
+    try:
+        eng.refine("mill-goal",
+                   {"name": "decompose", "args": {"template": "no-such"}},
+                   out_name="bad")
+        raise AssertionError("unknown template must raise S1")
+    except DagError as e:
+        assert "S1" in str(e)
+
+
 # ================================================ discipline ==============
 def test_layer_discipline():
     """core/ and store/ import ZERO third-party packages (relative imports
