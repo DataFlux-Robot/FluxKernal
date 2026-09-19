@@ -629,6 +629,107 @@ def test_8_termination():
     assert not [g for g in leaves if g["role"] in ("Part", "Component")]
 
 
+# ================================================ E0: review P1–P3 ========
+def test_21_recursive_closure():
+    """Review P1: a terminal artifact composed from closed inputs is NOT an
+    open goal; a contract-only child consumed by compose IS still open
+    (consumption is not realization)."""
+    eng = fresh()
+    t = terms(eng, "mass")
+    eng.node("ac", "Intent", "aircraft", contract(eng, t))
+    eng.refine("ac", {"name": "decompose",
+                      "args": {"into": ["wing", "motor"],
+                               "flow_down": {
+                                   "wing": {"guarantees": [
+                                       {"id": "gw", "stmt": "lifts",
+                                        "bounds": {"mass_kg": {"<=": 90}}}],
+                                       "budget": {"mass_kg": ["<=", 90]}},
+                                   "motor": {"guarantees": [
+                                       {"id": "gm", "stmt": "torque",
+                                        "bounds": {"torque_nm": {">=": 5}}}]}
+                               }}}, out_name="ac-v1", out_role="System")
+    # motor closes from the catalog; wing stays contract-only
+    r = eng.exact("ac-v1/motor", "catalog", "torque_nm>=5", out_name="motor-std")
+    assert r["state"] == "promoted", r["reason"]
+    # terminal artifact from the closed part alone -> closed, not open
+    r1 = eng.compose(["motor-std"], out_name="ac-final", out_role="System")
+    assert r1["state"] == "promoted", r1["reason"]
+    # a compose consuming the OPEN wing does not close it (nor itself)
+    r2 = eng.compose(["ac-v1/wing", "motor-std"], out_name="ac-wide",
+                     out_role="System")
+    assert r2["state"] == "promoted", r2["reason"]
+
+    view = goalsview.goals_view(eng.dag)
+    open_refs = {g["ref"] for g in view["open"]}
+    wing_d = eng.store.resolve("ac-v1/wing")
+    motor_d = eng.store.resolve("ac-v1/motor")
+    final_d = eng.store.resolve("ac-final")
+    assert wing_d in open_refs, "contract-only child must stay open"
+    assert motor_d not in open_refs, "catalog-closed leaf must not be open"
+    assert final_d not in open_refs, "terminal composed artifact must not be open"
+
+
+def test_22_hole_contagion_and_collapse():
+    """Review P2: contagion follows data references (not graph reachability);
+    holes collapsed by a promoted param-perturb leave the active list."""
+    eng = fresh()
+    t = terms(eng, "mass")
+    eng.node("goal1", "Intent", "mission", contract(eng, t))
+    r = eng.refine("goal1", {"name": "point-mass-model"}, out_name="pm",
+                   out_role="System")
+    assert r["state"] == "promoted", r["reason"]
+    # an unrelated sibling branch that never references the params
+    eng.refine("goal1", {"name": "param-perturb",
+                         "args": {"values": {"x1": 1}}}, out_name="other")
+    # collapse only mtow downstream
+    r2 = eng.refine("pm", {"name": "param-perturb",
+                           "args": {"values": {"mtow": 1200}}}, out_name="pm2")
+    assert r2["state"] == "promoted", r2["reason"]
+
+    hv = goalsview.holes_view(eng.dag)                    # active holes only
+    names = {h["hole"] for h in hv["holes"]}
+    assert "?mtow" not in names, "collapsed hole must leave the active list"
+    assert {"?ff", "?ld", "?sfc", "?v"} <= names
+
+    hv_all = goalsview.holes_view(eng.dag, include_collapsed=True)
+    mtow = [h for h in hv_all["holes"] if h["hole"] == "?mtow"]
+    assert mtow and all(h.get("collapsed_at") for h in mtow)
+    # data-reference contagion: pm2 mentions mtow; the unrelated branch does not
+    pm2_d = eng.store.resolve("pm2")
+    other_d = eng.store.resolve("other")
+    for h in mtow:
+        assert pm2_d in h["blocks"]
+        assert other_d not in h["blocks"]
+
+
+def test_23_evidence_coverage_risk():
+    """Review P3 / E0-3: composing a guarantee quantity with no subtree
+    evidence is a soft evidence-coverage gap — promoted, visible in risks,
+    never blocking."""
+    eng = fresh()
+    t = terms(eng, "mass")
+    eng.node("sys", "Intent", "sys", contract(eng, t))
+    eng.refine("sys", {"name": "decompose",
+                       "args": {"into": ["a", "b"],
+                                "flow_down": {
+                                    "a": {"guarantees": [
+                                        {"id": "ga", "stmt": "part a",
+                                         "bounds": {"mass_kg": {"<=": 50}}}]},
+                                    "b": {"guarantees": [
+                                        {"id": "gb", "stmt": "part b",
+                                         "bounds": {"mass_kg": {"<=": 50}}}]}
+                                }}}, out_name="sys-v1", out_role="System")
+    res = eng.compose(["sys-v1/a", "sys-v1/b"], out_name="sys-assy",
+                      out_role="System")
+    assert res["state"] == "promoted", res["reason"]
+    ids = {(o["id"], o["holds"]) for o in
+           eng.dag.producing_edge(eng.store.resolve("sys-assy"))
+           ["certificate"]["obligations"]}
+    assert ("evidence-coverage", False) in ids
+    rv = goalsview.risks_view(eng.dag)
+    assert any(r["kind"] == "coverage" for r in rv["risks"])
+
+
 # ================================================ discipline ==============
 def test_layer_discipline():
     """core/ and store/ import ZERO third-party packages (relative imports

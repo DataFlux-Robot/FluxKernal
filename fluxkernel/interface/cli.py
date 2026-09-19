@@ -76,7 +76,8 @@ def cmd_goals(a):
     view = goalsview.goals_view(_engine().dag)
     print(f"OPEN GOALS ({len(view['open'])})")
     for g in view["open"]:
-        line = f"  {g['kind']:<18} {g['role']:<10} state={g['state']}"
+        line = (f"  {g['kind']:<18} {g['role']:<10} state={g['state']}"
+                f"  term={g.get('termination', '?')}")
         if g["holes"]:
             line += f"  holes: {','.join(g['holes'])}"
         if g["risks"]:
@@ -95,10 +96,13 @@ def cmd_goals(a):
 
 
 def cmd_sorry(a):
-    view = goalsview.holes_view(_engine().dag)
+    view = goalsview.holes_view(_engine().dag, include_collapsed=getattr(a, "all", False))
     print(f"SORRY HOLES ({len(view['holes'])})")
     for h in view["holes"]:
-        print(f"  {h['hole']} at {_short(h['node'])}  -> {len(h['blocks'])} dependent(s)")
+        line = f"  {h['hole']} at {_short(h['node'])}  -> {len(h['blocks'])} dependent(s)"
+        if h.get("collapsed_at"):
+            line += f"  collapsed-at: {_short(h['collapsed_at'])}"
+        print(line)
     return 0
 
 
@@ -575,8 +579,11 @@ def build_parser() -> argparse.ArgumentParser:
     s = sub.add_parser("run"); s.add_argument("script")
     s.set_defaults(fn=cmd_run)
 
-    for name, fn in (("goals", cmd_goals), ("sorry", cmd_sorry), ("risks", cmd_risks)):
-        s = sub.add_parser(name); s.set_defaults(fn=fn)
+    s = sub.add_parser("goals"); s.set_defaults(fn=cmd_goals)
+    s = sub.add_parser("sorry"); s.add_argument("--all", action="store_true",
+                                                help="include collapsed holes")
+    s.set_defaults(fn=cmd_sorry)
+    s = sub.add_parser("risks"); s.set_defaults(fn=cmd_risks)
     s = sub.add_parser("goal"); s.add_argument("ref"); s.set_defaults(fn=cmd_goal)
     s = sub.add_parser("next"); s.set_defaults(fn=cmd_next)
 

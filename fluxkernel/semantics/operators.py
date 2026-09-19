@@ -346,6 +346,24 @@ class Engine:
                     obligations.append(Obligation(id="solver-ran", prop=str(e),
                                                   holds=False, checker=tname,
                                                   detail="E1"))
+        # evidence coverage (E0-3, review P3): every guarantee quantity in
+        # the composed contract should trace to at least one subtree eval
+        # evidence entry — soft: a gap lands in fk risks, never blocks.
+        # (contract inheritance can repeat a guarantee along refine chains;
+        #  quantities are checked once each)
+        _covered = set()
+        for g in spec.get("guarantees") or []:
+            for q in (g.get("bounds") or {}):
+                if q in _covered:
+                    continue
+                if _metric(evidence, q) is None:
+                    obligations.append(Obligation(
+                        id="evidence-coverage",
+                        prop=f"subtree evidence covers {q}",
+                        holds=False, checker="kernel", oclass="soft",
+                        detail=f"M2: no subtree evidence for guarantee "
+                               f"quantity {q} of '{g.get('id', '?')}'"))
+                _covered.add(q)
         if rollup:
             for qty, b in rollup.items():
                 val = _metric(evidence, qty)
