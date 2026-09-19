@@ -128,7 +128,9 @@ def _sample(rng, bounds):
     if isinstance(bounds, dict):
         lo, hi = bounds.get(">="), bounds.get("<=")
         if lo is not None and hi is not None:
-            return round(rng.uniform(float(lo), float(hi)), 4)
+            v = rng.uniform(float(lo), float(hi))
+            # keep tiny magnitudes meaningful (sfc ~1e-6): adaptive rounding
+            return round(v, 4) if abs(v) >= 1e-3 else round(v, 10)
         if lo is not None:
             return float(lo)
         if hi is not None:
