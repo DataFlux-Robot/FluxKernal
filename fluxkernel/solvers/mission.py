@@ -14,7 +14,8 @@ from .registry import register
 @register("point-mass-model")
 def point_mass_model(node_specs, args, ctx):
     """Intent -> point-mass parametric model; all key params stay as holes.
-    Hole names match the param_bounds keys so lint rule L6 passes."""
+    Hole names match the param_bounds keys so lint rule L6 passes.
+    sfc is specific fuel consumption in kg/(N·s) (SI: 0.03 kg/(N·h) ≈ 8.3e-6)."""
     spec = node_specs[0].get("spec", {}) if node_specs else {}
     fields = {"kind": "point-mass",
               "params": {"mtow": ["param", "mtow"], "ff": ["param", "ff"],
@@ -24,7 +25,7 @@ def point_mass_model(node_specs, args, ctx):
                   "mtow": {">=": 500, "<=": 8000},
                   "ff": {">=": 0.12, "<=": 0.45},
                   "ld": {">=": 8, "<=": 22},
-                  "sfc": {">=": 0.015 / 3.6, "<=": 0.08 / 3.6},
+                  "sfc": {">=": 0.015 / 3600, "<=": 0.08 / 3600},
                   "v": {">=": 40, "<=": 180}}}}
     evidence = [{"solver": "mission/point-mass", "tier": 0,
                  "holes": ["mtow", "ff", "ld", "sfc", "v"]}]
@@ -35,10 +36,11 @@ def point_mass_model(node_specs, args, ctx):
 
 @register("mission-analysis")
 def mission_analysis(node_specs, args, ctx):
-    """Breguet range from current params (holes fall back to param_bounds
-    midpoints). Evidence carries range-km and range-margin-km for `expect`."""
+    """Breguet range R = V·(L/D)·ln(W0/W1)/(g·sfc), sfc in kg/(N·s), R in km.
+    Holes fall back to param_bounds midpoints. The range requirement is read
+    from BOTH goals and guarantees bounds (whichever declares range_km)."""
     p = dict(node_specs[0].get("params", {})) if node_specs else {}
-    pb = (node_specs[0].get("spec", {}) or {}).get("param_bounds", {}) if node_specs else []
+    pb = (node_specs[0].get("spec", {}) or {}).get("param_bounds", {}) if node_specs else {}
 
     def val(key, default):
         v = p.get(key, default)
@@ -52,17 +54,26 @@ def mission_analysis(node_specs, args, ctx):
     mtow = val("mtow", 2000.0)
     ff = val("ff", 0.25)
     ld = val("ld", 15.0)
-    sfc = val("sfc", 0.03 / 3.6)     # kg/(N·s)
+    sfc = val("sfc", 0.03 / 3600)      # kg/(N·s)
     v = val("v", 90.0)
     g = 9.81
     w1 = mtow * (1.0 - ff)
-    range_km = (v / (g * sfc)) * ld * math.log(mtow / w1) / 1000.0 if w1 > 0 else 0.0
+    range_km = (v * ld * math.log(mtow / w1) / (g * sfc) / 1000.0) if w1 > 0 else 0.0
     req = None
     spec = node_specs[0].get("spec", {}) if node_specs else {}
-    for e in spec.get("goals", []):
-        for q, b in (e.get("bounds") or {}).items():
-            if q == "range_km" and isinstance(b, dict):
-                req = b.get(">=")
+    for slot in ("goals", "guarantees", "assumes"):
+        for e in spec.get(slot, []) or []:
+            for q, b in (e.get("bounds") or {}).items():
+                if q != "range_km" or req is not None:
+                    continue
+                try:
+                    lo = float(b[">="]) if isinstance(b, dict) and ">=" in b \
+                        else (float(b["value"]) if isinstance(b, dict) and
+                              b.get("op") in (">=", ">") else None)
+                except (TypeError, ValueError):
+                    lo = None
+                if lo is not None:
+                    req = lo
     margin = (range_km - req) if req is not None else range_km
     fidelity = int(args.get("fidelity", 0))
     evidence = [{"solver": "mission/breguet", "tier": fidelity,

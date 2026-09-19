@@ -1,0 +1,84 @@
+;; examples/sha_pek.fcad —— "我想要从上海飞到北京"
+;;
+;; Mission: SHA(虹桥) -> PEK(首都), great-circle ≈ 1088 km.
+;; Requirement: 1300 km range with 45-min reserve, 2 occupants + baggage = 180 kg,
+;; MTOW 1500 kg class, electric propulsion unit (EPU) closed from the catalog.
+;; Chain: Intent -> point-mass holes -> Breguet check -> param collapse ->
+;; decompose -> catalog exact (EPU) -> compose back up.
+;; One deliberately impossible expectation (e2x) stays as a REJECTED edge —
+;; informative failures are assets, the script continues.
+
+;; ── glossary (nouns must be operationally defined before entering specs) ──
+(term aircraft "powered vehicle sustaining controlled atmosphere flight between two points")
+(term range "great-circle distance flown with reserves, km")
+(term payload "revenue mass carried including crew, kg")
+(term mass "structural + systems mass of the object, kg")
+(term thermal "heat watts rejected into the cabin air")
+(term power "electrical watts drawn from the propulsion bus under load")
+
+;; ── shared medium: cabin air absorbs rejected heat ──
+(node cabin-air :role Medium :kind thermal-env
+  :spec (medium (capacity (heat_w (<= 400))) (margin 0.1)))
+
+;; ── the demand, contract-native ──
+(goal sha-pek :kind aircraft
+  :spec (contract
+    (goals (r1 "fly Shanghai Hongqiao to Beijing Capital nonstop with reserves"
+               :falsifiable t
+               :measure "mission sim: range_km vs 1088km great-circle + 45min reserve"
+               :terms (range aircraft))
+           (p1 "carry two occupants plus baggage" :falsifiable t
+               :measure "W&B sheet at MTOW" :terms (payload)))
+    (semantics aircraft range payload mass thermal power)
+    (assumes (route1 "SHA-PEK great-circle corridor"
+                     :bounds ((dist_km (>= 1050) (<= 1120)))))
+    (guarantees (gr1 "delivers the mission with reserves"
+                     :bounds ((range_km (>= 1300)) (payload_kg (>= 180)))))
+    (budget (mass_kg (<= 1500)))
+    (effluent (heat_w (<= 150 :medium cabin-air)))
+    (forbidden (f1 "flutter below Vd/1.2" :check test)
+               (f2 "CG outside envelope" :check inspection))
+    (not-responsible "airport ground handling" "ATC routing")
+    (time-scale mission)))
+
+;; ── collapse step 1: point-mass model, all key params are holes ──
+(refine e1 :in (sha-pek) :out sha-pek-pm :role System :kind point-mass
+  :transform (point-mass-model))
+
+;; tier-0 Breguet check with midpoint surrogate values
+(eval e2 :target sha-pek-pm :with mission-analysis :fidelity 0
+  :expect ((range-margin-km (> 0))))
+
+;; collapse step 2: ground the holes to a concrete design point
+;; (sfc 8.333e-6 kg/(N·s) = 0.03 kg/(N·h), typical small aero piston/turbine)
+(refine e2b :in (sha-pek-pm) :out sha-pek-pm :kind point-mass
+  :transform (param-perturb :values ((mtow 1200) (ff 0.28) (ld 14)
+                                     (sfc 0.000008333) (v 95))))
+
+;; concrete re-check against the actual requirement
+(eval e2c :target sha-pek-pm :with mission-analysis :fidelity 0
+  :expect ((range_km (>= 1300))))
+
+;; deliberately impossible expectation: kept forever as an informative failure
+(eval e2x :target sha-pek-pm :with mission-analysis :fidelity 0
+  :expect ((range-margin-km (> 999999))))
+
+;; ── decompose into subsystems; contracts flow down ──
+(refine e3 :in (sha-pek-pm) :out sha-pek-v1 :role System
+  :transform (decompose
+    :into (wing epu fuselage avionics)
+    :flow-down (
+      (wing :budget ((mass_kg ("<=" 260))) :guarantees ((gw1 "wing lifts MTOW at 1.3g" :bounds ((lift_n (">=" 20000)) (mass_kg ("<=" 260))))))
+      (epu :budget ((mass_kg ("<=" 320))) :guarantees ((ge1 "electric propulsion unit torque and speed" :bounds ((torque_nm (">=" 50)) (rpm (">=" 2000)) (mass_kg ("<=" 320))))))
+      (fuselage :budget ((mass_kg ("<=" 380))) :guarantees ((gf1 "occupant bay and luggage" :bounds ((mass_kg ("<=" 380))))))
+      (avionics :budget ((mass_kg ("<=" 40))) :guarantees ((ga1 "dual-channel navigation" :bounds ((mass_kg ("<=" 40)))))))
+    ))
+
+;; ── the EPU goal closes directly from the catalog (exact lemma) ──
+(exact e4 :target sha-pek-v1/epu :from catalog
+  :match "torque_nm>=50 rpm>=2000" :out epu-std)
+
+;; ── compose back up the V right leg ──
+(compose e5 :in (sha-pek-v1/wing sha-pek-v1/fuselage sha-pek-v1/avionics epu-std)
+  :out sha-pek-design :role System :kind light-aircraft
+  :rollup ((range_km (>= 1300))))

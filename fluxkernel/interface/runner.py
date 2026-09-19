@@ -84,6 +84,9 @@ class Runner:
                 args[ku] = spec_from_sexpr(v, self.store)
             elif ku == "flow_down":
                 args[ku] = fcad.flowdown_from_sexpr(v, self.store)
+            elif ku == "values":
+                # param-perturb values: ((mtow 1200) (ff 0.28) ...) -> dict
+                args[ku] = fcad.pairs_to_map(v)
             elif ku == "specs":
                 args[ku] = {e[0]: spec_from_sexpr(e[1], self.store)
                             for e in v if isinstance(e, list) and len(e) == 2}
