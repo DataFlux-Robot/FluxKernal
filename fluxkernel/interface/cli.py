@@ -372,6 +372,13 @@ def cmd_manufacture(a):
     return 0 if res["state"] == "promoted" else 1
 
 
+def cmd_print(a):
+    eng = _engine()
+    res = eng.print_part(a.part, a.printer, out_name=a.out)
+    print(f"{res['state']}" + (f": {res['reason']}" if res["reason"] else ""))
+    return 0 if res["state"] == "promoted" else 1
+
+
 # ----------------------------------------------------------- combinators --
 def cmd_realize(a):
     eng = _engine()
@@ -629,6 +636,8 @@ def build_parser() -> argparse.ArgumentParser:
     s.add_argument("--reason", default=""); s.set_defaults(fn=cmd_abstract)
     s = sub.add_parser("manufacture"); s.add_argument("part"); s.add_argument("--into")
     s.set_defaults(fn=cmd_manufacture)
+    s = sub.add_parser("print"); s.add_argument("part"); s.add_argument("printer")
+    s.add_argument("--out"); s.set_defaults(fn=cmd_print)
 
     s = sub.add_parser("realize"); s.add_argument("root")
     s.add_argument("--until", default="standard-part"); s.add_argument("--max-steps",

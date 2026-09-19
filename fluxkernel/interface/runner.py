@@ -126,6 +126,19 @@ class Runner:
         pos, kw = split_kwargs(body)
         return self._op("manufacture", pos, kw)
 
+    def _form_print(self, body):
+        pos, kw = split_kwargs(body)
+        part = str(kw.get("in") or (pos[0] if pos else ""))
+        printer = str(kw.get("printer") or (pos[1] if len(pos) > 1 else ""))
+        if not part or not printer:
+            raise FcadError("S1", "(print <name> :in <part> :printer <printer>)")
+        transform = self._transform(kw["transform"]) if kw.get("transform") \
+            else {"name": "print", "args": {}}
+        resources = fcad.resources_from_sexpr(kw.get("resources", []))
+        return self.engine.print_part(
+            part, printer, args=transform.get("args") or {},
+            resources=resources, out_name=kw.get("out"))
+
     def _form_eval(self, body):
         pos, kw = split_kwargs(body)
         target = kw.get("target") or (pos[0] if len(pos) > 0 else None)

@@ -1,0 +1,39 @@
+{
+  "entries": [
+    {
+      "name": "nema17-stepper",
+      "kind": "motor",
+      "supplier": "reference-printer-bom",
+      "tier": 1,
+      "bounds": {"torque_nm": {">=": 0.35, "<=": 0.8}, "rpm": {">=": 100, "<=": 4000},
+                 "power_w": {">=": 20, "<=": 80}, "mass_g": {"<=": 400}},
+      "ground": {"mass_g": 350.0}
+    },
+    {
+      "name": "t8-leadscrew-300",
+      "kind": "leadscrew",
+      "supplier": "reference-printer-bom",
+      "tier": 1,
+      "bounds": {"dia_mm": {"=": 8}, "length_mm": {">=": 200, "<=": 400},
+                 "mass_g": {"<=": 400}},
+      "ground": {"mass_g": 260.0}
+    },
+    {
+      "name": "skr-control-board",
+      "kind": "control-board",
+      "supplier": "reference-printer-bom",
+      "tier": 2,
+      "bounds": {"axis_count": {">=": 4, "<=": 8}, "power_w": {">=": 10, "<=": 60},
+                 "mass_g": {"<=": 300}},
+      "ground": {"mass_g": 180.0}
+    },
+    {
+      "name": "heater-cartridge-40w",
+      "kind": "heater",
+      "supplier": "reference-printer-bom",
+      "tier": 2,
+      "bounds": {"power_w": {">=": 30, "<=": 60}, "mass_g": {"<=": 100}},
+      "ground": {"mass_g": 40.0}
+    }
+  ]
+}

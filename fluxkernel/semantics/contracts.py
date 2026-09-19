@@ -332,7 +332,7 @@ def _subsumed_allocations(dag) -> set[tuple[str, str, str]]:
     subsumed: set[tuple[str, str, str]] = set()
     for edge_d, e in dag.iter_edges():
         if e.get("op") not in ("compose", "integrate", "exact", "procure",
-                               "refine", "evaluate") \
+                               "refine", "evaluate", "manufacture") \
                 or e.get("state") != "promoted":
             continue
         try:

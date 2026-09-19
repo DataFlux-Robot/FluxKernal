@@ -730,6 +730,80 @@ def test_23_evidence_coverage_risk():
     assert any(r["kind"] == "coverage" for r in rv["risks"])
 
 
+# ================================================ E1: print termination ===
+def test_24_print_termination():
+    """E1: a grounded part closes by a print edge on a declared print
+    resource (termination b); the dfam-print gates are hard — an
+    unprintable wall rejects the edge."""
+    eng = fresh()
+    _rib_chain(eng, width=10)
+    t = terms(eng, "mass")
+    eng.node("reference-printer", "Resource", "unbounded-fdm-printer",
+             contract(eng, t))
+    res = eng.print_part("rib-solid", "reference-printer", out_name="rib-printed")
+    assert res["state"] == "promoted", res["reason"]
+    pe = eng.dag.producing_edge(eng.store.resolve("rib-printed"))
+    assert (pe.get("transform") or {}).get("name") == "print"
+    assert pe["transform"]["args"]["printer"] == eng.store.resolve("reference-printer")
+    view = goalsview.goals_view(eng.dag)
+    open_refs = {g["ref"] for g in view["open"]}
+    assert eng.store.resolve("rib-solid") not in open_refs, \
+        "print edge must close the grounded leaf"
+    assert eng.store.resolve("rib-printed") not in open_refs
+    # hard gate: wall thinner than the demanded minimum -> rejected (C0)
+    res2 = eng.print_part("rib-solid", "reference-printer",
+                          args={"min_wall_mm": 50.0}, out_name="rib-bad")
+    assert res2["state"] == "rejected"
+    assert "wall-ok" in res2["reason"]
+
+
+def test_25_printer_recursion_selfclosure():
+    """E1-2: the reference printer is itself a System — decompose once:
+    frame grounds and prints ON ITSELF (bootstrap link), stepper/board
+    close from the catalog; the whole subtree reaches OPEN (0)."""
+    eng = fresh()
+    t = terms(eng, "mass")
+    eng.node("reference-printer", "Resource", "unbounded-fdm-printer",
+             contract(eng, t))
+    eng.refine("reference-printer", {"name": "decompose",
+                "args": {"into": ["frame", "stepper", "board"],
+                         "flow_down": {
+                             "frame": {"guarantees": [
+                                 {"id": "gf", "stmt": "stiff frame",
+                                  "bounds": {"mass_g": {"<=": 9000}}}]},
+                             "stepper": {"guarantees": [
+                                 {"id": "gs", "stmt": "extruder motor",
+                                  "bounds": {"torque_nm": {">=": 0.35}}}]},
+                             "board": {"guarantees": [
+                                 {"id": "gb", "stmt": "4-axis board",
+                                  "bounds": {"axis_count": {">=": 4}}}]}
+                         }}}, out_name="printer-v1", out_role="System")
+    sketch = {"pts": {"p0": [0, 0], "p1": [200, 0], "p2": [200, 200], "p3": [0, 200]},
+              "constraints": [["fix", "p0", 0, 0], ["dist", "p0", "p1", 200],
+                              ["dist", "p1", "p2", 200],
+                              ["horiz", "p0", "p1"], ["vert", "p1", "p2"]]}
+    r1 = eng.refine("printer-v1/frame",
+                    {"name": "ground-sketch", "args": {"sketch": sketch}},
+                    out_name="frame-sk")
+    assert r1["state"] == "promoted", r1["reason"]
+    r2 = eng.refine("frame-sk",
+                    {"name": "extrude", "args": {"height": 5, "material": "pla"}},
+                    out_name="frame-solid")
+    assert r2["state"] == "promoted", r2["reason"]
+    r3 = eng.exact("printer-v1/stepper", "catalog", "torque_nm>=0.35",
+                   out_name="stepper-std")
+    assert r3["state"] == "promoted", r3["reason"]
+    r4 = eng.procure("printer-v1/board", "catalog", "axis_count>=4",
+                     out_name="board-std")
+    assert r4["state"] == "promoted", r4["reason"]
+    # the bootstrap link: the printer prints its own frame
+    r5 = eng.print_part("frame-solid", "reference-printer", out_name="frame-printed")
+    assert r5["state"] == "promoted", r5["reason"]
+
+    view = goalsview.goals_view(eng.dag)
+    assert view["open"] == [], [(g["kind"], g["termination"]) for g in view["open"]]
+
+
 # ================================================ discipline ==============
 def test_layer_discipline():
     """core/ and store/ import ZERO third-party packages (relative imports

@@ -639,6 +639,62 @@ class Engine:
         res["children"] = children
         return res
 
+    # ---------------------------------------------------------- print (E1) --
+    def print_part(self, part: str, printer: str, args: dict | None = None,
+                   resources: dict | None = None,
+                   out_name: str | None = None) -> dict:
+        """Termination set (b) of the evolution plan: a grounded structural
+        part closes by FDM printing on a declared print resource, so the
+        manufacturing recursion converges to one shared capital asset
+        instead of a per-part process chain.  Fail-closed: the dfam-print
+        hard gates must pass for the edge to promote (C0), and a promoted
+        print edge is a leaf closure in goals_view."""
+        p_d, p_payload = self._input(part)
+        if p_payload.get("role") not in ("Part", "Component"):
+            raise DagError("T2", "print requires a Part/Component input")
+        if not (p_payload.get("ground") or {}).get("construction"):
+            raise DagError("U1", "print requires a grounded input "
+                                 "(ground.construction)")
+        pr_d = self.store.resolve(printer)
+        args = {**(args or {}), "printer": pr_d}
+        transform = {"name": "print", "args": args}
+        obligations: list[Obligation] = []
+        evidence: list[dict] = []
+        try:
+            fields, p_evidence, plugin_obs = self._call_plugin(
+                {"name": "dfam-print", "args": args}, [p_payload])
+            evidence = list(p_evidence)
+            obligations += [o if isinstance(o, Obligation) else Obligation.from_dict(o)
+                            for o in plugin_obs]
+        except KeyError:
+            raise DagError("E1", "no solver plugin registered: dfam-print")
+        except (ContractError, ValueError, RuntimeError, IndexError) as e:
+            evidence = [{"solver": "dfam-print", "tier": 2, "failed": str(e)}]
+            obligations.append(Obligation(id="solver-ran", prop=str(e),
+                                          holds=False, checker="dfam-print",
+                                          detail="E1"))
+        # slice estimate: volume -> grams / hours at a coarse deposition rate
+        from ..solvers.feature3d import _DENSITY_G_PER_MM3
+        g = p_payload.get("ground") or {}
+        vol = float(g.get("volume_mm3") or 0.0)
+        mat = str(g.get("material") or "pla").lower()
+        grams = vol * _DENSITY_G_PER_MM3.get(mat, 1.24e-3)
+        hours = vol / float(args.get("deposition_mm3_s", 8000.0)) / 3600.0
+        evidence = evidence + [{
+            "solver": "print/estimate", "tier": 2, "printer": pr_d,
+            "material": mat, "volume_mm3": round(vol, 2),
+            "mass_g": round(grams, 2), "print_h": round(hours, 2)}]
+        merged = _deep_merge(p_payload, {})
+        merged["evidence"] = list(p_payload.get("evidence", [])) + evidence
+        node = Node(**{**merged, "lineage": []})
+        obligations += self._structural_obligations(
+            p_payload, p_payload.get("role"))
+        cert = Certificate(obligations=obligations, evaluator="print",
+                           evidence=evidence, executor="print")
+        return self._commit(self._make_edge("manufacture", [p_d], transform),
+                            node, cert, ResourceVector(**(resources or {})),
+                            node_name=out_name)
+
     # -------------------------------------------------------------- realize --
     def realize(self, root: str, until: str = "standard-part",
                 max_steps: int = 64) -> dict:
