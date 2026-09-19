@@ -173,11 +173,13 @@ def _closed_nodes(dag, consumers: dict[str, list[dict]] | None = None) -> set[st
                     ok = True                               # fully decomposed
             if not ok:
                 for e in consumers.get(d, []):
-                    # decompose child edges are structural, not replacements:
-                    # the scope only closes via the all-kids-closed rule
+                    # decompose CHILD edges are structural, not replacements;
+                    # the SCOPE edge (parent -> scope-with-kids) does realize
+                    # the parent (the scope is its decomposed design)
                     if (e.get("state") == "promoted"
                             and e.get("op") in _REPLACE_OPS
-                            and (e.get("transform") or {}).get("name") != "decompose"
+                            and ((e.get("transform") or {}).get("name") != "decompose"
+                                 or e.get("output") in kids)
                             and len(e.get("inputs") or []) == 1
                             and e.get("output") in closed):
                         ok = True                           # realized downstream
