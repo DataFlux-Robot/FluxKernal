@@ -64,16 +64,23 @@
 机床 Resource→System（PRSI 递归）→ 目录 exact/procure 关闭叶目标 → 逐级 compose 回装；
 双介质账本（直流母线 3600/4000W、舱内热场）全程实时核验；trace 包 42 条跨代链路。
 
-### 5.2 examples/sha_pek.fcad —— "我想要从上海飞到北京"（29 个表单）
+### 5.2 examples/sha_pek.fcad —— "我想要从上海飞到北京"（41 个表单）
 
 - **任务合同**：SHA→PEK 大圆 1088km、带储备航程 ≥1300km、2 人 180kg、MTOW 1500kg 级；
 - **拆分链**：点质量（全参数洞=sorry）→ Breguet 评估（航程 5344.7km、裕度 +4044.7km）→
   参数坍缩（MTOW 1200 / ff 0.28 / L/D 14 / sfc 8.33e-6 / V 95）→ 分解
   wing/epu/fuselage/avionics（质量预算 260+320+380+40≤1500 逐项核验）→
   EPU 从目录 exact 关闭 → compose 回装；
+- **机翼结构拆分**：wing → skin/spar/rib（预算 120+80+12≤260kg），翼肋接地
+  （草图含参数洞 hw∈[500,700] → 600×200×3mm 铝制件 972g），回装 wing-assy；
+- **配套产线/机床（PRSI 递归边）**：rib-solid → manufacture 工艺族（备料/三轴铣/检验）→
+  产线（节拍 56.9min、OEE 0.83）→ 机床 Resource → 机床作为 System 分解
+  （床身/主轴电机/伺服驱动）→ 目录 exact/procure 关闭 → fab-mill 回装；
+  直流母线账本 Σ3600≤4000W 实时把关，`fk why fab-mill` 沿"机床←翼肋←机翼←飞机 Intent"
+  全程可溯；
 - **1:20 几何样机**：五零件全部接地（机身=纺锤回转体 449cm³/557g、机翼=550×60×6 平板、
   平尾、后掠垂尾=拉伸+90° 旋转、电机=铝圆柱），assemble 装配（总 665cm³、826.6g），
-  STEP/STL 导出，`fk verify` 全库通过；
+  STEP/STL 导出，`fk verify` 全库通过（53 节点/50 边，49 promoted + 1 故意拒绝）；
 - **fail-closed 现场演示**：故意不可达的期望（裕度>999999）被 `expect-met` 拒绝并永久留档；
 - 预览：`preview/index.html` 自包含渲染器（拖拽旋转/滚轮缩放），`file://` 双击即开。
 

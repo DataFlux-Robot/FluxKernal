@@ -19,6 +19,9 @@
 ;; ── shared medium: cabin air absorbs rejected heat ──
 (node cabin-air :role Medium :kind thermal-env
   :spec (medium (capacity (heat_w (<= 400))) (margin 0.1)))
+;; ── shared medium: DC power bus feeding the fabrication cell ──
+(node dc-bus :role Medium :kind dc-bus
+  :spec (medium (capacity (power_w (<= 5000))) (margin 0.2)))
 
 ;; ── the demand, contract-native ──
 (goal sha-pek :kind aircraft
@@ -79,10 +82,58 @@
   :match "torque_nm>=50 rpm>=2000" :out epu-std)
 
 ;; ── compose back up the V right leg ──
-(compose e5 :in (sha-pek-v1/wing sha-pek-v1/fuselage sha-pek-v1/avionics epu-std)
+;; ── wing STRUCTURAL decomposition: skin / spar / rib (contracts flow down) ──
+(refine e4a :in (sha-pek-v1/wing) :out wing-v1 :role Component
+  :transform (decompose
+    :into (skin spar rib)
+    :flow-down (
+      (skin :budget ((mass_kg ("<=" 120))) :guarantees ((gws "skin panels carry airload" :bounds ((mass_kg ("<=" 120))))))
+      (spar :budget ((mass_kg ("<=" 80))) :guarantees ((gwp "main spar carries bending" :bounds ((mass_kg ("<=" 80)) (bending_knm ("<=" 45))))))
+      (rib :budget ((mass_kg ("<=" 12))) :guarantees ((gwr "rib web carries panel shear" :bounds ((mass_kg ("<=" 12)) (web_h_mm (">=" 150)))))))
+    ))
+
+;; ground the rib web: sketch (one bounded hole) -> 3mm aluminum extrusion
+(refine e4b :in (wing-v1/rib) :out rib-sk :kind sketch
+  :transform (ground-sketch :sketch (sketch
+    (pts (p0 (param hw) 0) (p1 (param hw) 200) (p2 0 200) (p3 0 0))
+    (constraints (fix p3 0 0) (dist p1 p2 600) (vert p0 p1) (horiz p1 p2))))
+  :spec (contract (param-bounds (hw (>= 500) (<= 700)))))
+(refine e4c :in (rib-sk) :out rib-solid :kind rib
+  :transform (extrude :height 3 :material aluminum))
+
+;; compose the wing subtree back (V right leg, one level down)
+(compose e4d :in (wing-v1/skin wing-v1/spar rib-solid)
+  :out wing-assy :role Component :kind wing-assembly)
+(compose e5 :in (wing-assy sha-pek-v1/fuselage sha-pek-v1/avionics epu-std)
   :out sha-pek-design :role System :kind light-aircraft
   :rollup ((range_km (>= 1300))))
 
+;; ══ production branch: the machined rib demands a fabrication cell ══
+;; Part -> process family -> line -> machine Resource -> machine as System
+;; (PRSI recursion) -> catalog closures -> fab-mill compose. The DC-bus
+;; ledger gates the cell's power draw (Σ ≤ capacity×(1−margin)).
+(manufacture e5a :in (rib-solid) :out rib-proc
+  :transform (process-plan :into (stock milling-3axis inspection)))
+(compose e5b :in (rib-proc/stock rib-proc/milling-3axis rib-proc/inspection)
+  :out rib-line :role Line :kind rib-line
+  :transform (line-eval)
+  :rollup ((takt_min (<= 60)) (oee (>= 0.5))))
+(refine e5c :in (rib-line) :out fab-req :role Resource :kind 3axis-mill-demand)
+(refine e5d :in (fab-req) :out fab-v1 :role System
+  :transform (decompose
+    :into (bed spindle-motor cnc-drive)
+    :flow-down (
+      (bed :budget ((mass_kg ("<=" 2000)) (power_w ("<=" 100 ":medium" dc-bus))) :guarantees ((gfb "static stiffness" :bounds ((mass_kg ("<=" 2000))))))
+      (spindle-motor :budget ((mass_kg ("<=" 9)) (power_w ("<=" 3000 ":medium" dc-bus))) :guarantees ((gfs "spindle torque and speed" :bounds ((torque_nm (">=" 8)) (rpm (">=" 12000))))))
+      (cnc-drive :budget ((mass_kg ("<=" 40)) (power_w ("<=" 500 ":medium" dc-bus))) :guarantees ((gfd "drive bandwidth" :bounds ((power_w ("<=" 500)))))))
+    ))
+
+(exact e5e :target fab-v1/spindle-motor :from catalog
+  :match "torque_nm>=8 rpm>=12000" :out fab-spindle-std)
+(procure e5f :target fab-v1/cnc-drive :from catalog
+  :match "power_w>=200 power_w<=600" :out fab-drive-bought)
+(compose e5g :in (fab-v1/bed fab-spindle-std fab-drive-bought)
+  :out fab-mill :role Resource :kind 3axis-mill)
 ;; ══ geometric mockup branch: ground every subsystem as 1:20 scale ══
 ;; Geometry is an EVALUATION PROJECTION of a node (design v0.1 §1.2): each
 ;; mockup part is grounded sketch -> revolve/extrude with evidence, then
