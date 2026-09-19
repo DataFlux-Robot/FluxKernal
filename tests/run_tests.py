@@ -1077,6 +1077,75 @@ def test_31_machine_binding_i3():
         assert good_d in pe.get("inputs", [])
 
 
+# ================================================ S1: placement system ====
+def test_32_placement_and_replay():
+    """General placement (build123d-Location analogue): :at translates and
+    optionally rotates the grounded solid; the placement lives in the
+    construction and replays identically; :frame resolves from spec.frames."""
+    from fluxkernel.solvers.feature3d import rebuild_brep
+    eng = fresh()
+    t = terms(eng, "mass")
+    sketch = {"pts": {"p0": [0, 0], "p1": [10, 0], "p2": [10, 20], "p3": [0, 20]},
+              "constraints": [["fix", "p0", 0, 0], ["dist", "p0", "p1", 10],
+                              ["dist", "p1", "p2", 20],
+                              ["horiz", "p0", "p1"], ["vert", "p1", "p2"]]}
+    eng.node("pl1", "Part", "plate", contract(eng, t))
+    eng.refine("pl1", {"name": "ground-sketch", "args": {"sketch": sketch}},
+               out_name="pl1-sk")
+    r = eng.refine("pl1-sk",
+                   {"name": "extrude",
+                    "args": {"height": 3, "material": "pla",
+                             "at": [[100, 50, 20]]}},
+                   out_name="pl1-solid")
+    assert r["state"] == "promoted", r["reason"]
+    g = eng.store.get_object(eng.store.resolve("pl1-solid"))["payload"]["ground"]
+    (x0, y0, z0), (x1, y1, z1) = g["bbox"]
+    assert abs(x0 - 100) < 1e-6 and abs(x1 - 110) < 1e-6
+    assert abs(y0 - 50) < 1e-6 and abs(z0 - 20) < 1e-6 and abs(z1 - 23) < 1e-6
+    # replay fidelity: rebuild from the construction lands in the same place
+    rb = rebuild_brep(eng.store.get_object(
+        eng.store.resolve("pl1-solid"))["payload"])
+    from fluxkernel.solvers.feature3d import _props
+    rbbox = _props(rb)["bbox"]
+    assert all(abs(a - b) < 1e-6 for a, b in zip(sum(g["bbox"], []), sum(rbbox, [])))
+
+    # rotation: about Y by 90deg — (x,z) -> (z,-x): dims swap
+    r2 = eng.refine("pl1-sk",
+                    {"name": "extrude",
+                     "args": {"height": 3, "material": "pla",
+                              "at": [[0, 0, 0], [0, 1, 0, 90]]}},
+                    out_name="pl1-rot")
+    assert r2["state"] == "promoted", r2["reason"]
+    g2 = eng.store.get_object(eng.store.resolve("pl1-rot"))["payload"]["ground"]
+    (a0, b0, c0), (a1, b1, c1) = g2["bbox"]
+    dims = sorted([a1 - a0, b1 - b0, c1 - c0])
+    assert all(abs(d - e) < 1e-6 for d, e in zip(dims, [3, 10, 20]))
+
+    # frame reference: spec.frames on the input node resolves :at (:frame f)
+    sk2 = dict(sketch)
+    eng.node("pl2", "Part", "plate2", contract(eng, t))
+    eng.refine("pl2", {"name": "ground-sketch", "args": {"sketch": sk2}},
+               out_name="pl2-sk", out_spec={"frames": {
+                   "station-3": [[250, 0, 5]],
+                   "spar-rear": {"origin": [1125, 0, 2],
+                                 "axis": [0, 1, 0], "angle_deg": 90}}})
+    r3 = eng.refine("pl2-sk",
+                    {"name": "extrude",
+                     "args": {"height": 3, "material": "pla",
+                              "at": [":frame", "station-3"]}},
+                    out_name="pl3-solid")
+    assert r3["state"] == "promoted", r3["reason"]
+    g3 = eng.store.get_object(eng.store.resolve("pl3-solid"))["payload"]["ground"]
+    assert abs(g3["bbox"][0][0] - 250) < 1e-6
+    # unknown frame -> informative failure, edge rejected
+    r4 = eng.refine("pl2-sk",
+                    {"name": "extrude",
+                     "args": {"height": 3, "material": "pla",
+                              "at": [":frame", "no-such"]}},
+                    out_name="pl4-solid")
+    assert r4["state"] == "rejected"
+
+
 # ================================================ discipline ==============
 def test_layer_discipline():
     """core/ and store/ import ZERO third-party packages (relative imports

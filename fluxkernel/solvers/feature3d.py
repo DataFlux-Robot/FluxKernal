@@ -97,6 +97,65 @@ def _profile_points(node_specs: list[dict], args: dict) -> list:
     return [tuple(pts[k]) for k in order]
 
 
+def _parse_at(at, node_specs=None):
+    """General placement (the build123d Location analogue).  Accepted forms:
+
+       [dx, dy, dz]                      pure translation
+       ((x y z) (ax ay az deg))          translation after rotation
+       {origin, axis, angle_deg}         canonical (from spec.frames)
+       (:frame <name>)                   named frame of the input node's
+                                         spec.frames (any node may carry
+                                         frames — skeleton layouts)
+    Returns the canonical dict or None.  No case-specific behaviour."""
+    if at is None:
+        return None
+    if isinstance(at, (list, tuple)) and at and isinstance(at[0], str)             and str(at[0]).lstrip(":") == "frame":
+        if len(at) < 2:
+            raise ValueError("frame reference needs a name: (:frame name)")
+        name = str(at[1])
+        spec = (node_specs[0].get("spec") or {}) if node_specs else {}
+        frames = spec.get("frames") or {}
+        if name not in frames:
+            raise ValueError(f"unknown frame {name!r} "
+                             f"(spec.frames has: {sorted(frames)})")
+        return _parse_at(frames[name], node_specs)
+    if isinstance(at, dict):
+        out = {"origin": [float(v) for v in at.get("origin", [0, 0, 0])]}
+        if at.get("axis"):
+            out["axis"] = [float(v) for v in at["axis"]]
+            out["angle_deg"] = float(at.get("angle_deg", 0.0))
+        return out
+    if isinstance(at, (list, tuple)) and len(at) == 3             and all(isinstance(v, (int, float)) for v in at):
+        return {"origin": [float(v) for v in at]}
+    vals = [[float(v) for v in part] for part in at]
+    if len(vals) == 1 and len(vals[0]) == 3:
+        return {"origin": vals[0]}
+    if len(vals) == 2 and len(vals[0]) == 3 and len(vals[1]) == 4:
+        return {"origin": vals[0], "axis": vals[1][:3],
+                "angle_deg": vals[1][3]}
+    raise ValueError(f"bad placement {at!r}: want [dx,dy,dz], "
+                     "((x y z) (ax ay az deg)), or (:frame name)")
+
+
+def _placement_trsf(pl: dict):
+    """rotate about the world-origin axis first, then translate."""
+    from OCP.gp import gp_Trsf, gp_Vec, gp_Pnt, gp_Dir, gp_Ax1
+    t = gp_Trsf()
+    if pl.get("axis") and pl.get("angle_deg"):
+        r = gp_Trsf()
+        r.SetRotation(gp_Ax1(gp_Pnt(0, 0, 0), gp_Dir(*pl["axis"])),
+                      math.radians(float(pl["angle_deg"])))
+        t = r
+    tr = gp_Trsf()
+    tr.SetTranslation(gp_Vec(*[float(v) for v in pl.get("origin", [0, 0, 0])]))
+    return tr.Multiplied(t)
+
+
+def _placed(shape, pl: dict):
+    from OCP.BRepBuilderAPI import BRepBuilderAPI_Transform
+    return BRepBuilderAPI_Transform(shape, _placement_trsf(pl), True).Shape()
+
+
 @register("extrude")
 def extrude(node_specs, args, ctx):
     from OCP.gp import gp_Vec
@@ -108,6 +167,10 @@ def extrude(node_specs, args, ctx):
     shape = BRepPrimAPI_MakePrism(face, gp_Vec(0, 0, height)).Shape()
     cons = {"op": "extrude", "height": height,
             "points": [[float(x), float(y)] for x, y in pts], "material": material}
+    pl = _parse_at(args.get("at"), node_specs)
+    if pl:
+        shape = _placed(shape, pl)
+        cons["placement"] = pl
     return _finish_solid(shape, ctx, cons, desc=f"extrude h={height}")
 
 
@@ -119,10 +182,15 @@ def revolve(node_specs, args, ctx):
     angle_deg = float(args.get("angle_deg", 360.0))
     material = args.get("material", "abs")
     face = _face_from_points(pts)
-    ax = gp_Ax1(gp_Pnt(0, 0, 0), gp_Dir(0, 1, 0))  # profile revolves about Y axis
+    axis = [float(v) for v in args.get("axis", [0, 1, 0])]
+    ax = gp_Ax1(gp_Pnt(0, 0, 0), gp_Dir(*axis))   # through the sketch origin
     shape = BRepPrimAPI_MakeRevol(face, ax, math.radians(angle_deg)).Shape()
-    cons = {"op": "revolve", "angle_deg": angle_deg,
+    cons = {"op": "revolve", "angle_deg": angle_deg, "axis": axis,
             "points": [[float(x), float(y)] for x, y in pts], "material": material}
+    pl = _parse_at(args.get("at"), node_specs)
+    if pl:
+        shape = _placed(shape, pl)
+        cons["placement"] = pl
     return _finish_solid(shape, ctx, cons, desc=f"revolve {angle_deg}deg")
 
 
@@ -160,14 +228,17 @@ def rebuild_brep(node_spec: dict):
         from OCP.gp import gp_Vec
         from OCP.BRepPrimAPI import BRepPrimAPI_MakePrism
         face = _face_from_points([tuple(p) for p in cons["points"]])
-        return BRepPrimAPI_MakePrism(face, gp_Vec(0, 0, cons["height"])).Shape()
+        shape = BRepPrimAPI_MakePrism(face, gp_Vec(0, 0, cons["height"])).Shape()
+        return _placed(shape, cons["placement"]) if cons.get("placement") else shape
     if kind == "revolve":
         from OCP.gp import gp_Pnt, gp_Dir, gp_Ax1
         from OCP.BRepPrimAPI import BRepPrimAPI_MakeRevol
         face = _face_from_points([tuple(p) for p in cons["points"]])
-        return BRepPrimAPI_MakeRevol(
-            face, gp_Ax1(gp_Pnt(0, 0, 0), gp_Dir(0, 1, 0)),
+        shape = BRepPrimAPI_MakeRevol(
+            face, gp_Ax1(gp_Pnt(0, 0, 0),
+                         gp_Dir(*cons.get("axis", [0, 1, 0]))),
             math.radians(cons.get("angle_deg", 360.0))).Shape()
+        return _placed(shape, cons["placement"]) if cons.get("placement") else shape
     if kind == "boolean":
         sub = [rebuild_brep({"ground": {"construction": c}}) for c in cons["inputs"]]
         from OCP.BRepAlgoAPI import BRepAlgoAPI_Fuse, BRepAlgoAPI_Cut, BRepAlgoAPI_Common
