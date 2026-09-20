@@ -48,6 +48,15 @@ class Runner:
         return fn(body)
 
     # --------------------------------------------------------------- forms --
+    def _form_params(self, body):
+        pos, kw = split_kwargs(body)
+        if len(pos) < 2:
+            raise FcadError("S1", "(params <name> ((k v) ...))")
+        name = str(pos[0])
+        defs = fcad.pairs_to_map(pos[1]) if isinstance(pos[1], list) else {}
+        d = self.engine.params_set(name, defs)
+        return {"state": "ok", "node": d, "params": name}
+
     def _form_term(self, body):
         pos, _ = split_kwargs(body)
         if len(pos) < 2:

@@ -23,6 +23,12 @@
 (node dc-bus :role Medium :kind dc-bus
   :spec (medium (capacity (power_w (<= 5000))) (margin 0.2)))
 
+;; ── single-source wing parameters (M1): every wing dimension below is a
+;; ── :param/:expr reference — no literal coordinates in the wing branch ──
+(params wing ((span 3000) (chord 1500) (height 200)
+              (t-skin 2) (spar-h 190) (t-spar 30)
+              (rib-chord 720) (rib-h 188) (t-rib 3)))
+
 ;; ── the shared print capital (PRSI convergence point) ──
 (term printer "unbounded-build-volume FDM capital printer")
 (term frame "stiff gantry frame of a machine tool")
@@ -111,29 +117,37 @@
 ;; skins: 3000x1480x2 plates closing the box top and bottom
 (refine e34 :in (wing-v1/skin-upper) :out sku-sk :kind sketch
   :transform (ground-sketch :sketch (sketch
-    (pts (k0 0 0) (k1 3000 0) (k2 3000 1480) (k3 0 1480)) (constraints))))
+    (pts (k0 0 0) (k1 (:param wing/span) 0)
+             (k2 (:param wing/span) (:expr (- wing/chord 20)))
+             (k3 0 (:expr (- wing/chord 20)))) (constraints))))
 (refine e35 :in (sku-sk) :out sku-solid :kind skin-panel
-  :transform (extrude :height 2 :material aluminum :at (:frame build)))
+  :transform (extrude :height (:param wing/t-skin) :material aluminum :at (:frame build)))
 (print e36 :in (sku-solid) :printer reference-printer :out sku-printed)
 (refine e34b :in (wing-v1/skin-lower) :out skl-sk :kind sketch
   :transform (ground-sketch :sketch (sketch
-    (pts (k4 0 0) (k5 3000 0) (k6 3000 1480) (k7 0 1480)) (constraints))))
+    (pts (k4 0 0) (k5 (:param wing/span) 0)
+             (k6 (:param wing/span) (:expr (- wing/chord 20)))
+             (k7 0 (:expr (- wing/chord 20)))) (constraints))))
 (refine e35b :in (skl-sk) :out skl-solid :kind skin-panel
-  :transform (extrude :height 2 :material aluminum :at (:frame build)))
+  :transform (extrude :height (:param wing/t-skin) :material aluminum :at (:frame build)))
 (print e36b :in (skl-solid) :printer reference-printer :out skl-printed)
 
 ;; spars: 3000x190 webs, stood upright at 25% / 75% chord
 (refine e37 :in (wing-v1/spar-front) :out spf-sk :kind sketch
   :transform (ground-sketch :sketch (sketch
-    (pts (s0 0 0) (s1 3000 0) (s2 3000 190) (s3 0 190)) (constraints))))
+    (pts (s0 0 0) (s1 (:param wing/span) 0)
+             (s2 (:param wing/span) (:param wing/spar-h))
+             (s3 0 (:param wing/spar-h))) (constraints))))
 (refine e38 :in (spf-sk) :out spf-solid :kind spar
-  :transform (extrude :height 30 :material aluminum :at (:frame build)))
+  :transform (extrude :height (:param wing/t-spar) :material aluminum :at (:frame build)))
 (print e39 :in (spf-solid) :printer reference-printer :out spf-printed)
 (refine e37b :in (wing-v1/spar-rear) :out spr-sk :kind sketch
   :transform (ground-sketch :sketch (sketch
-    (pts (s4 0 0) (s5 3000 0) (s6 3000 190) (s7 0 190)) (constraints))))
+    (pts (s4 0 0) (s5 (:param wing/span) 0)
+             (s6 (:param wing/span) (:param wing/spar-h))
+             (s7 0 (:param wing/spar-h))) (constraints))))
 (refine e38b :in (spr-sk) :out spr-solid :kind spar
-  :transform (extrude :height 30 :material aluminum :at (:frame build)))
+  :transform (extrude :height (:param wing/t-spar) :material aluminum :at (:frame build)))
 (print e39b :in (spr-solid) :printer reference-printer :out spr-printed)
 
 ;; ribs: 720x188 webs spanning BETWEEN the spars, one per station.
@@ -141,38 +155,38 @@
 ;; rib-2..6 terminate on the printer.
 (refine e4b :in (wing-v1/rib-1) :out rib1-sk :kind sketch
   :transform (ground-sketch :sketch (sketch
-    (pts (p0 0 0) (p1 720 0) (p2 720 188) (p3 0 188)) (constraints))))
+    (pts (p0 0 0) (p1 (:param wing/rib-chord) 0) (p2 (:param wing/rib-chord) (:param wing/rib-h)) (p3 0 (:param wing/rib-h))) (constraints))))
 (refine e4c :in (rib1-sk) :out rib-1-solid :kind rib
-  :transform (extrude :height 3 :material aluminum :at (:frame build)))
+  :transform (extrude :height (:param wing/t-rib) :material aluminum :at (:frame build)))
 (refine e4b2 :in (wing-v1/rib-2) :out rib2-sk :kind sketch
   :transform (ground-sketch :sketch (sketch
-    (pts (p4 0 0) (p5 720 0) (p6 720 188) (p7 0 188)) (constraints))))
+    (pts (p4 0 0) (p5 (:param wing/rib-chord) 0) (p6 (:param wing/rib-chord) (:param wing/rib-h)) (p7 0 (:param wing/rib-h))) (constraints))))
 (refine e4c2 :in (rib2-sk) :out rib-2-solid :kind rib
-  :transform (extrude :height 3 :material aluminum :at (:frame build)))
+  :transform (extrude :height (:param wing/t-rib) :material aluminum :at (:frame build)))
 (print e4p2 :in (rib-2-solid) :printer reference-printer :out rib-2-printed)
 (refine e4b3 :in (wing-v1/rib-3) :out rib3-sk :kind sketch
   :transform (ground-sketch :sketch (sketch
-    (pts (p8 0 0) (p9 720 0) (p10 720 188) (p11 0 188)) (constraints))))
+    (pts (p8 0 0) (p9 (:param wing/rib-chord) 0) (p10 (:param wing/rib-chord) (:param wing/rib-h)) (p11 0 (:param wing/rib-h))) (constraints))))
 (refine e4c3 :in (rib3-sk) :out rib-3-solid :kind rib
-  :transform (extrude :height 3 :material aluminum :at (:frame build)))
+  :transform (extrude :height (:param wing/t-rib) :material aluminum :at (:frame build)))
 (print e4p3 :in (rib-3-solid) :printer reference-printer :out rib-3-printed)
 (refine e4b4 :in (wing-v1/rib-4) :out rib4-sk :kind sketch
   :transform (ground-sketch :sketch (sketch
-    (pts (p12 0 0) (p13 720 0) (p14 720 188) (p15 0 188)) (constraints))))
+    (pts (p12 0 0) (p13 (:param wing/rib-chord) 0) (p14 (:param wing/rib-chord) (:param wing/rib-h)) (p15 0 (:param wing/rib-h))) (constraints))))
 (refine e4c4 :in (rib4-sk) :out rib-4-solid :kind rib
-  :transform (extrude :height 3 :material aluminum :at (:frame build)))
+  :transform (extrude :height (:param wing/t-rib) :material aluminum :at (:frame build)))
 (print e4p4 :in (rib-4-solid) :printer reference-printer :out rib-4-printed)
 (refine e4b5 :in (wing-v1/rib-5) :out rib5-sk :kind sketch
   :transform (ground-sketch :sketch (sketch
-    (pts (p16 0 0) (p17 720 0) (p18 720 188) (p19 0 188)) (constraints))))
+    (pts (p16 0 0) (p17 (:param wing/rib-chord) 0) (p18 (:param wing/rib-chord) (:param wing/rib-h)) (p19 0 (:param wing/rib-h))) (constraints))))
 (refine e4c5 :in (rib5-sk) :out rib-5-solid :kind rib
-  :transform (extrude :height 3 :material aluminum :at (:frame build)))
+  :transform (extrude :height (:param wing/t-rib) :material aluminum :at (:frame build)))
 (print e4p5 :in (rib-5-solid) :printer reference-printer :out rib-5-printed)
 (refine e4b6 :in (wing-v1/rib-6) :out rib6-sk :kind sketch
   :transform (ground-sketch :sketch (sketch
-    (pts (p20 0 0) (p21 720 0) (p22 720 188) (p23 0 188)) (constraints))))
+    (pts (p20 0 0) (p21 (:param wing/rib-chord) 0) (p22 (:param wing/rib-chord) (:param wing/rib-h)) (p23 0 (:param wing/rib-h))) (constraints))))
 (refine e4c6 :in (rib6-sk) :out rib-6-solid :kind rib
-  :transform (extrude :height 3 :material aluminum :at (:frame build)))
+  :transform (extrude :height (:param wing/t-rib) :material aluminum :at (:frame build)))
 (print e4p6 :in (rib-6-solid) :printer reference-printer :out rib-6-printed)
 
 ;; ── per-layer simulator evidence (E2 matrix) ──

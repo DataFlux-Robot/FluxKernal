@@ -36,6 +36,13 @@ _GROUND_TYPES = ("sketch2d", "process", "process-op")
 
 
 # ------------------------------------------------------------- structure --
+def _design_nodes(dag):
+    """Committed nodes minus parameter sets (kind=params) — definitional
+    objects like terms, never design goals or risks."""
+    return [(d, p) for d, p in dag.iter_nodes()
+            if p.get("kind") != "params"]
+
+
 def _out_edges(dag) -> dict[str, list[dict]]:
     """node_digest -> list of edges consuming it as input."""
     out: dict[str, list[dict]] = {}
@@ -201,7 +208,7 @@ def goals_view(dag) -> dict:
     superseded = _superseded_by(dag)
     closed = _closed_nodes(dag, consumers)
     open_goals, rejected = [], []
-    for node_d, payload in dag.iter_nodes():
+    for node_d, payload in _design_nodes(dag):
         state = dag.node_state(node_d)
         if payload.get("role") == "Medium":
             continue                      # media are environment, not goals
@@ -315,7 +322,7 @@ def holes_view(dag, include_collapsed: bool = False) -> dict:
         return anc
 
     holes = []
-    for node_d, payload in dag.iter_nodes():
+    for node_d, payload in _design_nodes(dag):
         for h in _holes_of(payload):
             name = h[1:]
             collapsed_at = None
@@ -342,7 +349,7 @@ def risks_view(dag) -> dict:
         risks.append({"kind": "hole", "ref": h["node"], "detail": h["hole"],
                       "blocks": h["blocks"]})
     # 2. lint failures (nodes that can never promote; v1.2 §18)
-    for node_d, payload in dag.iter_nodes():
+    for node_d, payload in _design_nodes(dag):
         failed = contracts.lint_node(payload, dag.store)
         if failed:
             risks.append({"kind": "lint", "ref": node_d,
@@ -360,7 +367,7 @@ def risks_view(dag) -> dict:
             risks.append({"kind": "rejected", "ref": edge_d,
                           "detail": e.get("reason", ""), "blocks": []})
     # 5. stale term references (term-current, v1.2 §23)
-    for node_d, payload in dag.iter_nodes():
+    for node_d, payload in _design_nodes(dag):
         stale = contracts.stale_terms(dag.store, payload.get("spec") or {})
         if stale:
             risks.append({"kind": "term-stale", "ref": node_d,
@@ -368,7 +375,7 @@ def risks_view(dag) -> dict:
                           "blocks": [d for d in _dependents(dag, node_d, consumers)
                                      if d != node_d]})
     # 6. stale plant models (plant-model-current, v1.1 §14)
-    for node_d, payload in dag.iter_nodes():
+    for node_d, payload in _design_nodes(dag):
         spec = payload.get("spec") or {}
         if payload.get("facet") == "MIND" and spec.get("plant_name"):
             cur = dag.store.names().get(spec["plant_name"])
@@ -389,7 +396,7 @@ def risks_view(dag) -> dict:
                               "detail": o.get("detail", ""),
                               "blocks": [e.get("output", "")]})
     # 8. explicitly declared open joints (fk elicit step 6 — never smoothed)
-    for node_d, payload in dag.iter_nodes():
+    for node_d, payload in _design_nodes(dag):
         for gap in (payload.get("spec") or {}).get("open_risks") or []:
             risks.append({"kind": "open-joint", "ref": node_d,
                           "detail": str(gap), "blocks": []})

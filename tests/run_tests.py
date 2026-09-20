@@ -1274,7 +1274,78 @@ def test_35_scale_instance_derives_from_subtree():
         assert eng.store.resolve(name) in pe.get("inputs", [])
 
 
+
+# ================================================ M1: parameter system =====
+def test_36_param_system():
+    """P0/M1: expression evaluation (non-Turing-complete), single-source
+    path params, cycle rejection with a repair hint, param-bindings
+    evidence on grounding edges, and ParamError -> rejected edge."""
+    from fluxkernel.core import params as fp
+
+    # arithmetic + if/min/ceil, bare symbols are param refs
+    v = fp.eval_sexp(["expr", ["-", "chord", 20]], lambda n: 1500)
+    assert abs(v - 1480) < 1e-9
+    # '>' is NOT in the language — must reject (deliberate minimalism)
+    try:
+        fp.eval_sexp(["expr", [">", 1, 2]], lambda n: 0)
+        raise AssertionError("non-language op must raise")
+    except fp.ParamError:
+        pass
+    assert fp.eval_sexp(["expr", ["min", 3, 7]], lambda n: 0) == 3
+    assert fp.eval_sexp(["expr", ["ceil", ["/", 3600, 500]]], lambda n: 0) == 8
+
+    # cycle detection names the cycle
+    try:
+        fp.resolve_param_values({"a": ["param", "b"], "b": ["param", "a"]})
+        raise AssertionError("cycle must raise")
+    except fp.ParamError as e:
+        assert "param-cycle" in str(e) and "a" in str(e) and "b" in str(e)
+
+    # integration: params set + path refs + bindings evidence
+    eng = fresh()
+    t = terms(eng, "mass")
+    eng.params_set("wing", {"span": 3000, "chord": 1500, "t": 2})
+    eng.node("pl", "Part", "plate", contract(eng, t))
+    sketch = {"pts": {"p0": [0, 0],
+                      "p1": [["param", "wing/span"], 0],
+                      "p2": [["param", "wing/span"],
+                             ["expr", ["-", "wing/chord", 20]]],
+                      "p3": [0, ["expr", ["-", "wing/chord", 20]]]},
+              "constraints": [["fix", "p0", 0, 0], ["dist", "p0", "p1", 3000],
+                              ["dist", "p1", "p2", 1480],
+                              ["horiz", "p0", "p1"], ["vert", "p1", "p2"]]}
+    r = eng.refine("pl", {"name": "ground-sketch", "args": {"sketch": sketch}},
+                   out_name="pl-sk")
+    assert r["state"] == "promoted", r["reason"]
+    r2 = eng.refine("pl-sk", {"name": "extrude",
+                              "args": {"height": ["param", "wing/t"],
+                                       "material": "pla"}},
+                    out_name="pl-solid")
+    assert r2["state"] == "promoted", r2["reason"]
+    pe = eng.dag.producing_edge(eng.store.resolve("pl-solid"))
+    binds = [b for e in pe["certificate"]["evidence"]
+             if e.get("solver") == "core/params" for b in e["param-bindings"]]
+    got = {b["expr"]: b["value"] for b in binds}
+    assert got.get("wing/t") == 2.0
+    g = eng.store.get_object(eng.store.resolve("pl-solid"))["payload"]["ground"]
+    assert abs(g["volume_mm3"] - 3000 * 1480 * 2) < 1e-3
+
+    # unknown path param -> informative rejected edge (U3, repair hint)
+    eng.node("pl2", "Part", "plate2", contract(eng, t))
+    r3 = eng.refine("pl2", {"name": "extrude",
+                            "args": {"height": ["param", "no-such/x"]}},
+                    out_name="pl2-solid")
+    assert r3["state"] == "rejected"
+    # the repair hint rides the obligation detail (visible in fk risks)
+    assert any("no-such" in str(o.get("detail", "")) for o in r3["obligations"])
+
+    # params sets are definitions, not goals
+    view = goalsview.goals_view(eng.dag)
+    assert all(g_["kind"] != "params" for g_ in view["open"])
+
+
 # ================================================ discipline ==============
+
 
 def test_layer_discipline():
     """core/ and store/ import ZERO third-party packages (relative imports

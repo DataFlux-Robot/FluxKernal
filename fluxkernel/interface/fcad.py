@@ -346,8 +346,10 @@ def _alist(sexpr: list, store) -> dict:
 
 def _plain_value(v, store):
     if isinstance(v, list):
-        if v and v[0] == "param":
+        if v and v[0] in ("param", ":param"):
             return ["param", v[1]] if len(v) > 1 else ["param", "?"]
+        if v and v[0] in ("expr", ":expr") and len(v) > 1:
+            return ["expr", _plain_value(v[1], store)]
         return [_plain_value(x, store) for x in v]
     return v
 

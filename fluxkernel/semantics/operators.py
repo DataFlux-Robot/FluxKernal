@@ -138,6 +138,19 @@ class Engine:
         return d
 
     # ------------------------------------------------------------- refine --
+    def params_set(self, name: str, defs: dict) -> str:
+        """(params <name> ((k v)...)): a named single-source parameter set —
+        a content-addressed genesis object (kind=params, outside the role
+        ontology like terms).  Path references 'name/key' resolve through
+        it.  Definitions may be numbers, param refs or expressions."""
+        from ..core import params as fkparams
+        vals = fkparams.resolve_param_values(defs)   # cycles fail fast here
+        node = Node(role="params", kind="params", params=dict(defs),
+                    spec={"param_values": vals})
+        d = self.dag.put_node(node, name)
+        self.journal.append(f"params      {name} = {sorted(vals)} {d[8:20]}")
+        return d
+
     def refine(self, goal, transform: dict, out_name: str | None = None,
                out_role: str | None = None, out_kind: str | None = None,
                out_spec: dict | None = None, out_params: dict | None = None,
@@ -152,6 +165,30 @@ class Engine:
         resolved = [self._input(g) for g in goals]
         goal_d, goal_payload = resolved[0]
         child_role = out_role or goal_payload.get("role", "Component")
+
+        # P-layer (M1): resolve :param/:expr leaves in transform args against
+        # the input node's parameter context; bindings become edge evidence.
+        # Definition-carrying transforms are exempt (their args ARE the defs).
+        from ..core import params as fkparams
+        p_bindings: list = []
+        if transform.get("name", "") not in ("param-perturb", "select-variant",
+                                             "decompose"):
+            try:
+                transform, p_bindings = fkparams.resolve_transform(
+                    transform, goal_payload, self.store)
+            except fkparams.ParamError as e:
+                bad = Node(role=child_role,
+                           kind=out_kind or goal_payload.get("kind", "part"),
+                           spec=goal_payload.get("spec") or {})
+                cert0 = Certificate(
+                    obligations=[Obligation(id="param-resolved",
+                                            prop="parameter expressions resolve",
+                                            holds=False, checker="core/params",
+                                            detail=f"U3: {e}")],
+                    evaluator="core/params", evidence=[], executor=transform.get("name", ""))
+                return self._commit(
+                    self._make_edge("refine", [goal_d], transform),
+                    bad, cert0, ResourceVector(), node_name=out_name)
 
         if transform.get("name") == "decompose":
             return self._decompose(goal_d, goal_payload, transform,
@@ -226,6 +263,7 @@ class Engine:
         obligations += plugin_obs
         obligations += contracts.flow_down_obligations(goal_payload.get("spec", {}),
                                                        child_spec)
+        evidence = evidence + fkparams.bindings_evidence(p_bindings)
         cert = Certificate(obligations=obligations, evaluator="kernel",
                            evidence=evidence, executor=transform.get("name", "structural"))
         edge = self._make_edge(
