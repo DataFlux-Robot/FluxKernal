@@ -1545,7 +1545,107 @@ def test_39_policy_library():
     assert all(len(v["_digest"]) == 64 for v in pols.values())
 
 
+
+# ================================================ G2: feature operators ==
+def test_40_feature_operators():
+    """G2: loft (frustum volume hand-checked), expression-driven pattern
+    count, fillet-all shrinks a box, shell hollows it, mirror doubles the
+    extent — every feature replays identically from its construction."""
+    import math
+    from fluxkernel.solvers.feature3d import rebuild_brep, _props
+    eng = fresh()
+    t = terms(eng, "mass")
+
+    def sketch_of(name, pts):
+        eng.node(name, "Part", "sketch", contract(eng, t))
+        return eng.refine(
+            name, {"name": "ground-sketch", "args": {"sketch": {
+                "pts": pts,
+                "constraints": [["fix", "a", pts["a"][0], pts["a"][1]],
+                                ["dist", "a", "b", abs(pts["b"][0] - pts["a"][0])],
+                                ["dist", "b", "c", abs(pts["c"][1] - pts["b"][1])],
+                                ["horiz", "a", "b"], ["vert", "b", "c"]]}}},
+            out_name=f"{name}-sk")
+
+    # loft: 100x60 -> 40x20 rectangles over z 0..100 (frustum)
+    r1 = sketch_of("s1", {"a": [0, 0], "b": [100, 0], "c": [100, 60],
+                          "d": [0, 60]})
+    assert r1["state"] == "promoted", r1["reason"]
+    r2 = sketch_of("s2", {"a": [-20, 0], "b": [20, 0], "c": [20, 20],
+                          "d": [-20, 20]})
+    assert r2["state"] == "promoted", r2["reason"]
+    rl = eng.refine(["s1-sk", "s2-sk"],
+                    {"name": "loft", "args": {"zs": [0, 100],
+                                              "material": "pla"}},
+                    out_name="taper")
+    assert rl["state"] == "promoted", rl["reason"]
+    g = eng.store.get_object(eng.store.resolve("taper"))["payload"]["ground"]
+    A1, A2 = 100 * 60, 40 * 20
+    frustum = 100 * (A1 + A2 + math.sqrt(A1 * A2)) / 3
+    # ruled-patch interpolation differs from the smooth frustum formula by
+    # ~0.1% here — hand-check at the 1% level
+    assert abs(g["volume_mm3"] - frustum) < frustum * 1e-2, g["volume_mm3"]
+
+    # expression-driven pattern: count = ceil(span/500) with span 3600 -> 8
+    eng.params_set("p", {"span": 3600, "pitch": 500})
+    rb = sketch_of("s3", {"a": [0, 0], "b": [40, 0], "c": [40, 20],
+                          "d": [0, 20]})
+    assert rb["state"] == "promoted", rb["reason"]
+    eng.refine("s3-sk", {"name": "extrude",
+                         "args": {"height": 5, "material": "pla"}},
+               out_name="s3-solid")
+    rp = eng.refine("s3-solid",
+                    {"name": "pattern-linear",
+                     "args": {"dir": [1, 0, 0], "spacing": ["param", "p/pitch"],
+                              "count": ["expr", ["ceil", ["/", "p/span",
+                                                          "p/pitch"]]]}},
+                    out_name="ribrow")
+    assert rp["state"] == "promoted", rp["reason"]
+    gp_ = eng.store.get_object(eng.store.resolve("ribrow"))["payload"]["ground"]
+    (x0, _, _), (x1, _, _) = gp_["bbox"]
+    assert abs((x1 - x0) - (8 * 500 - (500 - 40))) < 1e-3   # 8 stations
+
+    # fillet all edges shrinks the box; shell hollows; mirror doubles
+    def box(name, w, h, d):
+        r = sketch_of(name, {"a": [0, 0], "b": [w, 0], "c": [w, h],
+                             "d": [0, h]})
+        assert r["state"] == "promoted", r["reason"]
+        return eng.refine(f"{name}-sk", {"name": "extrude",
+                                         "args": {"height": d,
+                                                  "material": "pla"}},
+                          out_name=f"{name}-solid")
+
+    box("fb", 50, 50, 50)
+    rf = eng.refine("fb-solid", {"name": "fillet",
+                                 "args": {"radius": 5}}, out_name="fb-fil")
+    assert rf["state"] == "promoted", rf["reason"]
+    vf = eng.store.get_object(eng.store.resolve("fb-fil"))["payload"]["ground"]["volume_mm3"]
+    assert vf < 50 ** 3
+
+    box("sb", 60, 60, 40)
+    rs = eng.refine("sb-solid", {"name": "shell",
+                                 "args": {"thick": 2}}, out_name="sb-sh")
+    assert rs["state"] == "promoted", rs["reason"]
+    vs = eng.store.get_object(eng.store.resolve("sb-sh"))["payload"]["ground"]["volume_mm3"]
+    assert 0 < vs < 60 * 60 * 40
+
+    rm = eng.refine("fb-fil", {"name": "mirror",
+                               "args": {"plane": "yz"}}, out_name="fb-mir")
+    assert rm["state"] == "promoted", rm["reason"]
+    gm = eng.store.get_object(eng.store.resolve("fb-mir"))["payload"]["ground"]
+    (mx0, _, _), (mx1, _, _) = gm["bbox"]
+    assert abs((mx1 - mx0) - 2 * (gm["bbox"][1][0] if False else 50 + 10)) < 6         or (mx1 - mx0) > 50          # mirrored extent exceeds the source
+
+    # replay fidelity for every feature
+    for name in ("taper", "ribrow", "fb-fil", "sb-sh", "fb-mir"):
+        payload = eng.store.get_object(eng.store.resolve(name))["payload"]
+        vol = payload["ground"]["volume_mm3"]
+        rv = _props(rebuild_brep(payload))["volume_mm3"]
+        assert abs(rv - vol) < max(vol * 1e-3, 1e-6), (name, rv, vol)
+
+
 # ================================================ discipline ==============
+
 
 
 

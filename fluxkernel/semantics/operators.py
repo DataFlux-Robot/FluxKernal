@@ -60,8 +60,8 @@ def load_plugins() -> list[str]:
         return []
     failed = []
     from ..solvers import sketch2d, registry  # noqa: F401
-    for mod in ("feature3d", "mission", "mate", "dfam", "process", "line",
-                "catalog", "cosim", "sims"):
+    for mod in ("feature3d", "features", "mission", "mate", "dfam",
+                "process", "line", "catalog", "cosim", "sims"):
         try:
             __import__(f"fluxkernel.solvers.{mod}", fromlist=["*"])
         except Exception as e:  # missing optional backend etc.

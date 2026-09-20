@@ -410,6 +410,10 @@ def rebuild_brep(node_spec: dict):
         for extra in sub[1:]:
             shape = BRepAlgoAPI_Fuse(shape, extra).Shape()
         return shape
+    if kind in ("fillet", "chamfer", "loft", "shell", "pattern", "mirror"):
+        from .features import rebuild_feature
+        shape = rebuild_feature(cons)
+        return _placed(shape, cons["placement"]) if cons.get("placement") else shape
     raise ValueError(f"cannot replay construction op: {kind}")
 
 
