@@ -1,6 +1,6 @@
 # FluxKernel 开发进展报告
 
-日期：2026-09-20（整机装配完整性收口后更新）· 仓库：`E:\DATA\vscode\fluxkernel` · 43 次提交
+日期：2026-09-20（P7 感知-行动闭环收口后更新，51 次提交）· 仓库：`E:\DATA\vscode\fluxkernel` · 43 次提交
 配套文档：`INTRODUCTION.md`（架构介绍，面向评审）· `REPORT.md`（初版交付报告）· `docs/design/`（设计文档系列）
 
 > 定位回顾：面向 LLM 的**通用**机械系统工程内核 + CAD CLI（build123d 形态的 `.fcad` DSL + 33 子命令）。核不是几何而是**带证书的内容寻址精化图（CARG）**——几何是节点的求值投影。开发纪律：机制通用、内容（案例/目录/模板）为数据、内核 L0/L1 零第三方依赖且零改动。
@@ -9,15 +9,34 @@
 
 | 指标 | 值 |
 |---|---|
-| 测试 | **45/45 全绿**（`python tests/run_tests.py`，≈18s） |
+| 测试 | **49/49 全绿**（`python tests/run_tests.py`） |
 | 规模 | 79 个 git 追踪文件，Python 7750 行 |
-| CLI | 33 子命令；`.fcad` DSL 含 `(print ...)`、`:at`、`:machine`、`:template`、`:roles`、`:no-assembly` |
-| 求解插件 | 14 个（几何 4 + 仿真 4 + 制造 4 + 任务 2）；目录 6 文件；架构模板 2 个；机制库 1 条目（wingbox） |
-| 标志案例 SHA-PEK | **111 表单**（冷库 181 节点/180 边/458 名字）/ 45/45 测试 / OPEN(0) / verify 全绿 |
+| CLI | 36 子命令（+render/review/iterate）；`.fcad` DSL 含 `:at`、`:machine`、`:template`、`:roles`、`:no-assembly`、`:tier` |
+| 求解插件 | 15 个（+cut）；目录 7 文件（含 panels+geom.py 代表性几何）；机制库 3 条目；skill 库 5 件 |
+| 标志案例 SHA-PEK | **96 表单**（机制化后更短）/ 49/49 测试 / OPEN(0) / verify 全绿 / 整机渲染 26,244 三角形 |
 | 案例终态 | **OPEN GOALS (0)** · verify 全绿 · dc-bus Σbudget 3820/4000W（容量 5000、margin 0.2）· 装配干涉门 = 0 干涉 |
-| 整机形态 | 翼盒（10 件）+ 舱壳（5 面板）+ U 型尾梁 + 平尾 + 垂尾 = **18 件真实装配**；派生样机融合 18 件、10.2 g、质心 [75.5, 39.6, 7.0] |
+| 整机形态 | **翼型蒙皮薄壁翼盒**（NACA 4 位族，tc/camber 入参）+ 八角舱壳 + 翼型尾翼；目录件带代表性包络（青色）；渲染 35 形状 |
 | 任务链 | 假设航程 5344.7 km（L/D=14）→ **闭环复算 6127.3 km**（aero-2d 实测 L/D=16.05 覆写假设；数字取自运行证据） |
 | 双代闭环 | printer→（机床结构件）+ catalog→（运动件）= 机床；机床 `:machine`→rib-1 工序——两条设备链都在 DAG 边的 inputs 里 |
+
+## 0.5 第七阶段：P7 感知-行动闭环 + 视觉升级 V1–V3（本轮，7 提交）
+
+动机：三轮最高价值缺陷（机翼未拆/机床失真/机翼不在飞机上）全部由"人眼看渲染图"发现——
+看图是被证明有效的 checker，值得自动化。红线：**VLM 输出永远只进 soft obligation，不进任何硬门**。
+
+| 里程碑 | 交付 |
+|---|---|
+| **V2 渲染器** | Lambert+环境光、按角色分色（STL uint16 属性携带件索引）、地面网格/世界轴/比例尺；`fk render --png` matplotlib 离线四视图（iso/front/top/right）= 感知输入通道 |
+| **P7a fk review** | OpenAI 兼容 VLM 适配器（FK_VLM_BASE_URL/API_KEY/MODEL 环境变量）；发现挂 review 边（soft 硬编码，无配置口）；`fk verify` 只查 schema 不重跑 VLM；`--vs` 逆向对照 |
+| **V1 案例几何** | wingbox 3.0（翼型蒙皮薄壁管 = 外棱柱 − 内缩芯 cut；梁按弯度线就位带倒角；肋内缩）；cabin-fuselage 机制（八角壳 + 隔框）；empennage 机制（翼型尾翼）；print-fillet 硬政策 |
+| **V3 目录几何** | 条目可声明 geometry envelope（motor/rail/screw/board/panel 五类）；构造 op catalog-geom 携生成器 sha256 按值重放；红线：质量永远用目录值，包络只作布局/干涉/渲染 |
+| **P7b fk iterate** | 闭环驱动：每轮全新库跑、通道 A（goals/rejected/hints）+ 通道 B（四视图+review 发现）→ 外部 agent JSON 回合协议改脚本；预算 50 与停滞检测（5 轮无进展）**硬编码不可关** |
+| **P7c 闭环演示** | stub VLM + 修复 agent：缺垂尾 → review 发现 → agent 补件 → OPEN(0)，全程留档（test_48） |
+| **P7d/e skill 库** | 5 件 skill（fcad-design 主闭环/fcad-review/fcad-from-image 六站逆向/fk-mechanism-author/fk-impact）；`:tier image-inferred` 来源层语法原生可用 |
+
+本轮 OCCT 实测教训（已写进代码注释与 fk-mechanism-author skill）：≥12 点 ruled loft 返回无效体且静默作废一切布尔；
+MakeThickSolidByJoin 不挖空放置后的 loft；薄壁筒口倒角撞 "only 2 faces"；内容寻址库按字典序规范化键 → 多边形点序
+必须数字后缀自然序。
 
 ## 1. 开发阶段总览
 
