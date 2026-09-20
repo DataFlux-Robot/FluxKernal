@@ -6,7 +6,8 @@ frames), the machine IS a gantry mill (bed, columns, crossbeam, Z-head,
 with rib-1 standing on the bed as the workpiece).  Plus the printer frame
 and the 1:20 mockup DERIVED from the real subtree by scale-instance.
 
-  group 1 — wingbox 3000x1500x200 (world coords, as grounded)
+  group 1 — the whole aircraft 1:1 (wingbox parts + fuselage
+            surfaces, all at their world :at placements)
   group 2 — gantry mill (shift +Y): bed/columns/crossbeam/z-head + rib-1
   group 3 — reference printer frame, stood on edge
   group 4 — derived 1:20 mockup (what the DAG declares, scaled)
@@ -66,11 +67,16 @@ def fuse(shapes):
     return out
 
 
-# ── group 1: the wingbox, exactly as its children were grounded ──
+# ── group 1: the WHOLE AIRCRAFT at 1:1 — wingbox parts exactly as
+# grounded, plus the fuselage surfaces at their aircraft-level :at frames
+# (cabin above the wing centre, empennage behind the trailing edge,
+# fin stood up) — the decomposed aircraft, every part where the DAG
+# places it ──
 WING = [f"wingbox/{n}/solid" for n in
         ("skin-upper", "skin-lower", "spar-front", "spar-rear",
          "rib-1", "rib-2", "rib-3", "rib-4", "rib-5", "rib-6")]
-wing = [(n, [0, 0, 0], None) for n in WING]
+FUS = ["cabin-solid", "hstab-solid", "fin-solid"]
+wing = [(n, [0, 0, 0], None) for n in WING + FUS]
 
 # ── group 2: the gantry mill; rib-1 stands on the bed as the workpiece ──
 MILL_Y = 3200
@@ -132,8 +138,8 @@ shapes = [placed(name, [t[0], t[1], t[2] + dz_of[key]], rot,
           for name, t, rot in [(e[0], e[1], (e[2] if len(e) > 2 else None))]]
 
 LABELS = [
-    ("① 机翼 wingbox 3000×1500 · 双蒙皮+双梁+6肋（骨架就位）",
-     [1500, 750, Z0 + dz_of["wing"] + 130], 34),
+    ("① 整机装配 1:1 · 翼盒（双蒙皮+双梁+6肋）+舱段+平尾+垂尾 · 各件按 :at 帧就位",
+     [1500, 750, Z0 + dz_of["wing"] + 240], 34),
     ("② gantry 铣床 · 床身/立柱/横梁/Z头 + rib-1 工件（打印制造）",
      [-600, MILL_Y - 500, Z0 + dz_of["mill"] + 260], 34),
     ("③ 打印机机架 600×600 · 自举",
