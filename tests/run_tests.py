@@ -2046,6 +2046,51 @@ def test_46_review_soft_only():
     assert any("non-soft" in p for p in problems), problems
 
 
+def test_47_iterate_loop_driver():
+    """P7b: the loop driver runs rounds in fresh stores, reports both
+    channels, and the NON-CONFIGURABLE stall detector stops an agent
+    that echoes the same script forever (oscillation -> deadlock)."""
+    import subprocess
+    eng = fresh()
+    t = terms(eng, "mass")
+    # a script that NEVER closes: one open goal, no grounding
+    script = ("(node wob \"System\" \"widget\" "
+              "(contract (assumes ((in_v (>= 1) (<= 9))) "
+              "(guarantees ((out_v (>= 2) (<= 8)))) "
+              "(budget ((mass_kg (<= 5)))))))")
+    from fluxkernel.strategy import loop as fkloop
+    import inspect
+    assert "STALL_ROUNDS" in dir(fkloop)
+    src = inspect.getsource(fkloop.run_iterate)
+    assert "no_vlm" in src or "no-vlm" in src
+
+    # stub agent: echoes the SAME script every turn (an oscillator)
+    stub = Path(tempfile.mkdtemp(prefix="fk-agent-")) / "echo.py"
+    stub.write_text(
+        "import sys, json\n"
+        "msg = json.loads(sys.stdin.read())\n"
+        "print(json.dumps({'edit': msg['script']}))\n",
+        encoding="utf-8")
+
+    workdir = Path(tempfile.mkdtemp(prefix="fk-it-test-"))
+    script_path = workdir / "wob.fcad"
+    script_path.write_text(script, encoding="utf-8")
+
+    from fluxkernel.interface.cli import build_parser
+    # invoke run_iterate via CLI arg namespace directly
+    ns = type("A", (), {"script": str(script_path), "budget": 8,
+                        "agent": f"{sys.executable} {stub}",
+                        "no_vlm": True})()
+    import contextlib, io
+    buf = io.StringIO()
+    with contextlib.redirect_stdout(buf):
+        rc = fkloop.run_iterate(ns)
+    out = buf.getvalue()
+    assert "DEADLOCK" in out, out
+    assert "open=" in out
+    assert rc in (0, 1)
+
+
 # ================================================ discipline ==============
 
 
