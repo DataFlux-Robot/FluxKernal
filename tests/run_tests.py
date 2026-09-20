@@ -1344,7 +1344,73 @@ def test_36_param_system():
     assert all(g_["kind"] != "params" for g_ in view["open"])
 
 
+
+# ================================================ G1: sketch entities ======
+def test_37_sketch_entities_fillet_hole():
+    """G1: entity sketches (line/arc edges + circular holes), 12-constraint
+    vocabulary, fully-constrained soft obligation; the rounded plate with
+    a hole has a hand-computable volume and replays identically."""
+    import math
+    eng = fresh()
+    t = terms(eng, "mass")
+    R, HW, HH, HR = 10.0, 80.0, 40.0, 8.0   # corner r, span x/y, hole r
+    pts = {"p0": [20, 10], "p1": [80, 10], "p2": [90, 20], "p3": [90, 40],
+           "p4": [80, 50], "p5": [20, 50], "p6": [10, 40], "p7": [10, 20],
+           "h": [50, 30]}
+    edges = [{"e": "line", "a": "p0", "b": "p1"},
+             {"e": "arc", "a": "p1", "b": "p2", "r": R, "ccw": True},
+             {"e": "line", "a": "p2", "b": "p3"},
+             {"e": "arc", "a": "p3", "b": "p4", "r": R, "ccw": True},
+             {"e": "line", "a": "p4", "b": "p5"},
+             {"e": "arc", "a": "p5", "b": "p6", "r": R, "ccw": True},
+             {"e": "line", "a": "p6", "b": "p7"},
+             {"e": "arc", "a": "p7", "b": "p0", "r": R, "ccw": True}]
+    circles = [{"c": "h", "r": HR, "hole": True}]
+    cons = [["fix", k, v[0], v[1]] for k, v in pts.items()]
+    sketch = {"pts": pts, "edges": edges, "circles": circles,
+              "constraints": cons}
+    eng.node("rp", "Part", "plate", contract(eng, t))
+    r = eng.refine("rp", {"name": "ground-sketch", "args": {"sketch": sketch}},
+                   out_name="rp-sk")
+    assert r["state"] == "promoted", r["reason"]
+    pe = eng.dag.producing_edge(eng.store.resolve("rp-sk"))
+    sk_ev = [e for e in pe["certificate"]["evidence"]
+             if e["solver"].startswith("sketch2d")][-1]
+    assert sk_ev["converged"] is True and sk_ev["dof"] == 0
+    assert any(o["id"] == "fully-constrained" and o["holds"] is True
+               and o.get("class") == "soft"
+               for o in pe["certificate"]["obligations"])
+
+    r2 = eng.refine("rp-sk", {"name": "extrude",
+                              "args": {"height": 5, "material": "pla"}},
+                    out_name="rp-solid")
+    assert r2["state"] == "promoted", r2["reason"]
+    g = eng.store.get_object(eng.store.resolve("rp-solid"))["payload"]["ground"]
+    area = HW * HH - (4 - math.pi) * R * R - math.pi * HR * HR
+    assert abs(g["volume_mm3"] - area * 5) < 5.0, g["volume_mm3"]
+
+    # replay identity from the recorded entity profile
+    from fluxkernel.solvers.feature3d import rebuild_brep, _props
+    rb = rebuild_brep(eng.store.get_object(
+        eng.store.resolve("rp-solid"))["payload"])
+    assert abs(_props(rb)["volume_mm3"] - g["volume_mm3"]) < 1e-6
+
+    # under-constrained sketch: soft fully-constrained false, still promotes
+    sketch2 = {"pts": {"q0": [0, 0], "q1": [40, 0]},
+               "edges": [{"e": "line", "a": "q0", "b": "q1"}],
+               "constraints": [["fix", "q0", 0, 0]]}
+    eng.node("rp2", "Part", "plate2", contract(eng, t))
+    r3 = eng.refine("rp2", {"name": "ground-sketch",
+                            "args": {"sketch": sketch2}}, out_name="rp2-sk")
+    assert r3["state"] == "promoted", r3["reason"]
+    pe3 = eng.dag.producing_edge(eng.store.resolve("rp2-sk"))
+    fc = [o for o in pe3["certificate"]["obligations"]
+          if o["id"] == "fully-constrained"][-1]
+    assert fc["holds"] is False and "dof=2" in fc["detail"]
+
+
 # ================================================ discipline ==============
+
 
 
 def test_layer_discipline():

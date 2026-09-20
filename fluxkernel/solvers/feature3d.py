@@ -97,6 +97,113 @@ def _profile_points(node_specs: list[dict], args: dict) -> list:
     return [tuple(pts[k]) for k in order]
 
 
+def _profile_spec(node_specs: list[dict], args: dict) -> dict | None:
+    """Return the entity profile (pts/edges/circles) when the input sketch
+    carries G1 entities, else None (pure-polygon path stays)."""
+    src = node_specs[0] if node_specs else {}
+    g = (src.get("ground") or {})
+    if g.get("edges") or g.get("circles"):
+        return {"pts": g.get("points") or {},
+                "edges": g.get("edges") or [],
+                "circles": g.get("circles") or []}
+    return None
+
+
+def _arc_edge(p1, p2, r: float, ccw: bool):
+    """Edge of a circular arc through p1/p2 with radius r; ccw picks the
+    center side (two solutions — never guess silently)."""
+    import math as _m
+    from OCP.gp import gp_Pnt, gp_Dir, gp_Ax2, gp_Circ
+    from OCP.GC import GC_MakeArcOfCircle
+    ax_, ay = p1
+    bx, by = p2
+    dx, dy = bx - ax_, by - ay
+    d = _m.hypot(dx, dy)
+    if d < 1e-9:
+        raise ValueError("arc endpoints coincide")
+    if d > 2 * r + 1e-9:
+        raise ValueError(f"arc radius {r:g} too small for chord {d:g}")
+    h = _m.sqrt(max(r * r - (d / 2) ** 2, 0.0))
+    mx, my = (ax_ + bx) / 2, (ay + by) / 2
+    ux, uy = dx / d, dy / d
+    # two candidate centers at +/- the chord normal; ccw selects
+    c1 = (mx + uy * h, my - ux * h)
+    c2 = (mx - uy * h, my + ux * h)
+    a1 = _m.atan2(ay - c1[1], ax_ - c1[0])
+    b1 = _m.atan2(by - c1[1], bx - c1[0])
+    def sweep(c):
+        a = _m.atan2(ay - c[1], ax_ - c[0])
+        b = _m.atan2(by - c[1], bx - c[0])
+        sw = (b - a) % (2 * _m.pi)
+        return sw
+    center = c1 if (sweep(c1) <= _m.pi) == bool(ccw) else c2
+    circ = gp_Circ(gp_Ax2(gp_Pnt(center[0], center[1], 0), gp_Dir(0, 0, 1)), r)
+    a = _m.atan2(ay - center[1], ax_ - center[0])
+    b = _m.atan2(by - center[1], bx - center[0])
+    arc = GC_MakeArcOfCircle(circ, a, b, True)
+    if not arc.IsDone():
+        raise ValueError("arc construction failed")
+    from OCP.BRepBuilderAPI import BRepBuilderAPI_MakeEdge
+    return BRepBuilderAPI_MakeEdge(arc.Value()).Edge()
+
+
+def _face_from_profile(profile: dict):
+    """Face with an entity outer loop (line/arc/spline edges or a single
+    outer circle) and circular hole loops."""
+    import math as _m
+    from OCP.gp import gp_Pnt, gp_Dir, gp_Ax2, gp_Circ
+    from OCP.BRepBuilderAPI import (BRepBuilderAPI_MakeEdge,
+                                    BRepBuilderAPI_MakeWire, BRepBuilderAPI_MakeFace)
+    from OCP.GeomAPI import GeomAPI_PointsToBSpline
+    pts = {k: (float(v[0]), float(v[1])) for k, v in (profile.get("pts") or {}).items()}
+    edges = profile.get("edges") or []
+    circles = profile.get("circles") or []
+    outer = [c for c in circles if not c.get("hole")]
+    holes = [c for c in circles if c.get("hole")]
+
+    if edges:
+        mk = BRepBuilderAPI_MakeWire()
+        for e in edges:
+            et = e.get("e", e.get("type", "line"))
+            if et == "line":
+                a, b = pts[e["a"]], pts[e["b"]]
+                mk.Add(BRepBuilderAPI_MakeEdge(gp_Pnt(a[0], a[1], 0),
+                                               gp_Pnt(b[0], b[1], 0)).Edge())
+            elif et == "arc":
+                a, b = pts[e["a"]], pts[e["b"]]
+                mk.Add(_arc_edge(a, b, float(e["r"]), bool(e.get("ccw", True))))
+            elif et == "spline":
+                through = [pts[n] for n in e.get("through", [])]
+                if len(through) < 2:
+                    raise ValueError("spline needs >= 2 through points")
+                cur = GeomAPI_PointsToBSpline(
+                    [gp_Pnt(x, y, 0) for x, y in through]).Curve()
+                mk.Add(BRepBuilderAPI_MakeEdge(cur,
+                                               gp_Pnt(through[0][0], through[0][1], 0),
+                                               gp_Pnt(through[-1][0], through[-1][1], 0)).Edge())
+            else:
+                raise ValueError(f"unknown sketch entity: {et}")
+        face = BRepBuilderAPI_MakeFace(mk.Wire()).Face()
+    elif len(outer) == 1:
+        c = outer[0]
+        ctr = pts[c["c"]]
+        circ = gp_Circ(gp_Ax2(gp_Pnt(ctr[0], ctr[1], 0), gp_Dir(0, 0, 1)),
+                       float(c["r"]))
+        w = BRepBuilderAPI_MakeWire(BRepBuilderAPI_MakeEdge(circ).Edge())
+        face = BRepBuilderAPI_MakeFace(w.Wire()).Face()
+    else:
+        raise ValueError("profile needs edges or exactly one outer circle")
+
+    for c in holes:
+        ctr = pts[c["c"]]
+        circ = gp_Circ(gp_Ax2(gp_Pnt(ctr[0], ctr[1], 0), gp_Dir(0, 0, 1)),
+                       float(c["r"]))
+        hw = BRepBuilderAPI_MakeWire(BRepBuilderAPI_MakeEdge(circ).Edge()).Wire()
+        hw.Reverse()          # inner loop: opposite orientation = a hole
+        face = BRepBuilderAPI_MakeFace(face, hw).Face()
+    return face
+
+
 def _parse_at(at, node_specs=None):
     """General placement (the build123d Location analogue).  Accepted forms:
 
@@ -160,13 +267,20 @@ def _placed(shape, pl: dict):
 def extrude(node_specs, args, ctx):
     from OCP.gp import gp_Vec
     from OCP.BRepPrimAPI import BRepPrimAPI_MakePrism
-    pts = _profile_points(node_specs, args)
     height = float(args["height"])
     material = args.get("material", "abs")
-    face = _face_from_points(pts)
-    shape = BRepPrimAPI_MakePrism(face, gp_Vec(0, 0, height)).Shape()
-    cons = {"op": "extrude", "height": height,
-            "points": [[float(x), float(y)] for x, y in pts], "material": material}
+    prof = _profile_spec(node_specs, args)
+    if prof:
+        face = _face_from_profile(prof)
+        shape = BRepPrimAPI_MakePrism(face, gp_Vec(0, 0, height)).Shape()
+        cons = {"op": "extrude", "height": height, "material": material,
+                "profile": prof}
+    else:
+        pts = _profile_points(node_specs, args)
+        face = _face_from_points(pts)
+        shape = BRepPrimAPI_MakePrism(face, gp_Vec(0, 0, height)).Shape()
+        cons = {"op": "extrude", "height": height,
+                "points": [[float(x), float(y)] for x, y in pts], "material": material}
     pl = _parse_at(args.get("at"), node_specs)
     if pl:
         shape = _placed(shape, pl)
@@ -257,7 +371,10 @@ def rebuild_brep(node_spec: dict):
     if kind == "extrude":
         from OCP.gp import gp_Vec
         from OCP.BRepPrimAPI import BRepPrimAPI_MakePrism
-        face = _face_from_points([tuple(p) for p in cons["points"]])
+        if cons.get("profile"):
+            face = _face_from_profile(cons["profile"])
+        else:
+            face = _face_from_points([tuple(p) for p in cons["points"]])
         shape = BRepPrimAPI_MakePrism(face, gp_Vec(0, 0, cons["height"])).Shape()
         return _placed(shape, cons["placement"]) if cons.get("placement") else shape
     if kind == "revolve":
