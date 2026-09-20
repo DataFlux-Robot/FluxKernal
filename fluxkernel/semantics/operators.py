@@ -18,6 +18,7 @@ from __future__ import annotations
 
 import copy
 import time
+from pathlib import Path
 
 from ..core.objects import (Edge, Node, Certificate, ResourceVector, Obligation, ROLES)
 from ..core.dag import DAG, DagError
@@ -150,6 +151,125 @@ class Engine:
         d = self.dag.put_node(node, name)
         self.journal.append(f"params      {name} = {sorted(vals)} {d[8:20]}")
         return d
+
+    def instantiate(self, at_ref: str, mechanism: str,
+                    params: dict | None = None, printer: str | None = None,
+                    out_name: str | None = None) -> dict:
+        """(instantiate :at <goal> :mechanism <name> :params ...): expand a
+        mechanism package into ORDINARY DAG edges — decompose (computed
+        layout+flow-down) -> per-part ground/extrude at computed frames ->
+        terminal prints (reserved parts stay open) -> compose recipe.  The
+        kernel stays mechanism-agnostic; verify needs no new logic."""
+        import json
+        from ..core import params as fkparams
+        mech_dirs = [Path.cwd() / "mechanisms",
+                     Path(__file__).resolve().parents[2] / "mechanisms"]
+        decl = None
+        for d in mech_dirs:
+            f = d / f"{mechanism}.json"
+            if f.is_file():
+                decl = json.loads(f.read_text(encoding="utf-8"))
+                break
+        if decl is None:
+            raise DagError("S1", f"unknown mechanism {mechanism!r} "
+                                 f"(searched mechanisms/)")
+
+        # resolve parameters (defaults may be expressions over the others)
+        values = {k: float(v) for k, v in (params or {}).items()}
+        for k, spec in (decl.get("params") or {}).items():
+            if k in values:
+                continue
+            de = spec.get("default-expr") if isinstance(spec, dict) else None
+            if de:
+                values[k] = fkparams.eval_sexp(de, lambda n: values.get(n))
+        for k, spec in (decl.get("params") or {}).items():
+            rng = spec.get("range") if isinstance(spec, dict) else None
+            if rng and k in values and not (rng[0] <= values[k] <= rng[1]):
+                raise DagError("U3", f"mechanism param {k}={values[k]:g} "
+                                     f"outside range {rng}")
+
+        import importlib
+        mod = importlib.import_module(decl["module"])
+        gen = mod.generate(values)
+        frames = mod.layout(values)
+        into = gen["into"]
+        kinds = mod.kinds_of(into)
+        specs = {name: {"frames": {"build": frames[name]}} for name in into}
+        arch_params = {**values,
+                       "rib-count": values.get("rib-count",
+                                               len([i for i in into
+                                                    if i.startswith("rib")]))}
+
+        # 1) decompose with the computed family
+        res = self.refine([at_ref],
+                          {"name": "decompose", "args": {
+                              "into": into,
+                              "roles": gen["roles"],
+                              "kinds": kinds,
+                              "flow_down": gen["flow_down"],
+                              "specs": specs,
+                              "archetype": f"mech:{mechanism}",
+                              "archetype_params": arch_params}},
+                          out_name=out_name or f"{mechanism}-v1",
+                          out_role="Component")
+        if res["state"] != "promoted":
+            return res
+        scope = res["node"]
+        base = out_name or f"{mechanism}-v1"
+
+        # 2) per-part grounding at computed frames (+ terminal prints)
+        term = decl.get("termination") or {}
+        printable = [t for t in term.get("print", [])
+                     if t in into and t in frames]
+        pr_d = self.store.resolve(printer) if printer else None
+        grounded = {}
+        for name in into:
+            pr = gen["parts"][name]
+            sk = {"pts": {"a": [0, 0], "b": [pr["w"], 0],
+                          "c": [pr["w"], pr["h"]], "d": [0, pr["h"]]},
+                  "constraints": [["fix", "a", 0, 0],
+                                  ["dist", "a", "b", pr["w"]],
+                                  ["dist", "b", "c", pr["h"]],
+                                  ["horiz", "a", "b"], ["vert", "b", "c"]]}
+            r1 = self.refine([f"{base}/{name}"],
+                             {"name": "ground-sketch",
+                              "args": {"sketch": sk}},
+                             out_name=f"{base}/{name}/sk")
+            if r1["state"] != "promoted":
+                return {"state": "rejected",
+                        "reason": f"mechanism grounding failed at {name}: "
+                                  f"{r1['reason']}", "children": []}
+            r2 = self.refine([r1["node"]],
+                             {"name": "extrude",
+                              "args": {"height": pr["thick"],
+                                       "material": pr["material"],
+                                       "at": [":frame", "build"]}},
+                             out_name=f"{base}/{name}/solid")
+            if r2["state"] != "promoted":
+                return {"state": "rejected",
+                        "reason": f"mechanism extrude failed at {name}: "
+                                  f"{r2['reason']}", "children": []}
+            grounded[name] = r2["node"]
+            if name in printable and pr_d:
+                rp = self.print_part(r2["node"], pr_d,
+                                     out_name=f"{base}/{name}/printed")
+                if rp["state"] != "promoted":
+                    return {"state": "rejected",
+                            "reason": f"mechanism print failed at {name}: "
+                                      f"{rp['reason']}", "children": []}
+
+        # 3) compose recipe
+        recipe = mod.assemble(values)
+        inputs = [grounded[n] for n in into]
+        rc = self.compose(inputs,
+                          out_name=f"{base}/assembly",
+                          out_role="Component",
+                          out_kind=recipe.get("out_kind", "assembly"),
+                          transform_spec=recipe.get("transform"))
+        return {"state": rc["state"], "reason": rc.get("reason", ""),
+                "node": rc.get("node"), "edge": rc.get("edge"),
+                "decompose": res, "assembly": rc,
+                "params": values, "mechanism": mechanism}
 
     def params_override(self, name: str, key: str, value: float) -> str:
         """Re-issue a params set with one definition replaced.  Content-

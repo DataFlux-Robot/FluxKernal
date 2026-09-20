@@ -109,85 +109,15 @@
 (exact e4 :target sha-pek-v1/epu :from catalog
   :match "torque_nm>=50 rpm>=2000" :out epu-std)
 
-;; ══ wing: the WINGBOX archetype (E6-4) — skeleton frames place every ══
-;; ══ child in ONE layout; children ground AT their frame (E6-1)        ══
-(refine e4a :in (sha-pek-v1/wing) :out wing-v1 :role Component
-  :transform (decompose :template wingbox))
-
-;; skins: 3000x1480x2 plates closing the box top and bottom
-(refine e34 :in (wing-v1/skin-upper) :out sku-sk :kind sketch
-  :transform (ground-sketch :sketch (sketch
-    (pts (k0 0 0) (k1 (:param wing/span) 0)
-             (k2 (:param wing/span) (:expr (- wing/chord 20)))
-             (k3 0 (:expr (- wing/chord 20)))) (constraints))))
-(refine e35 :in (sku-sk) :out sku-solid :kind skin-panel
-  :transform (extrude :height (:param wing/t-skin) :material aluminum :at (:frame build)))
-(print e36 :in (sku-solid) :printer reference-printer :out sku-printed)
-(refine e34b :in (wing-v1/skin-lower) :out skl-sk :kind sketch
-  :transform (ground-sketch :sketch (sketch
-    (pts (k4 0 0) (k5 (:param wing/span) 0)
-             (k6 (:param wing/span) (:expr (- wing/chord 20)))
-             (k7 0 (:expr (- wing/chord 20)))) (constraints))))
-(refine e35b :in (skl-sk) :out skl-solid :kind skin-panel
-  :transform (extrude :height (:param wing/t-skin) :material aluminum :at (:frame build)))
-(print e36b :in (skl-solid) :printer reference-printer :out skl-printed)
-
-;; spars: 3000x190 webs, stood upright at 25% / 75% chord
-(refine e37 :in (wing-v1/spar-front) :out spf-sk :kind sketch
-  :transform (ground-sketch :sketch (sketch
-    (pts (s0 0 0) (s1 (:param wing/span) 0)
-             (s2 (:param wing/span) (:param wing/spar-h))
-             (s3 0 (:param wing/spar-h))) (constraints))))
-(refine e38 :in (spf-sk) :out spf-solid :kind spar
-  :transform (extrude :height (:param wing/t-spar) :material aluminum :at (:frame build)))
-(print e39 :in (spf-solid) :printer reference-printer :out spf-printed)
-(refine e37b :in (wing-v1/spar-rear) :out spr-sk :kind sketch
-  :transform (ground-sketch :sketch (sketch
-    (pts (s4 0 0) (s5 (:param wing/span) 0)
-             (s6 (:param wing/span) (:param wing/spar-h))
-             (s7 0 (:param wing/spar-h))) (constraints))))
-(refine e38b :in (spr-sk) :out spr-solid :kind spar
-  :transform (extrude :height (:param wing/t-spar) :material aluminum :at (:frame build)))
-(print e39b :in (spr-solid) :printer reference-printer :out spr-printed)
-
-;; ribs: 720x188 webs spanning BETWEEN the spars, one per station.
-;; rib-1 is reserved for the machining branch (milled on the gantry);
-;; rib-2..6 terminate on the printer.
-(refine e4b :in (wing-v1/rib-1) :out rib1-sk :kind sketch
-  :transform (ground-sketch :sketch (sketch
-    (pts (p0 0 0) (p1 (:param wing/rib-chord) 0) (p2 (:param wing/rib-chord) (:param wing/rib-h)) (p3 0 (:param wing/rib-h))) (constraints))))
-(refine e4c :in (rib1-sk) :out rib-1-solid :kind rib
-  :transform (extrude :height (:param wing/t-rib) :material aluminum :at (:frame build)))
-(refine e4b2 :in (wing-v1/rib-2) :out rib2-sk :kind sketch
-  :transform (ground-sketch :sketch (sketch
-    (pts (p4 0 0) (p5 (:param wing/rib-chord) 0) (p6 (:param wing/rib-chord) (:param wing/rib-h)) (p7 0 (:param wing/rib-h))) (constraints))))
-(refine e4c2 :in (rib2-sk) :out rib-2-solid :kind rib
-  :transform (extrude :height (:param wing/t-rib) :material aluminum :at (:frame build)))
-(print e4p2 :in (rib-2-solid) :printer reference-printer :out rib-2-printed)
-(refine e4b3 :in (wing-v1/rib-3) :out rib3-sk :kind sketch
-  :transform (ground-sketch :sketch (sketch
-    (pts (p8 0 0) (p9 (:param wing/rib-chord) 0) (p10 (:param wing/rib-chord) (:param wing/rib-h)) (p11 0 (:param wing/rib-h))) (constraints))))
-(refine e4c3 :in (rib3-sk) :out rib-3-solid :kind rib
-  :transform (extrude :height (:param wing/t-rib) :material aluminum :at (:frame build)))
-(print e4p3 :in (rib-3-solid) :printer reference-printer :out rib-3-printed)
-(refine e4b4 :in (wing-v1/rib-4) :out rib4-sk :kind sketch
-  :transform (ground-sketch :sketch (sketch
-    (pts (p12 0 0) (p13 (:param wing/rib-chord) 0) (p14 (:param wing/rib-chord) (:param wing/rib-h)) (p15 0 (:param wing/rib-h))) (constraints))))
-(refine e4c4 :in (rib4-sk) :out rib-4-solid :kind rib
-  :transform (extrude :height (:param wing/t-rib) :material aluminum :at (:frame build)))
-(print e4p4 :in (rib-4-solid) :printer reference-printer :out rib-4-printed)
-(refine e4b5 :in (wing-v1/rib-5) :out rib5-sk :kind sketch
-  :transform (ground-sketch :sketch (sketch
-    (pts (p16 0 0) (p17 (:param wing/rib-chord) 0) (p18 (:param wing/rib-chord) (:param wing/rib-h)) (p19 0 (:param wing/rib-h))) (constraints))))
-(refine e4c5 :in (rib5-sk) :out rib-5-solid :kind rib
-  :transform (extrude :height (:param wing/t-rib) :material aluminum :at (:frame build)))
-(print e4p5 :in (rib-5-solid) :printer reference-printer :out rib-5-printed)
-(refine e4b6 :in (wing-v1/rib-6) :out rib6-sk :kind sketch
-  :transform (ground-sketch :sketch (sketch
-    (pts (p20 0 0) (p21 (:param wing/rib-chord) 0) (p22 (:param wing/rib-chord) (:param wing/rib-h)) (p23 0 (:param wing/rib-h))) (constraints))))
-(refine e4c6 :in (rib6-sk) :out rib-6-solid :kind rib
-  :transform (extrude :height (:param wing/t-rib) :material aluminum :at (:frame build)))
-(print e4p6 :in (rib-6-solid) :printer reference-printer :out rib-6-printed)
+;; ══ wing: ONE instantiate (M3) — the wingbox MECHANISM computes the ══
+;; ══ whole family from the parameters: frames, per-part geometry, flow- ══
+;; ══ down budgets, rib-count (ceil(span/500), policy-checked), prints.  ══
+;; ══ rib-1 stays reserved for the machining branch; everything else     ══
+;; ══ terminates on the shared printer.  The 80 hand-written lines are   ══
+;; ══ gone — what remains declares INTENT and PARAMETERS.                ══
+(instantiate e4a :at (sha-pek-v1/wing) :mechanism wingbox
+  :params ((span 3000) (chord 1500) (height 200))
+  :printer reference-printer :out wingbox)
 
 ;; ── per-layer simulator evidence (E2 matrix) ──
 (eval e30 :target sha-pek-v1/wing :with aero-2d :fidelity 1
@@ -195,17 +125,7 @@
   :expect ((ld_ratio (>= 14))))
 (eval e31 :target epu-std :with prop-map :fidelity 1
   :torque_nm 50 :rpm 6000 :prop_d_m 0.6)
-(eval e32 :target rib-1-solid :with beam-fe :fidelity 1 :load_n 800)
-
-;; wing assembly: children are ALREADY in world coordinates (each grounded
-;; at its skeleton frame) — identity placements + the real interference gate
-(compose e4d :in (sku-solid skl-solid spf-solid spr-solid
-                      rib-1-solid rib-2-solid rib-3-solid
-                      rib-4-solid rib-5-solid rib-6-solid)
-  :out wing-assy :role Component :kind wing-assembly
-  :transform (assemble :placements ((0 0 0) (0 0 0) (0 0 0) (0 0 0)
-                                    (0 0 0) (0 0 0) (0 0 0)
-                                    (0 0 0) (0 0 0) (0 0 0))))
+(eval e32 :target wingbox/rib-1/solid :with beam-fe :fidelity 1 :load_n 800)
 
 ;; ── fuselage developed one level: cabin shell + seats; avionics closes
 ;;    straight from the catalog ("may split or not" — a catalog hit is a
@@ -233,7 +153,7 @@
 ;; no range roll-up here: the composed airframe carries no mission
 ;; evidence of its own — range is verified where the mission model lives
 ;; (e2c hard expect, and the closed-loop re-check e63 with measured L/D)
-(compose e5 :in (wing-assy sha-pek-v1/fuselage sha-pek-v1/avionics epu-std)
+(compose e5 :in (wingbox/assembly sha-pek-v1/fuselage sha-pek-v1/avionics epu-std)
   :out sha-pek-design :role System :kind light-aircraft)
 
 (refine e47h :in (fuselage-v1/hstab) :out hstab-sk :kind sketch
@@ -362,7 +282,7 @@
 
 ;; NOW the rib is milled ON the developed machine (G2: the machine digest
 ;; enters the process edges — "this mill machines this part" is a DAG fact)
-(manufacture e5a :in (rib-1-solid) :out rib-proc :machine fab-mill
+(manufacture e5a :in (wingbox/rib-1/solid) :out rib-proc :machine fab-mill
   :transform (process-plan :into (stock milling-3axis inspection)))
 (compose e5b :in (rib-proc/stock rib-proc/milling-3axis rib-proc/inspection)
   :out rib-line :role Line :kind rib-line

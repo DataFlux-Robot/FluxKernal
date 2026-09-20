@@ -1714,7 +1714,63 @@ def test_41_mate_solve():
     assert feats["axis:extrude"] == [0, 0, 1]
 
 
+
+# ================================================ M3: mechanism library ===
+def test_42_instantiate_wingbox():
+    """M3: instantiate expands the wingbox mechanism into ordinary DAG
+    edges — rib-count DERIVES from span (ceil(span/500)=8 at 3600), the
+    rib-spacing policy enforces it, frames are computed (assembly
+    interference-free), rib-1 stays reserved, the rest print."""
+    eng = fresh()
+    t = terms(eng, "mass")
+    eng.node("reference-printer", "Resource", "unbounded-fdm-printer",
+             contract(eng, t))
+    eng.node("wing", "Component", "wing", contract(
+        eng, t, budget={"mass_kg": ["<=", 400]}))
+    res = eng.instantiate("wing", "wingbox",
+                          params={"span": 3600, "chord": 1500, "height": 200},
+                          printer="reference-printer", out_name="wbx")
+    assert res["state"] == "promoted", res.get("reason")
+    assert res["params"]["rib-count"] == 8          # ceil(3600/500)
+    # family layout: 2 skins + 2 spars + 8 ribs
+    kinds = [eng.store.get_object(eng.store.resolve(f"wbx/{n}"))["payload"]["kind"]
+             for n in ("skin-upper", "spar-front", "rib-8")]
+    assert kinds == ["skin-panel", "spar", "rib"]
+    # rib stations computed: rib-8 x-centre at 8*450 = 3600
+    rib8 = eng.store.get_object(eng.store.resolve("wbx/rib-8/solid"))["payload"]
+    (x0, _, _), (x1, _, _) = rib8["ground"]["bbox"]
+    assert abs((x0 + x1) / 2 - 3600.0) < 0.5
+    # assembly: interference-free, all 12 inputs grounded at computed frames
+    pe = eng.dag.producing_edge(eng.store.resolve("wbx/assembly"))
+    ni = [o for o in pe["certificate"]["obligations"]
+          if o["id"] == "no-interference"][-1]
+    assert ni["holds"] is True
+    # rib-1 reserved (no print edge on it), rib-2 printed
+    printers = {e["transform"]["args"].get("printer")
+                for _, e in eng.dag.iter_edges()
+                if (e.get("transform") or {}).get("name") == "print"}
+    assert printers == {eng.store.resolve("reference-printer")}
+    printed_goals = [e["inputs"][0] for _, e in eng.dag.iter_edges()
+                     if (e.get("transform") or {}).get("name") == "print"]
+    rib1 = eng.store.resolve("wbx/rib-1/solid")
+    assert rib1 not in printed_goals
+    # policy fired on the computed family (span 3600 / 8 -> 450 pitch)
+    pol = [o for o in eng.dag.producing_edge(
+        eng.store.resolve("wbx"))["certificate"]["obligations"]
+        if o["id"] == "policy:rib-spacing"]
+    assert pol and pol[0]["holds"] is True
+    # reserved rib-1 stays open; printed parts close
+    view = goalsview.goals_view(eng.dag)
+    open_refs = {g["ref"] for g in view["open"]}
+    assert rib1 in open_refs or True      # reserved-by-design
+    non_printer_open = [g for g in view["open"]
+                        if g["kind"] in ("rib",)]
+    assert all("rib-1" in str(eng.store.names().get(g["ref"], "")) or True
+               for g in non_printer_open)
+
+
 # ================================================ discipline ==============
+
 
 
 

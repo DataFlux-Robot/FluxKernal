@@ -63,7 +63,9 @@ def applicable(payload: dict, pol: dict) -> bool:
     roles = ap.get("roles") or []
     arch = ap.get("within_archetype")
     spec = payload.get("spec") or {}
-    if arch and spec.get("archetype") != arch:
+    got = spec.get("archetype")
+    # mechanisms stamp "mech:<name>" — same family, same rules
+    if arch and got not in (arch, f"mech:{arch}"):
         return False
     if kinds and payload.get("kind") not in kinds:
         return False

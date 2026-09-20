@@ -155,6 +155,25 @@ class Runner:
         pos, kw = split_kwargs(body)
         return self._op("manufacture", pos, kw)
 
+    def _form_instantiate(self, body):
+        """(instantiate <name> :at <goal> :mechanism <id>
+                        :params ((k v)...) :printer <resource>)"""
+        pos, kw = split_kwargs(body)
+        name = str(kw.get("out") or (pos[0] if pos else "")) or None
+        at_raw = kw.get("at") or (pos[1] if len(pos) > 1 else None)
+        at = str(at_raw[0]) if isinstance(at_raw, list) and at_raw             else (str(at_raw) if at_raw else None)
+        mech = str(kw.get("mechanism") or "")
+        params = fcad.pairs_to_map(kw["params"])             if isinstance(kw.get("params"), list) else {}
+        printer = kw.get("printer")
+        if not (at and mech):
+            raise FcadError("S1", "(instantiate <name> :at <goal> "
+                                  ":mechanism <id> :params (...) "
+                                  ":printer <res>)")
+        res = self.engine.instantiate(str(at), mech, params=params,
+                                      printer=str(printer) if printer else None,
+                                      out_name=name)
+        return self._bind_edge_name([], res)
+
     def _form_print(self, body):
         pos, kw = split_kwargs(body)
         ins = [str(x) for x in (kw.get("in") or [])]

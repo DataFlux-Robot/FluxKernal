@@ -1,0 +1,17 @@
+{
+  "id": "wingbox", "version": "2.0.0",
+  "_doc": "Parametric wing box: skins/spars/ribs, every frame computed from span/chord/height; rib-count derives from span (ceil(span/500)) and the rib-spacing policy enforces it; rib-1 reserved for machining, the rest printed.",
+  "params": {
+    "span":   {"type": "length_mm", "range": [500, 20000]},
+    "chord":  {"type": "length_mm", "range": [200, 5000]},
+    "height": {"type": "length_mm", "range": [50, 1000]},
+    "rib-count": {"default-expr": ["ceil", ["/", "span", 500]]}
+  },
+  "module": "fluxkernel.mechanisms.wingbox",
+  "policies": ["rib-spacing"],
+  "termination": {"print": ["skin-upper", "skin-lower", "spar-front",
+                            "spar-rear", "rib-2", "rib-3", "rib-4",
+                            "rib-5", "rib-6", "rib-7", "rib-8"],
+                  "reserve": ["rib-1"]},
+  "solvers": ["beam/plate", "aero-2d", "mate/ocp"]
+}
