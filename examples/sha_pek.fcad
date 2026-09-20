@@ -129,55 +129,114 @@
   :torque_nm 50 :rpm 6000 :prop_d_m 0.6)
 (eval e32 :target wingbox/rib-1/solid :with beam-fe :fidelity 1 :load_n 800)
 
-;; ── fuselage developed one level: cabin shell + seats; avionics closes
-;;    straight from the catalog ("may split or not" — a catalog hit is a
-;;    legal stopping point) ──
+;; ── fuselage as a REAL structure (not three sheets): the cabin is a
+;;    five-panel shell (floor / sidewalls / end bulkheads) enclosing
+;;    800x1397x400 above the wing carry-through box; a U-channel tail
+;;    boom carries the empennage at its aft end.  Every panel is a
+;;    printable part at its aircraft-level :at frame (the wingbox is
+;;    the anchor: x=span, y=fore-aft, z=up).  Avionics still closes
+;;    straight from the catalog ("may split or not") ──
 (refine e43 :in (sha-pek-v1/fuselage) :out fuselage-v1 :role Component
   :transform (decompose
-    :into (cabin-shell seat hstab fin)
+    :into (cabin-shell tail-boom seat hstab fin)
     :flow-down (
       (cabin-shell :budget ((mass_kg ("<=" 200))) :guarantees ((gcs "cabin shell carries airload" :bounds ((mass_kg ("<=" 200))))))
+      (tail-boom :budget ((mass_kg ("<=" 30))) :guarantees ((gtb "tail boom carries empennage loads" :bounds ((mass_kg ("<=" 30))))))
       (seat :budget ((mass_kg ("<=" 15))) :guarantees ((gst "two occupant seats" :bounds ((mass_kg ("<=" 15))))))
       (hstab :budget ((mass_kg ("<=" 20))) :guarantees ((ghs2 "horizontal stabilizer trims CG" :bounds ((mass_kg ("<=" 20))))))
       (fin :budget ((mass_kg ("<=" 10))) :guarantees ((gfn2 "vertical fin gives directional stability" :bounds ((mass_kg ("<=" 10)))))))))
-(refine e47 :in (fuselage-v1/cabin-shell) :out cabin-sk :kind sketch
+
+;; the cabin shell develops one more level: five flat panels, each a
+;; print; assembled they enclose the occupant bay above the wing box
+(refine e43b :in (fuselage-v1/cabin-shell) :out cabin-v1
+  :transform (decompose
+    :into (floor wall-l wall-r bh-front bh-rear)
+    :roles ((floor Part) (wall-l Part) (wall-r Part)
+            (bh-front Part) (bh-rear Part))
+    :flow-down (
+      (floor :budget ((mass_kg ("<=" 15))) :guarantees ((gcf "cabin floor carries occupants" :bounds ((mass_kg ("<=" 15))))))
+      (wall-l :budget ((mass_kg ("<=" 12))) :guarantees ((gwl "left sidewall" :bounds ((mass_kg ("<=" 12))))))
+      (wall-r :budget ((mass_kg ("<=" 12))) :guarantees ((gwr "right sidewall" :bounds ((mass_kg ("<=" 12))))))
+      (bh-front :budget ((mass_kg ("<=" 8))) :guarantees ((gbf "front bulkhead" :bounds ((mass_kg ("<=" 8))))))
+      (bh-rear :budget ((mass_kg ("<=" 8))) :guarantees ((gbr "rear bulkhead closes the bay" :bounds ((mass_kg ("<=" 8)))))))))
+
+;; floor 800x1400x3 laid on the wing box top (z 203, 3mm above z=200)
+(refine e47 :in (cabin-v1/floor) :out cabin-sk :kind sketch
   :transform (ground-sketch :sketch (sketch
     (pts (c0 0 0) (c1 800 0) (c2 800 1400) (c3 0 1400)) (constraints))))
-;; aircraft-level layout (the wingbox is the anchor: x=span 0..3000,
-;; y=chord 0..1500 fore-aft, z=0..200): the cabin rides above the wing
-;; centre, empennage behind the trailing edge — the DERIVED mockup then
-;; reads as an aircraft with its wing on
 (refine e48 :in (cabin-sk) :out cabin-solid :kind cabin-shell
-  :transform (extrude :height 3 :material aluminum :at ((1100 50 230))))
+  :transform (extrude :height 3 :material aluminum :at ((1100 50 203))))
 (print e49 :in (cabin-solid) :printer reference-printer :out cabin-printed)
+
+;; sidewalls 3x1397x400 standing on the floor edges (x 1100 / 1900)
+(refine e47w :in (cabin-v1/wall-l) :out cwl-sk :kind sketch
+  :transform (ground-sketch :sketch (sketch
+    (pts (l0 0 0) (l1 400 0) (l2 400 1397) (l3 0 1397)) (constraints))))
+(refine e48w :in (cwl-sk) :out cwl-solid :kind cabin-shell
+  :transform (extrude :height 3 :material aluminum :at ((1100 53 606) (0 1 0 90))))
+(print e49w :in (cwl-solid) :printer reference-printer :out cwl-printed)
+(refine e47wr :in (cabin-v1/wall-r) :out cwr-sk :kind sketch
+  :transform (ground-sketch :sketch (sketch
+    (pts (r0 0 0) (r1 400 0) (r2 400 1397) (r3 0 1397)) (constraints))))
+(refine e48wr :in (cwr-sk) :out cwr-solid :kind cabin-shell
+  :transform (extrude :height 3 :material aluminum :at ((1900 53 606) (0 1 0 90))))
+(print e49wr :in (cwr-solid) :printer reference-printer :out cwr-printed)
+
+;; end bulkheads 800x3x400 between the sidewalls
+(refine e47bf :in (cabin-v1/bh-front) :out cbhf-sk :kind sketch
+  :transform (ground-sketch :sketch (sketch
+    (pts (f0 0 0) (f1 800 0) (f2 800 400) (f3 0 400)) (constraints))))
+(refine e48bf :in (cbhf-sk) :out cbhf-solid :kind cabin-shell
+  :transform (extrude :height 3 :material aluminum :at ((1100 53 206) (1 0 0 90))))
+(print e49bf :in (cbhf-solid) :printer reference-printer :out cbhf-printed)
+(refine e47br :in (cabin-v1/bh-rear) :out cbhr-sk :kind sketch
+  :transform (ground-sketch :sketch (sketch
+    (pts (k0 0 0) (k1 800 0) (k2 800 400) (k3 0 400)) (constraints))))
+(refine e48br :in (cbhr-sk) :out cbhr-solid :kind cabin-shell
+  :transform (extrude :height 3 :material aluminum :at ((1100 1453 206) (1 0 0 90))))
+(print e49br :in (cbhr-solid) :printer reference-printer :out cbhr-printed)
+
+;; tail boom: one printed 160x160 U-channel (wall 3), 700 long, laid
+;; fore-aft from the rear bulkhead; opening faces down, top flange at
+;; z 480 carries the fin foot
+(refine e47t :in (fuselage-v1/tail-boom) :out boom-sk :kind sketch
+  :transform (ground-sketch :sketch (sketch
+    (pts (t0 0 0) (t1 3 0) (t2 3 157) (t3 157 157) (t4 157 0) (t5 160 0)
+         (t6 160 160) (t7 0 160)) (constraints))))
+(refine e48t :in (boom-sk) :out boom-solid :kind tail-boom
+  :transform (extrude :height 700 :material aluminum :at ((1420 2153 320) (1 0 0 90))))
+(print e49t :in (boom-solid) :printer reference-printer :out boom-printed)
+
 (exact e45 :target fuselage-v1/seat :from catalog
   :match "mass_kg<=15" :out seat-std)
 (exact e46 :target sha-pek-v1/avionics :from catalog
   :match "mass_kg<=40" :out av-std)
 
-;; ── compose the aircraft design (V right leg) ──
-;; no range roll-up here: the composed airframe carries no mission
-;; evidence of its own — range is verified where the mission model lives
-;; (e2c hard expect, and the closed-loop re-check e63 with measured L/D)
-
+;; empennage at the boom's aft end (boom ends y 1453..2153, z 320..480)
 (refine e47h :in (fuselage-v1/hstab) :out hstab-sk :kind sketch
   :transform (ground-sketch :sketch (sketch
     (pts (h0 0 0) (h1 600 0) (h2 600 200) (h3 0 200)) (constraints))))
 (refine e48h :in (hstab-sk) :out hstab-solid :kind hstab
-  :transform (extrude :height 4 :material aluminum :at ((1200 1550 230))))
+  :transform (extrude :height 4 :material aluminum :at ((1200 2353 400))))
 (print e49h :in (hstab-solid) :printer reference-printer :out hstab-printed)
 (refine e47f :in (fuselage-v1/fin) :out fin-sk :kind sketch
   :transform (ground-sketch :sketch (sketch
     (pts (n4 0 0) (n5 200 0) (n6 200 300) (n7 0 300)) (constraints))))
 (refine e48f :in (fin-sk) :out fin-solid :kind fin
-  :transform (extrude :height 4 :material aluminum :at ((1400 1550 234) (1 0 0 90))))
+  :transform (extrude :height 4 :material aluminum :at ((1400 2157 484) (1 0 0 90))))
 (print e49f :in (fin-solid) :printer reference-printer :out fin-printed)
 
-;; the grounded fuselage surfaces (cabin/hstab/fin) are composed back
-;; here — otherwise they dangle off their print edges and the DERIVED
-;; mockup would honestly show an aircraft with no fuselage on it
-(compose e5 :in (wingbox/assembly sha-pek-v1/fuselage
-                 cabin-solid hstab-solid fin-solid seat-std
+;; the fuselage terminal set composes back (U4): five shell panels +
+;; boom + empennage prints + the catalog seat = the fuselage assembly
+(compose e44 :in (cabin-solid cwl-solid cwr-solid cbhf-solid cbhr-solid
+                 boom-solid hstab-solid fin-solid seat-std)
+  :out fuselage-assy :role System :kind fuselage)
+
+;; ── compose the aircraft design (V right leg) ──
+;; no range roll-up here: the composed airframe carries no mission
+;; evidence of its own — range is verified where the mission model lives
+;; (e2c hard expect, and the closed-loop re-check e63 with measured L/D)
+(compose e5 :in (wingbox/assembly sha-pek-v1/fuselage fuselage-assy
                  sha-pek-v1/avionics epu-std)
   :out sha-pek-design :role System :kind light-aircraft)
 

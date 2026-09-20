@@ -75,7 +75,8 @@ def fuse(shapes):
 WING = [f"wingbox/{n}/solid" for n in
         ("skin-upper", "skin-lower", "spar-front", "spar-rear",
          "rib-1", "rib-2", "rib-3", "rib-4", "rib-5", "rib-6")]
-FUS = ["cabin-solid", "hstab-solid", "fin-solid"]
+FUS = ["cabin-solid", "cwl-solid", "cwr-solid", "cbhf-solid", "cbhr-solid",
+       "boom-solid", "hstab-solid", "fin-solid"]
 wing = [(n, [0, 0, 0], None) for n in WING + FUS]
 
 # ── group 2: the gantry mill; rib-1 stands on the bed as the workpiece ──
@@ -138,7 +139,7 @@ shapes = [placed(name, [t[0], t[1], t[2] + dz_of[key]], rot,
           for name, t, rot in [(e[0], e[1], (e[2] if len(e) > 2 else None))]]
 
 LABELS = [
-    ("① 整机装配 1:1 · 翼盒（双蒙皮+双梁+6肋）+舱段+平尾+垂尾 · 各件按 :at 帧就位",
+    ("① 整机装配 1:1 · 翼盒（双蒙皮+双梁+6肋）+舱壳（地板/侧壁/隔框）+尾梁+平尾+垂尾",
      [1500, 750, Z0 + dz_of["wing"] + 240], 34),
     ("② gantry 铣床 · 床身/立柱/横梁/Z头 + rib-1 工件（打印制造）",
      [-600, MILL_Y - 500, Z0 + dz_of["mill"] + 260], 34),
