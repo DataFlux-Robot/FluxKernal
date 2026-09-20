@@ -60,8 +60,10 @@ def _run_round(script_text: str, workdir: Path, want_vlm: bool) -> dict:
                                                title="iterate")
     except Exception as e:                        # noqa: BLE001 — report
         renders = [f"render failed: {e}"]
-    if want_vlm and os.environ.get("FK_VLM_BASE_URL") and renders \
-            and isinstance(renders[0], str) is False and grounded:
+    renders_ok = bool(renders) and isinstance(renders[0], str) \
+        and not renders[0].startswith("render failed")
+    if want_vlm and os.environ.get("FK_VLM_BASE_URL") and renders_ok \
+            and grounded:
         try:
             from .review import run_review
             class _A:
@@ -70,7 +72,14 @@ def _run_round(script_text: str, workdir: Path, want_vlm: bool) -> dict:
             a.ref = _intent_root(eng)
             a.vs = ""
             run_review(eng, a)
-            from .review import call_vlm  # noqa: F401 — presence check
+            # the findings ride the review edge — channel B payload
+            for _, e2 in eng.dag.iter_edges():
+                if e2.get("op") == "review" and e2.get("state") == "promoted":
+                    review = [o.get("prop", "") + ": " + o.get("detail", "")
+                              for o in (e2.get("certificate") or {})
+                              .get("obligations", [])
+                              if o.get("holds") is False]
+                    break
         except Exception as e:                    # noqa: BLE001
             review = [f"review skipped: {e}"]
     return {"rc": rc, "open_goals": len(gv.get("open", [])),

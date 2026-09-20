@@ -70,3 +70,11 @@ def board(p):
     conn = _box(30, w * 0.8, 12, at=(0, w * 0.1, 2))
     hs = _box(40, 40, 22, at=(l * 0.45, w * 0.25, 2))
     return _fuse(_fuse(pcb, conn), hs)
+
+
+def panel(p):
+    """Flat structural panel (wing/stabilizer class)."""
+    span = float(p.get("span", 600))
+    chord = float(p.get("chord", 200))
+    t = float(p.get("thick", 4))
+    return _box(span, chord, t)

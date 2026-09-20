@@ -2091,6 +2091,74 @@ def test_47_iterate_loop_driver():
     assert rc in (0, 1)
 
 
+def test_48_iterate_closed_loop_demo():
+    """P7c: the perception-action loop closes a real gap end to end —
+    a script missing its fin gets the VLM issue (stub), the agent
+    grounds the fin, round 2 reaches OPEN(0); every round archived."""
+    from fluxkernel.strategy import loop as fkloop
+    import contextlib, io
+    # round-0 script: aircraft decomposed into wing+fin, wing printed,
+    # the FIN never grounded -> one open goal, no fin in the render
+    script0 = """(term mass "structural mass of the object, kg")
+(goal ac1 :kind aircraft
+  :spec (contract
+    (goals (g1 "a light aircraft with a vertical fin"
+               :falsifiable t :measure "render review" :terms (mass)))
+    (semantics mass)
+    (assumes (a1 "bay in range" :bounds ((in_v (>= 1) (<= 9)))))
+    (guarantees (gu1 "steady flight" :bounds ((out_v (>= 2) (<= 8)))))
+    (budget (mass_kg (<= 50)))
+    (forbidden (f1 "flutter below Vd" :check test))
+    (time-scale mission)))
+(refine d1 :in (ac1) :out ac-v1 :role System
+  :transform (decompose :into (wing fin) :flow-down (
+    (wing :budget ((mass_kg (<= 30))) :guarantees ((gw "wing lifts" :bounds ((mass_kg (<= 30))))))
+    (fin :budget ((mass_kg (<= 5))) :guarantees ((gf "fin steadies" :bounds ((mass_kg (<= 5)))))))))
+(exact wx :target ac-v1/wing :from catalog :match "span_mm>=400 mass_kg<=30" :out wing-std)
+"""
+    fin_forms = """(exact fx :target ac-v1/fin :from catalog :match "height_mm>=200 mass_kg<=5" :out fin-std)
+"""
+    # stub VLM: always reports the missing fin (it cannot see; the
+    # fixture stands in for a vision finding)
+    reply = json.dumps([{"id": "visual-review-001",
+                         "prop": "render matches declared intent",
+                         "holds": False,
+                         "detail": "no vertical fin visible in any view"}])
+    srv, base = _stub_vlm_server(reply)
+    # stub agent: repairs exactly what the review names
+    stub = Path(tempfile.mkdtemp(prefix="fk-fix-")) / "fix.py"
+    fixer = (
+        "import sys, json\n"
+        "msg = json.loads(sys.stdin.read())\n"
+        "s = msg['script']\n"
+        "if any('no vertical fin' in str(i) "
+        "for i in msg['review_issues']) and 'fin-std' not in s:\n"
+        "    s = s + FIN_FORMS\n"
+        "print(json.dumps({'edit': s}))\n"
+    ).replace("FIN_FORMS", repr(fin_forms))
+    stub.write_text(fixer, encoding="utf-8")
+    workdir = Path(tempfile.mkdtemp(prefix="fk-p7c-"))
+    spath = workdir / "ac.fcad"
+    spath.write_text(script0, encoding="utf-8")
+    try:
+        os.environ["FK_VLM_BASE_URL"] = base
+        os.environ["FK_VLM_API_KEY"] = "k"
+        os.environ["FK_VLM_MODEL"] = "stub-vlm"
+        ns = type("A", (), {"script": str(spath), "budget": 6,
+                            "agent": f"{sys.executable} {stub}",
+                            "no_vlm": False})()
+        buf = io.StringIO()
+        with contextlib.redirect_stdout(buf):
+            rc = fkloop.run_iterate(ns)
+        out = buf.getvalue()
+        assert "SUCCESS" in out, out[-2000:]
+        assert rc == 0
+    finally:
+        srv.shutdown()
+        for k in ("FK_VLM_BASE_URL", "FK_VLM_API_KEY", "FK_VLM_MODEL"):
+            os.environ.pop(k, None)
+
+
 # ================================================ discipline ==============
 
 

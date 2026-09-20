@@ -1,0 +1,56 @@
+{
+ "entries": [
+  {
+   "name": "wing-panel-600",
+   "kind": "wing",
+   "supplier": "panels-catalog",
+   "tier": 1,
+   "bounds": {
+    "span_mm": {
+     ">=": 400,
+     "<=": 2000
+    },
+    "mass_kg": {
+     "<=": 30
+    }
+   },
+   "ground": {
+    "mass_g": 4200.0
+   },
+   "geometry": {
+    "generator": "catalog/geom.py#panel",
+    "params": {
+     "span": 600,
+     "chord": 200,
+     "thick": 4
+    }
+   }
+  },
+  {
+   "name": "fin-panel-300",
+   "kind": "fin",
+   "supplier": "panels-catalog",
+   "tier": 1,
+   "bounds": {
+    "height_mm": {
+     ">=": 200,
+     "<=": 900
+    },
+    "mass_kg": {
+     "<=": 5
+    }
+   },
+   "ground": {
+    "mass_g": 900.0
+   },
+   "geometry": {
+    "generator": "catalog/geom.py#panel",
+    "params": {
+     "span": 300,
+     "chord": 180,
+     "thick": 3
+    }
+   }
+  }
+ ]
+}
