@@ -1,0 +1,189 @@
+;; ═══════════════════════════════════════════════════════════════════
+;; SR-4M: 4 m-span reconnaissance UAV — written with the fcad-design
+;; skill loop.  Three mechanisms do the geometry (wingbox 3.0 airfoil
+;; skin / cabin-fuselage octagon shell / empennage airfoil tails); the
+;; printer bootstrap closes the device recursion; catalog envelopes
+;; carry the propulsion / gimbal / avionics.  Printed parts = PLA
+;; (print-fillet policy active; curved loft bodies exempt by shape).
+;; ═══════════════════════════════════════════════════════════════════
+
+;; ── glossary ──
+(term range "great-circle distance flown with reserves, km")
+(term payload "mission payload carried, kg")
+(term power "electrical watts drawn from the bus under load")
+(term printer "additive fabrication resource")
+(term frame "structural frame of a machine")
+(term mass "structural + systems mass of the object, kg")
+;; ── media ──
+(node dc-bus :role Medium :kind dc-bus
+  :spec (medium (capacity (power_w (<= 6000))) (margin 0.2)))
+
+;; ── single-source parameters (M1) ──
+(params sr4p ((span 4000) (chord 760) (height 130)
+             (fuse-len 2300) (fuse-w 480) (fuse-h 420)
+             (tail-chord 260) (fin-height 380)))
+
+(node reference-printer :role Resource :kind unbounded-fdm-printer
+  :spec (contract
+    (goals (rp1 "print every structural part of this product tree"
+                :falsifiable t
+                :measure "dfam-print hard gate per printed part"
+                :terms (printer frame)))
+    (semantics printer frame)
+    (assumes (rp-a1 "build volume effectively unbounded (demand-layer promise)"
+                    :bounds ((dim_mm (>= 0)))))
+    (guarantees (rp-g1 "prints grounded parts that pass dfam-print"
+                       :bounds ((mass_g (<= 100000)))))
+    (budget (mass_kg (<= 60)))
+    (forbidden (rp-f1 "unattended overnight operation" :check test))
+    (not-responsible "filament supply logistics")
+    (time-scale fabrication)))
+
+;; ── the demand, contract-native ──
+(goal sr4 :kind uav
+  :spec (contract
+    (goals (r1 "reconnaissance overwatch 400 km out and back with reserves"
+               :falsifiable t
+               :measure "mission sim: range_km vs corridor length + reserve"
+               :terms (range mass))
+           (p1 "carry the EO/IR gimbal over the full mission"
+               :falsifiable t :measure "payload manifest at MTOW"
+               :terms (payload)))
+    (semantics range mass payload power)
+    (assumes (route1 "overwatch corridor"
+                     :bounds ((dist_km (>= 350) (<= 450)))))
+    (guarantees (gr1 "delivers the recon mission with reserves"
+                     :bounds ((range_km (>= 300)) (payload_kg (>= 5)))))
+    (budget (mass_kg (<= 180)))
+    (effluent (heat_w (<= 120 :medium dc-bus)))
+    (forbidden (f1 "flutter below Vd/1.2" :check test)
+               (f2 "CG outside envelope" :check inspection))
+    (not-responsible "launch recovery ops" "data link encryption")
+    (time-scale mission)))
+
+;; ── mission model: tier-0 check with surrogate values ──
+(refine e1 :in (sr4) :out sr4-pm :role System :kind point-mass
+  :transform (point-mass-model))
+(eval e2 :target sr4-pm :with mission-analysis :fidelity 0
+  :expect ((range-margin-km (> 0))))
+(refine e2b :in (sr4-pm) :out sr4-pm :kind point-mass
+  :transform (param-perturb :values ((mtow 180) (ff 0.10) (ld 15)
+                                     (sfc 0.000008333) (v 28))))
+(eval e2c :target sr4-pm :with mission-analysis :fidelity 0
+  :expect ((range_km (>= 300))))
+;; deliberately impossible: kept forever as an informative failure
+(eval e2x :target sr4-pm :with mission-analysis :fidelity 0
+  :expect ((range-margin-km (> 999999))))
+
+;; ── decompose into subsystems; budgets flow down (Σ=153 ≤ 180) ──
+(refine e3 :in (sr4-pm) :out sr4-v1 :role System
+  :transform (decompose
+    :into (wing fuselage empennage epu gimbal avionics)
+    :flow-down (
+      (wing :budget ((mass_kg ("<=" 60))) :guarantees ((gw "wing lifts" :bounds ((mass_kg ("<=" 60))))))
+      (fuselage :budget ((mass_kg ("<=" 45))) :guarantees ((gf "fuselage carries systems" :bounds ((mass_kg ("<=" 45))))))
+      (empennage :budget ((mass_kg ("<=" 14))) :guarantees ((ge "tails stabilize" :bounds ((mass_kg ("<=" 14))))))
+      (epu :budget ((mass_kg ("<=" 15))) :guarantees ((gp "propulsion" :bounds ((mass_kg ("<=" 15))))))
+      (gimbal :budget ((mass_kg ("<=" 6))) :guarantees ((gg "EO/IR payload" :bounds ((mass_kg ("<=" 6))))))
+      (avionics :budget ((mass_kg ("<=" 4))) :guarantees ((ga "flight control" :bounds ((mass_kg ("<=" 4)))))))))
+
+;; ── wing: airfoil wingbox, span from the parameter set ──
+(instantiate e4 :at (sr4-v1/wing) :mechanism wingbox
+  :params ((span (:param sr4p/span)) (chord (:param sr4p/chord))
+           (height (:param sr4p/height)) (tc 0.11) (camber 0.02))
+  :printer reference-printer :out wing)
+
+;; aero evidence at the wing scope (feeds the closed-loop re-check)
+(eval e5 :target wing :with aero-2d :fidelity 1
+  :ar 5.3 :s_m2 3.1 :mass_kg 180 :cruise_ms 28
+  :expect ((ld_ratio (>= 12))))
+;; the reserved rib joins the print queue (no machining branch in this
+;; program — the reserve is a case decision, not a kernel rule)
+(print w1p :in (wing/rib-1/solid) :printer reference-printer
+  :out wing/rib-1/printed)
+
+;; ── fuselage: octagon shell + bulkheads, nose over the wing box ──
+;; the fuselage rides the span midpoint (x0 = span/2 - w/2) — the
+;; wing pierces it centred; expressions, not literals
+(instantiate e6 :at (sr4-v1/fuselage) :mechanism cabin-fuselage
+  :params ((length (:param sr4p/fuse-len)) (width (:param sr4p/fuse-w))
+           (height (:param sr4p/fuse-h))
+           (x0 (:expr (- (/ (:param sr4p/span) 2)
+                         (/ (:param sr4p/fuse-w) 2))))
+           (y0 -200) (z0 30))
+  :printer reference-printer :out fuselage)
+
+;; ── empennage: airfoil hstab + fin at the tail ──
+(instantiate e7 :at (sr4-v1/empennage) :mechanism empennage
+  :params ((chord (:param sr4p/tail-chord)) (tc 0.10)
+           (h-span 1000) (fin-height (:param sr4p/fin-height))
+           (x0 (:expr (- (/ (:param sr4p/span) 2) 250))) (y0 2150) (z0 60)
+           (fin-x0 (:expr (- (/ (:param sr4p/span) 2) 250))) (fin-y0 2350) (fin-z0 120))
+  :printer reference-printer :out tail)
+
+;; ── catalog closures (representative envelopes, :at the airframe) ──
+(exact e8 :target sr4-v1/epu :from catalog
+  :match "torque_nm>=8 power_w>=1500" :out epu-std
+  :at ((1880 1900 240)))
+(exact e9 :target sr4-v1/gimbal :from catalog
+  :match "mass_kg<=6" :out gimbal-std
+  :at ((1880 30 210)))
+(exact e10 :target sr4-v1/avionics :from catalog
+  :match "axis_count>=4" :out av-std
+  :at ((1880 700 215)))
+
+;; ── fuselage / tail terminal sets composed back (U4) ──
+(compose e11 :in (fuselage/assembly tail/assembly
+                 gimbal-std av-std epu-std)
+  :out core-assy :role Component :kind airframe-core)
+
+;; ── the aircraft design (V right leg) ──
+(compose e12 :in (wing/assembly sr4-v1/fuselage core-assy)
+  :out sr4-design :role System :kind uav)
+
+;; ══ production branch: the printer is developed as a device (E1-3) ══
+(refine e20 :in (reference-printer) :out printer-v1 :role System
+  :transform (decompose
+    :into (p-frame p-stepper p-board)
+    :flow-down (
+      (p-frame :budget ((mass_g ("<=" 9000))) :guarantees ((gpf "stiff gantry frame" :bounds ((mass_g ("<=" 9000))))))
+      (p-stepper :budget ((mass_g ("<=" 400))) :guarantees ((gps "extruder stepper torque" :bounds ((torque_nm (">=" 0.35))))))
+      (p-board :budget ((mass_g ("<=" 300))) :guarantees ((gpb "4-axis motion board" :bounds ((axis_count (">=" 4)))))))))
+(refine e51 :in (printer-v1/p-frame) :out pframe-sk :kind sketch
+  :transform (ground-sketch :sketch (sketch
+    (pts (r0 0 0) (r1 600 0) (r2 600 600) (r3 0 600)) (constraints))))
+(refine e52 :in (pframe-sk) :out pframe-solid :kind frame
+  :transform (extrude :height 8 :material pla
+                      :at ((-800 5800 0))))
+(refine e52f :in (pframe-solid) :out pframe-fil :kind frame
+  :transform (fillet :edges all :radius 0.6))
+(print e53 :in (pframe-fil) :printer reference-printer :out pframe-printed)
+(exact e54 :target printer-v1/p-stepper :from catalog
+  :match "torque_nm>=0.35" :out p-stepper-std
+  :at ((-860 6400 610)))
+(procure e55 :target printer-v1/p-board :from catalog
+  :match "axis_count>=4" :out p-board-bought
+  :at ((-720 6100 608)))
+(compose e56 :in (pframe-printed p-stepper-std p-board-bought)
+  :out printer-assy :role Resource :kind fdm-printer)
+
+;; ══ mockup: derived from the real subtree (E6-3) — what you SEE is ══
+;; ══ what the DAG declares; carries the assembly mass roll-up        ══
+(refine e13 :in (sr4-design) :out mockup-solid :role Component :kind mockup
+  :transform (scale-instance :ratio 0.1 :material pla))
+(print e14 :in (mockup-solid) :printer reference-printer :out mockup-printed)
+
+;; ══ closed-loop re-verification (V-model right leg): mass roll-up,
+;;    then the mission re-run with the wing's MEASURED L/D ══
+;; full-scale mass closure, per grounded assembly (the design compose
+;; keeps contract scopes as inputs, so the airframe rollup is the sum
+;; of its two grounded halves; the mockup rollup checks the 1:10 part)
+(eval e62a :target wing/assembly :with mass-rollup :fidelity 2
+  :expect ((mass_kg (<= 60))))
+(eval e62b :target core-assy :with mass-rollup :fidelity 2
+  :expect ((mass_kg (<= 60))))
+(eval e62 :target mockup-solid :with mass-rollup :fidelity 2
+  :expect ((mass_g (<= 25000))))
+(eval e63 :target sr4-pm :with mission-analysis :fidelity 1
+  :overrides ((ld 15) (ff 0.10) (sfc 0.000008333) (v 28) (mtow 180))
+  :expect ((range_km (>= 300))))

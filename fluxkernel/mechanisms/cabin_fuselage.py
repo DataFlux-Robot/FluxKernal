@@ -102,7 +102,7 @@ def profile(p: dict, part: str) -> dict:
         # back invalid and silently void every cut; the tail taper is a
         # documented follow-up once the kernel grows a reliable loft)
         sec = _octagon(w, h)
-        return {"pts": sec, "thick": L, "material": "aluminum",
+        return {"pts": sec, "thick": L, "material": "pla",
                 "cutter": {"pts": _inset_oct(sec, WALL + 0.5),
                            "thick": L + 10.0 - WALL,
                            "frame": "shell-cutter"}}
@@ -114,7 +114,7 @@ def profile(p: dict, part: str) -> dict:
         wi = _interp(w, wt, t) - 2 * (WALL + CLEAR)
         hi = _interp(h, ht, t) - 2 * (WALL + CLEAR)
         sec = _octagon(wi, hi)
-        return {"pts": sec, "thick": T_BH, "material": "aluminum",
+        return {"pts": sec, "thick": T_BH, "material": "pla",
                 "post": [{"name": "fillet",
                           "args": {"edges": {"plane": "ymin"},
                                    "radius": 0.6}}]}
@@ -137,12 +137,12 @@ def _oct_perim(pts):
 
 def mass_kg(p: dict, part: str) -> float:
     L = float(p["length"])
-    rho = 2.7e-3 / 1000.0
+    rho = 1.24e-3 / 1000.0
     pr = profile(p, part)
     if part == "shell":
         per = _oct_perim(_octagon(float(p["width"]), float(p["height"])))
-        return per * L * WALL * 2.7e-3 / 1000.0 * 1.15
-    return _oct_area(pr["pts"]) * pr["thick"] * 2.7e-3 / 1000.0
+        return per * L * WALL * 1.24e-3 / 1000.0 * 1.15 * 1.15
+    return _oct_area(pr["pts"]) * pr["thick"] * 1.24e-3 / 1000.0
 
 
 def generate(p: dict) -> dict:

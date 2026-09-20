@@ -36,17 +36,17 @@ def profile(p: dict, part: str) -> dict:
     if part == "hstab":
         span = float(p.get("h-span", 600.0))
         sec = naca4(chord, tc, 0.0, N_PTS)
-        return {"pts": sec, "thick": span, "material": "aluminum"}
+        return {"pts": sec, "thick": span, "material": "pla"}
     if part == "fin":
         h = float(p.get("fin-height", 300.0))
         sec = naca4(chord, tc, 0.0, N_PTS)
-        return {"pts": sec, "thick": h, "material": "aluminum"}
+        return {"pts": sec, "thick": h, "material": "pla"}
     raise ValueError(f"empennage has no part {part!r}")
 
 
 def mass_kg(p: dict, part: str) -> float:
     pr = profile(p, part)
-    return loop_area(pr["pts"]) * pr["thick"] * 2.7e-3 / 1000.0
+    return loop_area(pr["pts"]) * pr["thick"] * 1.24e-3 / 1000.0
 
 
 def generate(p: dict) -> dict:

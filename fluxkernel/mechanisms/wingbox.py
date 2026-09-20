@@ -101,7 +101,7 @@ def profile(p: dict, part: str) -> dict:
                       > T_SKIN + 1.5),
                      default=chord * 0.9)
         inner = [q for q in inset_loop(sec, T_SKIN) if q[0] <= cutoff]
-        return {"pts": sec, "thick": span, "material": "aluminum",
+        return {"pts": sec, "thick": span, "material": "pla",
                 "cutter": {"pts": inner, "thick": span + 10.0 - T_SKIN,
                            "frame": "skin-cutter"}}
     if part.startswith("spar"):
@@ -111,7 +111,7 @@ def profile(p: dict, part: str) -> dict:
                       for f in (frac - half_w, frac, frac + half_w))
         web_h = h_local - 2 * (T_SKIN + CLEAR)
         return {"w": span - 2 * (T_SKIN + 1.0), "h": web_h,
-                "thick": T_SPAR, "material": "aluminum",
+                "thick": T_SPAR, "material": "pla",
                 "post": [{"name": "chamfer",
                           "args": {"edges": {"parallel-to": [1, 0, 0]},
                                    "dist": 1.0}}]}
@@ -123,7 +123,7 @@ def profile(p: dict, part: str) -> dict:
         between = ((SPAR_FRAC[1] * chord - T_SPAR / 2 - 2.5)
                   - (SPAR_FRAC[0] * chord + T_SPAR / 2 + 2.5))
         sec = naca4(between, tc, cam, N_PTS)
-        return {"pts": sec, "thick": T_RIB, "material": "aluminum"}
+        return {"pts": sec, "thick": T_RIB, "material": "pla"}
     raise ValueError(f"wingbox has no part {part!r}")
 
 
@@ -132,15 +132,15 @@ def mass_kg(p: dict, part: str) -> float:
     span = float(p["span"])
     tc, cam = _tc(p), _cam(p)
     pr = profile(p, part)
-    rho = 2.7e-3 / 1000.0                      # aluminum g/mm^3 -> kg/mm^3
+    rho = 1.24e-3 / 1000.0                     # PLA g/mm^3 -> kg/mm^3
     if part == "skin":
         loop = naca4(chord, tc, cam, N_PTS)
         per = sum(math.dist(loop[i], loop[(i + 1) % len(loop)])
                   for i in range(len(loop)))
-        return per * span * T_SKIN * 2.7e-3 / 1000.0
+        return per * span * T_SKIN * 1.24e-3 / 1000.0
     if part.startswith("spar"):
-        return pr["w"] * pr["h"] * pr["thick"] * 2.7e-3 / 1000.0
-    return loop_area(pr["pts"]) * pr["thick"] * 2.7e-3 / 1000.0
+        return pr["w"] * pr["h"] * pr["thick"] * 1.24e-3 / 1000.0
+    return loop_area(pr["pts"]) * pr["thick"] * 1.24e-3 / 1000.0
 
 
 def generate(p: dict) -> dict:

@@ -175,7 +175,35 @@ class Engine:
                                  f"(searched mechanisms/)")
 
         # resolve parameters (defaults may be expressions over the others)
-        values = {k: float(v) for k, v in (params or {}).items()}
+        # param refs (["param", "set/key"]) resolve through the store's
+        # parameter sets; literal numbers pass through
+        from ..core import params as _fkp
+
+        def _lookup(name):
+            if "/" in str(name):
+                set_name, key = str(name).split("/", 1)
+                p_set = self.store.get_object(
+                    self.store.resolve(set_name))["payload"]
+                return float((p_set.get("params") or {})[key])
+            raise _fkp.ParamError(f"unknown parameter {name!r}")
+
+        def _inline(tree):
+            """replace nested ["param", name] refs by their values so the
+            expression evaluator only sees numbers and operators"""
+            if isinstance(tree, list):
+                if tree and tree[0] in ("param", ":param"):
+                    return _lookup(str(tree[1]))
+                return [_inline(t) for t in tree]
+            return tree
+
+        def _pv(v):
+            if isinstance(v, list) and v and v[0] in ("param", ":param"):
+                return float(_lookup(str(v[1])))
+            if isinstance(v, list) and v and v[0] in ("expr", ":expr"):
+                return float(_fkp.eval_sexp(_inline(v[1]), _lookup))
+            return float(v)
+
+        values = {k: _pv(v) for k, v in (params or {}).items()}
         for k, spec in (decl.get("params") or {}).items():
             if k in values:
                 continue
@@ -751,6 +779,22 @@ class Engine:
                     "geometry_rollup": "none",
                     "note": "no grounded inputs — contract-level compose; "
                             "ground the parts or declare :no-geometry"}]
+            elif all((p.get("ground") or {}).get("mass_g") is not None
+                     for _, p in children):
+                # nested assembly: the inputs are already-gated inner
+                # assemblies / catalog envelopes — materialize the summed
+                # mass (interference was checked at the inner level)
+                total = sum(float((p.get("ground") or {}).get("mass_g") or 0.0)
+                            for _, p in children)
+                node_ground = {"type": "assembly", "parts": len(children),
+                               "mass_g": round(total, 3),
+                               "note": "nested assembly roll-up"}
+                evidence = evidence + [{
+                    "solver": "kernel/compose", "tier": 0,
+                    "geometry_rollup": "nested",
+                    "mass_g": round(total, 3),
+                    "note": "mass summed from inner assemblies; "
+                            "interference owned by the inner gates"}]
             elif grounded_ins:
                 evidence = evidence + [{
                     "solver": "kernel/compose", "tier": 0,

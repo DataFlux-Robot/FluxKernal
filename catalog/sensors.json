@@ -1,0 +1,30 @@
+{
+ "entries": [
+  {
+   "name": "eo10-ir-gimbal",
+   "kind": "gimbal",
+   "supplier": "sensors-catalog",
+   "tier": 1,
+   "bounds": {
+    "mass_kg": {
+     "<=": 6
+    },
+    "power_w": {
+     ">=": 15,
+     "<=": 80
+    }
+   },
+   "ground": {
+    "mass_g": 4200.0,
+    "power_w": 45.0
+   },
+   "geometry": {
+    "generator": "catalog/geom.py#board",
+    "params": {
+     "width": 90,
+     "length": 140
+    }
+   }
+  }
+ ]
+}
