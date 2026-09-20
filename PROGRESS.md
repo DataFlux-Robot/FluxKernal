@@ -1,6 +1,6 @@
 # FluxKernel 开发进展报告
 
-日期：2026-09-20（P7 感知-行动闭环收口后更新，51 次提交）· 仓库：`E:\DATA\vscode\fluxkernel` · 43 次提交
+日期：2026-09-21（SR-4M 闭环实测后更新，52 次提交）· 仓库：`E:\DATA\vscode\fluxkernel` · 43 次提交
 配套文档：`INTRODUCTION.md`（架构介绍，面向评审）· `REPORT.md`（初版交付报告）· `docs/design/`（设计文档系列）
 
 > 定位回顾：面向 LLM 的**通用**机械系统工程内核 + CAD CLI（build123d 形态的 `.fcad` DSL + 33 子命令）。核不是几何而是**带证书的内容寻址精化图（CARG）**——几何是节点的求值投影。开发纪律：机制通用、内容（案例/目录/模板）为数据、内核 L0/L1 零第三方依赖且零改动。
@@ -10,10 +10,10 @@
 | 指标 | 值 |
 |---|---|
 | 测试 | **49/49 全绿**（`python tests/run_tests.py`） |
-| 规模 | 79 个 git 追踪文件，Python 7750 行 |
+| 规模 | 99 个 git 追踪文件，Python 9275 行 |
 | CLI | 36 子命令（+render/review/iterate）；`.fcad` DSL 含 `:at`、`:machine`、`:template`、`:roles`、`:no-assembly`、`:tier` |
 | 求解插件 | 15 个（+cut）；目录 7 文件（含 panels+geom.py 代表性几何）；机制库 3 条目；skill 库 5 件 |
-| 标志案例 SHA-PEK | **96 表单**（机制化后更短）/ 49/49 测试 / OPEN(0) / verify 全绿 / 整机渲染 26,244 三角形 |
+| 案例 ×2 | SHA-PEK（96 表单）+ **SR-4M 侦察无人机**（40 表单，skill 闭环首测）/ 49/49 测试 / 双案例冷库 OPEN(0)+verify 全绿 |
 | 案例终态 | **OPEN GOALS (0)** · verify 全绿 · dc-bus Σbudget 3820/4000W（容量 5000、margin 0.2）· 装配干涉门 = 0 干涉 |
 | 整机形态 | **翼型蒙皮薄壁翼盒**（NACA 4 位族，tc/camber 入参）+ 八角舱壳 + 翼型尾翼；目录件带代表性包络（青色）；渲染 35 形状 |
 | 任务链 | 假设航程 5344.7 km（L/D=14）→ **闭环复算 6127.3 km**（aero-2d 实测 L/D=16.05 覆写假设；数字取自运行证据） |
@@ -37,6 +37,49 @@
 本轮 OCCT 实测教训（已写进代码注释与 fk-mechanism-author skill）：≥12 点 ruled loft 返回无效体且静默作废一切布尔；
 MakeThickSolidByJoin 不挖空放置后的 loft；薄壁筒口倒角撞 "only 2 faces"；内容寻址库按字典序规范化键 → 多边形点序
 必须数字后缀自然序。
+
+## 0.6 第八阶段：SR-4M 实测——skill 闭环跑真实任务（`ada5c0f`）
+
+用户指令"帮我设计一架翼展 4 米的侦查无人机"触发 fcad-design skill，全程按其工作流执行：
+**这是 perception-action loop 的首次非 stub 任务**（本会话由 agent 手动驾驶双通道；fk iterate 的
+全自动路径仍只在 test_48 用 stub 验证）。
+
+### 终态（数字取自冷库证据）
+
+| 指标 | 值 | 判据 |
+|---|---|---|
+| 任务航程 | 541.3 km（Breguet：mtow 180 / L/D 15 / v 28 m/s） | ≥ 300 ✓ |
+| 机翼气动 | L/D = 16.05（aero-2d，AR 5.3，展弦比受 4m 展 + 760 弦约束） | ≥ 12 ✓ |
+| 结构质量 | 69.3 kg = 机翼 30.0 + 核心段 39.3（PLA 打印 + 目录件） | ≤ 180 ✓ |
+| 验证 | 40 表单 / OPEN(0) / verify 全绿 / 唯一拒绝 = 故意的 e2x 样本 | ✓ |
+
+### 闭环轨迹（通道 → 发现 → 处置）——本轮的核心数据
+
+| # | 通道 | 发现 | 处置 |
+|---|---|---|---|
+| 1 | A（TypeError） | instantiate 参数不接受 `(:param set/key)` 引用 | **内核修复**：_pv 解析器（param 引用 + expr 表达式，嵌套 param 先内联再求值） |
+| 2 | A（KeyError） | 参数集名 `sr4` 被 goal `sr4` 重绑定——名字碰撞静默覆盖 | 改名 `sr4p`；**暴露问题**：无 params-set 遮蔽检查 |
+| 3 | A（budget-closed 94≤60 违例） | 机制质量估算用铝密度、件实为 PLA 打印 | **三机制统一 PLA 密度** + 预算切片调整（60/45/14，Σ=140≤180） |
+| 4 | A（budget-closed 20≤14） | 尾翼实心板超预算——真实设计权衡 | 缩尾翼（弦 260、平尾展 1000）——预算门逼出的设计决策，非消音 |
+| 5 | A（solver-ran） | aero-2d 评估打在装配节点上（无 spec 语义） | 改打 `wing` scope + 显式 :ar/:s_m2/:mass_kg/:cruise_ms——**暴露**：eval 目标选择无指引 |
+| 6 | A（OPEN） | rib-1 是机制 reserve，本案例无机加工分支 | 直印闭合（reserve 是案例决策不是内核规则——本体澄清） |
+| 7 | A（solver-ran） | mass-rollup 打在设计 compose 上无接地质量 | 拆为**分装配质量闭合**（e62a 机翼 ≤60 / e62b 核心段 ≤60）+ 样机自检 |
+| 8 | A（expect-met None） | 嵌套装配（core-assy）质量不物化 | **内核修复**：compose 自动门对全接地内层装配求和物化质量（干涉声明归内层） |
+| 9 | **B（渲染目验）** | **机翼相对机身偏置**——翼展 0..4000、机身中心 ~1140，俯视图一目了然 | **布局修复**：机身 x0 = `(:expr (- (/ span 2) ...))` 居中表达式——这正是三轮评审同型问题的自动重演与修复 |
+
+### 本轮沉淀的通用能力（全部随案例提交）
+
+- instantiate 的参数解析器：`(:param set/key)` 引用 + `(:expr ...)` 算术（嵌套引用内联）——几何布置算术留在 DSL
+- 机制质量估算与打印材料一致性纪律（PLA 密度）
+- 嵌套装配质量物化（U4+质量链贯通到任意装配深度）
+
+### 暴露的问题（如实记录，下一步的靶子）
+
+1. **闭环是人工驾驶的**：本任务由 agent 按 skill 执行双通道循环；`fk iterate` 全自动路径仅 stub 验证。缺一个真实 LLM 编辑 agent 的端到端跑（P7c 的实机版）。
+2. **VLM 通道未接实机**：本会话无 FK_VLM_* 端点，通道 B 的"目验"由 agent 读渲染图完成（等效但非产品形态）；切 GLM-5.3-Flash 实测是既定验收步骤。
+3. **命名足枪**：instantiate `:out` 决定装配路径（empennage/assembly vs tail/assembly 笔误一轮）；参数集与 goal 同名静默重绑定——两条都应进 lint。
+4. **eval 目标语义无指引**：评估应打 scope（wing）还是装配节点，靠拒绝信息试错——skill 速查表已补，内核侧可加建议。
+5. **质量闭合模式待模板化**：分装配 rollup + 样机自检的手法可提炼为 skill 条目或机制默认。
 
 ## 1. 开发阶段总览
 
