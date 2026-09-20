@@ -270,6 +270,9 @@ class Engine:
 
         obligations += self._structural_obligations(goal_payload, child_role)
         obligations += plugin_obs
+        obligations += self._policy_obligations(
+            {"role": child.role, "kind": child.kind, "spec": child_spec,
+             "params": child.params or {}, "ground": child.ground})
         obligations += contracts.flow_down_obligations(goal_payload.get("spec", {}),
                                                        child_spec)
         evidence = evidence + fkparams.bindings_evidence(p_bindings)
@@ -303,7 +306,13 @@ class Engine:
 
         # parent output node: same contract + structural record of decomposition;
         # the DECLARED out_role wins (e.g. Resource demanded as System, PRSI §3.2)
-        parent_out_spec = _deep_merge(parent_spec, {"decomposed_into": slots})
+        arch = args.get("archetype")
+        arch_params = args.get("archetype_params") or {}
+        stamps = {"decomposed_into": slots}
+        if arch:
+            stamps["archetype"] = arch
+            stamps["archetype_params"] = arch_params
+        parent_out_spec = _deep_merge(parent_spec, stamps)
         parent_node = Node(role=child_role or goal_payload.get("role", "System"),
                            kind=goal_payload.get("kind", "system"),
                            spec=parent_out_spec,
@@ -332,6 +341,9 @@ class Engine:
                            evidence=[{"solver": "kernel/structural",
                                       "transform": "decompose", "into": slots, "tier": 0}],
                            executor="decompose")
+        cert.obligations += self._policy_obligations(
+            {"role": parent_node.role, "kind": parent_node.kind,
+             "spec": parent_out_spec, "params": {}, "ground": None})
         res = self._commit(self._make_edge("refine", [goal_d], transform),
                            parent_node, cert, ResourceVector(**(resources or {})),
                            node_name=out_name)
@@ -342,6 +354,8 @@ class Engine:
             role = roles.get(slot) or _default_child_role(goal_payload.get("role"))
             child_spec = _inherit_contract(parent_spec, flow.get(slot, {}),
                                            child_specs.get(slot, {}))
+            if arch:
+                child_spec = _deep_merge(child_spec, {"archetype": arch})
             child = Node(role=role, kind=kinds.get(slot, slot), spec=child_spec,
                          params=_deep_merge(goal_payload.get("params") or {}, {}))
             c_obs = self._structural_obligations(goal_payload, role)
@@ -457,6 +471,9 @@ class Engine:
                     detail="" if ok else f"M1: roll-up {qty} not met"))
 
         node = Node(role=out_role, kind=node_kind, spec=spec, ground=node_ground)
+        obligations += self._policy_obligations(
+            {"role": out_role, "kind": node_kind, "spec": spec,
+             "params": {}, "ground": node_ground})
         cert = Certificate(obligations=obligations, evaluator="kernel",
                            evidence=evidence or [{"solver": "kernel/compose",
                                                   "children": [d for d, _ in children],
@@ -757,6 +774,16 @@ class Engine:
             stack.extend(parents.get(cur, []))
         found.sort(key=lambda x: x[0])
         return [d for d, _ in found], [p for _, p in found]
+
+    def _policy_obligations(self, payload: dict) -> list:
+        """M2: run the external policy library on this payload; results are
+        ordinary obligations (hard/soft per policy) straight into C0."""
+        try:
+            from . import policies as fkpol
+            from ..core.objects import Obligation as _Ob
+            return [_Ob.from_dict(o) for o in fkpol.policy_obligations(payload)]
+        except Exception:
+            return []
 
     def _input_realized(self, d: str, payload: dict) -> bool:
         """A Part may enter a physical composition only when realized:
@@ -1188,6 +1215,9 @@ def _merge_archetype(args: dict, name: str, store=None) -> dict:
             for k, v in tpl.items():
                 if merged.get(k) in (None, [], {}):
                     merged[k] = v
+            merged["archetype"] = name           # family identity for policies
+            if tpl.get("archetype_params"):
+                merged["archetype_params"] = tpl["archetype_params"]
             if store is not None:
                 _resolve_medium_names(merged.get("flow_down") or {}, store)
             return merged

@@ -1,0 +1,8 @@
+{
+  "id": "mass-budget", "version": "1.0.0",
+  "applies_to": {"roles": ["System", "Component", "Resource"]},
+  "class": "hard",
+  "statement": "aggregated mass stays within the declared budget",
+  "check": "mass_budget.py",
+  "params": []
+}

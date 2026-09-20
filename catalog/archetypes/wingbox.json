@@ -429,5 +429,9 @@
         ]
       }
     }
+  },
+  "archetype_params": {
+    "span": 3000,
+    "rib-count": 6
   }
 }

@@ -1,0 +1,8 @@
+{
+  "id": "rib-spacing", "version": "1.0.0",
+  "applies_to": {"kinds": ["wing"], "within_archetype": "wingbox"},
+  "class": "hard",
+  "statement": "rib pitch <= 500mm for skin stability",
+  "check": "rib_spacing.py",
+  "params": ["span", "rib-count"]
+}

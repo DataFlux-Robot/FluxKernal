@@ -1,0 +1,8 @@
+{
+  "id": "fastener-edge-distance", "version": "1.0.0",
+  "applies_to": {"kinds": ["rib", "plate", "bracket"]},
+  "class": "hard",
+  "statement": "fastener hole edge distance >= 2d",
+  "check": "fastener_edge_distance.py",
+  "params": []
+}

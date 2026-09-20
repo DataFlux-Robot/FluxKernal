@@ -1490,7 +1490,63 @@ def test_38_impact_replay():
     assert any("w/span" in b["expr"] for b in all_binds)
 
 
+
+# ================================================ M2: policy library ======
+def test_39_policy_library():
+    """M2: external policies are content-addressed declarations + check
+    code feeding C0 unchanged; a violated hard policy rejects the edge
+    with a repair hint; digests pin the policy version in the DAG."""
+    eng = fresh()
+    t = terms(eng, "mass")
+    # a wide wingbox family: span 3000 with only 4 ribs -> pitch 750 > 500
+    spec = {"archetype": "wingbox",
+            "archetype_params": {"span": 3000, "rib-count": 4}}
+    eng.node("wide", "Component", "wing", contract(eng, t))
+    r = eng.refine("wide", {"name": "param-perturb", "args": {"values": {}}},
+                   out_name="wide-v1", out_role="Component",
+                   out_spec=spec)
+    assert r["state"] == "rejected", r["reason"]
+    obs = r["obligations"]
+    rib_pol = [o for o in obs if o["id"] == "policy:rib-spacing"]
+    assert rib_pol and rib_pol[0]["holds"] is False
+    assert "rib-count" in rib_pol[0]["detail"] and "500" in rib_pol[0]["detail"]
+    assert rib_pol[0]["checker"].startswith("policy:rib-spacing@")
+
+    # a healthy family passes through the same gate
+    spec6 = {"archetype": "wingbox",
+             "archetype_params": {"span": 3000, "rib-count": 6}}
+    eng.node("ok", "Component", "wing", contract(eng, t))
+    r2 = eng.refine("ok", {"name": "param-perturb", "args": {"values": {}}},
+                    out_name="ok-v1", out_role="Component",
+                    out_spec=spec6)
+    assert r2["state"] == "promoted", r2["reason"]
+    ok_pol = [o for o in r2["obligations"] if o["id"] == "policy:rib-spacing"]
+    assert ok_pol and ok_pol[0]["holds"] is True
+
+    # min-wall: a grounded 0.3mm foil violates the external rule
+    thin = {"pts": {"p0": [0, 0], "p1": [50, 0], "p2": [50, 30], "p3": [0, 30]},
+            "constraints": [["fix", "p0", 0, 0], ["dist", "p0", "p1", 50],
+                            ["dist", "p1", "p2", 30],
+                            ["horiz", "p0", "p1"], ["vert", "p1", "p2"]]}
+    eng.node("foil", "Part", "plate", contract(eng, t))
+    eng.refine("foil", {"name": "ground-sketch", "args": {"sketch": thin}},
+               out_name="foil-sk")
+    r3 = eng.refine("foil-sk",
+                    {"name": "extrude", "args": {"height": 0.3,
+                                                 "material": "pla"}},
+                    out_name="foil-solid")
+    assert r3["state"] == "rejected", r3["reason"]
+    mw = [o for o in r3["obligations"] if o["id"] == "policy:min-wall"]
+    assert mw and mw[0]["holds"] is False and "thicken" in mw[0]["detail"]
+
+    # policy library introspection: everything content-addressed
+    from fluxkernel.semantics.policies import load_policies
+    pols = load_policies()
+    assert all(len(v["_digest"]) == 64 for v in pols.values())
+
+
 # ================================================ discipline ==============
+
 
 
 

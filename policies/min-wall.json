@@ -1,0 +1,8 @@
+{
+  "id": "min-wall", "version": "1.0.0",
+  "applies_to": {"roles": ["Part"]},
+  "class": "hard",
+  "statement": "minimum wall 0.5mm on grounded solids",
+  "check": "min_wall.py",
+  "params": ["min-wall-mm"]
+}
