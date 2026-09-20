@@ -823,6 +823,44 @@ class Engine:
             self.store.bind_name(target, res["node"])
         return res
 
+    # ---------------------------------------------------- review (P7a) --
+    def review(self, target: str, findings: list[dict], meta: dict) -> dict:
+        """Archive a VLM visual review as a `review` edge on the target.
+
+        RED LINE (spec P7 §B.5): every obligation produced here is class
+        "soft" — hardcoded, no parameter, no configuration opening.  A VLM
+        opinion never enters C0/U2/U4 or any hard gate.  `fk verify`
+        schema-checks these edges (soft-only) and never re-runs the VLM.
+        The output node is an archival record (kind=review), not a design
+        goal; goals_view filters it like params sets."""
+        t_d, t_payload = self._input(target)
+        obs = []
+        for i, f in enumerate(findings):
+            obs.append(Obligation(
+                id=str(f.get("id") or f"visual-review-{i:03d}"),
+                prop=str(f.get("prop") or "render matches declared intent"),
+                holds=bool(f.get("holds", False)),
+                checker=str(f.get("checker") or "vlm"),
+                oclass="soft",                       # hardcoded — red line
+                detail=str(f.get("detail") or "")))
+        cert = Certificate(
+            obligations=obs, evaluator="vlm",
+            evidence=[{"solver": f"vlm/{meta.get('model', '?')}",
+                       "tier": "advisory",
+                       "images": meta.get("images", []),
+                       "vs": meta.get("vs", ""),
+                       "intent": meta.get("intent", "")}],
+            executor="review")
+        node = Node(role="Process", kind="review",
+                    spec={"target": t_d, "intent": meta.get("intent", "")},
+                    evidence=cert.evidence)
+        edge = self._make_edge("review", [t_d],
+                               {"name": "visual-review",
+                                "args": {"model": meta.get("model", ""),
+                                         "views": meta.get("views", [])}})
+        return self._commit(edge, node, cert, ResourceVector(),
+                            node_name=meta.get("out"))
+
     # --------------------------------------------------- exact / procure --
     def _close_from_catalog(self, op: str, goal: str, catalog: str, match: str,
                             tier: int, out_name: str | None = None) -> dict:

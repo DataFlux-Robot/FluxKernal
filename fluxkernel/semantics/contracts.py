@@ -115,6 +115,10 @@ def _has_numeric_side(b) -> bool:
 
 def lint_node(node_payload: dict, store) -> list[str]:
     """The five objectivity rules + noun resolution. Returns FAILED rule ids."""
+    # archival records (P7a VLM review edges) carry no contract — they are
+    # evidence, not design states; the lint contract rules do not apply
+    if node_payload.get("kind") in ("params", "review"):
+        return []
     spec = node_payload.get("spec") or {}
     if is_medium(spec):
         # Media: capacity must be bounded (that is their whole contract).

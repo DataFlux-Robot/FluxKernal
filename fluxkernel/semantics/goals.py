@@ -37,10 +37,11 @@ _GROUND_TYPES = ("sketch2d", "process", "process-op")
 
 # ------------------------------------------------------------- structure --
 def _design_nodes(dag):
-    """Committed nodes minus parameter sets (kind=params) — definitional
-    objects like terms, never design goals or risks."""
+    """Committed nodes minus parameter sets (kind=params) and VLM review
+    records (kind=review, P7a) — definitional/archival objects, never
+    design goals or risks."""
     return [(d, p) for d, p in dag.iter_nodes()
-            if p.get("kind") != "params"]
+            if p.get("kind") not in ("params", "review")]
 
 
 def _out_edges(dag) -> dict[str, list[dict]]:

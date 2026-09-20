@@ -1912,6 +1912,130 @@ def test_44_subtree_assembled():
     assert res["state"] == "promoted", res
 
 
+def test_45_render_png():
+    """V2: `fk render --png` is the perception channel — the honest DAG
+    geometry as four machine-readable views (PNG magic, non-trivial
+    size), same mesh pipeline as the preview page."""
+    eng = fresh()
+    t = terms(eng, "mass")
+    eng.node("sys", "System", "thing", contract(eng, t))
+    sketch = {"pts": {"p0": [0, 0], "p1": [100, 0], "p2": [100, 60],
+                      "p3": [0, 60]},
+              "constraints": [["fix", "p0", 0, 0], ["dist", "p0", "p1", 100],
+                              ["dist", "p1", "p2", 60],
+                              ["horiz", "p0", "p1"], ["vert", "p1", "p2"]]}
+    eng.refine("sys", {"name": "ground-sketch", "args": {"sketch": sketch}},
+               out_name="sk")
+    eng.refine("sk", {"name": "extrude",
+                      "args": {"height": 4, "material": "pla"}},
+               out_name="plate-solid")
+    from fluxkernel.strategy import scene, render_png
+    parts = scene.collect_grounded(eng)
+    assert parts, "grounded geometry not collected"
+    groups = [(scene.role_color(p), scene.mesh_shape(s)) for _, p, s in parts]
+    out = Path(tempfile.mkdtemp(prefix="fk-render-")) / "v"
+    paths = render_png.render_views(groups, out, title="t45")
+    assert len(paths) == 4, paths
+    for q in paths:
+        png_magic = bytes([0x89]) + b"PNG" + bytes([13, 10, 26, 10])
+        assert Path(q).read_bytes()[:8] == png_magic, q
+        assert Path(q).stat().st_size > 2000, q
+    # the preview page carries per-shape colors and the STL attribute
+    stl, n_tri = scene.write_stl_shapes([(s, i) for i, (_, _, s) in
+                                         enumerate(parts)])
+    assert n_tri >= 12 and len(stl) == 84 + 50 * n_tri
+
+
+def _stub_vlm_server(reply_json: str):
+    """Local OpenAI-compatible endpoint returning a canned reply."""
+    import http.server
+    import threading
+
+    class H(http.server.BaseHTTPRequestHandler):
+        def do_POST(self):
+            length = int(self.headers.get("Content-Length") or 0)
+            if length:
+                self.rfile.read(length)          # drain before responding
+            body = json.dumps({
+                "choices": [{"message": {"content": reply_json}}]
+            }).encode("utf-8")
+            self.send_response(200)
+            self.send_header("Content-Type", "application/json")
+            self.send_header("Content-Length", str(len(body)))
+            self.end_headers()
+            self.wfile.write(body)
+
+        def log_message(self, *a):
+            pass
+
+    srv = http.server.HTTPServer(("127.0.0.1", 0), H)
+    th = threading.Thread(target=srv.serve_forever, daemon=True)
+    th.start()
+    return srv, f"http://127.0.0.1:{srv.server_port}/v1"
+
+
+def test_46_review_soft_only():
+    """P7a: fk review archives VLM findings as SOFT obligations on a
+    `review` edge; goals stay clean; verify schema-checks review edges
+    and FAILS a review edge that smuggles a hard obligation (red line)."""
+    eng = fresh()
+    t = terms(eng, "mass")
+    eng.node("plane", "System", "aircraft", contract(eng, t, goals=[
+        {"id": "g1", "stmt": "a twin-tail light aircraft",
+         "falsifiable": True, "measure": "render review"}]))
+    sketch = {"pts": {"p0": [0, 0], "p1": [100, 0], "p2": [100, 60],
+                      "p3": [0, 60]},
+              "constraints": [["fix", "p0", 0, 0], ["dist", "p0", "p1", 100],
+                              ["dist", "p1", "p2", 60],
+                              ["horiz", "p0", "p1"], ["vert", "p1", "p2"]]}
+    eng.refine("plane", {"name": "ground-sketch", "args": {"sketch": sketch}},
+               out_name="sk")
+    eng.refine("sk", {"name": "extrude",
+                      "args": {"height": 4, "material": "pla"}},
+               out_name="plate-solid")
+
+    from fluxkernel.strategy import review as fkreview
+    reply = json.dumps([
+        {"id": "visual-review-001", "prop": "render matches declared intent",
+         "holds": False, "detail": "no tail surfaces visible in any view"}])
+    srv, base = _stub_vlm_server(reply)
+    try:
+        os.environ["FK_VLM_BASE_URL"] = base
+        os.environ["FK_VLM_API_KEY"] = "test-key"
+        os.environ["FK_VLM_MODEL"] = "stub-vlm"
+        rc = fkreview.run_review(eng, type("A", (), {
+            "ref": "plate-solid", "vs": ""})())
+        assert rc == 0
+    finally:
+        srv.shutdown()
+        for k in ("FK_VLM_BASE_URL", "FK_VLM_API_KEY", "FK_VLM_MODEL"):
+            os.environ.pop(k, None)
+
+    # the review edge exists, is promoted, and every obligation is soft
+    revs = [e for _, e in eng.dag.iter_edges() if e.get("op") == "review"]
+    assert revs, "no review edge committed"
+    for o in revs[-1]["certificate"]["obligations"]:
+        assert o.get("class") == "soft", o        # red line, mechanically
+    # review records never pollute the goals view
+    gv = goalsview.goals_view(eng.dag)
+    assert not any(n.get("kind") == "review" for n in gv["open"]), gv["open"]
+    assert revs[-1].get("state") == "promoted", revs[-1].get("state")
+    # verify is green with the review edge present...
+    from fluxkernel.interface.cli import verify_store
+    assert verify_store(eng) == []
+    # ...and FAILS a review edge that smuggles a hard obligation
+    fake = {"op": "review", "inputs": [], "output": "",
+            "transform": {"name": "visual-review", "args": {}},
+            "state": "promoted",
+            "certificate": {"obligations": [
+                {"id": "vlm-hard", "prop": "x", "holds": True,
+                 "checker": "vlm", "class": "hard", "detail": ""}],
+                "evidence": [{"solver": "vlm/stub"}]}}
+    eng.store.put_object("edge", fake)
+    problems = verify_store(eng)
+    assert any("non-soft" in p for p in problems), problems
+
+
 # ================================================ discipline ==============
 
 

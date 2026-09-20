@@ -578,6 +578,42 @@ def cmd_trace(a):
     return 0
 
 
+def cmd_render(a):
+    """fk render --png <prefix> [--view iso|front|top|right|all]
+
+    V2/P7: the perception input channel — the honest DAG geometry (every
+    grounded part at its recorded placement) as offline four-view PNGs,
+    consumable by `fk review` (VLM) or a human."""
+    eng = _engine()
+    from ..strategy import scene, render_png
+    parts = scene.collect_grounded(eng)
+    if not parts:
+        sys.exit("fatal: no grounded geometry in this workspace")
+    tri_groups = []
+    for name, payload, shp in parts:
+        tri_groups.append((scene.role_color(payload), scene.mesh_shape(shp)))
+    views = list(render_png.VIEWS) if a.view == "all" else [a.view]
+    paths = render_png.render_views(tri_groups, a.png, views=views,
+                                    title=a.title or "fk scene")
+    if not paths:
+        sys.exit("fatal: render produced no images")
+    for p in paths:
+        print(f"rendered: {p}")
+    return 0
+
+
+def cmd_review(a):
+    """fk review <ref> [--vs original.jpg] — see strategy/review.py (P7a)."""
+    from ..strategy.review import run_review
+    return run_review(_engine(), a)
+
+
+def cmd_iterate(a):
+    """fk iterate <script.fcad> --budget N [--agent cmd] — strategy/loop.py."""
+    from ..strategy.loop import run_iterate
+    return run_iterate(a)
+
+
 def cmd_verify(a):
     eng = _engine()
     problems = verify_store(eng)
@@ -592,7 +628,10 @@ def cmd_verify(a):
 
 
 def verify_store(eng: Engine) -> list[str]:
-    """Whole-store fail-closed recheck (pure recomputation, no mutation)."""
+    """Whole-store fail-closed recheck (pure recomputation, no mutation).
+
+    P7a red line: `review` edges are schema-checked only — soft
+    obligations, evidence present — and the VLM is NEVER re-run here."""
     problems = []
     for edge_d, e in eng.dag.iter_edges():
         state = e.get("state")
@@ -605,6 +644,10 @@ def verify_store(eng: Engine) -> list[str]:
                                 f"undischarged: {hard_bad}")
             if not e.get("certificate", {}).get("evidence"):
                 problems.append(f"{_short(edge_d)}: promoted without evidence")
+            if e.get("op") == "review":
+                if any(o.get("class") != "soft" for o in obs):
+                    problems.append(f"{_short(edge_d)}: review edge carries a "
+                                    f"non-soft obligation — VLM may not gate")
     for node_d, payload in eng.dag.iter_nodes():
         if payload.get("facet") == "MIND":
             spec = payload.get("spec") or {}
@@ -724,6 +767,20 @@ def build_parser() -> argparse.ArgumentParser:
     s.add_argument("--stl"); s.set_defaults(fn=cmd_export)
     s = sub.add_parser("trace"); s.add_argument("--out", required=True)
     s.set_defaults(fn=cmd_trace)
+    s = sub.add_parser("render"); s.add_argument("--png", required=True)
+    s.add_argument("--view", default="all",
+                   choices=["iso", "front", "top", "right", "all"])
+    s.add_argument("--title", default="")
+    s.set_defaults(fn=cmd_render)
+    s = sub.add_parser("review"); s.add_argument("ref")
+    s.add_argument("--vs", default="")
+    s.add_argument("--budget-rounds", type=int, default=1)
+    s.set_defaults(fn=cmd_review)
+    s = sub.add_parser("iterate"); s.add_argument("script")
+    s.add_argument("--budget", type=int, default=50)
+    s.add_argument("--agent", default="")
+    s.add_argument("--no-vlm", action="store_true")
+    s.set_defaults(fn=cmd_iterate)
     s = sub.add_parser("verify"); s.set_defaults(fn=cmd_verify)
     return p
 

@@ -149,16 +149,19 @@ LABELS = [
      [0, MK_Y, Z0 + dz_of["mockup"] + 200], 34),
 ]
 
-scene = fuse(shapes)
-
-from OCP.BRepMesh import BRepMesh_IncrementalMesh
-from OCP.StlAPI import StlAPI_Writer
-BRepMesh_IncrementalMesh(scene, 1.0, False, 1.0, True)
-stl_path = os.path.join(tempfile.mkdtemp(), "scene.stl")
-sw = StlAPI_Writer()
-sw.ASCIIMode = False
-assert sw.Write(scene, stl_path)
-stl_bytes = Path(stl_path).read_bytes()
+# V2: one triangle soup, per-part color — the shape index rides the STL
+# uint16 attribute field (strategy/scene.py), the palette is role-coded
+from fluxkernel.strategy import scene as fkscene
+entries = []
+for key, g0 in GROUPS:
+    for e in g0:
+        name, t = e[0], e[1]
+        rot = e[2] if len(e) > 2 else None
+        sc = e[3] if len(e) > 3 else None
+        payload = eng.store.get_object(eng.store.resolve(name))["payload"]
+        entries.append((placed(name, t, rot, scale=sc), fkscene.role_color(payload)))
+stl_bytes, n_tri = fkscene.write_stl_shapes([(shp, i) for i, (shp, _) in enumerate(entries)])
+shape_colors = [list(c) for _, c in entries]
 
 out = REPO / "preview"
 out.mkdir(exist_ok=True)
@@ -166,10 +169,9 @@ out.mkdir(exist_ok=True)
 (out / "index.html").write_text(
     render_page(stl_bytes,
                 "SHA-PEK — 真实分解：wingbox · gantry 铣床 · 打印机 · 派生样机",
-                "①=分解的机翼（非整板） ②=机床架构（床身+立柱+横梁+Z头） "
-                "③=打印机 ④=派生样机 · 目录件（主轴/导轨/丝杠/伺服/CNC）无几何不渲染",
-                labels=LABELS),
+                "①=整机1:1 ②=机床架构 ③=打印机 ④=派生样机 · 颜色=角色 "
+                "(蓝Part/琥珀Component/红Resource/青目录代表性)",
+                labels=LABELS, shape_colors=shape_colors),
     encoding="utf-8")
-n_tri = (len(stl_bytes) - 84) // 50
-print(f"preview written: {out/'index.html'} | shapes: {len(shapes)} | "
+print(f"preview written: {out/'index.html'} | shapes: {len(entries)} | "
       f"triangles: {n_tri} | stl: {len(stl_bytes)//1024} KB")
