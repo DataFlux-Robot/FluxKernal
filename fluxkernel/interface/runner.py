@@ -276,7 +276,8 @@ class Runner:
                 out_kind=kw.get("kind"), out_spec=spec_from_sexpr(
                     kw["spec"], self.store) if kw.get("spec") else None,
                 rollup=rollup, resources=resources,
-                transform_spec=transform if transform.get("name") != "compose" else None)
+                transform_spec=transform if transform.get("name") != "compose" else None,
+                no_geometry=bool(kw.get("no-geometry", False)))
         if op == "integrate":
             closes = [str(x) for x in (kw.get("closes") or transform["args"].get("closes", []))]
             return self.engine.integrate(

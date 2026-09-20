@@ -497,7 +497,8 @@ class Engine:
     def compose(self, inputs: list[str], out_name: str, out_role: str,
                 out_kind: str | None = None, out_spec: dict | None = None,
                 rollup: dict | None = None, resources: dict | None = None,
-                transform_spec: dict | None = None) -> dict:
+                transform_spec: dict | None = None,
+                no_geometry: bool = False) -> dict:
         children = [self._input(r) for r in inputs]
         child_list = [(d, p.get("spec") or {}) for d, p in children]
         base_spec = out_spec or {}
@@ -589,6 +590,54 @@ class Engine:
                     id="rollup-met", prop=f"roll-up {qty}={val} {b}",
                     holds=ok, checker="kernel", oclass="soft",
                     detail="" if ok else f"M1: roll-up {qty} not met"))
+
+        # M4 auto roll-back (review G4/G5): a compose with NO explicit
+        # transform and ALL inputs grounded is a physical assembly — run
+        # the assemble gate automatically (interference + mass/COM) and
+        # MATERIALIZE the assembly ground onto the composed NODE, not just
+        # the edge.  Mixed inputs get an honest partial marker; an explicit
+        # :no-geometry exemption skips the gate and says so.
+        if transform_spec is None and not no_geometry and len(children) >= 2:
+            grounded_ins = [p for _, p in children
+                            if (p.get("ground") or {}).get("construction")]
+            if len(grounded_ins) == len(children):
+                try:
+                    from ..solvers import registry as _reg
+                    _asm = _reg.get("assemble")
+                    a_fields, a_ev, a_obs = _asm(
+                        [p for _, p in children],
+                        {"placements": [[0, 0, 0] for _ in children]},
+                        self._pctx())
+                    node_ground = a_fields.get("ground") or node_ground
+                    node_kind = out_kind or a_fields.get("kind") or node_kind
+                    evidence = evidence + a_ev
+                    obligations += [Obligation.from_dict(o) for o in a_obs]
+                except (ContractError, ValueError, RuntimeError, KeyError,
+                        IndexError) as e:
+                    obligations.append(Obligation(
+                        id="assembly-gate", prop="auto assemble executes",
+                        holds=False, checker="assemble",
+                        detail=f"E1: {e}"))
+            elif not grounded_ins:
+                evidence = evidence + [{
+                    "solver": "kernel/compose", "tier": 0,
+                    "geometry_rollup": "none",
+                    "note": "no grounded inputs — contract-level compose; "
+                            "ground the parts or declare :no-geometry"}]
+            elif grounded_ins:
+                evidence = evidence + [{
+                    "solver": "kernel/compose", "tier": 0,
+                    "geometry_rollup": "partial",
+                    "grounded_inputs": len(grounded_ins),
+                    "total_inputs": len(children),
+                    "note": "not all inputs grounded — no interference "
+                            "gate; close or ground them, or declare "
+                            ":no-geometry"}]
+        elif no_geometry:
+            evidence = evidence + [{
+                "solver": "kernel/compose", "tier": 0,
+                "geometry_rollup": "exempted",
+                "note": "explicit :no-geometry exemption"}]
 
         node = Node(role=out_role, kind=node_kind, spec=spec, ground=node_ground)
         obligations += self._policy_obligations(

@@ -1769,7 +1769,83 @@ def test_42_instantiate_wingbox():
                for g in non_printer_open)
 
 
+
+# ================================================ M4: compose roll-back ==
+def test_43_compose_geometry_rollup():
+    """M4: a transform-less compose of grounded inputs auto-runs the
+    assembly gate and MATERIALIZES the assembly ground on the node;
+    mixed inputs get an honest partial marker; :no-geometry exempts
+    explicitly; `why` surfaces the evidence per hop."""
+    eng = fresh()
+    t = terms(eng, "mass")
+
+    def plate(name, w, h, d):
+        eng.node(name, "Part", "plate", contract(eng, t))
+        sk = {"pts": {"a": [0, 0], "b": [w, 0], "c": [w, h], "d": [0, h]},
+              "constraints": [["fix", "a", 0, 0], ["dist", "a", "b", w],
+                              ["dist", "b", "c", h],
+                              ["horiz", "a", "b"], ["vert", "b", "c"]]}
+        eng.refine(name, {"name": "ground-sketch", "args": {"sketch": sk}},
+                   out_name=f"{name}-sk")
+        eng.refine(f"{name}-sk", {"name": "extrude",
+                                  "args": {"height": d, "material": "pla"}},
+                   out_name=f"{name}-solid")
+
+    # stack: two disjoint plates -> auto gate passes, ground ON the node
+    plate("p1", 100, 50, 4)
+    plate("p2", 40, 20, 6)
+    # place p2 beside p1 so no overlap
+    eng.refine("p2-sk", {"name": "extrude",
+                         "args": {"height": 6, "material": "pla",
+                                  "at": [200, 0, 0]}}, out_name="p2-solid")
+    r = eng.compose(["p1-solid", "p2-solid"], out_name="duo",
+                    out_role="Component")
+    assert r["state"] == "promoted", r["reason"]
+    node = eng.store.get_object(eng.store.resolve("duo"))["payload"]
+    assert (node.get("ground") or {}).get("type") == "assembly"
+    pe = eng.dag.producing_edge(eng.store.resolve("duo"))
+    ni = [o for o in pe["certificate"]["obligations"]
+          if o["id"] == "no-interference"][-1]
+    assert ni["holds"] is True
+
+    # overlapping pair -> the auto gate rejects honestly
+    plate("p3", 60, 60, 5)
+    r2 = eng.compose(["p1-solid", "p3-solid"], out_name="bad",
+                     out_role="Component")
+    assert r2["state"] == "rejected" and "no-interference" in r2["reason"]
+
+    # mixed compose -> partial marker
+    eng.node("paper", "Component", "paper", contract(eng, t))
+    r3 = eng.compose(["p1-solid", "paper"], out_name="mixed",
+                     out_role="Component")
+    assert r3["state"] == "promoted", r3["reason"]
+    pe3 = eng.dag.producing_edge(eng.store.resolve("mixed"))
+    mark = [e for e in pe3["certificate"]["evidence"]
+            if e.get("geometry_rollup") == "partial"]
+    assert mark and mark[0]["grounded_inputs"] == 1
+
+    # zero grounded -> none marker; explicit exemption -> exempted marker
+    eng.node("paper2", "Component", "paper2", contract(eng, t))
+    r4 = eng.compose(["paper", "paper2"], out_name="pair",
+                     out_role="Component")
+    pe4 = eng.dag.producing_edge(eng.store.resolve("pair"))
+    assert any(e.get("geometry_rollup") == "none"
+               for e in pe4["certificate"]["evidence"])
+    r5 = eng.compose(["p1-solid", "p3-solid"], out_name="exempt",
+                     out_role="Component", no_geometry=True)
+    assert r5["state"] == "promoted", r5["reason"]
+    pe5 = eng.dag.producing_edge(eng.store.resolve("exempt"))
+    assert any(e.get("geometry_rollup") == "exempted"
+               for e in pe5["certificate"]["evidence"])
+
+    # why surfaces the evidence markers along the chain
+    chain = goalsview.why(eng.dag, "duo")
+    assert any("no-interference=ok" in " ".join(c.get("evidence", []))
+               for c in chain)
+
+
 # ================================================ discipline ==============
+
 
 
 

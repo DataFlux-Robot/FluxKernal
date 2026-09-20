@@ -434,9 +434,21 @@ def why(dag, ref: str) -> list[dict]:
         if edge_names.get(edge_d):
             chain[-1]["via"] += f" [{edge_names[edge_d]}]"
         binds = []
-        for ev in (pe.get("certificate") or {}).get("evidence") or []:
+        cert = pe.get("certificate") or {}
+        for ev in cert.get("evidence") or []:
             if isinstance(ev, dict) and ev.get("param-bindings"):
                 binds += ev["param-bindings"]
+        # evidence markers: gates this hop actually discharged
+        marks = []
+        for o in cert.get("obligations") or []:
+            if o.get("id") in ("no-interference", "fully-mated",
+                              "input-realized", "policy:rib-spacing"):
+                marks.append(f"{o['id']}={'ok' if o.get('holds') else 'FAIL'}")
+        for ev in cert.get("evidence") or []:
+            if isinstance(ev, dict) and ev.get("geometry_rollup"):
+                marks.append(f"geometry={ev['geometry_rollup']}")
+        if marks:
+            chain[-1]["evidence"] = marks
         if binds:
             chain[-1]["bindings"] = [{ "expr": b["expr"], "value": b["value"]}
                                      for b in binds]

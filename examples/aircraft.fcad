@@ -100,5 +100,8 @@
 ;; ── the V right leg: compose back up, clearing flow-down obligations ──
 (compose e15 :in (mill-v1/bed spindle-motor-std cnc-drive-bought) :out mill-5axis :role Resource :kind 5axis-mill)
 (compose e16 :in (mill-5axis rib-proc) :out rib-line-v2 :role Line :kind rib-line)
-(compose e17 :in (skin-solid2 tank-solid rib-solid) :out wing-assy :role Component :kind wing-assembly)
+;; the three solids are unplaced volume models (no world layout) —
+;; explicit exemption from the auto assembly gate
+(compose e17 :in (skin-solid2 tank-solid rib-solid) :out wing-assy :role Component :kind wing-assembly
+  :no-geometry t)
 (compose e18 :in (wing-assy ac-v1/engine ac-v1/nose ac-v1/tail ac-v1/fuselage) :out ac-final :role System :kind aircraft :rollup ((range_km (">=" 2600))))

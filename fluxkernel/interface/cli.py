@@ -493,6 +493,8 @@ def cmd_why(a):
         if step.get("bindings"):
             bs = "  ".join(f"{b['expr']}={b['value']:g}" for b in step["bindings"])
             print(f"    params: {bs}")
+        if step.get("evidence"):
+            print(f"    evidence: {'  '.join(step['evidence'])}")
     return 0
 
 
