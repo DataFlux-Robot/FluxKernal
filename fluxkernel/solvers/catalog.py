@@ -126,7 +126,8 @@ def catalog_match(node_specs, args, ctx):
               "spec": {"guarantees": guarantees,
                        "catalog_entry": best["name"],
                        "tier": best.get("tier", 1)},
-              "ground": best.get("ground")}
+              "ground": best.get("ground"),
+              "geometry": best.get("geometry")}
     evidence = [{"solver": "catalog", "entry": best["name"],
                  "tier": best.get("tier", 1), "supplier": best.get("supplier", ""),
                  "matched": [f"{q}{op}{v:g}" for q, op, v in parse_query(query)]}]

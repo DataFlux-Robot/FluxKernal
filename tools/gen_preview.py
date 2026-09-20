@@ -43,6 +43,8 @@ from OCP.BRepBndLib import BRepBndLib
 
 def placed(name, translation, rotation=None, scale=None):
     payload = eng.store.get_object(eng.store.resolve(name))["payload"]
+    if not (payload.get("ground") or {}).get("construction"):
+        raise SkipShape(name)      # catalog item without a declared envelope
     shp = rebuild_brep(payload)
     tr = gp_Trsf()
     if scale:
@@ -76,21 +78,28 @@ WING = (["wingbox/skin/hollow", "wingbox/spar-front/chamfer",
          "wingbox/spar-rear/chamfer"]
         + [f"wingbox/rib-{i}/solid" for i in range(1, 7)])
 FUS = ["fuselage/shell/hollow", "fuselage/bh-1/fillet", "fuselage/bh-2/fillet",
-       "fuselage/bh-3/fillet", "empennage/hstab/solid", "empennage/fin/solid"]
+       "fuselage/bh-3/fillet", "empennage/hstab/solid", "empennage/fin/solid",
+       "seat-std", "av-std", "epu-std"]
 wing = [(n, [0, 0, 0], None) for n in WING + FUS]
 
 # ── group 2: the gantry mill; rib-1 stands on the bed as the workpiece ──
 MILL_Y = 3200
+MILLCAT = ("x-rail-std", "x-screw-bought", "x-servo-std",
+           "y-rail-std", "y-screw-bought", "y-servo-std",
+           "z-rail-std", "z-screw-bought", "z-servo-std",
+           "fab-spindle-std", "fab-cnc-bought")
 mill = [(n, [0, MILL_Y, 0], None) for n in
         ("bed-solid", "colL-solid", "colR-solid", "beam-solid", "head-solid",
-         "xcar-solid", "ycar-solid", "zcar-solid")]
+         "xcar-solid", "ycar-solid", "zcar-solid")] +        [(n, [0, MILL_Y, 0], None) for n in MILLCAT]
 # rib-1: translate its world frame onto the bed top (z 6 -> 60+MILL offset,
 # x/y centred on the bed) — standing web, like a part in a fixture
 rib = [("wingbox/rib-1/solid", [-750, MILL_Y - 750, 54], None)]
 
 # ── group 3: the printer frame stood on edge ──
 PRT_Y = 6300
-printer = [("pframe-solid", [-4, PRT_Y, 600], ([0, 1, 0], 90.0))]
+printer = [("pframe-solid", [-4, PRT_Y, 600], ([0, 1, 0], 90.0)),
+           ("p-stepper-std", [0, PRT_Y, 0], None),
+           ("p-board-bought", [0, PRT_Y, 0], None)]
 
 # ── group 4: the DERIVED 1:20 mockup ──
 MK_Y = 6600
@@ -101,13 +110,21 @@ GROUPS = [("wing", wing), ("mill", mill + rib),
           ("printer", printer), ("mockup", mockup)]
 
 
+class SkipShape(Exception):
+    pass
+
+
 def group_box(entries):
     lo, hi = [1e30] * 3, [-1e30] * 3
     for e in entries:
         name, tr, rot = e[0], e[1], (e[2] if len(e) > 2 else None)
         sc = e[3] if len(e) > 3 else None
+        try:
+            shape = placed(name, tr, rot, scale=sc)
+        except SkipShape:
+            continue
         box = Bnd_Box()
-        BRepBndLib.Add_s(placed(name, tr, rot, scale=sc), box)
+        BRepBndLib.Add_s(shape, box)
         mn, mx = box.CornerMin(), box.CornerMax()
         for k, f in enumerate((mn.X, mn.Y, mn.Z)):
             lo[k] = min(lo[k], f())
@@ -133,10 +150,18 @@ for key, g0 in GROUPS:
     yc, zc = (lo[1] + hi[1]) / 2.0, (lo[2] + hi[2]) / 2.0
     dz_of[key] = (Z0 - zc) - K_LEVEL * (yc - CX)
 
-shapes = [placed(name, [t[0], t[1], t[2] + dz_of[key]], rot,
-                   scale=(e[3] if len(e) > 3 else None))
-          for key, g0 in GROUPS for e in g0
-          for name, t, rot in [(e[0], e[1], (e[2] if len(e) > 2 else None))]]
+def _safe_placed(key, e):
+    name, t = e[0], e[1]
+    rot = e[2] if len(e) > 2 else None
+    sc = e[3] if len(e) > 3 else None
+    try:
+        return placed(name, [t[0], t[1], t[2] + dz_of[key]], rot, scale=sc)
+    except SkipShape:
+        return None
+
+
+shapes = [shp for key, g0 in GROUPS for e in g0
+          for shp in [_safe_placed(key, e)] if shp is not None]
 
 LABELS = [
     ("① 整机装配 1:1 · 翼盒（双蒙皮+双梁+6肋）+舱壳（地板/侧壁/隔框）+尾梁+平尾+垂尾",
@@ -159,7 +184,11 @@ for key, g0 in GROUPS:
         rot = e[2] if len(e) > 2 else None
         sc = e[3] if len(e) > 3 else None
         payload = eng.store.get_object(eng.store.resolve(name))["payload"]
-        entries.append((placed(name, t, rot, scale=sc), fkscene.role_color(payload)))
+        try:
+            shape = placed(name, t, rot, scale=sc)
+        except SkipShape:
+            continue
+        entries.append((shape, fkscene.role_color(payload)))
 stl_bytes, n_tri = fkscene.write_stl_shapes([(shp, i) for i, (shp, _) in enumerate(entries)])
 shape_colors = [list(c) for _, c in entries]
 

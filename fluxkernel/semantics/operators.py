@@ -966,7 +966,8 @@ class Engine:
 
     # --------------------------------------------------- exact / procure --
     def _close_from_catalog(self, op: str, goal: str, catalog: str, match: str,
-                            tier: int, out_name: str | None = None) -> dict:
+                            tier: int, out_name: str | None = None,
+                            at=None) -> dict:
         g_d, g_payload = self._input(goal)
         obligations: list[Obligation] = []
         evidence: list[dict] = []
@@ -988,12 +989,43 @@ class Engine:
             obligations.append(Obligation(id="catalog-hit", prop=str(e), holds=False,
                                           checker="catalog", detail="E1: no catalog hit"))
         evidence = evidence or [{"solver": "catalog", "query": match, "tier": tier}]
+        # V3: an entry with declared geometry grounds a REPRESENTATIVE
+        # envelope (tier catalog-representative).  Red line: mass stays
+        # the CATALOG mass; the envelope serves layout/interference only.
+        ground = fields.get("ground")
+        geo = fields.get("geometry")
+        if geo and isinstance(geo, dict):
+            try:
+                gshape, gcons = self._catalog_envelope(geo)
+                if at is not None:
+                    from .feature3d import _parse_at, _placed
+                    pl = _parse_at(at)
+                    if pl:
+                        gshape = _placed(gshape, pl)
+                        gcons = {**gcons, "placement": pl}
+                props = self._props_shape(gshape)
+                cat_mass = (ground or {}).get("mass_g")
+                ground = {"type": "brep", "backend": "ocp",
+                          "construction": gcons,
+                          "volume_mm3": props["volume_mm3"],
+                          "mass_g": cat_mass if cat_mass is not None
+                          else props["mass_g"],
+                          "com": props["com"], "bbox": props["bbox"],
+                          "material": "catalog-representative"}
+                evidence = evidence + [{
+                    "solver": "catalog/geom", "tier": 0,
+                    "note": "representative envelope (not a manufacturer "
+                            "model); layout/interference only"}]
+            except Exception as e:
+                evidence = evidence + [{
+                    "solver": "catalog/geom", "tier": 0,
+                    "note": f"envelope generation skipped: {e}"}]
         # the closed design keeps the goal's FULL contract (so lint still
         # passes) and gains the entry's guarantees/catalog provenance
         spec = _deep_merge(g_payload.get("spec") or {}, fields.get("spec") or {})
         node = Node(role=g_payload.get("role", "Part"),
                     kind=fields.get("kind") or g_payload.get("kind", "part"),
-                    spec=spec, ground=fields.get("ground"),
+                    spec=spec, ground=ground,
                     evidence=evidence)
         cert = Certificate(obligations=obligations, evaluator="catalog",
                            evidence=evidence, executor=op)
@@ -1003,18 +1035,44 @@ class Engine:
         res["coverage"] = {g_d: evidence[0].get("solver", "catalog")}
         return res
 
+    def _catalog_envelope(self, geo: dict):
+        """Build the representative shape + replayable construction
+        (op catalog-geom; the generator file's digest rides the
+        construction so `fk verify` replays exactly what was built)."""
+        import hashlib
+        import importlib.util
+        gen_ref = str(geo.get("generator", ""))
+        mod_path, fn = gen_ref.split("#", 1)
+        for base in (Path.cwd(), Path(__file__).resolve().parents[2]):
+            f = base / mod_path
+            if f.is_file():
+                src = f.read_bytes()
+                sha = hashlib.sha256(src).hexdigest()[:12]
+                spec_i = importlib.util.spec_from_file_location(
+                    "fk_catalog_geom", f)
+                mod = importlib.util.module_from_spec(spec_i)
+                spec_i.loader.exec_module(mod)
+                return getattr(mod, fn)(geo.get("params") or {}),                     {"op": "catalog-geom", "generator": gen_ref,
+                     "params": geo.get("params") or {},
+                     "source_sha": sha}
+        raise FileNotFoundError(f"catalog generator {gen_ref!r} not found")
+
+    def _props_shape(self, shape):
+        from ..solvers.feature3d import _props as _fp
+        return _fp(shape)
+
     def exact(self, goal: str, catalog: str, match: str,
-              out_name: str | None = None) -> dict:
+              out_name: str | None = None, at=None) -> dict:
         """`exact lemma`: a catalog design closes the goal directly."""
         return self._close_from_catalog("exact", goal, catalog, match, tier=1,
                                         out_name=out_name)
 
     def procure(self, goal: str, catalog: str, match: str = "",
-                out_name: str | None = None) -> dict:
+                out_name: str | None = None, at=None) -> dict:
         """Axiom introduction: purchased item; evidence tier=procured(2) ≠ verified."""
         return self._close_from_catalog("procure", goal, catalog,
                                         match or g_default_query(goal), tier=2,
-                                        out_name=out_name)
+                                        out_name=out_name, at=at)
 
     # --------------------------------------------------------- manufacture --
     def manufacture(self, part: str, into: list[str] | None = None,

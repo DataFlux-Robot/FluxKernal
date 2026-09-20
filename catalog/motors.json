@@ -1,38 +1,127 @@
 {
-  "entries": [
-    {
-      "name": "akm-80-spindle-motor",
-      "kind": "motor",
-      "supplier": "shiyan-catalog",
-      "tier": 1,
-      "bounds": {"torque_nm": {">=": 8, "<=": 60}, "rpm": {">=": 3000, "<=": 24000},
-                 "power_w": {">=": 1500, "<=": 4500}, "mass_g": {"<=": 9000}},
-      "ground": {"mass_g": 6800.0}
+ "entries": [
+  {
+   "name": "akm-80-spindle-motor",
+   "kind": "motor",
+   "supplier": "shiyan-catalog",
+   "tier": 1,
+   "bounds": {
+    "torque_nm": {
+     ">=": 8,
+     "<=": 60
     },
-    {
-      "name": "akm-52-servo",
-      "kind": "motor",
-      "supplier": "shiyan-catalog",
-      "tier": 1,
-      "bounds": {"torque_nm": {">=": 1.5, "<=": 12}, "rpm": {">=": 2000, "<=": 5000},
-                 "power_w": {">=": 200, "<=": 1200}, "mass_g": {"<=": 2500}},
-      "ground": {"mass_g": 1850.0}
+    "rpm": {
+     ">=": 3000,
+     "<=": 24000
     },
-    {
-      "name": "gb-standard-spindle-15kw",
-      "kind": "motor",
-      "supplier": "gb-catalog",
-      "tier": 2,
-      "bounds": {"torque_nm": {">=": 20}, "rpm": {">=": 12000}, "power_w": {">=": 3000}},
-      "ground": {"mass_g": 11000.0}
+    "power_w": {
+     ">=": 1500,
+     "<=": 4500
     },
-    {
-      "name": "blgc-4108-gimbal",
-      "kind": "motor",
-      "supplier": "hobby",
-      "tier": 2,
-      "bounds": {"torque_nm": {">=": 0.2, "<=": 1.2}, "rpm": {">=": 100, "<=": 900}},
-      "ground": {"mass_g": 62.0}
+    "mass_g": {
+     "<=": 9000
     }
-  ]
+   },
+   "ground": {
+    "mass_g": 6800.0
+   },
+   "geometry": {
+    "generator": "catalog/geom.py#motor",
+    "params": {
+     "flange": 80,
+     "length": 115,
+     "shaft": 12
+    }
+   }
+  },
+  {
+   "name": "akm-52-servo",
+   "kind": "motor",
+   "supplier": "shiyan-catalog",
+   "tier": 1,
+   "bounds": {
+    "torque_nm": {
+     ">=": 1.5,
+     "<=": 12
+    },
+    "rpm": {
+     ">=": 2000,
+     "<=": 5000
+    },
+    "power_w": {
+     ">=": 200,
+     "<=": 1200
+    },
+    "mass_g": {
+     "<=": 2500
+    }
+   },
+   "ground": {
+    "mass_g": 1850.0
+   },
+   "geometry": {
+    "generator": "catalog/geom.py#motor",
+    "params": {
+     "flange": 80,
+     "length": 115,
+     "shaft": 12
+    }
+   }
+  },
+  {
+   "name": "gb-standard-spindle-15kw",
+   "kind": "motor",
+   "supplier": "gb-catalog",
+   "tier": 2,
+   "bounds": {
+    "torque_nm": {
+     ">=": 20
+    },
+    "rpm": {
+     ">=": 12000
+    },
+    "power_w": {
+     ">=": 3000
+    }
+   },
+   "ground": {
+    "mass_g": 11000.0
+   },
+   "geometry": {
+    "generator": "catalog/geom.py#motor",
+    "params": {
+     "flange": 80,
+     "length": 115,
+     "shaft": 12
+    }
+   }
+  },
+  {
+   "name": "blgc-4108-gimbal",
+   "kind": "motor",
+   "supplier": "hobby",
+   "tier": 2,
+   "bounds": {
+    "torque_nm": {
+     ">=": 0.2,
+     "<=": 1.2
+    },
+    "rpm": {
+     ">=": 100,
+     "<=": 900
+    }
+   },
+   "ground": {
+    "mass_g": 62.0
+   },
+   "geometry": {
+    "generator": "catalog/geom.py#motor",
+    "params": {
+     "flange": 42,
+     "length": 40,
+     "shaft": 5
+    }
+   }
+  }
+ ]
 }

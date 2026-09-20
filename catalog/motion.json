@@ -1,22 +1,30 @@
 {
-  "entries": [
-    {
-      "name": "hiwin-rg25-rail-1800",
-      "kind": "linear-rail",
-      "supplier": "motion-catalog",
-      "tier": 1,
-      "bounds": {
-        "travel_mm": {
-          ">=": 300,
-          "<=": 4000
-        },
-        "mass_g": {
-          "<=": 6000
-        }
-      },
-      "ground": {
-        "mass_g": 4800.0
-      }
+ "entries": [
+  {
+   "name": "hiwin-rg25-rail-1800",
+   "kind": "linear-rail",
+   "supplier": "motion-catalog",
+   "tier": 1,
+   "bounds": {
+    "travel_mm": {
+     ">=": 300,
+     "<=": 4000
+    },
+    "mass_g": {
+     "<=": 6000
     }
-  ]
+   },
+   "ground": {
+    "mass_g": 4800.0
+   },
+   "geometry": {
+    "generator": "catalog/geom.py#rail",
+    "params": {
+     "length": 1800,
+     "width": 23,
+     "height": 20
+    }
+   }
+  }
+ ]
 }

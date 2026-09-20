@@ -215,14 +215,14 @@ class Runner:
         target = kw.get("target") or (pos[0] if pos else None)
         return self._bind_edge_name(pos, self.engine.exact(
             target, kw.get("from", "catalog"), kw.get("match", "") or "",
-            out_name=kw.get("out")))
+            out_name=kw.get("out"), at=kw.get("at")))
 
     def _form_procure(self, body):
         pos, kw = split_kwargs(body)
         target = kw.get("target") or (pos[0] if pos else None)
         return self._bind_edge_name(pos, self.engine.procure(
             target, kw.get("from", "catalog"), kw.get("match", "") or "",
-            out_name=kw.get("out")))
+            out_name=kw.get("out"), at=kw.get("at")))
 
     def _extra_args(self, kw) -> dict:
         known = {"op", "in", "out", "target", "with", "from", "match", "expect",

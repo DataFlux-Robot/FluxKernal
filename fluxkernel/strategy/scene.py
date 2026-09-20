@@ -35,7 +35,7 @@ def role_color(payload: dict) -> tuple[int, int, int]:
     return PALETTE_ROLE.get(payload.get("role", "Part"), PALETTE_ROLE["Part"])
 
 
-def mesh_shape(shape, linear=0.6, angular=0.35):
+def mesh_shape(shape, linear=0.08, angular=0.06):
     """Triangles of a TopoDS shape as [(nx,ny,nz, x1..z3), ...]."""
     from OCP.BRepMesh import BRepMesh_IncrementalMesh
     from OCP.TopExp import TopExp_Explorer

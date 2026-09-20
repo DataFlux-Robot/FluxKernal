@@ -14,6 +14,8 @@ changes. The recorded construction is complete and self-contained:
 """
 from __future__ import annotations
 
+from pathlib import Path
+
 import math
 
 from .registry import register
@@ -419,6 +421,29 @@ def rebuild_brep(node_spec: dict):
         for extra in sub[1:]:
             shape = BRepAlgoAPI_Fuse(shape, extra).Shape()
         return shape
+    if kind == "catalog-geom":
+        # V3 representative envelope: replay by re-running the pinned
+        # generator (source digest recorded BY VALUE in the construction)
+        import hashlib
+        import importlib.util
+        mod_path, fn = str(cons["generator"]).split("#", 1)
+        for base in (Path.cwd(), Path(__file__).resolve().parents[2]):
+            f = base / mod_path
+            if f.is_file():
+                sha = hashlib.sha256(f.read_bytes()).hexdigest()[:12]
+                if cons.get("source_sha") and sha != cons["source_sha"]:
+                    raise ValueError(
+                        f"catalog generator moved on: {mod_path} is {sha}, "
+                        f"construction pinned {cons['source_sha']}")
+                spec_i = importlib.util.spec_from_file_location(
+                    "fk_catalog_geom_r", f)
+                mod = importlib.util.module_from_spec(spec_i)
+                spec_i.loader.exec_module(mod)
+                shp = getattr(mod, fn)(cons.get("params") or {})
+                if cons.get("placement"):
+                    shp = _placed(shp, cons["placement"])
+                return shp
+        raise FileNotFoundError(f"catalog generator {mod_path!r} not found")
     if kind in ("fillet", "chamfer", "loft", "shell", "pattern", "mirror",
                 "cut"):
         from .features import rebuild_feature
