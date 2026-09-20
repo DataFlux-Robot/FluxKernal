@@ -63,9 +63,9 @@ def fuse(shapes):
 
 
 # ── group 1: the wingbox, exactly as its children were grounded ──
-WING = ["sku-solid", "skl-solid", "spf-solid", "spr-solid",
-        "rib-1-solid", "rib-2-solid", "rib-3-solid",
-        "rib-4-solid", "rib-5-solid", "rib-6-solid"]
+WING = [f"wingbox/{n}/solid" for n in
+        ("skin-upper", "skin-lower", "spar-front", "spar-rear",
+         "rib-1", "rib-2", "rib-3", "rib-4", "rib-5", "rib-6")]
 wing = [(n, [0, 0, 0], None) for n in WING]
 
 # ── group 2: the gantry mill; rib-1 stands on the bed as the workpiece ──
@@ -75,7 +75,7 @@ mill = [(n, [0, MILL_Y, 0], None) for n in
          "xcar-solid", "ycar-solid", "zcar-solid")]
 # rib-1: translate its world frame onto the bed top (z 6 -> 60+MILL offset,
 # x/y centred on the bed) — standing web, like a part in a fixture
-rib = [("rib-1-solid", [-750, MILL_Y - 750, 54], None)]
+rib = [("wingbox/rib-1/solid", [-750, MILL_Y - 750, 54], None)]
 
 # ── group 3: the printer frame stood on edge ──
 PRT_Y = 6300

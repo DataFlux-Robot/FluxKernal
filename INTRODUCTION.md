@@ -80,6 +80,15 @@ L0  store/       objstore.py（内容寻址对象存储，`.fk/` 目录）
 
 `fk ledger <medium>` 派生介质账本；`fk elicit` 六步固定追问把口头需求逼成五槽位合同（口子进 risks 不抹平）。
 
+## 5.5 路线图层（v1.0 master roadmap）：参数/政策/机制/几何梯
+
+在合同系统之上新增四层通用能力（内核零改动）：
+
+- **参数系统**（core/params.py）：`:param`/`:expr`（算术+min/max/if，刻意不图灵完备）贯穿草图点/特征参数/合同；命名参数集 `(params ...)` 单一来源；`param-bindings` 证据使每个数可 `fk why` 回溯；`fk impact --set k=v --apply` 影子重放传播变更（历史不可篡改）。
+- **政策库**（policies/，code-as-policy）：JSON 声明+Python 检查，内容寻址、digest 随义务入 DAG；违反即 C0 拒绝并附修复提示（哪个参数、超多少、建议值）。首批：rib-spacing≤500、min-wall、mass-budget、fastener-edge-distance。
+- **机制库**（mechanisms/）：参数化子系统包（layout/generate/assemble 皆为函数）；`(instantiate :at X :mechanism wingbox :params ...)` 展开为普通 DAG——frames 全部由参数计算，rib-count 由表达式推导且政策强制。
+- **几何梯**：实体草图（arc/circle/spline/孔环，12 约束，fully-constrained）；特征算子 fillet/chamfer/loft/shell/pattern/mirror（construction 按值可重放）；命名特征 + mate-solve 解析装配（fully-mated 报自由轴）；compose 自动几何回卷（全接地→自动干涉门+装配证据物化到节点；部分/零/豁免显式三态）。
+
 ## 6. 八算子与 Lean 同构
 
 | Lean | FluxKernel |
@@ -124,7 +133,7 @@ L0  store/       objstore.py（内容寻址对象存储，`.fk/` 目录）
 
 ## 11. 测试与验收
 
-`python -m pytest tests/ -q` → **30 passed**（验收测试 1–20 + 分层纪律 + 进化回归 21–29：闭合判定/洞坍缩/证据覆盖/print 终止/打印机自举/仿真矩阵/realize 终止集/全链案例/termination-swap）。覆盖：黄金向量、fail-closed/I3、精确链接/I1、谱系命名稳定、草图残差、几何体积 600mm³±1e-6 + STEP/STL 回读、端到端、integrate 三性质、co-design 两性质、C1–C4 生成判定 + 超容 rejected + 矛盾暴露、lint 闸门 + L4 拒收、elicit 六步、realize 终止性、evolve 三性质。
+`python -m pytest tests/ -q` → **44 passed**（验收测试 1–20 + 分层纪律 + 进化回归 21–29：闭合判定/洞坍缩/证据覆盖/print 终止/打印机自举/仿真矩阵/realize 终止集/全链案例/termination-swap）。覆盖：黄金向量、fail-closed/I3、精确链接/I1、谱系命名稳定、草图残差、几何体积 600mm³±1e-6 + STEP/STL 回读、端到端、integrate 三性质、co-design 两性质、C1–C4 生成判定 + 超容 rejected + 矛盾暴露、lint 闸门 + L4 拒收、elicit 六步、realize 终止性、evolve 三性质。
 
 规模：git 追踪 56 文件，Python 6107 行，标准库为主；OCP（cadquery-ocp）与 numpy 仅在 L2/策略层。
 

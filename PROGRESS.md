@@ -9,11 +9,11 @@
 
 | 指标 | 值 |
 |---|---|
-| 测试 | **36/36 全绿**（`pytest tests/ -q`，≈24s） |
+| 测试 | **44/44 全绿**（`pytest tests/ -q`，≈18s） |
 | 规模 | 64 个 git 追踪文件，Python 7875 行 |
 | CLI | 33 子命令；`.fcad` DSL 含 `(print ...)`、`:at`、`:machine`、`:template` |
 | 求解插件 | 14 个（几何 4 + 仿真 4 + 制造 4 + 任务 2）；目录 6 文件；**架构模板 2 个** |
-| 标志案例 SHA-PEK | **119 表单 / 314 对象（153 节点 + 153 边）/ 152 promoted + 1 故意 rejected / 22 条 print 边** |
+| 标志案例 SHA-PEK | **90 表单**（机翼=1 个 instantiate）/ 44/44 测试 / OPEN(0) / verify 全绿 |
 | 案例终态 | **OPEN GOALS (0)** · verify 全绿 · dc-bus 3820/4000W · 装配干涉门 = 0 干涉 |
 | 任务链 | 假设航程 5344.7 km（L/D=14）→ **闭环复算 6127.3 km**（aero-2d 实测 L/D=16.05 覆写假设；数字取自运行证据） |
 | 双代闭环 | printer→（机床结构件）+ catalog→（运动件）= 机床；**机床 `:machine`→rib-1 工序**——两条设备链都在 DAG 边的 inputs 里 |
@@ -31,6 +31,23 @@
 
 ### 阶段四：三轮诊断与骨架层进化（评审 v03 → G1–G3 + E6，6 提交）
 用户观察"机翼没拆分、机床不像机床"被证实为更深层问题——**实现跳过了 Skeleton（几何架构）层**：e4d 组合的是未接地合同节点而非 skin-solid/spar-solid（真 bug）；机床分解只有 kind 名字。修复全部落地（§2）。
+
+### 阶段五：总路线图实施（master roadmap v1.0，P0→P5，7 提交）
+
+按《总实施路线图》完成 P 参数系统 / R 政策库 / M 机制库 / G 几何梯的全部六个里程碑：
+
+| 里程碑 | 交付 |
+|---|---|
+| **M1 参数系统**（P0） | `core/params.py`：非图灵完备表达式 + 单一来源路径参数 + 环检测（带修复提示）；`:param`/`:expr` 全通道解析；`(params ...)` 命名参数集；param-bindings 证据随边入库 |
+| **G1 实体草图**（P1） | line/arc/circle/spline 图元 + 孔环；约束 5→12；`fully-constrained` soft；带孔圆角件体积手算核对 |
+| **G3 变更传播**（P1） | 脚本入库；`fk impact --set <set>/<key>=v [--apply]` 影子库重放 + 复验（历史不可篡改）；`fk why` 显示每跳参数绑定 |
+| **M2 政策库**（P2） | code-as-policy：`policies/*.json+.py` 内容寻址、digest 入 DAG、C0 零改动直通；首批 rib-spacing（含修复提示）/min-wall/mass-budget/fastener-edge-distance |
+| **G2 特征算子**（P2） | fillet/chamfer（三锚边选择）/loft/shell/pattern-linear（表达式驱动 count）/mirror，全部 construction 按值可重放 |
+| **G4 mate-solve**（P3） | 命名特征（bbox 平面锚按值入 construction）；解析平移求解 + 有效位置链；`fully-mated` 报告自由轴 |
+| **M3 机制库**（P4） | `mechanisms/wingbox`：frames 从字面量变**函数**（layout(span,chord,height,rib-count)），rib-count 由表达式推导（ceil(span/500)）+ 政策强制；`(instantiate ...)` 一表单展开为普通 DAG；案例机翼 80 行 → 1 行 |
+| **M4 回卷清零**（P5) | compose 自动几何回卷：全接地输入自动 assemble 干涉门 + **装配 ground 物化到节点**；部分/零/豁免三态显式标记；`fk why` 每跳证据标记——治复核 G4/G5 |
+
+P6（G5 b123d-script / G6 solve）按路线图为可选增强，本轮未实施。
 
 ## 2. 当前通用能力清单（本轮新增机制，全部零 trick）
 
