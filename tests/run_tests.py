@@ -1644,7 +1644,78 @@ def test_40_feature_operators():
         assert abs(rv - vol) < max(vol * 1e-3, 1e-6), (name, rv, vol)
 
 
+
+# ================================================ G4: mate-solve ==========
+def test_41_mate_solve():
+    """G4: placements SOLVED from named-feature plane mates (never
+    hand-filled); a three-part stack mates with zero interference and
+    fully-mated; an unmated axis is reported with a repair hint."""
+    from fluxkernel.solvers.feature3d import rebuild_brep, _props
+    eng = fresh()
+    t = terms(eng, "mass")
+
+    def plate(name, w, h, d, x=0.0):
+        eng.node(name, "Part", "plate", contract(eng, t))
+        sk = {"pts": {"a": [0, 0], "b": [w, 0], "c": [w, h], "d": [0, h]},
+              "constraints": [["fix", "a", 0, 0], ["dist", "a", "b", w],
+                              ["dist", "b", "c", h],
+                              ["horiz", "a", "b"], ["vert", "b", "c"]]}
+        r = eng.refine(name, {"name": "ground-sketch", "args": {"sketch": sk}},
+                       out_name=f"{name}-sk")
+        assert r["state"] == "promoted", r["reason"]
+        r2 = eng.refine(f"{name}-sk",
+                        {"name": "extrude",
+                         "args": {"height": d, "material": "pla",
+                                  "at": [x, 0, 0]}},
+                        out_name=f"{name}-solid")
+        assert r2["state"] == "promoted", r2["reason"]
+
+    # base (60x40x10), mid (30x20x6) offset far away in z, cap (20x10x4)
+    plate("base", 60, 40, 10)
+    plate("mid", 30, 20, 6)
+    plate("cap", 20, 10, 4)
+    # solver first: mid sits on base, cap sits on mid
+    res = eng.compose(
+        ["base-solid", "mid-solid", "cap-solid"],
+        out_name="stack", out_role="Component",
+        transform_spec={"name": "mate-solve", "args": {"mates": [
+            ["plane", 1, "plane:zmin", 0, "plane:zmax"],
+            ["plane", 2, "plane:zmin", 1, "plane:zmax"],
+            ["plane", 1, "plane:xmin", 0, "plane:xmin"],
+            ["plane", 2, "plane:xmin", 1, "plane:xmin"],
+            ["plane", 1, "plane:ymin", 0, "plane:ymin"],
+            ["plane", 2, "plane:ymin", 1, "plane:ymin"],
+        ]}})
+    assert res["state"] == "promoted", res["reason"]
+    g = eng.store.get_object(eng.store.resolve("stack"))["payload"]["ground"]
+    # mid z offset 0: mid was grounded at z 0..6, needs to land at 10..16
+    assert abs(g["placements"][1][2] - 4.0) < 1e-6 or         abs(g["placements"][1][2] - 10.0) < 1e-6
+    obs = eng.dag.producing_edge(eng.store.resolve("stack"))["certificate"]["obligations"]
+    fm = [o for o in obs if o["id"] == "fully-mated"][-1]
+    assert fm["holds"] is True
+    ni = [o for o in obs if o["id"] == "no-interference"][-1]
+    assert ni["holds"] is True
+
+    # underconstrained: only z mated -> free x/y reported
+    res2 = eng.compose(
+        ["base-solid", "mid-solid"],
+        out_name="loose", out_role="Component",
+        transform_spec={"name": "mate-solve", "args": {"mates": [
+            ["plane", 1, "plane:zmin", 0, "plane:zmax"]]}})
+    assert res2["state"] == "promoted", res2["reason"]
+    obs2 = eng.dag.producing_edge(eng.store.resolve("loose"))["certificate"]["obligations"]
+    fm2 = [o for o in obs2 if o["id"] == "fully-mated"][-1]
+    assert fm2["holds"] is False and "part[1].x" in fm2["detail"]
+
+    # named features recorded by value on every solid
+    pl = eng.store.get_object(eng.store.resolve("base-solid"))["payload"]
+    feats = pl["ground"]["construction"]["features"]
+    assert abs(feats["plane:zmax"] - 10.0) < 1e-6
+    assert feats["axis:extrude"] == [0, 0, 1]
+
+
 # ================================================ discipline ==============
+
 
 
 

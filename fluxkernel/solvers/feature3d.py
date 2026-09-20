@@ -417,8 +417,25 @@ def rebuild_brep(node_spec: dict):
     raise ValueError(f"cannot replay construction op: {kind}")
 
 
+def _named_features(cons: dict, props: dict) -> dict:
+    """Named geometry anchors (G4): bbox plane positions recorded BY VALUE
+    plus the generator's axis — mate-solve and selectors address these by
+    name, never by face index."""
+    (x0, y0, z0), (x1, y1, z1) = props["bbox"]
+    f = {"plane:xmin": x0, "plane:xmax": x1,
+         "plane:ymin": y0, "plane:ymax": y1,
+         "plane:zmin": z0, "plane:zmax": z1}
+    if cons.get("op") == "extrude":
+        f["axis:extrude"] = [0, 0, 1]
+    elif cons.get("op") == "revolve":
+        f["axis:revolve"] = list(cons.get("axis", [0, 1, 0]))
+    return f
+
+
 def _finish_solid(shape, ctx, cons: dict, desc: str):
     props = _props(shape)
+    cons = dict(cons)
+    cons.setdefault("features", _named_features(cons, props))
     material = cons.get("material", "abs")
     density = _DENSITY_G_PER_MM3.get(material, 1.0e-3)
     mass_g = props["volume_mm3"] * density
