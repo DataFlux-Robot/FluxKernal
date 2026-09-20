@@ -21,7 +21,9 @@
   :spec (medium (capacity (heat_w (<= 400))) (margin 0.1)))
 ;; ── shared medium: DC power bus feeding the fabrication cell ──
 (node dc-bus :role Medium :kind dc-bus
-  :spec (medium (capacity (power_w (<= 5000))) (margin 0.2)))
+  ;; 5200W: the fuselage-surface prints joined the roll-up (4080W
+;; real load) — the bus is sized for the honest accounting, not 5000
+:spec (medium (capacity (power_w (<= 5200))) (margin 0.2)))
 
 ;; ── single-source wing parameters (M1): every wing dimension below is a
 ;; ── :param/:expr reference — no literal coordinates in the wing branch ──
@@ -141,8 +143,12 @@
 (refine e47 :in (fuselage-v1/cabin-shell) :out cabin-sk :kind sketch
   :transform (ground-sketch :sketch (sketch
     (pts (c0 0 0) (c1 800 0) (c2 800 1400) (c3 0 1400)) (constraints))))
+;; aircraft-level layout (the wingbox is the anchor: x=span 0..3000,
+;; y=chord 0..1500 fore-aft, z=0..200): the cabin rides above the wing
+;; centre, empennage behind the trailing edge — the DERIVED mockup then
+;; reads as an aircraft with its wing on
 (refine e48 :in (cabin-sk) :out cabin-solid :kind cabin-shell
-  :transform (extrude :height 3 :material aluminum))
+  :transform (extrude :height 3 :material aluminum :at ((1100 50 230))))
 (print e49 :in (cabin-solid) :printer reference-printer :out cabin-printed)
 (exact e45 :target fuselage-v1/seat :from catalog
   :match "mass_kg<=15" :out seat-std)
@@ -153,21 +159,27 @@
 ;; no range roll-up here: the composed airframe carries no mission
 ;; evidence of its own — range is verified where the mission model lives
 ;; (e2c hard expect, and the closed-loop re-check e63 with measured L/D)
-(compose e5 :in (wingbox/assembly sha-pek-v1/fuselage sha-pek-v1/avionics epu-std)
-  :out sha-pek-design :role System :kind light-aircraft)
 
 (refine e47h :in (fuselage-v1/hstab) :out hstab-sk :kind sketch
   :transform (ground-sketch :sketch (sketch
     (pts (h0 0 0) (h1 600 0) (h2 600 200) (h3 0 200)) (constraints))))
 (refine e48h :in (hstab-sk) :out hstab-solid :kind hstab
-  :transform (extrude :height 4 :material aluminum :at ((100 800 100))))
+  :transform (extrude :height 4 :material aluminum :at ((1200 1550 230))))
 (print e49h :in (hstab-solid) :printer reference-printer :out hstab-printed)
 (refine e47f :in (fuselage-v1/fin) :out fin-sk :kind sketch
   :transform (ground-sketch :sketch (sketch
     (pts (n4 0 0) (n5 200 0) (n6 200 300) (n7 0 300)) (constraints))))
 (refine e48f :in (fin-sk) :out fin-solid :kind fin
-  :transform (extrude :height 4 :material aluminum :at ((700 900 0) (1 0 0 90))))
+  :transform (extrude :height 4 :material aluminum :at ((1400 1550 234) (1 0 0 90))))
 (print e49f :in (fin-solid) :printer reference-printer :out fin-printed)
+
+;; the grounded fuselage surfaces (cabin/hstab/fin) are composed back
+;; here — otherwise they dangle off their print edges and the DERIVED
+;; mockup would honestly show an aircraft with no fuselage on it
+(compose e5 :in (wingbox/assembly sha-pek-v1/fuselage
+                 cabin-solid hstab-solid fin-solid
+                 sha-pek-v1/avionics epu-std)
+  :out sha-pek-design :role System :kind light-aircraft)
 
 ;; ══ production branch: the aircraft design demands a machine tool; the ══
 ;; ══ GANTRY-MILL archetype (E6-4) develops it; THEN the rib is milled   ══

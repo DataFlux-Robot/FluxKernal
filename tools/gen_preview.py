@@ -40,18 +40,22 @@ from OCP.Bnd import Bnd_Box
 from OCP.BRepBndLib import BRepBndLib
 
 
-def placed(name, translation, rotation=None):
+def placed(name, translation, rotation=None, scale=None):
     payload = eng.store.get_object(eng.store.resolve(name))["payload"]
     shp = rebuild_brep(payload)
     tr = gp_Trsf()
+    if scale:
+        sc = gp_Trsf()
+        sc.SetScale(gp_Pnt(0, 0, 0), scale)
+        tr = tr.Multiplied(sc)
     if rotation:
         axis, ang = rotation
         r = gp_Trsf()
         r.SetRotation(gp_Ax1(gp_Pnt(0, 0, 0), gp_Dir(*axis)), math.radians(ang))
-        tr.SetTranslation(gp_Vec(*translation))
         tr = tr.Multiplied(r)
-    else:
-        tr.SetTranslation(gp_Vec(*translation))
+    t = gp_Trsf()
+    t.SetTranslation(gp_Vec(*translation))
+    tr = t.Multiplied(tr)
     return BRepBuilderAPI_Transform(shp, tr, True).Shape()
 
 
@@ -82,8 +86,9 @@ PRT_Y = 6300
 printer = [("pframe-solid", [-4, PRT_Y, 600], ([0, 1, 0], 90.0))]
 
 # ── group 4: the DERIVED 1:20 mockup ──
-MK_Y = 7900
-mockup = [("mockup-solid", [0, MK_Y, 0], None)]
+MK_Y = 6600
+MK_DETAIL = 12.0           # detail-view magnification (preview only)
+mockup = [("mockup-solid", [0, MK_Y, 0], None, MK_DETAIL)]
 
 GROUPS = [("wing", wing), ("mill", mill + rib),
           ("printer", printer), ("mockup", mockup)]
@@ -91,9 +96,11 @@ GROUPS = [("wing", wing), ("mill", mill + rib),
 
 def group_box(entries):
     lo, hi = [1e30] * 3, [-1e30] * 3
-    for name, tr, rot in entries:
+    for e in entries:
+        name, tr, rot = e[0], e[1], (e[2] if len(e) > 2 else None)
+        sc = e[3] if len(e) > 3 else None
         box = Bnd_Box()
-        BRepBndLib.Add_s(placed(name, tr, rot), box)
+        BRepBndLib.Add_s(placed(name, tr, rot, scale=sc), box)
         mn, mx = box.CornerMin(), box.CornerMax()
         for k, f in enumerate((mn.X, mn.Y, mn.Z)):
             lo[k] = min(lo[k], f())
@@ -119,8 +126,10 @@ for key, g0 in GROUPS:
     yc, zc = (lo[1] + hi[1]) / 2.0, (lo[2] + hi[2]) / 2.0
     dz_of[key] = (Z0 - zc) - K_LEVEL * (yc - CX)
 
-shapes = [placed(name, [t[0], t[1], t[2] + dz_of[key]], rot)
-          for key, g0 in GROUPS for name, t, rot in g0]
+shapes = [placed(name, [t[0], t[1], t[2] + dz_of[key]], rot,
+                   scale=(e[3] if len(e) > 3 else None))
+          for key, g0 in GROUPS for e in g0
+          for name, t, rot in [(e[0], e[1], (e[2] if len(e) > 2 else None))]]
 
 LABELS = [
     ("① 机翼 wingbox 3000×1500 · 双蒙皮+双梁+6肋（骨架就位）",
@@ -129,8 +138,8 @@ LABELS = [
      [-600, MILL_Y - 500, Z0 + dz_of["mill"] + 260], 34),
     ("③ 打印机机架 600×600 · 自举",
      [0, PRT_Y - 300, Z0 + dz_of["printer"] + 320], 44),
-    ("④ 派生样机 1:20 · scale-instance 自真实子树",
-     [0, MK_Y, Z0 + dz_of["mockup"] + 60], 34),
+    ("④ 派生样机 · 真实子树 1:20（视图放大 12×）",
+     [0, MK_Y, Z0 + dz_of["mockup"] + 200], 34),
 ]
 
 scene = fuse(shapes)
