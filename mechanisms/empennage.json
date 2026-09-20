@@ -1,0 +1,101 @@
+{
+ "id": "empennage",
+ "version": "1.0.0",
+ "_doc": "Airfoil-section stabilizers: hstab lofted spanwise, fin lofted vertically (rotZ90 frame). Replaces the flat plates.",
+ "params": {
+  "chord": {
+   "type": "length_mm",
+   "range": [
+    50,
+    2000
+   ],
+   "default-expr": 200.0
+  },
+  "tc": {
+   "type": "ratio",
+   "range": [
+    0.06,
+    0.2
+   ],
+   "default-expr": 0.1
+  },
+  "h-span": {
+   "type": "length_mm",
+   "range": [
+    100,
+    5000
+   ],
+   "default-expr": 600.0
+  },
+  "fin-height": {
+   "type": "length_mm",
+   "range": [
+    50,
+    3000
+   ],
+   "default-expr": 300.0
+  },
+  "x0": {
+   "type": "length_mm",
+   "range": [
+    -20000,
+    20000
+   ],
+   "default-expr": 0.0
+  },
+  "y0": {
+   "type": "length_mm",
+   "range": [
+    -20000,
+    20000
+   ],
+   "default-expr": 0.0
+  },
+  "z0": {
+   "type": "length_mm",
+   "range": [
+    -20000,
+    20000
+   ],
+   "default-expr": 0.0
+  },
+  "fin-x0": {
+   "type": "length_mm",
+   "range": [
+    -20000,
+    20000
+   ],
+   "default-expr": 0.0
+  },
+  "fin-y0": {
+   "type": "length_mm",
+   "range": [
+    -20000,
+    20000
+   ],
+   "default-expr": 0.0
+  },
+  "fin-z0": {
+   "type": "length_mm",
+   "range": [
+    -20000,
+    20000
+   ],
+   "default-expr": 0.0
+  }
+ },
+ "module": "fluxkernel.mechanisms.empennage",
+ "policies": [
+  "print-fillet"
+ ],
+ "termination": {
+  "print": [
+   "hstab",
+   "fin"
+  ],
+  "reserve": []
+ },
+ "solvers": [
+  "mate/ocp"
+ ]
+}

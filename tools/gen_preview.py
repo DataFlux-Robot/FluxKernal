@@ -72,11 +72,11 @@ def fuse(shapes):
 # (cabin above the wing centre, empennage behind the trailing edge,
 # fin stood up) — the decomposed aircraft, every part where the DAG
 # places it ──
-WING = [f"wingbox/{n}/solid" for n in
-        ("skin-upper", "skin-lower", "spar-front", "spar-rear",
-         "rib-1", "rib-2", "rib-3", "rib-4", "rib-5", "rib-6")]
-FUS = ["cabin-solid", "cwl-solid", "cwr-solid", "cbhf-solid", "cbhr-solid",
-       "boom-solid", "hstab-solid", "fin-solid"]
+WING = (["wingbox/skin/hollow", "wingbox/spar-front/chamfer",
+         "wingbox/spar-rear/chamfer"]
+        + [f"wingbox/rib-{i}/solid" for i in range(1, 7)])
+FUS = ["fuselage/shell/hollow", "fuselage/bh-1/fillet", "fuselage/bh-2/fillet",
+       "fuselage/bh-3/fillet", "empennage/hstab/solid", "empennage/fin/solid"]
 wing = [(n, [0, 0, 0], None) for n in WING + FUS]
 
 # ── group 2: the gantry mill; rib-1 stands on the bed as the workpiece ──

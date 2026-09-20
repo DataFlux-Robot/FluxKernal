@@ -194,7 +194,12 @@ class Engine:
         frames = mod.layout(values)
         into = gen["into"]
         kinds = mod.kinds_of(into)
-        specs = {name: {"frames": {"build": frames[name]}} for name in into}
+        # every frame belonging to this part rides its slot spec — the
+        # "build" alias plus part-scoped extras (e.g. "skin-cutter")
+        specs = {name: {"frames": {
+            **{k: v for k, v in frames.items()
+               if k == name or k.startswith(name + "-")},
+            "build": frames[name]}} for name in into}
         arch_params = {**values,
                        "rib-count": values.get("rib-count",
                                                len([i for i in into
@@ -211,13 +216,21 @@ class Engine:
                               "archetype": f"mech:{mechanism}",
                               "archetype_params": arch_params}},
                           out_name=out_name or f"{mechanism}-v1",
-                          out_role="Component")
+                          out_role=None)   # inherit: Part slots stay Part
         if res["state"] != "promoted":
             return res
         scope = res["node"]
         base = out_name or f"{mechanism}-v1"
 
-        # 2) per-part grounding at computed frames (+ terminal prints)
+        # 2) per-part grounding at computed frames (+ terminal prints).
+        #    Part specs: rectangle {w,h,thick} (2.0 compat), polygon
+        #    {pts, thick}, or multi-section loft {profiles, zs} — each
+        #    optionally followed by a post-op chain (shell/fillet/...)
+        def _poly_sketch(poly):
+            pts = {f"p{i}": [float(x), float(y)]
+                   for i, (x, y) in enumerate(poly)}
+            return {"pts": pts, "constraints": []}
+
         term = decl.get("termination") or {}
         printable = [t for t in term.get("print", [])
                      if t in into and t in frames]
@@ -225,33 +238,123 @@ class Engine:
         grounded = {}
         for name in into:
             pr = gen["parts"][name]
-            sk = {"pts": {"a": [0, 0], "b": [pr["w"], 0],
-                          "c": [pr["w"], pr["h"]], "d": [0, pr["h"]]},
-                  "constraints": [["fix", "a", 0, 0],
-                                  ["dist", "a", "b", pr["w"]],
-                                  ["dist", "b", "c", pr["h"]],
-                                  ["horiz", "a", "b"], ["vert", "b", "c"]]}
-            r1 = self.refine([f"{base}/{name}"],
-                             {"name": "ground-sketch",
-                              "args": {"sketch": sk}},
-                             out_name=f"{base}/{name}/sk")
-            if r1["state"] != "promoted":
+            if "profiles" in pr:
+                sec_nodes = []
+                for j, poly in enumerate(pr["profiles"]):
+                    r1 = self.refine([f"{base}/{name}"],
+                                     {"name": "ground-sketch",
+                                      "args": {"sketch": _poly_sketch(poly)}},
+                                     out_name=f"{base}/{name}/sec{j}")
+                    if r1["state"] != "promoted":
+                        return {"state": "rejected",
+                                "reason": f"mechanism sketch failed at {name}"
+                                          f" sec{j}: {r1['reason']}",
+                                "children": []}
+                    sec_nodes.append(r1["node"])
+                cur = self.refine(sec_nodes,
+                                  {"name": "loft",
+                                   "args": {"zs": pr.get("zs") or
+                                            [0.0] * len(sec_nodes),
+                                            "ruled": pr.get("ruled", True),
+                                            "material": pr.get("material",
+                                                               "aluminum"),
+                                            "at": [":frame", "build"]}},
+                                  out_name=f"{base}/{name}/solid")
+            else:
+                if "pts" in pr:
+                    sk = _poly_sketch(pr["pts"])
+                else:
+                    sk = {"pts": {"a": [0, 0], "b": [pr["w"], 0],
+                                  "c": [pr["w"], pr["h"]], "d": [0, pr["h"]]},
+                          "constraints": [["fix", "a", 0, 0],
+                                          ["dist", "a", "b", pr["w"]],
+                                          ["dist", "b", "c", pr["h"]],
+                                          ["horiz", "a", "b"],
+                                          ["vert", "b", "c"]]}
+                r1 = self.refine([f"{base}/{name}"],
+                                 {"name": "ground-sketch",
+                                  "args": {"sketch": sk}},
+                                 out_name=f"{base}/{name}/sk")
+                if r1["state"] != "promoted":
+                    return {"state": "rejected",
+                            "reason": f"mechanism grounding failed at {name}: "
+                                      f"{r1['reason']}", "children": []}
+                cur = self.refine([r1["node"]],
+                                  {"name": "extrude",
+                                   "args": {"height": pr["thick"],
+                                            "material": pr["material"],
+                                            "at": [":frame", "build"]}},
+                                  out_name=f"{base}/{name}/solid")
+            if cur["state"] != "promoted":
                 return {"state": "rejected",
-                        "reason": f"mechanism grounding failed at {name}: "
-                                  f"{r1['reason']}", "children": []}
-            r2 = self.refine([r1["node"]],
-                             {"name": "extrude",
-                              "args": {"height": pr["thick"],
-                                       "material": pr["material"],
-                                       "at": [":frame", "build"]}},
-                             out_name=f"{base}/{name}/solid")
-            if r2["state"] != "promoted":
-                return {"state": "rejected",
-                        "reason": f"mechanism extrude failed at {name}: "
-                                  f"{r2['reason']}", "children": []}
-            grounded[name] = r2["node"]
+                        "reason": f"mechanism solid failed at {name}: "
+                                  f"{cur['reason']}", "children": []}
+            for post in pr.get("post") or []:
+                cur = self.refine([cur["node"]],
+                                  {"name": post["name"],
+                                   "args": post.get("args", {})},
+                                  out_name=f"{base}/{name}/{post['name']}")
+                if cur["state"] != "promoted":
+                    return {"state": "rejected",
+                            "reason": f"mechanism post-op {post['name']} "
+                                      f"failed at {name}: {cur['reason']}",
+                            "children": []}
+            grounded[name] = cur["node"]
+            if "cutter" in pr:
+                cut_pr = pr["cutter"]
+                cut_frame = [":frame", cut_pr.get("frame", "build")]
+                if "pts" in cut_pr:
+                    rj = self.refine([f"{base}/{name}"],
+                                     {"name": "ground-sketch",
+                                      "args": {"sketch":
+                                               _poly_sketch(cut_pr["pts"])}},
+                                     out_name=f"{base}/{name}/cut-sk")
+                    if rj["state"] != "promoted":
+                        return {"state": "rejected",
+                                "reason": f"cutter sketch failed at {name}: "
+                                          f"{rj['reason']}", "children": []}
+                    cut = self.refine([rj["node"]],
+                                      {"name": "extrude",
+                                       "args": {"height": cut_pr["thick"],
+                                                "material": "aluminum",
+                                                "at": cut_frame}},
+                                      out_name=f"{base}/{name}/cutter")
+                else:
+                    cut_nodes = []
+                    for j, poly in enumerate(cut_pr["profiles"]):
+                        rj = self.refine([f"{base}/{name}"],
+                                         {"name": "ground-sketch",
+                                          "args": {"sketch":
+                                                   _poly_sketch(poly)}},
+                                         out_name=f"{base}/{name}/cut-sec{j}")
+                        if rj["state"] != "promoted":
+                            return {"state": "rejected",
+                                    "reason": f"cutter sketch failed at "
+                                              f"{name}: {rj['reason']}",
+                                    "children": []}
+                        cut_nodes.append(rj["node"])
+                    cut = self.refine(cut_nodes,
+                                      {"name": "loft",
+                                       "args": {"zs": cut_pr.get("zs") or
+                                                [0.0] * len(cut_nodes),
+                                                "ruled": True,
+                                                "material": "aluminum",
+                                                "at": cut_frame}},
+                                      out_name=f"{base}/{name}/cutter")
+                if cut["state"] != "promoted":
+                    return {"state": "rejected",
+                            "reason": f"cutter failed at {name}: "
+                                      f"{cut['reason']}", "children": []}
+                cur = self.refine([cur["node"], cut["node"]],
+                                  {"name": "cut", "args": {}},
+                                  out_name=f"{base}/{name}/hollow")
+                if cur["state"] != "promoted":
+                    return {"state": "rejected",
+                            "reason": f"cut failed at {name}: "
+                                      f"{cur['reason']}", "children": []}
+                grounded[name] = cur["node"]   # the hollow body is the part
             if name in printable and pr_d:
-                rp = self.print_part(r2["node"], pr_d,
+                rp = self.print_part(cur["node"], pr_d,
                                      out_name=f"{base}/{name}/printed")
                 if rp["state"] != "promoted":
                     return {"state": "rejected",
@@ -1006,13 +1109,16 @@ class Engine:
         found.sort(key=lambda x: x[0])
         return [d for d, _ in found], [p for _, p in found]
 
-    def _policy_obligations(self, payload: dict) -> list:
+    def _policy_obligations(self, payload: dict, op: str = "") -> list:
         """M2: run the external policy library on this payload; results are
-        ordinary obligations (hard/soft per policy) straight into C0."""
+        ordinary obligations (hard/soft per policy) straight into C0.  The
+        op marker lets policies scope themselves to one operator (e.g.
+        print-fillet only on print edges)."""
         try:
             from . import policies as fkpol
             from ..core.objects import Obligation as _Ob
-            return [_Ob.from_dict(o) for o in fkpol.policy_obligations(payload)]
+            return [_Ob.from_dict(o) for o in
+                    fkpol.policy_obligations(payload, {"op": op})]
         except Exception:
             return []
 
@@ -1047,6 +1153,7 @@ class Engine:
         kids: dict[str, list[str]] = {}
         consumers: dict[str, list[dict]] = {}
         by_output: dict[str, dict] = {}
+        consumed = set()   # refine/manufacture inputs = intermediates
         for _, e in self.dag.iter_edges():
             if e.get("state") != "promoted":
                 continue
@@ -1055,6 +1162,8 @@ class Engine:
                 by_output[o] = e
             for i in e.get("inputs") or []:
                 consumers.setdefault(i, []).append(e)
+            if e.get("op") in ("refine", "manufacture"):
+                consumed.update(e.get("inputs") or [])
             if (e.get("transform") or {}).get("name") == "decompose" \
                     and len(e.get("inputs") or []) == 1:
                 kids.setdefault(e["inputs"][0], []).append(o)
@@ -1074,10 +1183,16 @@ class Engine:
                         covered.add(i)
                         frontier.append(i)
             for e2 in consumers.get(c, []):
-                if _terminal(e2):
+                if _terminal(e2) or (e2.get("op") == "refine" and
+                        (e2.get("transform") or {}).get("name")
+                        not in ("decompose",)):
+                    # a terminal output, or a refine CONTINUATION of
+                    # the same part (fillet/shell/cut successors),
+                    # extends coverage along the production chain
                     o = e2.get("output", "")
                     if o and o not in covered:
                         covered.add(o)
+                        frontier.append(o)
                         frontier.append(o)
 
         names: dict[str, list[str]] = {}
@@ -1088,7 +1203,8 @@ class Engine:
         for root_d, _ in children:
             if not kids.get(root_d):
                 continue                      # leaf/assembly input — no subtree
-            for a in self._subtree_artifacts(root_d, consumers, by_output):
+            for a in self._subtree_artifacts(root_d, consumers, by_output,
+                                             consumed):
                 if a in covered:
                     continue
                 nm = "/".join(sorted(names.get(a, []))) or a[24:34]
@@ -1097,7 +1213,7 @@ class Engine:
         return gaps
 
     def _subtree_artifacts(self, root_d: str, consumers: dict,
-                           by_output: dict) -> list[str]:
+                           by_output: dict, consumed: set) -> list[str]:
         """Grounded parts and catalog/print artifacts under root_d's
         refinement subtree.  Compose edges leave the subsystem into
         another assembly context and evaluate edges project — neither
@@ -1118,7 +1234,7 @@ class Engine:
                     continue
                 seen.add(o)
                 p = self.store.get_object(o)["payload"]
-                if p.get("role") == "Medium":
+                if p.get("role") == "Medium" or o in consumed:
                     stack.append(o)
                     continue
                 if (p.get("ground") or {}).get("construction") \
@@ -1177,6 +1293,10 @@ class Engine:
         node = Node(**{**merged, "lineage": []})
         obligations += self._structural_obligations(
             p_payload, p_payload.get("role"))
+        obligations += self._policy_obligations(
+            {"role": p_payload.get("role"), "kind": p_payload.get("kind"),
+             "spec": p_payload.get("spec") or {}, "params": {},
+             "ground": p_payload.get("ground")}, op="print")
         cert = Certificate(obligations=obligations, evaluator="print",
                            evidence=evidence, executor="print")
         # G1: the print resource enters the edge inputs (inputs[0]=workpiece,
@@ -1272,6 +1392,14 @@ class Engine:
             if term_set and grounded and printer_d and \
                     (g["ref"], "print") not in failed:
                 res = self.print_part(g["ref"], printer_d)
+                if res["state"] != "promoted" and "print-fillet" in \
+                        str(res.get("reason") or ""):
+                    rf = self.refine([g["ref"]],
+                                     {"name": "fillet",
+                                      "args": {"edges": "all", "radius": 0.6}},
+                                     out_name=f"realize/{g['ref'][9:17]}-fil")
+                    if rf["state"] == "promoted":
+                        res = self.print_part(rf["node"], printer_d)
                 done.append({"goal": g["ref"], "op": "print",
                              "state": res["state"]})
                 if res["state"] == "promoted":

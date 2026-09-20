@@ -31,6 +31,16 @@ REPO = Path(__file__).resolve().parents[1]
 
 
 # ------------------------------------------------------------- utilities --
+def fillet_and_print(eng, src, printer, out_name, **kw):
+    """print-fillet policy compliance for test fixtures: round the outer
+    edges, then print (the case parts carry the same treatment)."""
+    r = eng.refine([src], {"name": "fillet",
+                           "args": {"edges": "all", "radius": 0.6}},
+                   out_name=f"{out_name}-fil")
+    assert r["state"] == "promoted", r.get("reason")
+    return eng.print_part(r["node"], printer, out_name=out_name, **kw)
+
+
 def fresh():
     td = tempfile.mkdtemp(prefix="fk-test-")
     st = Store(os.path.join(td, ".fk"))
@@ -740,7 +750,7 @@ def test_24_print_termination():
     t = terms(eng, "mass")
     eng.node("reference-printer", "Resource", "unbounded-fdm-printer",
              contract(eng, t))
-    res = eng.print_part("rib-solid", "reference-printer", out_name="rib-printed")
+    res = fillet_and_print(eng, "rib-solid", "reference-printer", "rib-printed")
     assert res["state"] == "promoted", res["reason"]
     pe = eng.dag.producing_edge(eng.store.resolve("rib-printed"))
     assert (pe.get("transform") or {}).get("name") == "print"
@@ -751,7 +761,7 @@ def test_24_print_termination():
         "print edge must close the grounded leaf"
     assert eng.store.resolve("rib-printed") not in open_refs
     # hard gate: wall thinner than the demanded minimum -> rejected (C0)
-    res2 = eng.print_part("rib-solid", "reference-printer",
+    res2 = fillet_and_print(eng, "rib-solid", "reference-printer",
                           args={"min_wall_mm": 50.0}, out_name="rib-bad")
     assert res2["state"] == "rejected"
     assert "wall-ok" in res2["reason"]
@@ -797,7 +807,7 @@ def test_25_printer_recursion_selfclosure():
                      out_name="board-std")
     assert r4["state"] == "promoted", r4["reason"]
     # the bootstrap link: the printer prints its own frame
-    r5 = eng.print_part("frame-solid", "reference-printer", out_name="frame-printed")
+    r5 = fillet_and_print(eng, "frame-solid", "reference-printer", "frame-printed")
     assert r5["state"] == "promoted", r5["reason"]
 
     view = goalsview.goals_view(eng.dag)
@@ -1039,12 +1049,12 @@ def test_30_print_edge_carries_printer_input():
     t = terms(eng, "mass")
     eng.node("reference-printer", "Resource", "unbounded-fdm-printer",
              contract(eng, t))
-    res = eng.print_part("pl-solid", "reference-printer", out_name="pl-printed")
+    res = fillet_and_print(eng, "pl-solid", "reference-printer", "pl-printed")
     assert res["state"] == "promoted", res["reason"]
     pe = eng.dag.producing_edge(eng.store.resolve("pl-printed"))
-    part_d = eng.store.resolve("pl-solid")
+    fil_d = eng.store.resolve("pl-printed-fil")
     pr_d = eng.store.resolve("reference-printer")
-    assert pe.get("inputs") == [part_d, pr_d], pe.get("inputs")
+    assert pe.get("inputs") == [fil_d, pr_d], pe.get("inputs")
 
 
 def test_31_machine_binding_i3():
@@ -1734,7 +1744,7 @@ def test_42_instantiate_wingbox():
     assert res["params"]["rib-count"] == 8          # ceil(3600/500)
     # family layout: 2 skins + 2 spars + 8 ribs
     kinds = [eng.store.get_object(eng.store.resolve(f"wbx/{n}"))["payload"]["kind"]
-             for n in ("skin-upper", "spar-front", "rib-8")]
+             for n in ("skin", "spar-front", "rib-8")]
     assert kinds == ["skin-panel", "spar", "rib"]
     # rib stations computed: rib-8 x-centre at 8*450 = 3600
     rib8 = eng.store.get_object(eng.store.resolve("wbx/rib-8/solid"))["payload"]
@@ -1884,8 +1894,8 @@ def test_44_subtree_assembled():
     r3 = eng.exact("bike-v1/motor", "catalog", "torque_nm>=0.35",
                    out_name="mot-std")
     assert r3["state"] == "promoted", r3["reason"]
-    r4 = eng.print_part("deck-solid", "reference-printer",
-                        out_name="deck-printed")
+    r4 = fillet_and_print(eng, "deck-solid", "reference-printer",
+                          "deck-printed")
     assert r4["state"] == "promoted", r4["reason"]
 
     # the hole: compose the bare scope — hard reject, repair hint names
@@ -1894,7 +1904,7 @@ def test_44_subtree_assembled():
     assert bad["state"] == "rejected", bad.get("reason")
     assert "subtree-assembled" in (bad.get("reason") or ""), bad["reason"]
     hint = " | ".join(str(o.get("detail", "")) for o in bad["obligations"])
-    assert "deck-solid" in hint and "mot-std" in hint, hint
+    assert "deck-printed" in hint and "mot-std" in hint, hint
 
     # complete chain: the solid covers its print output, catalog artifact
     # direct — promotes

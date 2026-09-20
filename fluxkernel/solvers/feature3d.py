@@ -87,13 +87,22 @@ def _write_blobs(shape, ctx) -> dict:
     return out
 
 
+def _natural_key(name: str):
+    """Sort key ordering numeric suffixes by VALUE (p2 < p10) — the
+    content-addressed store canonicalizes dicts with sorted keys, so a
+    polygon's loop order must not depend on dict insertion order."""
+    import re as _re
+    parts = _re.split(r"(\d+)", str(name))
+    return [int(p) if p.isdigit() else p for p in parts]
+
+
 def _profile_points(node_specs: list[dict], args: dict) -> list:
     src = node_specs[0] if node_specs else {}
     g = (src.get("ground") or {})
     pts = g.get("points") or ((g.get("construction") or {}).get("points"))
     if not pts:
         raise ValueError("extrude/revolve requires an input with a grounded sketch2d")
-    order = args.get("order") or list(pts.keys())
+    order = args.get("order") or sorted(pts.keys(), key=_natural_key)
     return [tuple(pts[k]) for k in order]
 
 
@@ -410,7 +419,8 @@ def rebuild_brep(node_spec: dict):
         for extra in sub[1:]:
             shape = BRepAlgoAPI_Fuse(shape, extra).Shape()
         return shape
-    if kind in ("fillet", "chamfer", "loft", "shell", "pattern", "mirror"):
+    if kind in ("fillet", "chamfer", "loft", "shell", "pattern", "mirror",
+                "cut"):
         from .features import rebuild_feature
         shape = rebuild_feature(cons)
         return _placed(shape, cons["placement"]) if cons.get("placement") else shape
@@ -432,7 +442,14 @@ def _named_features(cons: dict, props: dict) -> dict:
     return f
 
 
-def _finish_solid(shape, ctx, cons: dict, desc: str):
+def _finish_solid(shape, ctx, cons: dict, desc: str, at=None,
+                  node_specs=None):
+    if at is not None:
+        pl = _parse_at(at, node_specs)
+        if pl:
+            shape = _placed(shape, pl)
+            cons = dict(cons)
+            cons["placement"] = pl
     props = _props(shape)
     cons = dict(cons)
     cons.setdefault("features", _named_features(cons, props))

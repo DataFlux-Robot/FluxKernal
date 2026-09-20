@@ -1,0 +1,85 @@
+{
+ "id": "cabin-fuselage",
+ "version": "1.0.0",
+ "_doc": "Lofted fuselage: cabin section contracting to a tail tip, shelled to the wall (tail open); solid inset bulkheads at computed stations. Replaces the five-panel box + U-boom.",
+ "params": {
+  "length": {
+   "type": "length_mm",
+   "range": [
+    400,
+    20000
+   ]
+  },
+  "width": {
+   "type": "length_mm",
+   "range": [
+    200,
+    3000
+   ]
+  },
+  "height": {
+   "type": "length_mm",
+   "range": [
+    150,
+    2000
+   ]
+  },
+  "tail-frac": {
+   "type": "ratio",
+   "range": [
+    0.2,
+    0.9
+   ],
+   "default-expr": 0.45
+  },
+  "taper-start": {
+   "type": "ratio",
+   "range": [
+    0.2,
+    0.95
+   ],
+   "default-expr": 0.55
+  },
+  "x0": {
+   "type": "length_mm",
+   "range": [
+    -20000,
+    20000
+   ],
+   "default-expr": 0.0
+  },
+  "y0": {
+   "type": "length_mm",
+   "range": [
+    -20000,
+    20000
+   ],
+   "default-expr": 0.0
+  },
+  "z0": {
+   "type": "length_mm",
+   "range": [
+    -20000,
+    20000
+   ],
+   "default-expr": 0.0
+  }
+ },
+ "module": "fluxkernel.mechanisms.cabin_fuselage",
+ "policies": [
+  "print-fillet"
+ ],
+ "termination": {
+  "print": [
+   "shell",
+   "bh-1",
+   "bh-2",
+   "bh-3"
+  ],
+  "reserve": []
+ },
+ "solvers": [
+  "beam/plate",
+  "mate/ocp"
+ ]
+}

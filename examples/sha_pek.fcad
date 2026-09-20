@@ -21,9 +21,9 @@
   :spec (medium (capacity (heat_w (<= 400))) (margin 0.1)))
 ;; ── shared medium: DC power bus feeding the fabrication cell ──
 (node dc-bus :role Medium :kind dc-bus
-  ;; 5000W holds: the U4 assembly composes let the ledger dedup the
-;; loads (Σbudget 3820W vs 4000W effective) — sizing tracks evidence
-:spec (medium (capacity (power_w (<= 5000))) (margin 0.2)))
+  ;; 5500W: the V1 part set (airfoil skins, fuselage shell, bulkheads)
+;; puts the honest Σbudget at 4340W; effective capacity 4400 >= load
+:spec (medium (capacity (power_w (<= 5500))) (margin 0.2)))
 
 ;; ── single-source wing parameters (M1): every wing dimension below is a
 ;; ── :param/:expr reference — no literal coordinates in the wing branch ──
@@ -129,114 +129,45 @@
   :torque_nm 50 :rpm 6000 :prop_d_m 0.6)
 (eval e32 :target wingbox/rib-1/solid :with beam-fe :fidelity 1 :load_n 800)
 
-;; ── fuselage as a REAL structure (not three sheets): the cabin is a
-;;    five-panel shell (floor / sidewalls / end bulkheads) enclosing
-;;    800x1397x400 above the wing carry-through box; a U-channel tail
-;;    boom carries the empennage at its aft end.  Every panel is a
-;;    printable part at its aircraft-level :at frame (the wingbox is
-;;    the anchor: x=span, y=fore-aft, z=up).  Avionics still closes
+;; ── fuselage as a REAL structure, mechanism-grade (V1): the cabin is
+;;    ONE lofted shell (cabin section contracting to a tail tip, shelled
+;;    to 3mm wall) with inset bulkheads; the empennage rides the tail as
+;;    airfoil-section stabilizers.  Both are mechanism entries — every
+;;    frame computed, nothing hand-placed.  Avionics still closes
 ;;    straight from the catalog ("may split or not") ──
 (refine e43 :in (sha-pek-v1/fuselage) :out fuselage-v1 :role Component
   :transform (decompose
-    :into (cabin-shell tail-boom seat hstab fin)
+    :into (fuselage-body empennage seat)
     :flow-down (
-      (cabin-shell :budget ((mass_kg ("<=" 200))) :guarantees ((gcs "cabin shell carries airload" :bounds ((mass_kg ("<=" 200))))))
-      (tail-boom :budget ((mass_kg ("<=" 30))) :guarantees ((gtb "tail boom carries empennage loads" :bounds ((mass_kg ("<=" 30))))))
-      (seat :budget ((mass_kg ("<=" 15))) :guarantees ((gst "two occupant seats" :bounds ((mass_kg ("<=" 15))))))
-      (hstab :budget ((mass_kg ("<=" 20))) :guarantees ((ghs2 "horizontal stabilizer trims CG" :bounds ((mass_kg ("<=" 20))))))
-      (fin :budget ((mass_kg ("<=" 10))) :guarantees ((gfn2 "vertical fin gives directional stability" :bounds ((mass_kg ("<=" 10)))))))))
+      (fuselage-body :budget ((mass_kg ("<=" 200))) :guarantees ((gcs "pressurized-load cabin shell" :bounds ((mass_kg ("<=" 200))))))
+      (empennage :budget ((mass_kg ("<=" 30))) :guarantees ((get "stabilizers trim and steady the aircraft" :bounds ((mass_kg ("<=" 30))))))
+      (seat :budget ((mass_kg ("<=" 15))) :guarantees ((gst "two occupant seats" :bounds ((mass_kg ("<=" 15)))))))))
 
-;; the cabin shell develops one more level: five flat panels, each a
-;; print; assembled they enclose the occupant bay above the wing box
-(refine e43b :in (fuselage-v1/cabin-shell) :out cabin-v1
-  :transform (decompose
-    :into (floor wall-l wall-r bh-front bh-rear)
-    :roles ((floor Part) (wall-l Part) (wall-r Part)
-            (bh-front Part) (bh-rear Part))
-    :flow-down (
-      (floor :budget ((mass_kg ("<=" 15))) :guarantees ((gcf "cabin floor carries occupants" :bounds ((mass_kg ("<=" 15))))))
-      (wall-l :budget ((mass_kg ("<=" 12))) :guarantees ((gwl "left sidewall" :bounds ((mass_kg ("<=" 12))))))
-      (wall-r :budget ((mass_kg ("<=" 12))) :guarantees ((gwr "right sidewall" :bounds ((mass_kg ("<=" 12))))))
-      (bh-front :budget ((mass_kg ("<=" 8))) :guarantees ((gbf "front bulkhead" :bounds ((mass_kg ("<=" 8))))))
-      (bh-rear :budget ((mass_kg ("<=" 8))) :guarantees ((gbr "rear bulkhead closes the bay" :bounds ((mass_kg ("<=" 8)))))))))
+;; the shell lofts from the nose (above the wing carry-through box) and
+;; tapers aft to the tail tip at y 2150; bulkheads at computed stations
+(instantiate e43b :at (fuselage-v1/fuselage-body) :mechanism cabin-fuselage
+  :params ((length 2100) (width 800) (height 400) (tail-frac 0.4)
+           (x0 1100) (y0 50) (z0 205))
+  :printer reference-printer :out fuselage)
 
-;; floor 800x1400x3 laid on the wing box top (z 203, 3mm above z=200)
-(refine e47 :in (cabin-v1/floor) :out cabin-sk :kind sketch
-  :transform (ground-sketch :sketch (sketch
-    (pts (c0 0 0) (c1 800 0) (c2 800 1400) (c3 0 1400)) (constraints))))
-(refine e48 :in (cabin-sk) :out cabin-solid :kind cabin-shell
-  :transform (extrude :height 3 :material aluminum :at ((1100 50 203))))
-(print e49 :in (cabin-solid) :printer reference-printer :out cabin-printed)
-
-;; sidewalls 3x1397x400 standing on the floor edges (x 1100 / 1900)
-(refine e47w :in (cabin-v1/wall-l) :out cwl-sk :kind sketch
-  :transform (ground-sketch :sketch (sketch
-    (pts (l0 0 0) (l1 400 0) (l2 400 1397) (l3 0 1397)) (constraints))))
-(refine e48w :in (cwl-sk) :out cwl-solid :kind cabin-shell
-  :transform (extrude :height 3 :material aluminum :at ((1100 53 606) (0 1 0 90))))
-(print e49w :in (cwl-solid) :printer reference-printer :out cwl-printed)
-(refine e47wr :in (cabin-v1/wall-r) :out cwr-sk :kind sketch
-  :transform (ground-sketch :sketch (sketch
-    (pts (r0 0 0) (r1 400 0) (r2 400 1397) (r3 0 1397)) (constraints))))
-(refine e48wr :in (cwr-sk) :out cwr-solid :kind cabin-shell
-  :transform (extrude :height 3 :material aluminum :at ((1900 53 606) (0 1 0 90))))
-(print e49wr :in (cwr-solid) :printer reference-printer :out cwr-printed)
-
-;; end bulkheads 800x3x400 between the sidewalls
-(refine e47bf :in (cabin-v1/bh-front) :out cbhf-sk :kind sketch
-  :transform (ground-sketch :sketch (sketch
-    (pts (f0 0 0) (f1 800 0) (f2 800 400) (f3 0 400)) (constraints))))
-(refine e48bf :in (cbhf-sk) :out cbhf-solid :kind cabin-shell
-  :transform (extrude :height 3 :material aluminum :at ((1100 53 206) (1 0 0 90))))
-(print e49bf :in (cbhf-solid) :printer reference-printer :out cbhf-printed)
-(refine e47br :in (cabin-v1/bh-rear) :out cbhr-sk :kind sketch
-  :transform (ground-sketch :sketch (sketch
-    (pts (k0 0 0) (k1 800 0) (k2 800 400) (k3 0 400)) (constraints))))
-(refine e48br :in (cbhr-sk) :out cbhr-solid :kind cabin-shell
-  :transform (extrude :height 3 :material aluminum :at ((1100 1453 206) (1 0 0 90))))
-(print e49br :in (cbhr-solid) :printer reference-printer :out cbhr-printed)
-
-;; tail boom: one printed 160x160 U-channel (wall 3), 700 long, laid
-;; fore-aft from the rear bulkhead; opening faces down, top flange at
-;; z 480 carries the fin foot
-(refine e47t :in (fuselage-v1/tail-boom) :out boom-sk :kind sketch
-  :transform (ground-sketch :sketch (sketch
-    (pts (t0 0 0) (t1 3 0) (t2 3 157) (t3 157 157) (t4 157 0) (t5 160 0)
-         (t6 160 160) (t7 0 160)) (constraints))))
-(refine e48t :in (boom-sk) :out boom-solid :kind tail-boom
-  :transform (extrude :height 700 :material aluminum :at ((1420 2153 320) (1 0 0 90))))
-(print e49t :in (boom-solid) :printer reference-printer :out boom-printed)
+;; hstab spans the tail tip; the fin stands on it (rotZ90 frame)
+(instantiate e43c :at (fuselage-v1/empennage) :mechanism empennage
+  :params ((chord 200) (tc 0.10) (h-span 600) (fin-height 300)
+           (x0 800) (y0 2180) (z0 245)
+           (fin-x0 1100) (fin-y0 2250) (fin-z0 265))
+  :printer reference-printer :out empennage)
 
 (exact e45 :target fuselage-v1/seat :from catalog
   :match "mass_kg<=15" :out seat-std)
 (exact e46 :target sha-pek-v1/avionics :from catalog
   :match "mass_kg<=40" :out av-std)
 
-;; empennage at the boom's aft end (boom ends y 1453..2153, z 320..480)
-(refine e47h :in (fuselage-v1/hstab) :out hstab-sk :kind sketch
-  :transform (ground-sketch :sketch (sketch
-    (pts (h0 0 0) (h1 600 0) (h2 600 200) (h3 0 200)) (constraints))))
-(refine e48h :in (hstab-sk) :out hstab-solid :kind hstab
-  :transform (extrude :height 4 :material aluminum :at ((1200 2353 400))))
-(print e49h :in (hstab-solid) :printer reference-printer :out hstab-printed)
-(refine e47f :in (fuselage-v1/fin) :out fin-sk :kind sketch
-  :transform (ground-sketch :sketch (sketch
-    (pts (n4 0 0) (n5 200 0) (n6 200 300) (n7 0 300)) (constraints))))
-(refine e48f :in (fin-sk) :out fin-solid :kind fin
-  :transform (extrude :height 4 :material aluminum :at ((1400 2157 484) (1 0 0 90))))
-(print e49f :in (fin-solid) :printer reference-printer :out fin-printed)
-
-;; the fuselage terminal set composes back (U4): five shell panels +
-;; boom + empennage prints + the catalog seat = the fuselage assembly
-(compose e44 :in (cabin-solid cwl-solid cwr-solid cbhf-solid cbhr-solid
-                 boom-solid hstab-solid fin-solid seat-std)
-  :out fuselage-assy :role System :kind fuselage)
-
 ;; ── compose the aircraft design (V right leg) ──
 ;; no range roll-up here: the composed airframe carries no mission
 ;; evidence of its own — range is verified where the mission model lives
 ;; (e2c hard expect, and the closed-loop re-check e63 with measured L/D)
-(compose e5 :in (wingbox/assembly sha-pek-v1/fuselage fuselage-assy
+(compose e5 :in (wingbox/assembly sha-pek-v1/fuselage
+                 fuselage/assembly empennage/assembly seat-std
                  sha-pek-v1/avionics epu-std)
   :out sha-pek-design :role System :kind light-aircraft)
 
@@ -258,31 +189,41 @@
     (pts (b0 0 0) (b1 1800 0) (b2 1800 800) (b3 0 800)) (constraints))))
 (refine e41 :in (bed-sk) :out bed-solid :kind bed
   :transform (extrude :height 60 :material aluminum :at (:frame build)))
-(print e42 :in (bed-solid) :printer reference-printer :out bed-printed)
+(refine e42f :in (bed-solid) :out bed-fil :kind bed
+  :transform (fillet :edges all :radius 0.5))
+(print e42 :in (bed-fil) :printer reference-printer :out bed-printed)
 (refine e40c :in (fab-v1/column-L) :out colL-sk :kind sketch
   :transform (ground-sketch :sketch (sketch
     (pts (l0 0 0) (l1 120 0) (l2 120 800) (l3 0 800)) (constraints))))
 (refine e41c :in (colL-sk) :out colL-solid :kind column
   :transform (extrude :height 800 :material aluminum :at (:frame build)))
-(print e42c :in (colL-solid) :printer reference-printer :out colL-printed)
+(refine e42cf :in (colL-solid) :out colL-fil :kind colL
+  :transform (fillet :edges all :radius 0.5))
+(print e42c :in (colL-fil) :printer reference-printer :out colL-printed)
 (refine e40d :in (fab-v1/column-R) :out colR-sk :kind sketch
   :transform (ground-sketch :sketch (sketch
     (pts (l4 0 0) (l5 120 0) (l6 120 800) (l7 0 800)) (constraints))))
 (refine e41d :in (colR-sk) :out colR-solid :kind column
   :transform (extrude :height 800 :material aluminum :at (:frame build)))
-(print e42d :in (colR-solid) :printer reference-printer :out colR-printed)
+(refine e42df :in (colR-solid) :out colR-fil :kind colR
+  :transform (fillet :edges all :radius 0.5))
+(print e42d :in (colR-fil) :printer reference-printer :out colR-printed)
 (refine e40e :in (fab-v1/crossbeam) :out beam-sk :kind sketch
   :transform (ground-sketch :sketch (sketch
     (pts (m0 0 0) (m1 2040 0) (m2 2040 140) (m3 0 140)) (constraints))))
 (refine e41e :in (beam-sk) :out beam-solid :kind crossbeam
   :transform (extrude :height 160 :material aluminum :at (:frame build)))
-(print e42e :in (beam-solid) :printer reference-printer :out beam-printed)
+(refine e42ef :in (beam-solid) :out beam-fil :kind beam
+  :transform (fillet :edges all :radius 0.5))
+(print e42e :in (beam-fil) :printer reference-printer :out beam-printed)
 (refine e40f :in (fab-v1/z-head) :out head-sk :kind sketch
   :transform (ground-sketch :sketch (sketch
     (pts (n0 0 0) (n1 220 0) (n2 220 220) (n3 0 220)) (constraints))))
 (refine e41f :in (head-sk) :out head-solid :kind spindle-head
   :transform (extrude :height 300 :material aluminum :at (:frame build)))
-(print e42f :in (head-solid) :printer reference-printer :out head-printed)
+(refine e42ff :in (head-solid) :out head-fil :kind head
+  :transform (fillet :edges all :radius 0.5))
+(print e42f :in (head-fil) :printer reference-printer :out head-printed)
 
 ;; axis modules: rail/screw/servo from the catalog, carriage printed.
 ;; (explicit decompose per axis — same motion-hardware pattern three times)
@@ -302,7 +243,9 @@
     (pts (u0 0 0) (u1 150 0) (u2 150 120) (u3 0 120)) (constraints))))
 (refine e5xc2 :in (xcar-sk) :out xcar-solid :kind carriage
   :transform (extrude :height 80 :material pla :at ((300 -100 60))))
-(print e5xc3 :in (xcar-solid) :printer reference-printer :out xcar-printed)
+(refine e5xc3f :in (xcar-solid) :out xcar-fil :kind xcar
+  :transform (fillet :edges all :radius 0.5))
+(print e5xc3 :in (xcar-fil) :printer reference-printer :out xcar-printed)
 
 (refine e5y :in (fab-v1/y-axis) :out yax-v1 :role Component
   :transform (decompose
@@ -320,7 +263,9 @@
     (pts (v0 0 0) (v1 150 0) (v2 150 120) (v3 0 120)) (constraints))))
 (refine e5yc2 :in (ycar-sk) :out ycar-solid :kind carriage
   :transform (extrude :height 80 :material pla :at ((-100 250 60))))
-(print e5yc3 :in (ycar-solid) :printer reference-printer :out ycar-printed)
+(refine e5yc3f :in (ycar-solid) :out ycar-fil :kind ycar
+  :transform (fillet :edges all :radius 0.5))
+(print e5yc3 :in (ycar-fil) :printer reference-printer :out ycar-printed)
 
 (refine e5z :in (fab-v1/z-axis) :out zax-v1 :role Component
   :transform (decompose
@@ -338,7 +283,9 @@
     (pts (w0 0 0) (w1 150 0) (w2 150 120) (w3 0 120)) (constraints))))
 (refine e5zc2 :in (zcar-sk) :out zcar-solid :kind carriage
   :transform (extrude :height 80 :material pla :at ((-75 70 880))))
-(print e5zc3 :in (zcar-solid) :printer reference-printer :out zcar-printed)
+(refine e5zc3f :in (zcar-solid) :out zcar-fil :kind zcar
+  :transform (fillet :edges all :radius 0.5))
+(print e5zc3 :in (zcar-fil) :printer reference-printer :out zcar-printed)
 
 ;; spindle + CNC from the catalog
 (exact e5e :target fab-v1/spindle :from catalog
@@ -381,7 +328,9 @@
     (pts (r0 0 0) (r1 600 0) (r2 600 600) (r3 0 600)) (constraints))))
 (refine e52 :in (pframe-sk) :out pframe-solid :kind frame
   :transform (extrude :height 8 :material pla))
-(print e53 :in (pframe-solid) :printer reference-printer :out pframe-printed)
+(refine e53f :in (pframe-solid) :out pframe-fil :kind pframe
+  :transform (fillet :edges all :radius 0.5))
+(print e53 :in (pframe-fil) :printer reference-printer :out pframe-printed)
 (exact e54 :target printer-v1/p-stepper :from catalog
   :match "torque_nm>=0.35" :out p-stepper-std)
 (procure e55 :target printer-v1/p-board :from catalog

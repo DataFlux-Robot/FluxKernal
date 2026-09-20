@@ -1,0 +1,13 @@
+{
+ "id": "print-fillet",
+ "version": "1.0.0",
+ "applies_to": {
+  "roles": [
+   "Part",
+   "Component"
+  ]
+ },
+ "class": "hard",
+ "statement": "printed parts round their outer edges (fillet/chamfer >= 0.5mm) \u2014 stress concentration and print-bead control",
+ "check": "print_fillet.py"
+}

@@ -188,8 +188,12 @@ def _closed_nodes(dag, consumers: dict[str, list[dict]] | None = None) -> set[st
                             and e.get("op") in _REPLACE_OPS
                             and ((e.get("transform") or {}).get("name") != "decompose"
                                  or e.get("output") in kids)
-                            and len(e.get("inputs") or []) == 1
                             and e.get("output") in closed):
+                        # refine-family edges realize their inputs at ANY
+                        # arity: a cut/loft consumes its operands into the
+                        # product just as a single-input refine does
+                        # (compose is not in _REPLACE_OPS — assemblies do
+                        # not realize their parts)
                         ok = True                           # realized downstream
                         break
             if ok:

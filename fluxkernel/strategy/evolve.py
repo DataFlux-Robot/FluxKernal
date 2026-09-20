@@ -186,7 +186,16 @@ def termination_swap(eng, ref: str, printer: str) -> dict:
     query = _realize_query({"spec": payload.get("spec") or {}})
     outs = {}
     try:
-        outs["print"] = eng.print_part(ref, printer, out_name=f"{ref}-swap-pr")
+        rp = eng.print_part(ref, printer, out_name=f"{ref}-swap-pr")
+        if rp["state"] != "promoted" and "print-fillet" in \
+                str(rp.get("reason") or ""):
+            rf = eng.refine([ref], {"name": "fillet",
+                                   "args": {"edges": "all", "radius": 0.6}},
+                          out_name=f"{ref}-swap-fil")
+            if rf["state"] == "promoted":
+                rp = eng.print_part(rf["node"], printer,
+                                    out_name=f"{ref}-swap-pr")
+        outs["print"] = rp
     except Exception as e:
         outs["print"] = {"state": "rejected", "reason": str(e)}
     if query:
