@@ -1844,6 +1844,74 @@ def test_43_compose_geometry_rollup():
                for c in chain)
 
 
+def test_44_subtree_assembled():
+    """U4: referencing a decomposed subsystem in an assembly pulls its
+    WHOLE terminal artifact set in — the wing-only-aircraft hole (grounded
+    parts dangling off their print edges while the design composes the
+    bare contract) becomes a hard reject naming the missing parts; a
+    complete input chain promotes; an explicit :no-assembly exemption
+    passes and says so."""
+    eng = fresh()
+    t = terms(eng, "mass")
+    eng.node("reference-printer", "Resource", "unbounded-fdm-printer",
+             contract(eng, t))
+    eng.node("bike", "System", "vehicle", contract(eng, t))
+    r0 = eng.refine("bike", {"name": "decompose",
+                             "args": {
+                                 "into": ["deck", "motor"],
+                                 "flow_down": {
+                                     "deck": {"guarantees": [
+                                         {"id": "gd", "stmt": "ride deck",
+                                          "bounds": {"mass_g": {"<=": 900}}}]},
+                                     "motor": {"guarantees": [
+                                         {"id": "gm", "stmt": "drive motor",
+                                          "bounds": {"torque_nm": {">=": 0.35}}}]}}}},
+                    out_name="bike-v1")
+    assert r0["state"] == "promoted", r0["reason"]
+    sketch = {"pts": {"p0": [0, 0], "p1": [120, 0], "p2": [120, 80],
+                      "p3": [0, 80]},
+              "constraints": [["fix", "p0", 0, 0], ["dist", "p0", "p1", 120],
+                              ["dist", "p1", "p2", 80],
+                              ["horiz", "p0", "p1"], ["vert", "p1", "p2"]]}
+    r1 = eng.refine("bike-v1/deck",
+                    {"name": "ground-sketch", "args": {"sketch": sketch}},
+                    out_name="deck-sk")
+    assert r1["state"] == "promoted", r1["reason"]
+    r2 = eng.refine("deck-sk", {"name": "extrude",
+                                "args": {"height": 4, "material": "pla"}},
+                    out_name="deck-solid")
+    assert r2["state"] == "promoted", r2["reason"]
+    r3 = eng.exact("bike-v1/motor", "catalog", "torque_nm>=0.35",
+                   out_name="mot-std")
+    assert r3["state"] == "promoted", r3["reason"]
+    r4 = eng.print_part("deck-solid", "reference-printer",
+                        out_name="deck-printed")
+    assert r4["state"] == "promoted", r4["reason"]
+
+    # the hole: compose the bare scope — hard reject, repair hint names
+    # the dangling artifacts (grounded deck AND catalog motor)
+    bad = eng.compose(["bike-v1"], out_name="bad-assy", out_role="System")
+    assert bad["state"] == "rejected", bad.get("reason")
+    assert "subtree-assembled" in (bad.get("reason") or ""), bad["reason"]
+    hint = " | ".join(str(o.get("detail", "")) for o in bad["obligations"])
+    assert "deck-solid" in hint and "mot-std" in hint, hint
+
+    # complete chain: the solid covers its print output, catalog artifact
+    # direct — promotes
+    ok = eng.compose(["bike-v1", "deck-solid", "mot-std"],
+                     out_name="good-assy", out_role="System")
+    assert ok["state"] == "promoted", ok.get("reason")
+
+    # explicit exemption, through the fcad form (runner passthrough)
+    from fluxkernel.interface.runner import Runner
+    rn = Runner(eng)
+    rc = rn.run("(compose z :in (bike-v1) :out spare-assy :role System "
+                ":no-assembly spares-not-assembled)")
+    assert rc == 0, rn.results
+    res = [r for r in rn.results if r.get("form") == "compose"][-1]
+    assert res["state"] == "promoted", res
+
+
 # ================================================ discipline ==============
 
 

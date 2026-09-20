@@ -21,9 +21,9 @@
   :spec (medium (capacity (heat_w (<= 400))) (margin 0.1)))
 ;; ── shared medium: DC power bus feeding the fabrication cell ──
 (node dc-bus :role Medium :kind dc-bus
-  ;; 5200W: the fuselage-surface prints joined the roll-up (4080W
-;; real load) — the bus is sized for the honest accounting, not 5000
-:spec (medium (capacity (power_w (<= 5200))) (margin 0.2)))
+  ;; 5000W holds: the U4 assembly composes let the ledger dedup the
+;; loads (Σbudget 3820W vs 4000W effective) — sizing tracks evidence
+:spec (medium (capacity (power_w (<= 5000))) (margin 0.2)))
 
 ;; ── single-source wing parameters (M1): every wing dimension below is a
 ;; ── :param/:expr reference — no literal coordinates in the wing branch ──
@@ -177,7 +177,7 @@
 ;; here — otherwise they dangle off their print edges and the DERIVED
 ;; mockup would honestly show an aircraft with no fuselage on it
 (compose e5 :in (wingbox/assembly sha-pek-v1/fuselage
-                 cabin-solid hstab-solid fin-solid
+                 cabin-solid hstab-solid fin-solid seat-std
                  sha-pek-v1/avionics epu-std)
   :out sha-pek-design :role System :kind light-aircraft)
 
@@ -287,9 +287,18 @@
 (procure e5f :target fab-v1/cnc :from catalog
   :match "axis_count>=4" :out fab-cnc-bought)
 
+;; per-axis assemblies: the axis scope's whole terminal set (rail/
+;; screw/servo catalog items + the printed carriage) composes back —
+;; U4 subtree-assembled; the machine then composes assemblies, not scopes
+(compose eax :in (x-rail-std x-screw-bought x-servo-std xcar-printed)
+  :out xax-assy :role Component :kind axis-module)
+(compose eay :in (y-rail-std y-screw-bought y-servo-std ycar-printed)
+  :out yax-assy :role Component :kind axis-module)
+(compose eaz :in (z-rail-std z-screw-bought z-servo-std zcar-printed)
+  :out zax-assy :role Component :kind axis-module)
 ;; the machine exists — compose it
 (compose e5g :in (bed-solid colL-solid colR-solid beam-solid head-solid
-                      xax-v1 yax-v1 zax-v1 fab-spindle-std fab-cnc-bought)
+                      xax-assy yax-assy zax-assy fab-spindle-std fab-cnc-bought)
   :out fab-mill :role Resource :kind gantry-mill)
 
 ;; NOW the rib is milled ON the developed machine (G2: the machine digest
@@ -318,6 +327,10 @@
   :match "torque_nm>=0.35" :out p-stepper-std)
 (procure e55 :target printer-v1/p-board :from catalog
   :match "axis_count>=4" :out p-board-bought)
+;; the printer's own terminal set composes back (U4): printed frame +
+;; catalog stepper/board = the next-generation printer as an assembly
+(compose e53c :in (pframe-printed p-stepper-std p-board-bought)
+  :out printer-assy :role Resource :kind fdm-printer)
 
 ;; ══ mockup: DERIVED from the real subtree (E6-3) — no parallel ══
 ;; ══ hand-drawn geometry. scale-instance walks every grounded solid  ══

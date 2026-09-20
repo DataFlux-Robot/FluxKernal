@@ -498,7 +498,8 @@ class Engine:
                 out_kind: str | None = None, out_spec: dict | None = None,
                 rollup: dict | None = None, resources: dict | None = None,
                 transform_spec: dict | None = None,
-                no_geometry: bool = False) -> dict:
+                no_geometry: bool = False,
+                no_assembly=None) -> dict:
         children = [self._input(r) for r in inputs]
         child_list = [(d, p.get("spec") or {}) for d, p in children]
         base_spec = out_spec or {}
@@ -540,6 +541,29 @@ class Engine:
         evidence = []
         for d, p in children:
             evidence += p.get("evidence", [])
+        # U4 (assembly coverage): referencing a decomposed subsystem in an
+        # assembly pulls in its WHOLE terminal artifact set.  Node-level
+        # closure (every leaf reaches catalog/print) cannot see the
+        # wing-only-aircraft hole — grounded parts dangling off their
+        # print edges while the design composes the bare contract node.
+        # Hard: the detail lists exactly what is missing.
+        if no_assembly:
+            evidence = evidence + [{
+                "solver": "kernel/compose", "tier": 0,
+                "assembly_coverage": "exempted",
+                "note": f"explicit :no-assembly exemption: {no_assembly}"}]
+        else:
+            gaps = self._assembly_gaps(children)
+            if gaps:
+                obligations.append(Obligation(
+                    id="subtree-assembled",
+                    prop=f"{len(gaps)} referenced-subtree artifact(s) "
+                         f"assembled",
+                    holds=False, checker="kernel",
+                    detail="U4: terminal parts of a referenced subsystem "
+                           "are not in the assembly chain — add them to "
+                           ":in (directly or via an intermediate assembly "
+                           f"compose): {', '.join(gaps)}"))
         # if the compose declares a solver transform (e.g. line-eval), run it:
         # the plugin grounds the composed system (takt/oee/capacity) and its
         # evidence feeds the roll-up assertions
@@ -974,6 +998,96 @@ class Engine:
             if (e.get("transform") or {}).get("name") == "print":
                 return True
         return False
+
+    # ------------------------------------------ assembly coverage (U4) --
+    def _assembly_gaps(self, children) -> list[str]:
+        """Terminal artifacts under a referenced decomposed subsystem that
+        are NOT in this assembly's input chain.  Coverage is the inputs
+        themselves, extended through intermediate assembly composes and
+        symmetric across terminal production edges (listing the printed
+        part covers its solid, and vice versa; same for catalog items)."""
+        kids: dict[str, list[str]] = {}
+        consumers: dict[str, list[dict]] = {}
+        by_output: dict[str, dict] = {}
+        for _, e in self.dag.iter_edges():
+            if e.get("state") != "promoted":
+                continue
+            o = e.get("output", "")
+            if o and o not in by_output:
+                by_output[o] = e
+            for i in e.get("inputs") or []:
+                consumers.setdefault(i, []).append(e)
+            if (e.get("transform") or {}).get("name") == "decompose" \
+                    and len(e.get("inputs") or []) == 1:
+                kids.setdefault(e["inputs"][0], []).append(o)
+
+        def _terminal(e: dict) -> bool:
+            return e.get("op") in ("exact", "procure") or \
+                (e.get("transform") or {}).get("name") == "print"
+
+        covered = {d for d, _ in children}
+        frontier = list(covered)
+        while frontier:
+            c = frontier.pop()
+            e = by_output.get(c)
+            if e is not None and (e.get("op") == "compose" or _terminal(e)):
+                for i in e.get("inputs") or []:
+                    if i not in covered:
+                        covered.add(i)
+                        frontier.append(i)
+            for e2 in consumers.get(c, []):
+                if _terminal(e2):
+                    o = e2.get("output", "")
+                    if o and o not in covered:
+                        covered.add(o)
+                        frontier.append(o)
+
+        names: dict[str, list[str]] = {}
+        for n, dg in self.store.names().items():
+            names.setdefault(dg, []).append(n)
+
+        gaps: list[str] = []
+        for root_d, _ in children:
+            if not kids.get(root_d):
+                continue                      # leaf/assembly input — no subtree
+            for a in self._subtree_artifacts(root_d, consumers, by_output):
+                if a in covered:
+                    continue
+                nm = "/".join(sorted(names.get(a, []))) or a[24:34]
+                if nm not in gaps:
+                    gaps.append(nm)
+        return gaps
+
+    def _subtree_artifacts(self, root_d: str, consumers: dict,
+                           by_output: dict) -> list[str]:
+        """Grounded parts and catalog/print artifacts under root_d's
+        refinement subtree.  Compose edges leave the subsystem into
+        another assembly context and evaluate edges project — neither
+        is followed."""
+        def _terminal(e: dict) -> bool:
+            return e.get("op") in ("exact", "procure") or \
+                (e.get("transform") or {}).get("name") == "print"
+
+        seen, stack, out = {root_d}, [root_d], []
+        while stack:
+            d = stack.pop()
+            for e in consumers.get(d, []):
+                if e.get("state") != "promoted" or e.get("op") in \
+                        ("compose", "evaluate"):
+                    continue
+                o = e.get("output", "")
+                if not o or o in seen:
+                    continue
+                seen.add(o)
+                p = self.store.get_object(o)["payload"]
+                if p.get("role") == "Medium":
+                    stack.append(o)
+                    continue
+                if (p.get("ground") or {}).get("construction") \
+                        or _terminal(by_output.get(o) or e):
+                    out.append(o)
+                stack.append(o)
+        return out
 
     # ---------------------------------------------------------- print (E1) --
     def print_part(self, part: str, printer: str, args: dict | None = None,

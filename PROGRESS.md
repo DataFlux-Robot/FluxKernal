@@ -9,11 +9,11 @@
 
 | 指标 | 值 |
 |---|---|
-| 测试 | **44/44 全绿**（`pytest tests/ -q`，≈18s） |
-| 规模 | 64 个 git 追踪文件，Python 7875 行 |
+| 测试 | **45/45 全绿**（`python tests/run_tests.py`，≈18s） |
+| 规模 | 64 个 git 追踪文件，Python 7750 行 |
 | CLI | 33 子命令；`.fcad` DSL 含 `(print ...)`、`:at`、`:machine`、`:template` |
 | 求解插件 | 14 个（几何 4 + 仿真 4 + 制造 4 + 任务 2）；目录 6 文件；**架构模板 2 个** |
-| 标志案例 SHA-PEK | **90 表单**（机翼=1 个 instantiate）/ 44/44 测试 / OPEN(0) / verify 全绿 |
+| 标志案例 SHA-PEK | **94 表单**（机翼=1 个 instantiate）/ 45/45 测试 / OPEN(0) / verify 全绿 |
 | 案例终态 | **OPEN GOALS (0)** · verify 全绿 · dc-bus 3820/4000W · 装配干涉门 = 0 干涉 |
 | 任务链 | 假设航程 5344.7 km（L/D=14）→ **闭环复算 6127.3 km**（aero-2d 实测 L/D=16.05 覆写假设；数字取自运行证据） |
 | 双代闭环 | printer→（机床结构件）+ catalog→（运动件）= 机床；**机床 `:machine`→rib-1 工序**——两条设备链都在 DAG 边的 inputs 里 |
@@ -57,6 +57,7 @@ P6（G5 b123d-script / G6 solve）按路线图为可选增强，本轮未实施�
 | **帧系统（Skeleton）** | 任意节点可携 `spec.frames`；`:at (:frame 名字)` 解析 | 布局单源：骨架帧经 decompose 的 `specs` 下发，子件相对父骨架接地 |
 | **算子身份链接（G1/G2）** | print 边 `inputs=[工件,打印机]`；`manufacture :machine` 槽并入工艺边 inputs | I1/I2/I3 精确链接覆盖**生产算子实例**——打印机/机床的产出边 rejected 时，使用它的边自动拒绝 |
 | **input-realized 硬门（E6-2b）** | compose 对 Part 角色输入的硬义务（U2） | 组合未实现零件 → C0 拒绝（本轮它抓到了案例里的真 bug）；Component 仍可合同级组合 |
+| **subtree-assembled 硬门（U4）** | compose 引用分解子系统时，其子树全部终止产物（打印件+目录件）必须在装配输入链上 | "机翼没装在飞机上"根因的通用守卫：节点级闭合看不到悬空接地件；违例拒绝并列出缺失件清单；`:no-assembly <理由>` 显式豁免（备件/工装） |
 | **架构模板（E6-4）** | `decompose :template <名>` 加载 `catalog/archetypes/*.json` | 模板=纯数据（子件/角色/合同/骨架帧/介质引用，介质名字加载时解析为 digest）；显式 args 逐键覆盖 |
 | **派生缩放（E6-3）** | `scale-instance :ratio` 从输入祖先子树收集接地几何缩放融合 | construction 按值记录（boolean 模式）可重放；**边 inputs 精确链接每个源**——派生物可证明由这些件组成 |
 
