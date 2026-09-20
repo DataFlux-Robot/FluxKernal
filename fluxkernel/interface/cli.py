@@ -443,12 +443,56 @@ def cmd_graph(a):
     return 0
 
 
+def cmd_impact(a):
+    """fk impact <ref> --set <set>/<key>=<value> [--apply]
+
+    Change propagation: dry-run reports the consumption footprint;
+    --apply replays the stored source script in a SHADOW store with the
+    parameter override injected after its definition, then re-verifies.
+    The original store is never mutated (history is immutable)."""
+    from . import impact as fki
+    eng = _engine()
+    try:
+        overrides = fki.parse_sets(a.set)
+    except ValueError as e:
+        print(f"fatal: {e}")
+        return 2
+    if not overrides:
+        print("fatal: nothing to do — pass --set <set>/<key>=<value>")
+        return 2
+    names = eng.store.names()
+    if not names.get("@last-script"):
+        print("fatal: no stored script — run `fk run <script>` first")
+        return 2
+    text = eng.store.get_blob(names["@last-script"]).decode("utf-8")
+    forms = fcad.parse(text)
+    for set_name, kvs in overrides.items():
+        n = fki._forms_consuming(forms, set_name)
+        print(f"{set_name}: {n} form(s) reference its parameters; "
+              f"override " + ", ".join(f"{k}={v:g}" for k, v in kvs.items()))
+    if not a.apply:
+        print("dry-run (pass --apply to replay in a shadow store)")
+        return 0
+    res = fki.replay_with_overrides(eng.store, overrides)
+    ok = not res["verify"] and not res["open"]
+    print(f"shadow replay {res['store_root']}")
+    print(f"  injected: {', '.join(res['injected']) or '-'}")
+    print(f"  script rc={res['rc']} (1 may be the deliberate failure)")
+    print(f"  verify: {'OK' if not res['verify'] else res['verify']}")
+    print(f"  open goals: {len(res['open'])}"
+          + (f" -> {[o['kind'] for o in res['open']][:6]}" if res["open"] else ""))
+    return 0 if ok else 1
+
+
 def cmd_why(a):
     chain = goalsview.why(_engine().dag, a.ref)
     for step in chain:
         via = f"  <- {step['via']}" if step.get("via") else "  (genesis)"
         print(f"{step['kind']}:{step['role']}{'' if step.get('facet') == 'BODY' else '/' + str(step.get('facet'))} "
               f"{_short(step['ref'])}{via}")
+        if step.get("bindings"):
+            bs = "  ".join(f"{b['expr']}={b['value']:g}" for b in step["bindings"])
+            print(f"    params: {bs}")
     return 0
 
 
@@ -595,6 +639,12 @@ def build_parser() -> argparse.ArgumentParser:
                                                 help="include collapsed holes")
     s.set_defaults(fn=cmd_sorry)
     s = sub.add_parser("risks"); s.set_defaults(fn=cmd_risks)
+    s = sub.add_parser("impact"); s.add_argument("ref", nargs="?")
+    s.add_argument("--set", action="append", default=[],
+                   help="<set>/<key>=<value> (repeatable)")
+    s.add_argument("--apply", action="store_true",
+                   help="replay in a shadow store and re-verify")
+    s.set_defaults(fn=cmd_impact)
     s = sub.add_parser("goal"); s.add_argument("ref"); s.set_defaults(fn=cmd_goal)
     s = sub.add_parser("next"); s.set_defaults(fn=cmd_next)
 

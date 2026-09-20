@@ -151,6 +151,15 @@ class Engine:
         self.journal.append(f"params      {name} = {sorted(vals)} {d[8:20]}")
         return d
 
+    def params_override(self, name: str, key: str, value: float) -> str:
+        """Re-issue a params set with one definition replaced.  Content-
+        addressed: a NEW set object is committed and the name rebinds —
+        the old set stays in the store (history is immutable)."""
+        old = self.store.get_object(self.store.resolve(name))["payload"]
+        defs = dict(old.get("params") or {})
+        defs[key] = float(value)
+        return self.params_set(name, defs)
+
     def refine(self, goal, transform: dict, out_name: str | None = None,
                out_role: str | None = None, out_kind: str | None = None,
                out_spec: dict | None = None, out_params: dict | None = None,

@@ -22,6 +22,15 @@ class Runner:
 
     # ---------------------------------------------------------------- run --
     def run(self, text_or_forms) -> int:
+        # G3: the script itself is evidence — store it so `fk impact`
+        # can replay the exact source with parameter overrides
+        if isinstance(text_or_forms, str):
+            try:
+                self.store.bind_name("@last-script",
+                                     self.store.put_blob(
+                                         text_or_forms.encode("utf-8")))
+            except Exception:
+                pass
         forms = fcad.parse(text_or_forms) if isinstance(text_or_forms, str) else text_or_forms
         failed = 0
         for form in forms:
@@ -48,6 +57,17 @@ class Runner:
         return fn(body)
 
     # --------------------------------------------------------------- forms --
+    def _form_params_override(self, body):
+        """(params-override <set> <key> <value>): re-issue a params set with
+        one definition replaced — a NEW content-addressed set, the old one
+        stays (non-destructive change propagation)."""
+        pos, kw = split_kwargs(body)
+        if len(pos) < 3:
+            raise FcadError("S1", "(params-override <set> <key> <value>)")
+        name, key, val = str(pos[0]), str(pos[1]), pos[2]
+        d = self.engine.params_override(name, key, float(val))
+        return {"state": "ok", "node": d, "params": name}
+
     def _form_params(self, body):
         pos, kw = split_kwargs(body)
         if len(pos) < 2:

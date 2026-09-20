@@ -433,5 +433,12 @@ def why(dag, ref: str) -> list[dict]:
         chain[-1]["via"] = f"{pe.get('op')}/{pe.get('transform', {}).get('name', '')}"
         if edge_names.get(edge_d):
             chain[-1]["via"] += f" [{edge_names[edge_d]}]"
+        binds = []
+        for ev in (pe.get("certificate") or {}).get("evidence") or []:
+            if isinstance(ev, dict) and ev.get("param-bindings"):
+                binds += ev["param-bindings"]
+        if binds:
+            chain[-1]["bindings"] = [{ "expr": b["expr"], "value": b["value"]}
+                                     for b in binds]
         d = (pe.get("inputs") or [None])[0]
     return chain

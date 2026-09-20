@@ -1409,7 +1409,89 @@ def test_37_sketch_entities_fillet_hole():
     assert fc["holds"] is False and "dof=2" in fc["detail"]
 
 
+
+# ================================================ G3: change propagation ==
+def test_38_impact_replay():
+    """fk impact: parameter override replays the stored source script in a
+    SHADOW store (original untouched), the affected geometry scales, and
+    the replay verifies; `why` shows parameter bindings per hop."""
+    from fluxkernel.interface.impact import (replay_with_overrides,
+                                             parse_sets)
+    eng = fresh()
+    t = terms(eng, "mass")
+    NL = chr(10)
+    spec_form = (
+        "(node p :role Part :kind plate :spec (contract"
+        " (goals (g1 w :falsifiable t :measure b))"
+        " (semantics mass)"
+        " (assumes (a1 i :bounds ((in_v (>= 10) (<= 20)))))"
+        " (guarantees (gu1 o :bounds ((out_v (>= 12) (<= 18)))))"
+        " (forbidden (f1 r :check test))"
+        " (not-responsible u) (time-scale mission)))"
+    )
+    script_text = NL.join([
+        '(term mass m)',
+        '(params w ((span 3000) (ch 1500) (th 2)))',
+        spec_form,
+        '(refine g1 :in (p) :out p-sk :kind sketch',
+        '  :transform (ground-sketch :sketch (sketch',
+        '    (pts (p0 0 0) (p1 (:param w/span) 0)',
+        '         (p2 (:param w/span) (:param w/ch)) (p3 0 (:param w/ch)))',
+        '    (constraints (fix p0 0 0) (dist p0 p1 (:param w/span))',
+        '                (dist p1 p2 (:param w/ch)) (horiz p0 p1) (vert p1 p2)))))',
+        '(refine g2 :in (p-sk) :out p-solid',
+        '  :transform (extrude :height (:param w/th) :material pla))',
+        '',
+    ])
+    # build via the DSL so the script blob is stored
+    sketch = {"pts": {"p0": [0, 0], "p1": [["param", "w/span"], 0],
+                      "p2": [["param", "w/span"], ["param", "w/ch"]],
+                      "p3": [0, ["param", "w/ch"]]},
+              "constraints": [["fix", "p0", 0, 0], ["dist", "p0", "p1", 3000],
+                              ["dist", "p1", "p2", 1500],
+                              ["horiz", "p0", "p1"], ["vert", "p1", "p2"]]}
+    # the single-source parameter set the sketch references
+    eng.params_set("w", {"span": 3000, "ch": 1500, "th": 2})
+    eng.node("p", "Part", "plate", contract(eng, t))
+    r = eng.refine("p", {"name": "ground-sketch", "args": {"sketch": sketch}},
+                   out_name="p-sk")
+    assert r["state"] == "promoted", r["reason"]
+    r2 = eng.refine("p-sk", {"name": "extrude",
+                             "args": {"height": ["param", "w/th"],
+                                      "material": "pla"}},
+                    out_name="p-solid")
+    assert r2["state"] == "promoted", r2["reason"]
+    base_vol = eng.store.get_object(
+        eng.store.resolve("p-solid"))["payload"]["ground"]["volume_mm3"]
+    assert abs(base_vol - 3000 * 1500 * 2) < 1e-3
+
+    # store the script (as Runner.run would) — same forms, as text
+    eng.store.bind_name("@last-script", eng.store.put_blob(
+        script_text.encode("utf-8")))
+    # replay with span -> 3600 (template-free: geometry scales by 1.2)
+    ov = parse_sets(["w/span=3600"])
+    res = replay_with_overrides(eng.store, ov)
+    assert res["injected"] == ["w/span=3600"]
+    seng = res["engine"]
+    vol2 = seng.store.get_object(
+        seng.store.resolve("p-solid"))["payload"]["ground"]["volume_mm3"]
+    assert abs(vol2 - 3600 * 1500 * 2) < 1e-3, vol2
+    assert not res["verify"], res["verify"]
+
+    # original store untouched (immutable history)
+    vol1 = eng.store.get_object(
+        eng.store.resolve("p-solid"))["payload"]["ground"]["volume_mm3"]
+    assert abs(vol1 - base_vol) < 1e-9
+
+    # why carries parameter bindings per hop
+    chain = goalsview.why(eng.dag, "p-solid")
+    all_binds = [b for c in chain if c.get("bindings") for b in c["bindings"]]
+    assert any("w/th" in b["expr"] for b in all_binds)
+    assert any("w/span" in b["expr"] for b in all_binds)
+
+
 # ================================================ discipline ==============
+
 
 
 
