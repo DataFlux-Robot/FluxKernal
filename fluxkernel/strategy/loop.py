@@ -82,7 +82,14 @@ def _run_round(script_text: str, workdir: Path, want_vlm: bool) -> dict:
                     break
         except Exception as e:                    # noqa: BLE001
             review = [f"review skipped: {e}"]
-    return {"rc": rc, "open_goals": len(gv.get("open", [])),
+    # C8: score prices what the case-contract prices (design-gaps D2)
+    case_reqs = len(gv.get("case", []))
+    score = (1.0 / (1.0 + len(gv.get("open", [])))
+             + 1.0 / (1.0 + case_reqs)
+             + 0.5 / (1.0 + len(review)))
+    return {"rc": rc, "score": round(score, 4),
+            "open_goals": len(gv.get("open", [])),
+            "open_case_requires": case_reqs,
             "open": [{"kind": g.get("kind"), "role": g.get("role"),
                       "termination": g.get("termination")}
                      for g in gv.get("open", [])][:20],
@@ -121,8 +128,9 @@ def run_iterate(a) -> int:
             trajectory.append({k: fb[k] for k in
                                ("round", "rc", "open_goals",
                                 "grounded_parts")})
-            print(f"round {rnd:02d}: rc={fb['rc']} "
-                  f"open={fb['open_goals']} grounded={fb['grounded_parts']} "
+            print(f"round {rnd:02d}: rc={fb['rc']} score={fb.get('score', 0):.3f} "
+                  f"open={fb['open_goals']} case={fb.get('open_case_requires', 0)} "
+                  f"grounded={fb['grounded_parts']} "
                   f"rejected={len(fb['rejected'])}")
             if fb["open_goals"] == 0 and fb["rc"] in (0, 1) and \
                     all("expect-met" not in r.get("reason", "")

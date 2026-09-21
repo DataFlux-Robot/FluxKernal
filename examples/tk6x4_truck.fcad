@@ -6,6 +6,13 @@
 ;; are catalog envelopes; the printer bootstrap closes the recursion.
 ;; ═══════════════════════════════════════════════════════════════════
 
+;; ── case contract: truck with one machining chain ──
+(case-contract tk6x4 :type product
+  :requires (
+    (termination (standard-parts printable))
+    (manufacturing-chains 1)
+    (sim-matrix ((System mission-analysis)))))
+
 ;; ── glossary ──
 (term range "distance flown between charges with reserve, km")
 (term mass "curb + payload mass of the vehicle, kg")

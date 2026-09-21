@@ -8,6 +8,13 @@
 ;; One deliberately impossible expectation (e2x) stays as a REJECTED edge —
 ;; informative failures are assets, the script continues.
 
+;; ── case contract: SHA-PEK is the PRSI-full showcase ──
+(case-contract shapek :type prsi-full
+  :requires (
+    (termination (standard-parts printable process-family))
+    (manufacturing-chains 1 :with-machine t)
+    (sim-matrix ((System mission-analysis) (Component aero-2d) (Part beam-fe)))))
+
 ;; ── glossary (nouns must be operationally defined before entering specs) ──
 (term aircraft "powered vehicle sustaining controlled atmosphere flight between two points")
 (term range "great-circle distance flown with reserves, km")

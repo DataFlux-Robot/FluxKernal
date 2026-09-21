@@ -7,6 +7,12 @@
 ;; (print-fillet policy active; curved loft bodies exempt by shape).
 ;; ═══════════════════════════════════════════════════════════════════
 
+;; ── case contract: aerial system study ──
+(case-contract sr4m :type product
+  :requires (
+    (termination (standard-parts printable))
+    (sim-matrix ((System mission-analysis) (Component aero-2d)))))
+
 ;; ── glossary ──
 (term range "great-circle distance flown with reserves, km")
 (term payload "mission payload carried, kg")

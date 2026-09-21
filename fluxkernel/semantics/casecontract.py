@@ -182,8 +182,13 @@ def evaluate(dag, cc: dict) -> list[dict]:
                         "detail": "" if ok else
                         f"leaves closed outside the allowed sets: {bad}"})
         elif key == "manufacturing-chains":
-            n_want = int((want or {}).get("n", 1))
-            with_mach = bool((want or {}).get("with-machine", True))
+            # DSL forms give either a bare count or a dict {n, with-machine}
+            if isinstance(want, dict):
+                n_want = int(want.get("n", 1))
+                with_mach = bool(want.get("with-machine", True))
+            else:
+                n_want = int(want)
+                with_mach = True
             chains, machines = _mfg_chains(dag)
             ok = chains >= n_want if with_mach else chains >= n_want
             obs.append({"id": "case:manufacturing-chains", "prop":
@@ -214,7 +219,7 @@ def evaluate(dag, cc: dict) -> list[dict]:
                         "detail": "" if not missing else
                         f"missing eval evidence: {missing}"})
         elif key == "reference-fidelity":
-            max_i = int((want or {}).get("issues-max", 2))
+            max_i = int((want or {}).get("issues-max", 2))            if isinstance(want, dict) else int(want)
             issues = None
             for _, e in dag.iter_edges():
                 if e.get("op") == "review" and e.get("state") == "promoted":
