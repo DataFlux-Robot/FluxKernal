@@ -89,5 +89,12 @@
  "solvers": [
   "beam/plate",
   "mate/ocp"
+ ],
+ "features_provided": [
+  "shell",
+  "bulkheads",
+  "rect-section",
+  "octagon-section",
+  "straight-tube"
  ]
 }

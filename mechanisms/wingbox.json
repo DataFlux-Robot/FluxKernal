@@ -77,5 +77,11 @@
   "beam/plate",
   "aero-2d",
   "mate/ocp"
+ ],
+ "features_provided": [
+  "airfoil-section",
+  "hollow-skin",
+  "spar-row",
+  "rib-row"
  ]
 }

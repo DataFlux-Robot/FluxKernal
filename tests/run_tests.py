@@ -2297,6 +2297,46 @@ def test_51_case_contract_gates():
 
 
 
+def test_52_shape_gap_and_reference():
+    """CC3: shape features negotiate — a mechanism silently cannot
+    express windshield; demanding it rejects with the three exit
+    paths, :allow-shape-gap downgrades to a recorded soft note.
+    reference-image binds the photo into the DAG as a blob +
+    provenance node (fidelity judgements cite a digest, not a path)."""
+    eng = fresh()
+    t = terms(eng, 'mass')
+    eng.node('f', 'Part', 'fus', contract(eng, t))
+    r = eng.instantiate('f', 'cabin-fuselage',
+                        {'length': 2000, 'width': 800, 'height': 400},
+                        printer=None, out_name='fz',
+                        features=['shell', 'windshield'])
+    assert r['state'] == 'rejected', r
+    assert 'shape-gap' in str(r.get('reason'))
+    assert 'upgrade' in str(r.get('hint', ''))
+    r2 = eng.instantiate('f', 'cabin-fuselage',
+                         {'length': 2000, 'width': 800, 'height': 400},
+                         printer=None, out_name='fz2',
+                         features=['shell', 'windshield'],
+                         allow_shape_gap=True)
+    assert r2['state'] == 'promoted', r2.get('reason')
+    # provided features pass clean
+    r3 = eng.instantiate('f', 'cabin-fuselage',
+                         {'length': 2000, 'width': 800, 'height': 400},
+                         printer=None, out_name='fz3',
+                         features=['shell', 'bulkheads'])
+    assert r3['state'] == 'promoted', r3.get('reason')
+    # reference image: a small temp png binds into the store
+    import tempfile as _tf
+    from pathlib import Path as _P
+    img = _P(_tf.mkdtemp()) / 'ref.png'
+    img.write_bytes(bytes([0x89, 0x50, 0x4E, 0x47, 0x0D, 0x0A, 0x1A, 0x0A]) + bytes(32))
+    d = eng.reference_image(str(img), 'mini')
+    p = eng.store.get_object(d)['payload']
+    assert p.get('kind') == 'reference-image'
+    assert (p.get('spec') or {}).get('blob', '').startswith('fk1:blob:')
+
+
+
 # ================================================ discipline ==============
 
 

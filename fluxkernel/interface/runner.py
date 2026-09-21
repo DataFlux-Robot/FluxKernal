@@ -68,6 +68,19 @@ class Runner:
         d = self.engine.params_override(name, key, float(val))
         return {"state": "ok", "node": d, "params": name}
 
+    def _form_reference_image(self, body):
+        """(reference-image <path> :for <intent-ref>): the reference photo
+        enters the DAG as a content-addressed blob + provenance node
+        (CC3/C6, design-gaps D5) — from-image fidelity judgements cite
+        THIS digest, never a filesystem path."""
+        pos, kw = split_kwargs(body)
+        path = str(pos[0]) if pos else str(kw.get("path", ""))
+        for_ref = str(kw.get("for", "") or "")
+        if not path:
+            raise FcadError("S1", "(reference-image <path> :for <ref>)")
+        d = self.engine.reference_image(path, for_ref)
+        return {"state": "ok", "node": d}
+
     def _form_case_contract(self, body):
         """(case-contract <name> :type <t> :requires ((k v)...)):
         the methodology as a hard gate — the node rides the DAG and
@@ -183,9 +196,11 @@ class Runner:
             raise FcadError("S1", "(instantiate <name> :at <goal> "
                                   ":mechanism <id> :params (...) "
                                   ":printer <res>)")
+        feats = [str(x) for x in (kw.get("features") or [])]
         res = self.engine.instantiate(str(at), mech, params=params,
                                       printer=str(printer) if printer else None,
-                                      out_name=name)
+                                      out_name=name, features=feats,
+                                      allow_shape_gap=bool(kw.get("allow-shape-gap", False)))
         return self._bind_edge_name([], res)
 
     def _form_print(self, body):

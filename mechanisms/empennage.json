@@ -97,5 +97,10 @@
  },
  "solvers": [
   "mate/ocp"
+ ],
+ "features_provided": [
+  "airfoil-section",
+  "hstab",
+  "fin"
  ]
 }

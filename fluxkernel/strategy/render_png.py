@@ -26,7 +26,7 @@ def _shade(base, nx, ny, nz):
 
 
 def render_views(tri_groups, out_prefix, views=None, width=1280, height=880,
-                 title=""):
+                 title="", theme="dark"):
     """tri_groups: [((r,g,b), [(nx,ny,nz, x1..z3), ...]), ...].
     Writes <prefix>_<view>.png per view; returns the path list."""
     import matplotlib
@@ -57,16 +57,21 @@ def render_views(tri_groups, out_prefix, views=None, width=1280, height=880,
     prefix.parent.mkdir(parents=True, exist_ok=True)
     for view in views:
         elev, azim = VIEWS[view]
+        bg = "#f4f2ec" if theme == "light" else "#14171c"
+        fg = "#3a3f46" if theme == "light" else "#7fa8c9"
         fig = plt.figure(figsize=(width / 100, height / 100), dpi=100)
         ax = fig.add_subplot(111, projection="3d")
-        ax.set_facecolor("#14171c")
-        fig.patch.set_facecolor("#14171c")
+        ax.set_facecolor(bg)
+        fig.patch.set_facecolor(bg)
         for base, tris in tri_groups:
             polys, cols = [], []
             for t in tris:
                 polys.append([list(t[3:6]), list(t[6:9]), list(t[9:12])])
                 cols.append(_shade(base, t[0], t[1], t[2]))
-            pc = Poly3DCollection(polys, facecolors=cols, edgecolors="none")
+            pc = Poly3DCollection(
+                polys, facecolors=cols,
+                edgecolors=("#26384a" if theme == "light" else "#c8d8e8"),
+                linewidths=0.25 if theme == "light" else 0.15)
             ax.add_collection3d(pc)
         ax.set_xlim(lo[0], hi[0])
         ax.set_ylim(lo[1], hi[1])
@@ -80,7 +85,7 @@ def render_views(tri_groups, out_prefix, views=None, width=1280, height=880,
         unit = 10 ** math.floor(math.log10(span / 6))
         ax.set_title(f"{title} · {view} view · scale grid {unit:g} mm"
                      if title else f"{view} view · scale grid {unit:g} mm",
-                     color="#7fa8c9", fontsize=10)
+                     color=fg, fontsize=10)
         p = prefix.parent / f"{prefix.name}_{view}.png"
         fig.savefig(p, facecolor=fig.get_facecolor())
         plt.close(fig)

@@ -598,12 +598,22 @@ def cmd_render(a):
     parts = scene.collect_grounded(eng)
     if not parts:
         sys.exit("fatal: no grounded geometry in this workspace")
+    # CC3/C6: default renders the VEHICLE group only — equipment
+    # (printer frames, mills) reads as clutter and has been mistaken
+    # for defects two reviews running; --with-equipment opts in
+    if not getattr(a, "with_equipment", False):
+        equip_kinds = {"frame", "printer-frame"}
+        parts = [(n, p2, shp) for n, p2, shp in parts
+                 if p2.get("kind") not in equip_kinds
+                 and "printer" not in n and "pframe" not in n
+                 and "mill" not in n]
     tri_groups = []
     for name, payload, shp in parts:
         tri_groups.append((scene.role_color(payload), scene.mesh_shape(shp)))
     views = list(render_png.VIEWS) if a.view == "all" else [a.view]
     paths = render_png.render_views(tri_groups, a.png, views=views,
-                                    title=a.title or "fk scene")
+                                    title=a.title or "fk scene",
+                                    theme=getattr(a, "theme", "dark"))
     if not paths:
         sys.exit("fatal: render produced no images")
     for p in paths:
@@ -801,6 +811,8 @@ def build_parser() -> argparse.ArgumentParser:
     s.add_argument("--view", default="all",
                    choices=["iso", "front", "top", "right", "all"])
     s.add_argument("--title", default="")
+    s.add_argument("--theme", default="dark", choices=["dark", "light"])
+    s.add_argument("--with-equipment", action="store_true")
     s.set_defaults(fn=cmd_render)
     s = sub.add_parser("review"); s.add_argument("ref")
     s.add_argument("--vs", default="")

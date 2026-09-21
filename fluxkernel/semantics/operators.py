@@ -154,7 +154,8 @@ class Engine:
 
     def instantiate(self, at_ref: str, mechanism: str,
                     params: dict | None = None, printer: str | None = None,
-                    out_name: str | None = None) -> dict:
+                    out_name: str | None = None, features: list | None = None,
+                    allow_shape_gap: bool = False) -> dict:
         """(instantiate :at <goal> :mechanism <name> :params ...): expand a
         mechanism package into ORDINARY DAG edges — decompose (computed
         layout+flow-down) -> per-part ground/extrude at computed frames ->
@@ -234,6 +235,29 @@ class Engine:
             if rng and k in values and not (rng[0] <= values[k] <= rng[1]):
                 raise DagError("U3", f"mechanism param {k}={values[k]:g} "
                                      f"outside range {rng}")
+
+        # C5 (D4): shape-gap negotiation — the caller may declare shape
+        # features; anything the mechanism does not provide opens an
+        # explicit gap (hard reject with the three exit paths) unless
+        # :allow-shape-gap t downgrades it to a recorded soft note
+        wanted_feats = [str(f) for f in (features or [])]
+        provided = set(decl.get("features_provided") or [])
+        missing = [f for f in wanted_feats if f not in provided]
+        shape_gap_obs = []
+        if missing:
+            if allow_shape_gap:
+                shape_gap_obs.append(Obligation(
+                    id="shape-gap", prop=f"features {missing} absent",
+                    holds=True, checker="kernel", oclass="soft",
+                    detail=f"explicit :allow-shape-gap — mechanism lacks "
+                           f"{missing}; upgrade or swap when it matters"))
+            else:
+                return {"state": "rejected",
+                        "reason": "C0: undischarged obligations: shape-gap",
+                        "detail": f"missing features {missing}",
+                        "hint": "upgrade the mechanism / swap mechanisms / "
+                                "hand-write then abstract (fk-mechanism-author)",
+                        "children": []}
 
         import importlib
         mod = importlib.import_module(decl["module"])
@@ -990,6 +1014,22 @@ class Engine:
         if was_named and res["state"] in ("promoted", "verified", "evidenced"):
             self.store.bind_name(target, res["node"])
         return res
+
+    # ------------------------------------------- reference-image (CC3/C6) --
+    def reference_image(self, path: str, for_ref: str) -> str:
+        """Photo bytes into the blob store; a Reference node records the
+        provenance (source path, for-ref, tier image-inferred)."""
+        import time
+        data = Path(path).read_bytes()
+        blob_d = self.store.put_blob(data)
+        node = Node(role="Reference", kind="reference-image",
+                    spec={"blob": blob_d, "source": path,
+                          "for": for_ref, "tier": "image-inferred",
+                          "captured": time.strftime("%Y-%m-%d %H:%M:%S")})
+        d = self.dag.put_node(node, f"@ref-{blob_d[9:17]}")
+        self.journal.append(f"reference-image {path} -> {blob_d[9:17]} "
+                            f"(for {for_ref or 'library'})")
+        return d
 
     # ------------------------------------------------ case-contract (CC1) --
     def case_contract(self, name: str, typ: str, requires: dict) -> str:
