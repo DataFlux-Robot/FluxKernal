@@ -211,8 +211,16 @@ class Engine:
             if k in values:
                 continue
             de = spec.get("default-expr") if isinstance(spec, dict) else None
-            if de:
-                values[k] = fkparams.eval_sexp(de, lambda n: values.get(n))
+            if de is not None:
+                if isinstance(de, list):
+                    try:
+                        values[k] = fkparams.eval_sexp(de, lambda n: values.get(n))
+                    except fkparams.ParamError:
+                        # a bare string default is an enum value, not a
+                        # parameter reference
+                        values[k] = de
+                else:
+                    values[k] = de
         for k, spec in (decl.get("params") or {}).items():
             if k not in values or not isinstance(spec, dict):
                 continue

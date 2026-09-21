@@ -49,35 +49,37 @@ def _interp(w0, w1, t):
     return w0 + (w1 - w0) * t
 
 
-def _inset_oct(pts, wall):
-    """Octagon inset by wall along local normals (same averaged-normal
-    scheme as the wing skin cutter)."""
-    n = len(pts)
+def _inset_oct(loop, wall: float):
+    """Exact polygon inset: offset each edge inward by wall, intersect
+    consecutive offset lines (closed convex-ish loops; the octagon and
+    rectangle sections have no acute angles, so intersections exist)."""
+    n = len(loop)
     a = 0.0
     for i in range(n):
-        x1, y1 = pts[i]
-        x2, y2 = pts[(i + 1) % n]
+        x1, y1 = loop[i]
+        x2, y2 = loop[(i + 1) % n]
         a += x1 * y2 - x2 * y1
     sgn = 1.0 if a > 0 else -1.0
+    lines = []
+    for i in range(n):
+        (x1, y1), (x2, y2) = loop[i], loop[(i + 1) % n]
+        dx, dy = x2 - x1, y2 - y1
+        ln = math.hypot(dx, dy) or 1.0
+        nx, ny = -dy / ln * sgn, dx / ln * sgn        # inward normal
+        # offset line: points p with (p - (x1,y1)).n = wall
+        lines.append((nx, ny, nx * x1 + ny * y1 + wall))
     out = []
     for i in range(n):
-        px, py = pts[(i - 1) % n]
-        cx, cy = pts[i]
-        nx, ny = pts[(i + 1) % n]
-        e1 = (cx - px, cy - py)
-        e2 = (nx - cx, ny - cy)
-        l1 = math.hypot(*e1) or 1.0
-        l2 = math.hypot(*e2) or 1.0
-        m1 = (-e1[1] / l1 * sgn, e1[0] / l1 * sgn)
-        m2 = (-e2[1] / l2 * sgn, e2[0] / l2 * sgn)
-        mx, my = m1[0] + m2[0], m1[1] + m2[1]
-        ml = math.hypot(mx, my) or 1.0
-        # miter: shift along the corner bisector so the PERPENDICULAR
-        # distance to each edge equals wall (cos half-angle correction),
-        # capped at 2x to protect acute corners from self-intersection
-        cos_half = max(0.5, mx / ml)
-        out.append((cx + mx / ml * wall / cos_half,
-                    cy + my / ml * wall / cos_half))
+        a1, b1, c1 = lines[(i - 1) % n]
+        a2, b2, c2 = lines[i]
+        det = a1 * b2 - a2 * b1
+        if abs(det) < 1e-9:                     # parallel edges: midpoint
+            px, py = loop[i]
+            out.append((px + a1 * wall, py + b1 * wall))
+            continue
+        x = (c1 * b2 - c2 * b1) / det
+        y = (a1 * c2 - a2 * c1) / det
+        out.append((x, y))
     return out
 
 
@@ -167,9 +169,11 @@ def mass_kg(p: dict, part: str) -> float:
     rho = 1.24e-3 / 1000.0
     pr = profile(p, part)
     if part == "shell":
+        # effective wall = cutter inset (WALL + 0.5): the mitered inset
+        # lands EXACTLY on it per edge, so the estimate tracks the cut
         per = _oct_perim(_section(float(p["width"]), float(p["height"]),
                                   str(p.get("section", "octagon"))))
-        return per * L * WALL * 1.24e-3 / 1000.0 * 1.15 * 1.15
+        return per * L * (WALL + 0.5) * 1.24e-3 / 1000.0
     return _oct_area(pr["pts"]) * pr["thick"] * 1.24e-3 / 1000.0
 
 
