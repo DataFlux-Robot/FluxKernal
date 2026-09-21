@@ -52,6 +52,8 @@ def render_views(tri_groups, out_prefix, views=None, width=1280, height=880,
 
     from pathlib import Path
     prefix = Path(out_prefix)
+    if prefix.suffix == ".png":        # --png truck_iso.png -> truck_iso_*.png
+        prefix = prefix.with_suffix("")
     prefix.parent.mkdir(parents=True, exist_ok=True)
     for view in views:
         elev, azim = VIEWS[view]

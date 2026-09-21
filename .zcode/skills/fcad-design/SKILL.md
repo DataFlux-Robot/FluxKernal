@@ -36,6 +36,12 @@ description: 用 FluxKernel 从自然语言需求设计可验证工程系统（p
 - role-transition-legal → 查本体表：System→Component→Part，Part 默认拆 Process
   （结构面板要显式 :roles ((slot Part) ...))
 
+## 设计纪律
+- 目录查询必须带类别限定量（"mass_kg<=50" 会命中座椅——两次同型事故：v05 伺服、卡车车轮；
+  加 dia_mm=/torque 上下界等把类别钉死）
+- 航程/质量 margin < 5% 压线通过时：跑一次敏感性评估（参数 ±10% 重放 fk impact），
+  或显式记录"压线接受"的理由——压线数字不静默入库
+
 ## 反模式
 - 删 obligation / 放宽合同来"消除拒绝"
 - 为让渲染好看而改几何脱离证据
