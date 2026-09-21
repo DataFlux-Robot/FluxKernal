@@ -608,6 +608,24 @@ def cmd_review(a):
     return run_review(_engine(), a)
 
 
+def cmd_report(a):
+    """fk report — cold-store snapshot for progress docs: edge/node
+    counts, rejected edges with reasons, open goals, verify verdict.
+    Numbers come from THIS store only (single-run semantics)."""
+    eng = _engine()
+    edges = list(eng.dag.iter_edges())
+    rejected = [{"output": _name_of(eng.store, e.get("output", "")),
+                 "op": e.get("op"), "reason": e.get("reason", "")}
+                for _, e in edges if e.get("state") == "rejected"]
+    gv = goalsview.goals_view(eng.dag)
+    snap = {"nodes": len(list(eng.dag.iter_nodes())),
+            "edges": len(edges), "rejected": rejected,
+            "open_goals": len(gv["open"]),
+            "verify": "OK" if not verify_store(eng) else "FAILED"}
+    print(json.dumps(snap, ensure_ascii=False, indent=1))
+    return 0
+
+
 def cmd_iterate(a):
     """fk iterate <script.fcad> --budget N [--agent cmd] — strategy/loop.py."""
     from ..strategy.loop import run_iterate
@@ -776,6 +794,7 @@ def build_parser() -> argparse.ArgumentParser:
     s.add_argument("--vs", default="")
     s.add_argument("--budget-rounds", type=int, default=1)
     s.set_defaults(fn=cmd_review)
+    s = sub.add_parser("report"); s.set_defaults(fn=cmd_report)
     s = sub.add_parser("iterate"); s.add_argument("script")
     s.add_argument("--budget", type=int, default=50)
     s.add_argument("--agent", default="")

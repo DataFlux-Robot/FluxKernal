@@ -94,7 +94,7 @@
 
 ;; deliberately impossible expectation: kept forever as an informative failure
 (eval e2x :target sha-pek-pm :with mission-analysis :fidelity 0
-  :expect ((range-margin-km (> 999999))))
+  :expect ((range-margin-km (> 999999))) :informative t)
 
 ;; ── decompose into subsystems; contracts flow down ──
 (refine e3 :in (sha-pek-pm) :out sha-pek-v1 :role System
@@ -234,15 +234,15 @@
   :transform (decompose
     :into (x-rail x-screw x-servo x-carriage)
     :flow-down (
-      (x-rail :budget ((mass_kg ("<=" 2))) :guarantees ((gxr "X rail travel" :bounds ((travel_mm (">=" 1700))))))
-      (x-screw :budget ((mass_kg ("<=" 0.5))) :guarantees ((gxs "X leadscrew" :bounds ((dia_mm ("=" 8))))))
-      (x-servo :budget ((mass_kg ("<=" 0.4))) :guarantees ((gxv "X servo torque" :bounds ((torque_nm (">=" 0.35))))))
-      (x-carriage :budget ((mass_kg ("<=" 1))) :guarantees ((gxc "X carriage stiffness" :bounds ((mass_kg ("<=" 1)))))))))
+      (x-rail :budget ((mass_kg ("<=" 6))) :guarantees ((gxr "X rail travel" :bounds ((travel_mm (">=" 1700))))))
+      (x-screw :budget ((mass_kg ("<=" 0.1))) :guarantees ((gxs "X leadscrew" :bounds ((dia_mm ("=" 8))))))
+      (x-servo :budget ((mass_kg ("<=" 2.5))) :guarantees ((gxv "X servo torque" :bounds ((torque_nm (">=" 0.35))))))
+      (x-carriage :budget ((mass_kg ("<=" 3))) :guarantees ((gxc "X carriage stiffness" :bounds ((mass_kg ("<=" 1)))))))))
 (exact e5xr :target xax-v1/x-rail :from catalog :match "travel_mm>=1700" :out x-rail-std
   :at ((0 2150 40)))
 (procure e5xs :target xax-v1/x-screw :from catalog :match "dia_mm=8" :out x-screw-bought
   :at ((60 2080 20)))
-(exact e5xv :target xax-v1/x-servo :from catalog :match "torque_nm>=0.35" :out x-servo-std
+(exact e5xv :target xax-v1/x-servo :from catalog :match "torque_nm>=0.35 mass_g<=2500" :out x-servo-std
   :at ((-60 2050 20)))
 (refine e5xc1 :in (xax-v1/x-carriage) :out xcar-sk :kind sketch
   :transform (ground-sketch :sketch (sketch
@@ -257,15 +257,15 @@
   :transform (decompose
     :into (y-rail y-screw y-servo y-carriage)
     :flow-down (
-      (y-rail :budget ((mass_kg ("<=" 2))) :guarantees ((gyr "Y rail travel" :bounds ((travel_mm (">=" 700))))))
-      (y-screw :budget ((mass_kg ("<=" 0.5))) :guarantees ((gys "Y leadscrew" :bounds ((dia_mm ("=" 8))))))
-      (y-servo :budget ((mass_kg ("<=" 0.4))) :guarantees ((gyv "Y servo torque" :bounds ((torque_nm (">=" 0.35))))))
-      (y-carriage :budget ((mass_kg ("<=" 1))) :guarantees ((gyc "Y carriage stiffness" :bounds ((mass_kg ("<=" 1)))))))))
+      (y-rail :budget ((mass_kg ("<=" 6))) :guarantees ((gyr "Y rail travel" :bounds ((travel_mm (">=" 700))))))
+      (y-screw :budget ((mass_kg ("<=" 0.1))) :guarantees ((gys "Y leadscrew" :bounds ((dia_mm ("=" 8))))))
+      (y-servo :budget ((mass_kg ("<=" 2.5))) :guarantees ((gyv "Y servo torque" :bounds ((torque_nm (">=" 0.35))))))
+      (y-carriage :budget ((mass_kg ("<=" 3))) :guarantees ((gyc "Y carriage stiffness" :bounds ((mass_kg ("<=" 1)))))))))
 (exact e5yr :target yax-v1/y-rail :from catalog :match "travel_mm>=700" :out y-rail-std
   :at ((2050 300 40) (0 0 1 90)))
 (procure e5ys :target yax-v1/y-screw :from catalog :match "dia_mm=8" :out y-screw-bought
   :at ((1980 60 20) (0 0 1 90)))
-(exact e5yv :target yax-v1/y-servo :from catalog :match "torque_nm>=0.35" :out y-servo-std
+(exact e5yv :target yax-v1/y-servo :from catalog :match "torque_nm>=0.35 mass_g<=2500" :out y-servo-std
   :at ((1950 -60 20) (0 0 1 90)))
 (refine e5yc1 :in (yax-v1/y-carriage) :out ycar-sk :kind sketch
   :transform (ground-sketch :sketch (sketch
@@ -280,15 +280,15 @@
   :transform (decompose
     :into (z-rail z-screw z-servo z-carriage)
     :flow-down (
-      (z-rail :budget ((mass_kg ("<=" 2))) :guarantees ((gzr "Z rail travel" :bounds ((travel_mm (">=" 400))))))
-      (z-screw :budget ((mass_kg ("<=" 0.5))) :guarantees ((gzs "Z leadscrew" :bounds ((dia_mm ("=" 8))))))
-      (z-servo :budget ((mass_kg ("<=" 0.4))) :guarantees ((gzv "Z servo torque" :bounds ((torque_nm (">=" 0.35))))))
-      (z-carriage :budget ((mass_kg ("<=" 1))) :guarantees ((gzc "Z carriage rides the beam" :bounds ((mass_kg ("<=" 1)))))))))
+      (z-rail :budget ((mass_kg ("<=" 6))) :guarantees ((gzr "Z rail travel" :bounds ((travel_mm (">=" 400))))))
+      (z-screw :budget ((mass_kg ("<=" 0.1))) :guarantees ((gzs "Z leadscrew" :bounds ((dia_mm ("=" 8))))))
+      (z-servo :budget ((mass_kg ("<=" 2.5))) :guarantees ((gzv "Z servo torque" :bounds ((torque_nm (">=" 0.35))))))
+      (z-carriage :budget ((mass_kg ("<=" 3))) :guarantees ((gzc "Z carriage rides the beam" :bounds ((mass_kg ("<=" 1)))))))))
 (exact e5zr :target zax-v1/z-rail :from catalog :match "travel_mm>=400" :out z-rail-std
   :at ((2350 0 700) (0 1 0 90)))
 (procure e5zs :target zax-v1/z-screw :from catalog :match "dia_mm=8" :out z-screw-bought
   :at ((2280 0 600) (0 1 0 90)))
-(exact e5zv :target zax-v1/z-servo :from catalog :match "torque_nm>=0.35" :out z-servo-std
+(exact e5zv :target zax-v1/z-servo :from catalog :match "torque_nm>=0.35 mass_g<=2500" :out z-servo-std
   :at ((2210 0 1320) (0 1 0 90)))
 (refine e5zc1 :in (zax-v1/z-carriage) :out zcar-sk :kind sketch
   :transform (ground-sketch :sketch (sketch
@@ -346,7 +346,7 @@
   :transform (fillet :edges all :radius 0.5))
 (print e53 :in (pframe-fil) :printer reference-printer :out pframe-printed)
 (exact e54 :target printer-v1/p-stepper :from catalog
-  :match "torque_nm>=0.35" :out p-stepper-std
+  :match "torque_nm>=0.35 mass_g<=400" :out p-stepper-std
   :at ((-60 6350 610)))
 (procure e55 :target printer-v1/p-board :from catalog
   :match "axis_count>=4" :out p-board-bought

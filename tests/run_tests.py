@@ -2159,6 +2159,91 @@ def test_48_iterate_closed_loop_demo():
             os.environ.pop(k, None)
 
 
+def test_50_broken_scope_net_never_closes():
+    """U5 (review v05 G7/G8): a decomposed scope whose assembly compose
+    was REJECTED, or whose verification eval FAILED (non-informative),
+    surfaces as an OPEN goal — the closure predicate is no longer blind
+    to a broken template net or a failed structural check."""
+    from fluxkernel.semantics import goals as gv
+    eng = fresh()
+    t = terms(eng, "mass")
+    eng.node("sys", "System", "thing", contract(eng, t))
+    eng.refine("sys", {"name": "decompose",
+                        "args": {"into": ["a", "b"],
+                                 "flow_down": {
+                                     "a": {"guarantees": [
+                                         {"id": "ga", "stmt": "a works",
+                                          "bounds": {"mass_kg": {"<=": 5}}}]},
+                                     "b": {"guarantees": [
+                                         {"id": "gb", "stmt": "b works",
+                                          "bounds": {"mass_kg": {"<=": 5}}}]}}}},
+               out_name="scope")
+    ra = eng.exact("scope/a", "catalog", "span_mm>=400", out_name="a-std")
+    rb = eng.exact("scope/b", "catalog", "height_mm>=200", out_name="b-std")
+    assert ra["state"] == "promoted" and rb["state"] == "promoted"
+    # rejected compose: Part inputs into an illegal Component output role
+    bad = eng.compose(["a-std", "b-std"], out_name="assy",
+                       out_role="Component")
+    assert bad["state"] == "rejected", bad.get("reason")
+    open_refs = [g["kind"] for g in gv.goals_view(eng.dag)["open"]]
+    assert "thing" in open_refs or open_refs, open_refs
+    assert gv.goals_view(eng.dag)["open"], "broken net must surface"
+    # the same net with a LEGAL compose closes
+    eng2 = fresh()
+    t2 = terms(eng2, "mass")
+    eng2.node("sys", "System", "thing", contract(eng2, t2))
+    eng2.refine("sys", {"name": "decompose",
+                         "args": {"into": ["a", "b"],
+                                  "flow_down": {
+                                      "a": {"guarantees": [
+                                          {"id": "ga", "stmt": "a works",
+                                           "bounds": {"mass_kg": {"<=": 5}}}]},
+                                      "b": {"guarantees": [
+                                          {"id": "gb", "stmt": "b works",
+                                           "bounds": {"mass_kg": {"<=": 5}}}]}}}},
+                out_name="scope")
+    eng2.exact("scope/a", "catalog", "span_mm>=400", out_name="a-std",
+               at=[[0, 0, 0]])
+    eng2.exact("scope/b", "catalog", "height_mm>=200", out_name="b-std",
+               at=[[700, 0, 0]])
+    ok = eng2.compose(["a-std", "b-std"], out_name="assy",
+                       out_role="System")
+    assert ok["state"] == "promoted", ok.get("reason")
+    assert not gv.goals_view(eng2.dag)["open"]
+    # failed eval on a subtree member blocks its ancestor scope; the
+    # informative flag exempts (structure mirrors the case: genesis ->
+    # refine -> decompose -> catalog closures)
+    def _eval_tree(eng_x, informative):
+        t = terms(eng_x, "mass")
+        eng_x.node("m", "System", "thing", contract(eng_x, t))
+        eng_x.refine("m", {"name": "point-mass-model"}, out_name="m-pm")
+        eng_x.refine("m-pm", {"name": "decompose",
+                              "args": {"into": ["a", "b"], "flow_down": {
+                                  "a": {"guarantees": [
+                                      {"id": "ga", "stmt": "a",
+                                       "bounds": {"mass_kg": {"<=": 5}}}]},
+                                  "b": {"guarantees": [
+                                      {"id": "gb", "stmt": "b",
+                                       "bounds": {"mass_kg": {"<=": 5}}}]}}}},
+                   out_name="scope")
+        ra = eng_x.exact("scope/a", "catalog", "span_mm>=400",
+                         out_name="a-std")
+        rb = eng_x.exact("scope/b", "catalog", "height_mm>=200",
+                         out_name="b-std", at=[[700, 0, 0]])
+        assert ra["state"] == "promoted" and rb["state"] == "promoted"
+        ev = eng_x.evaluate("a-std", "mission-analysis", fidelity=0,
+                            expect={"range_km": {">=": 999999}},
+                            informative=informative)
+        assert ev["state"] == "rejected"
+        return gv.goals_view(eng_x.dag)["open"]
+
+    eng3 = fresh()
+    assert _eval_tree(eng3, informative=False), \
+        "a failed (non-informative) eval must open its scope"
+    eng4 = fresh()
+    assert not _eval_tree(eng4, informative=True), \
+        ":informative exempts the scope (e2x pattern)"
+
 # ================================================ discipline ==============
 
 

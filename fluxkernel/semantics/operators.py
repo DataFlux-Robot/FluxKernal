@@ -929,7 +929,8 @@ class Engine:
     # ----------------------------------------------------------- evaluate --
     def evaluate(self, target: str, solver: str, fidelity: int = 0,
                  expect: dict | None = None, args: dict | None = None,
-                 resources: dict | None = None) -> dict:
+                 resources: dict | None = None,
+                 informative: bool = False) -> dict:
         """Weakened native_decide: run an L2 evaluation plugin; expect
         assertions become machine-checked obligations (M1 on miss). The
         evaluated node is a NEW digest (evidence enters identity); the
@@ -937,7 +938,8 @@ class Engine:
         t_d, t_payload = self._input(target)
         was_named = not target.startswith("fk1:")
         transform = {"name": solver,
-                     "args": {**(args or {}), "fidelity": fidelity}}
+                     "args": {**(args or {}), "fidelity": fidelity,
+                              "informative": informative}}
         obligations: list[Obligation] = []
         try:
             fields, evidence, plugin_obs = self._call_plugin(transform, [t_payload])
@@ -1042,7 +1044,7 @@ class Engine:
             try:
                 gshape, gcons = self._catalog_envelope(geo)
                 if at is not None:
-                    from .feature3d import _parse_at, _placed
+                    from ..solvers.feature3d import _parse_at, _placed
                     pl = _parse_at(at)
                     if pl:
                         gshape = _placed(gshape, pl)
@@ -1109,7 +1111,7 @@ class Engine:
               out_name: str | None = None, at=None) -> dict:
         """`exact lemma`: a catalog design closes the goal directly."""
         return self._close_from_catalog("exact", goal, catalog, match, tier=1,
-                                        out_name=out_name)
+                                        out_name=out_name, at=at)
 
     def procure(self, goal: str, catalog: str, match: str = "",
                 out_name: str | None = None, at=None) -> dict:

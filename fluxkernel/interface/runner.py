@@ -208,6 +208,7 @@ class Runner:
         return self.engine.evaluate(
             target, solver, fidelity=int(kw.get("fidelity", 0) or 0),
             expect=expect, args=args,
+            informative=bool(kw.get("informative", False)),
             resources=fcad.resources_from_sexpr(kw.get("resources", [])))
 
     def _form_exact(self, body):

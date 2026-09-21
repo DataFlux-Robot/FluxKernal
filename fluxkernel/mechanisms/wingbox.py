@@ -20,7 +20,10 @@ from .airfoil import (naca4, half_thickness, loop_area,
 
 T_SKIN = 2.0
 T_SPAR = 30.0
-T_RIB = 3.0
+# 8mm: the airfoil-inset rib is height-limited (~t/c*chord between the
+# spars), so bending stiffness comes from thickness — the beam-fe gate
+# (span/150 at 800N) rejected the 3mm web at delta 10.55mm vs 4.75
+T_RIB = 8.0
 EDGE = 10.0            # chord-wise inset of the wing section
 SPAR_FRAC = (0.26, 0.76)
 CLEAR = 4.0            # assembly clearance — covers the averaged-

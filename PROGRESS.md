@@ -1,6 +1,6 @@
 # FluxKernel 开发进展报告
 
-日期：2026-09-21（SR-4M 闭环实测后更新，52 次提交）· 仓库：`E:\DATA\vscode\fluxkernel` · 43 次提交
+日期：2026-09-21（v05 评审修复后更新）· 仓库：`E:\DATA\vscode\fluxkernel` · 43 次提交
 配套文档：`INTRODUCTION.md`（架构介绍，面向评审）· `REPORT.md`（初版交付报告）· `docs/design/`（设计文档系列）
 
 > 定位回顾：面向 LLM 的**通用**机械系统工程内核 + CAD CLI（build123d 形态的 `.fcad` DSL + 33 子命令）。核不是几何而是**带证书的内容寻址精化图（CARG）**——几何是节点的求值投影。开发纪律：机制通用、内容（案例/目录/模板）为数据、内核 L0/L1 零第三方依赖且零改动。
@@ -9,7 +9,7 @@
 
 | 指标 | 值 |
 |---|---|
-| 测试 | **49/49 全绿**（`python tests/run_tests.py`） |
+| 测试 | **50/50 全绿**（`python tests/run_tests.py`） |
 | 规模 | 99 个 git 追踪文件，Python 9275 行 |
 | CLI | 36 子命令（+render/review/iterate）；`.fcad` DSL 含 `:at`、`:machine`、`:template`、`:roles`、`:no-assembly`、`:tier` |
 | 求解插件 | 15 个（+cut）；目录 7 文件（含 panels+geom.py 代表性几何）；机制库 3 条目；skill 库 5 件 |
@@ -80,6 +80,26 @@ MakeThickSolidByJoin 不挖空放置后的 loft；薄壁筒口倒角撞 "only 2 
 3. **命名足枪**：instantiate `:out` 决定装配路径（empennage/assembly vs tail/assembly 笔误一轮）；参数集与 goal 同名静默重绑定——两条都应进 lint。
 4. **eval 目标语义无指引**：评估应打 scope（wing）还是装配节点，靠拒绝信息试错——skill 速查表已补，内核侧可加建议。
 5. **质量闭合模式待模板化**：分装配 rollup + 样机自检的手法可提炼为 skill 条目或机制默认。
+
+## 0.7 第九阶段：v05 评审修复——闭合谓词不再失明（G7/G8/G9）
+
+评审 v05 独立复核对出两处未报告回退：SHA-PEK 机床分支冷库整条阵亡（V3 目录包络的真实质量
+13.4kg 破了目录件无质量时代设定的 3.9kg 轴预算，链式 I3 拖死 gantry-mill/process-plan/rib-line），
+翼肋结构评估失败无替代（V1 翼型化后肋高 188→87mm，δ=10.55mm 超 span/150=4.75mm）——
+**且两者发生时 OPEN(0) 照常成立**。
+
+| # | 修复 | 内容 |
+|---|---|---|
+| G7-案例 | 机床链复活 | 伺服选型收紧（`torque_nm>=0.35 mass_g<=2500` 命中 akm-52 1.85kg 而非 6.8kg 主轴电机；条目化电机质量改精确边界 `=`）；轴预算在 flow-down 源重谈（3.9→11.6kg/轴，模板 6→12）；打印机挤出电机改选 62g 云台级（blgc） |
+| G7-内核 | **U5 闭合规则** | 被分解 scope 的子树装配 compose 被拒 → 该 scope 及其上游永不闭合（ sabotage 测试：破坏预算时 OPEN(0)→OPEN(16) 全链报出，恢复后归零） |
+| G8-案例 | 翼肋过梁门 | T_RIB 3→8mm（高度受翼型厚度限制，刚度靠厚度）——δ 10.55→3.96mm ≤ 4.75 通过；beam-fe promoted |
+| G8-内核 | 评估失败否决闭合 + `:informative` | 非 informative 的失败 eval 同样 block 其祖先 scope；故意失败样本（e2x）显式 `:informative t` 豁免——失败必须表态，不允许静默 |
+| 附 | line 型 ground 闭合 | rib-line 的 takt/oee/cost 落地（type=line）计入可执行过程细节 |
+| 附 | **V3 静默失效修复** | 包络生成的 `from .feature3d` 包路径错误被 except 吞成注记——目录件自 V3 起从未真正落地 construction；修复后 exact :at 生效、包络参与干涉门（test_50 顺带暴露 exact 漏传 :at） |
+| G9 | `fk report` | 冷库快照子命令（nodes/edges/rejected 明细/open/verify），单跑口径；§6 复核命令全面刷新 |
+
+test_50：破坏的装配网必须 surface（合法 compose 对照闭合）；失败 eval 开 scope、informative 豁免。
+双案例冷库终态：SHA-PEK 96 表单 / SR-4M 40 表单，各 rejected 1（e2x/e2x 类故意样本），OPEN(0)，verify OK。
 
 ## 1. 开发阶段总览
 
@@ -169,18 +189,18 @@ P6（G5 b123d-script / G6 solve）按路线图为可选增强，本轮未实施�
 
 优先级建议：cabin-fuselage 机制条目化 → 目录库真实数据扩充 → DfAM 标定 → overrides 动态引用 → 更多架构模板。
 
-## 6. 复核命令
+## 6. 复核命令（数字一律取当次冷库运行输出；重复跑同库拒绝数会累计——rejected 永留是特性）
 
 ```bash
-cd E:\DATA\vscode\fluxkernel
-.venv\Scripts\python.exe tests\run_tests.py      # 45/45 passed
-# 冷库验收（防热库旧绑定）：
-mkdir %TMP%\fkcheck && cd %TMP%\fkcheck && E:\DATA\vscode\fluxkernel\.venv\Scripts\python.exe -m fluxkernel.interface.cli init
-E:\DATA\vscode\fluxkernel\.venv\Scripts\python.exe -m fluxkernel.interface.cli run E:\DATA\vscode\fluxkernel\examples\sha_pek.fcad
-#   forms: 111  rejected: 1（e2x 故意样本）
+cd E:\DATAscodeluxkernel
+.venv\Scripts\python.exe testsun_tests.py      # 50/50 passed
+# 双案例冷库（每次新目录，防热库旧绑定）：
+for c in sha_pek sr4_recon do (mkdir %TMP%kchk && cd %TMP%kchk &&
+  E:\DATAscodeluxkernel\.venv\Scripts\python.exe -m fluxkernel.interface.cli init &&
+  ... run E:\DATAscodeluxkernel\examples\<case>.fcad)   # forms/rejected 单跑口径
 ... goals    # OPEN GOALS (0)
-... verify   # verify OK（介质 3820/4000W 达标）
-... why mockup-solid   # 18 件派生谱系
-python tools\gen_preview.py                     # 29 shapes / 800 tris
-start preview\index.html                        # ①整机1:1 ②gantry铣床 ③打印机 ④派生样机
+... verify   # verify OK
+... report   # JSON 快照：nodes/edges/rejected/open/verify（供文档引用）
+python tools\gen_preview.py                     # 35 shapes / 26244 tris
+start preview\index.html
 ```

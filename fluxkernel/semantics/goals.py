@@ -141,10 +141,44 @@ def _closed_nodes(dag, consumers: dict[str, list[dict]] | None = None) -> set[st
         elif e.get("op") == "compose":
             composed_by[e.get("output", "")] = e
 
+    # U5 (review v05 G7/G8): a decomposed scope whose subtree FAILED to
+    # assemble (rejected compose) or whose verification FAILED (rejected
+    # eval, non-informative) never closes — a broken template net must
+    # surface as an open goal, not silently vanish behind OPEN(0).
+    parents = _parents(dag)
+    scopes = set()
+    for _, e in dag.iter_edges():
+        if (e.get("transform") or {}).get("name") == "decompose":
+            scopes.add(e.get("output", ""))
+
+    def _blocked_scopes() -> set:
+        blocked = set()
+        pending = []
+        for _, e in dag.iter_edges():
+            if e.get("state") != "rejected":
+                continue
+            if e.get("op") == "compose":
+                pending.extend(e.get("inputs") or [])
+            elif e.get("op") == "evaluate" and not                     (e.get("transform") or {}).get("args", {}).get("informative"):
+                pending.extend((e.get("inputs") or [])[:1])
+        for start in pending:
+            seen, stack = set(), [start]
+            while stack:
+                cur = stack.pop()
+                if cur in seen:
+                    continue
+                seen.add(cur)
+                if cur in scopes:
+                    blocked.add(cur)
+                stack.extend(parents.get(cur, []))
+        return blocked
+
+    blocked = _blocked_scopes()
+
     def _production_assigned(d: str, payload: dict) -> bool:
         g = payload.get("ground") or {}
-        if g.get("type") in ("process", "process-op"):
-            return True                        # executable process detail
+        if g.get("type") in ("process", "process-op", "line"):
+            return True    # executable detail: process op or a balanced line
         for e in consumers.get(d, []):
             if e.get("state") != "promoted":
                 continue
@@ -161,6 +195,8 @@ def _closed_nodes(dag, consumers: dict[str, list[dict]] | None = None) -> set[st
         for d, payload in nodes.items():
             if d in closed or d not in alive:
                 continue
+            if d in blocked:
+                continue      # U5: no closure path for a broken-scope net
             ok = False
             if _production_assigned(d, payload):
                 ok = True                                   # leaf termination
@@ -173,7 +209,7 @@ def _closed_nodes(dag, consumers: dict[str, list[dict]] | None = None) -> set[st
                                  if o.get("id") == "rollup-met")
                 if ins and all(i in closed for i in ins) and rollups_ok:
                     ok = True                               # composed from closed
-            if not ok and d in kids:
+            if not ok and d in kids and d not in blocked:
                 ch = kids[d]
                 if ch and all(c in closed
                               or (nodes.get(c) or {}).get("role") == "Medium"
