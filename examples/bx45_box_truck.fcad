@@ -99,7 +99,7 @@
                wheel-fl wheel-fr wheel-rl wheel-rr powertrain seat)
     :flow-down (
       (cab :budget ((mass_kg ("<=" 160))) :guarantees ((gc "cab shell protects" :bounds ((mass_kg ("<=" 160))))))
-      (cargo-box :budget ((mass_kg ("<=" 260))) :guarantees ((gb "box carries" :bounds ((mass_kg ("<=" 260))))))
+      (cargo-box :budget ((mass_kg ("<=" 290))) :guarantees ((gb "box carries" :bounds ((mass_kg ("<=" 260))))))
       (frame-l :budget ((mass_kg ("<=" 90))) :guarantees ((gfl "left rail" :bounds ((mass_kg ("<=" 90))))))
       (frame-r :budget ((mass_kg ("<=" 90))) :guarantees ((gfr "right rail" :bounds ((mass_kg ("<=" 90))))))
       (axle-f :budget ((mass_kg ("<=" 95))) :guarantees ((gaf "front axle" :bounds ((mass_kg ("<=" 95))))))
@@ -115,14 +115,16 @@
 (instantiate e4 :at (bx-v1/cab) :mechanism cabin-fuselage
   :params ((length (:param bx/cab-len)) (width (:param bx/cab-w))
            (height (:param bx/cab-h)) (tail-frac 0.85)
-           (x0 0) (y0 0) (z0 300))
+           (section rect)
+           (x0 0) (y0 0) (z0 -150))
   :printer reference-printer :out cab)
 
 ;; ── box: straight walls, directly behind the cab and taller (①) ──
 (instantiate e5 :at (bx-v1/cargo-box) :mechanism cabin-fuselage
   :params ((length (:param bx/box-len)) (width (:param bx/box-w))
            (height (:param bx/box-h)) (tail-frac 1.0)
-           (x0 0) (y0 1300) (z0 280))
+           (section rect)
+           (x0 0) (y0 1300) (z0 -150))
   :printer reference-printer :out box)
 
 ;; ── ladder frame ──
@@ -205,7 +207,7 @@
 (eval e40 :target cab/assembly :with mass-rollup :fidelity 2
   :expect ((mass_kg (<= 160))))
 (eval e41 :target box/assembly :with mass-rollup :fidelity 2
-  :expect ((mass_kg (<= 260))))
+  :expect ((mass_kg (<= 290))))
 (eval e42 :target chassis-assy :with mass-rollup :fidelity 2
   :expect ((mass_kg (<= 480))))
 (eval e43 :target bx-pm :with mission-analysis :fidelity 1

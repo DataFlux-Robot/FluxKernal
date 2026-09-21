@@ -201,7 +201,10 @@ class Engine:
                 return float(_lookup(str(v[1])))
             if isinstance(v, list) and v and v[0] in ("expr", ":expr"):
                 return float(_fkp.eval_sexp(_inline(v[1]), _lookup))
-            return float(v)
+            try:
+                return float(v)                      # numeric param
+            except (TypeError, ValueError):
+                return v                             # enum param (e.g. section)
 
         values = {k: _pv(v) for k, v in (params or {}).items()}
         for k, spec in (decl.get("params") or {}).items():
@@ -211,7 +214,15 @@ class Engine:
             if de:
                 values[k] = fkparams.eval_sexp(de, lambda n: values.get(n))
         for k, spec in (decl.get("params") or {}).items():
-            rng = spec.get("range") if isinstance(spec, dict) else None
+            if k not in values or not isinstance(spec, dict):
+                continue
+            opts = spec.get("options")
+            if opts is not None:
+                if values[k] not in opts:
+                    raise DagError("U3", f"mechanism param {k}={values[k]!r} "
+                                         f"not in {opts}")
+                continue
+            rng = spec.get("range")
             if rng and k in values and not (rng[0] <= values[k] <= rng[1]):
                 raise DagError("U3", f"mechanism param {k}={values[k]:g} "
                                      f"outside range {rng}")

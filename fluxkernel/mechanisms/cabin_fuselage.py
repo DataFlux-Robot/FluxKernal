@@ -16,6 +16,14 @@ CLEAR = 6.0
 MARGIN = 1.3
 
 
+def _section(w: float, h: float, section: str = "octagon"):
+    """Cross-section loop.  "rect" = plain rectangle (box trucks: vertical
+    walls, flat panels); "octagon" = chamfered tube (aero bodies)."""
+    if section == "rect":
+        return [(-w / 2, 0.0), (w / 2, 0.0), (w / 2, -h), (-w / 2, -h)]
+    return _octagon(w, h)
+
+
 def _octagon(w: float, h: float, cut: float = 0.35, sides: int = 4):
     """Rounded-rectangle section (4+2*sides pts), y NEGATIVE = height
     downward (the frame's rotX(-90) maps local -y to world +z).
@@ -64,7 +72,12 @@ def _inset_oct(pts, wall):
         m2 = (-e2[1] / l2 * sgn, e2[0] / l2 * sgn)
         mx, my = m1[0] + m2[0], m1[1] + m2[1]
         ml = math.hypot(mx, my) or 1.0
-        out.append((cx + mx / ml * wall, cy + my / ml * wall))
+        # miter: shift along the corner bisector so the PERPENDICULAR
+        # distance to each edge equals wall (cos half-angle correction),
+        # capped at 2x to protect acute corners from self-intersection
+        cos_half = max(0.5, mx / ml)
+        out.append((cx + mx / ml * wall / cos_half,
+                    cy + my / ml * wall / cos_half))
     return out
 
 
@@ -96,14 +109,28 @@ def profile(p: dict, part: str) -> dict:
     wt, ht = w * tail_frac, h * tail_frac
     taper_at = float(p.get("taper-start", 0.55))
     if part == "shell":
-        # constant-section cabin tube: octagon prism hollowed by an inset
-        # core prism (proven primitive pair — tapered-loft booleans are
-        # NOT reliable in OCCT: ruled lofts over >=8-pt sections come
-        # back invalid and silently void every cut; the tail taper is a
-        # documented follow-up once the kernel grows a reliable loft)
-        sec = _octagon(w, h)
+        # constant-section cabin tube: prism hollowed by an inset core
+        # prism (proven primitive pair — tapered-loft booleans are NOT
+        # reliable in OCCT: ruled lofts over >=8-pt sections come back
+        # invalid and silently void every cut)
+        section = str(p.get("section", "octagon"))
+        sec = _section(w, h, section)
+        if section == "rect":
+            # exact analytic inset: wall is uniform by construction
+            cut = [(-(w / 2 - WALL), 0.0), (w / 2 - WALL, 0.0),
+                   (w / 2 - WALL, -(h - WALL)), (-(w / 2 - WALL), -(h - WALL))]
+        else:
+            cut = _inset_oct(sec, WALL + 0.5)
+        post = []
+        if section == "rect":
+            # four long corners are discrete stress raisers — round them
+            # on the SOLID prism before hollowing (thin-wall rims hit
+            # OCCT's "only 2 faces" limit)
+            post = [{"name": "fillet",
+                     "args": {"edges": "all", "radius": 0.6}}]
         return {"pts": sec, "thick": L, "material": "pla",
-                "cutter": {"pts": _inset_oct(sec, WALL + 0.5),
+                "post": post,
+                "cutter": {"pts": cut,
                            "thick": L + 10.0 - WALL,
                            "frame": "shell-cutter"}}
     if part.startswith("bh-"):
@@ -113,7 +140,7 @@ def profile(p: dict, part: str) -> dict:
         t = frac
         wi = _interp(w, wt, t) - 2 * (WALL + CLEAR)
         hi = _interp(h, ht, t) - 2 * (WALL + CLEAR)
-        sec = _octagon(wi, hi)
+        sec = _section(wi, hi, str(p.get("section", "octagon")))
         return {"pts": sec, "thick": T_BH, "material": "pla",
                 "post": [{"name": "fillet",
                           "args": {"edges": {"plane": "ymin"},
@@ -140,7 +167,8 @@ def mass_kg(p: dict, part: str) -> float:
     rho = 1.24e-3 / 1000.0
     pr = profile(p, part)
     if part == "shell":
-        per = _oct_perim(_octagon(float(p["width"]), float(p["height"])))
+        per = _oct_perim(_section(float(p["width"]), float(p["height"]),
+                                  str(p.get("section", "octagon"))))
         return per * L * WALL * 1.24e-3 / 1000.0 * 1.15 * 1.15
     return _oct_area(pr["pts"]) * pr["thick"] * 1.24e-3 / 1000.0
 

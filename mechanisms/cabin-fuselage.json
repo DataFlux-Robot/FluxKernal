@@ -63,6 +63,14 @@
     20000
    ],
    "default-expr": 0.0
+  },
+  "section": {
+   "type": "enum",
+   "options": [
+    "octagon",
+    "rect"
+   ],
+   "default-expr": "octagon"
   }
  },
  "module": "fluxkernel.mechanisms.cabin_fuselage",
