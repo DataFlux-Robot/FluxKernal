@@ -11,11 +11,16 @@
 ;;      rails, catalog running gear
 ;; ═══════════════════════════════════════════════════════════════════
 
+;; ── the reference photo enters the DAG (C6/D5): fidelity judgements
+;;    cite THIS blob, never a filesystem path ──
+(reference-image C:/Users/zhang/Desktop/truck_ref.jpg :for bx45)
+
 ;; ── case contract: reverse-engineered box truck ──
 (case-contract bx45 :type product-reverse
   :requires (
     (termination (standard-parts printable))
-    (manufacturing-chains 1)))
+    (manufacturing-chains 1)
+    (reference-fidelity (issues-max 2))))
 
 ;; ── glossary ──
 (term range "distance flown between charges with reserve, km")
@@ -176,53 +181,6 @@
 (exact e19 :target bx-v1/seat :from catalog
   :match "mass_kg<=15" :out seat-std :at ((0 600 450)))
 
-;; ── T4: the cargo box shell decomposes into wall panels — the box is
-;;    not a monolithic leaf; each panel carries its own flow-down budget
-;;    (mechanism bulkhead pattern applied to walls) ──
-(refine e50 :in (box/shell) :out box-panels :role Part
-  :transform (decompose
-    :into (wall-l wall-r roof floor)
-    :roles ((wall-l Part) (wall-r Part) (roof Part) (floor Part))
-    :flow-down (
-      (wall-l :budget ((mass_kg ("<=" 50))) :guarantees ((gwl "left wall" :bounds ((mass_kg ("<=" 50))))))
-      (wall-r :budget ((mass_kg ("<=" 50))) :guarantees ((gwr "right wall" :bounds ((mass_kg ("<=" 50))))))
-      (roof :budget ((mass_kg ("<=" 45))) :guarantees ((grf "box roof" :bounds ((mass_kg ("<=" 45))))))
-      (floor :budget ((mass_kg ("<=" 38))) :guarantees ((gfl2 "box floor" :bounds ((mass_kg ("<=" 38)))))))))
-(refine e50l :in (box-panels/wall-l) :out wlp-sk :kind sketch
-  :transform (ground-sketch :sketch (sketch
-    (pts (w0 0 0) (w1 3600 0) (w2 3600 2450) (w3 0 2450)) (constraints))))
-(refine e50l2 :in (wlp-sk) :out wlp-solid :role Part :kind panel
-  :transform (extrude :height 4 :material pla :at ((-1025 1300 280))))
-(refine e50l3 :in (wlp-solid) :out wlp-fil :role Part :kind panel
-  :transform (fillet :edges all :radius 0.6))
-(print e50l4 :in (wlp-fil) :printer reference-printer :out wlp-printed)
-
-(refine e50r :in (box-panels/wall-r) :out wrp-sk :kind sketch
-  :transform (ground-sketch :sketch (sketch
-    (pts (r0 0 0) (r1 3600 0) (r2 3600 2450) (r3 0 2450)) (constraints))))
-(refine e50r2 :in (wrp-sk) :out wrp-solid :role Part :kind panel
-  :transform (extrude :height 4 :material pla :at ((1021 1300 280))))
-(refine e50r3 :in (wrp-solid) :out wrp-fil :role Part :kind panel
-  :transform (fillet :edges all :radius 0.6))
-(print e50r4 :in (wrp-fil) :printer reference-printer :out wrp-printed)
-(refine e50rf :in (box-panels/roof) :out rf-sk :kind sketch
-  :transform (ground-sketch :sketch (sketch
-    (pts (v0 0 0) (v1 3600 0) (v2 3600 2050) (v3 0 2050)) (constraints))))
-(refine e50rf2 :in (rf-sk) :out rf-solid :role Part :kind panel
-  :transform (extrude :height 4 :material pla
-    :at ((-1025 1300 2734) (1 0 0 90))))
-(refine e50rf3 :in (rf-solid) :out rf-fil :role Part :kind panel
-  :transform (fillet :edges all :radius 0.6))
-(print e50rf4 :in (rf-fil) :printer reference-printer :out rf-printed)
-(refine e50fl :in (box-panels/floor) :out fl-sk :kind sketch
-  :transform (ground-sketch :sketch (sketch
-    (pts (u0 0 0) (u1 3600 0) (u2 3600 2050) (u3 0 2050)) (constraints))))
-(refine e50fl2 :in (fl-sk) :out fl-solid :role Part :kind panel
-  :transform (extrude :height 4 :material pla :at ((-1025 1300 -100))))
-(refine e50fl3 :in (fl-solid) :out fl-fil :role Part :kind panel
-  :transform (fillet :edges all :radius 0.6))
-(print e50fl4 :in (fl-fil) :printer reference-printer :out fl-printed)
-
 ;; ── T5: one machined part closes the manufacturing-chain require —
 ;;    the frame cross-member is milled on the developed gantry mill
 ;;    (same DSL pattern as the SHA-PEK rib branch) ──
@@ -238,46 +196,46 @@
   :spec (contract (budget (mass_kg (<= 1000)))))
 (refine e63 :in (mill-req) :out mill-v1 :role System
   :transform (decompose :template gantry-mill))
-(refine e64 :in (mill-v1/bed) :out mbed-sk :kind sketch
+(refine e64 :in (mill-v1/bed) :out mill-bed-sk :kind sketch
   :transform (ground-sketch :sketch (sketch
     (pts (m0 0 0) (m1 1800 0) (m2 1800 800) (m3 0 800)) (constraints))))
-(refine e65 :in (mbed-sk) :out mbed-solid :role Part :kind bed
+(refine e65 :in (mill-bed-sk) :out mill-bed-solid :role Part :kind bed
   :transform (extrude :height 60 :material pla :at ((-6000 3000 0))))
-(refine e65f :in (mbed-solid) :out mbed-fil :role Part :kind bed
+(refine e65f :in (mill-bed-solid) :out mill-bed-fil :role Part :kind bed
   :transform (fillet :edges all :radius 0.6))
-(print e66 :in (mbed-fil) :printer reference-printer :out mbed-printed)
-(refine e64c :in (mill-v1/column-L) :out mcolL-sk :kind sketch
+(print e66 :in (mill-bed-fil) :printer reference-printer :out mill-bed-printed)
+(refine e64c :in (mill-v1/column-L) :out mill-colL-sk :kind sketch
   :transform (ground-sketch :sketch (sketch
     (pts (c0 0 0) (c1 300 0) (c2 300 300) (c3 0 300)) (constraints))))
-(refine e65c :in (mcolL-sk) :out mcolL-solid :role Part :kind column
+(refine e65c :in (mill-colL-sk) :out mill-colL-solid :role Part :kind column
   :transform (extrude :height 1200 :material pla :at ((-5800 3000 60))))
-(refine e65cf :in (mcolL-solid) :out mcolL-fil :role Part :kind column
+(refine e65cf :in (mill-colL-solid) :out mill-colL-fil :role Part :kind column
   :transform (fillet :edges all :radius 0.6))
-(print e66c :in (mcolL-fil) :printer reference-printer :out mcolL-printed)
-(refine e64d :in (mill-v1/column-R) :out mcolR-sk :kind sketch
+(print e66c :in (mill-colL-fil) :printer reference-printer :out mill-colL-printed)
+(refine e64d :in (mill-v1/column-R) :out mill-colR-sk :kind sketch
   :transform (ground-sketch :sketch (sketch
     (pts (d0 0 0) (d1 300 0) (d2 300 300) (d3 0 300)) (constraints))))
-(refine e65d :in (mcolR-sk) :out mcolR-solid :role Part :kind column
+(refine e65d :in (mill-colR-sk) :out mill-colR-solid :role Part :kind column
   :transform (extrude :height 1200 :material pla :at ((-4600 3000 60))))
-(refine e65df :in (mcolR-solid) :out mcolR-fil :role Part :kind column
+(refine e65df :in (mill-colR-solid) :out mill-colR-fil :role Part :kind column
   :transform (fillet :edges all :radius 0.6))
-(print e66d :in (mcolR-fil) :printer reference-printer :out mcolR-printed)
-(refine e64e :in (mill-v1/crossbeam) :out mbeam-sk :kind sketch
+(print e66d :in (mill-colR-fil) :printer reference-printer :out mill-colR-printed)
+(refine e64e :in (mill-v1/crossbeam) :out mill-beam-sk :kind sketch
   :transform (ground-sketch :sketch (sketch
     (pts (e0 0 0) (e1 1500 0) (e2 1500 120) (e3 0 120)) (constraints))))
-(refine e65e :in (mbeam-sk) :out mbeam-solid :role Part :kind crossbeam
+(refine e65e :in (mill-beam-sk) :out mill-beam-solid :role Part :kind crossbeam
   :transform (extrude :height 60 :material pla :at ((-5800 3440 1260))))
-(refine e65ef :in (mbeam-solid) :out mbeam-fil :role Part :kind crossbeam
+(refine e65ef :in (mill-beam-solid) :out mill-beam-fil :role Part :kind crossbeam
   :transform (fillet :edges all :radius 0.6))
-(print e66e :in (mbeam-fil) :printer reference-printer :out mbeam-printed)
-(refine e64h :in (mill-v1/z-head) :out mhead-sk :kind sketch
+(print e66e :in (mill-beam-fil) :printer reference-printer :out mill-beam-printed)
+(refine e64h :in (mill-v1/z-head) :out mill-head-sk :kind sketch
   :transform (ground-sketch :sketch (sketch
     (pts (h0 0 0) (h1 200 0) (h2 200 200) (h3 0 200)) (constraints))))
-(refine e65h :in (mhead-sk) :out mhead-solid :role Part :kind spindle-head
+(refine e65h :in (mill-head-sk) :out mill-head-solid :role Part :kind spindle-head
   :transform (extrude :height 150 :material pla :at ((-4700 3390 1320))))
-(refine e65hf :in (mhead-solid) :out mhead-fil :role Part :kind spindle-head
+(refine e65hf :in (mill-head-solid) :out mill-head-fil :role Part :kind spindle-head
   :transform (fillet :edges all :radius 0.6))
-(print e66h :in (mhead-fil) :printer reference-printer :out mhead-printed)
+(print e66h :in (mill-head-fil) :printer reference-printer :out mill-head-printed)
 
 (exact e67 :target mill-v1/spindle :from catalog
   :match "torque_nm>=8 rpm>=12000" :out mill-spindle
@@ -285,7 +243,7 @@
 (procure e68 :target mill-v1/cnc :from catalog
   :match "axis_count>=4" :out mill-cnc :at ((-5400 3200 300)))
 ;; axis modules: catalog rails/screws/servos + printed carriage
-(refine e64x :in (mill-v1/x-axis) :out xax2 :role Component
+(refine e64x :in (mill-v1/x-axis) :out mill-xaxis :role Component
   :transform (decompose
     :into (x-rail x-screw x-servo x-carriage)
     :roles ((x-rail Part) (x-screw Part) (x-servo Part) (x-carriage Part))
@@ -294,14 +252,14 @@
       (x-screw :budget ((mass_kg ("<=" 0.1))) :guarantees ((gxs2 "X screw" :bounds ((mass_kg ("<=" 0.1))))))
       (x-servo :budget ((mass_kg ("<=" 2.5))) :guarantees ((gxv2 "X servo" :bounds ((mass_kg ("<=" 2.5))))))
       (x-carriage :budget ((mass_kg ("<=" 3))) :guarantees ((gxc2 "X carriage" :bounds ((mass_kg ("<=" 3)))))))))
-(exact e65x :target xax2/x-rail :from catalog :match "travel_mm>=1700"
+(exact e65x :target mill-xaxis/x-rail :from catalog :match "travel_mm>=1700"
   :out xrail-std :at ((-5900 3050 70)))
-(procure e65xs :target xax2/x-screw :from catalog :match "dia_mm=8"
+(procure e65xs :target mill-xaxis/x-screw :from catalog :match "dia_mm=8"
   :out xscrew-bought :at ((-5900 2980 40)))
-(exact e65xv :target xax2/x-servo :from catalog
+(exact e65xv :target mill-xaxis/x-servo :from catalog
   :match "torque_nm>=0.35 mass_g<=2500" :out xservo-std
   :at ((-5950 2900 40)))
-(refine e65xc :in (xax2/x-carriage) :out xcar2-sk :kind sketch
+(refine e65xc :in (mill-xaxis/x-carriage) :out xcar2-sk :kind sketch
   :transform (ground-sketch :sketch (sketch
     (pts (q0 0 0) (q1 150 0) (q2 150 120) (q3 0 120)) (constraints))))
 (refine e65xc2 :in (xcar2-sk) :out xcar2-solid :role Part :kind carriage
@@ -311,9 +269,9 @@
 (print e65xc4 :in (xcar2-fil) :printer reference-printer
   :out xcar2-printed)
 (compose e66x :in (xrail-std xscrew-bought xservo-std xcar2-printed)
-  :out xax2-assy :role Component :kind axis-module)
+  :out mill-xaxis-assy :role Component :kind axis-module)
 
-(refine e64y :in (mill-v1/y-axis) :out yax2 :role Component
+(refine e64y :in (mill-v1/y-axis) :out mill-yaxis :role Component
   :transform (decompose
     :into (y-rail y-screw y-servo y-carriage)
     :roles ((y-rail Part) (y-screw Part) (y-servo Part) (y-carriage Part))
@@ -322,14 +280,14 @@
       (y-screw :budget ((mass_kg ("<=" 0.1))) :guarantees ((gys2 "Y screw" :bounds ((mass_kg ("<=" 0.1))))))
       (y-servo :budget ((mass_kg ("<=" 2.5))) :guarantees ((gyv2 "Y servo" :bounds ((mass_kg ("<=" 2.5))))))
       (y-carriage :budget ((mass_kg ("<=" 3))) :guarantees ((gyc2 "Y carriage" :bounds ((mass_kg ("<=" 3)))))))))
-(exact e65y :target yax2/y-rail :from catalog :match "travel_mm>=700"
+(exact e65y :target mill-yaxis/y-rail :from catalog :match "travel_mm>=700"
   :out yrail-std :at ((-5300 3000 70) (0 0 1 90)))
-(procure e65ys :target yax2/y-screw :from catalog :match "dia_mm=8"
+(procure e65ys :target mill-yaxis/y-screw :from catalog :match "dia_mm=8"
   :out yscrew-bought :at ((-5370 3050 40) (0 0 1 90)))
-(exact e65yv :target yax2/y-servo :from catalog
+(exact e65yv :target mill-yaxis/y-servo :from catalog
   :match "torque_nm>=0.35 mass_g<=2500" :out yservo-std
   :at ((-5450 3050 40) (0 0 1 90)))
-(refine e65yc :in (yax2/y-carriage) :out ycar2-sk :kind sketch
+(refine e65yc :in (mill-yaxis/y-carriage) :out ycar2-sk :kind sketch
   :transform (ground-sketch :sketch (sketch
     (pts (s0 0 0) (s1 150 0) (s2 150 120) (s3 0 120)) (constraints))))
 (refine e65yc2 :in (ycar2-sk) :out ycar2-solid :role Part :kind carriage
@@ -339,9 +297,9 @@
 (print e65yc4 :in (ycar2-fil) :printer reference-printer
   :out ycar2-printed)
 (compose e66y :in (yrail-std yscrew-bought yservo-std ycar2-printed)
-  :out yax2-assy :role Component :kind axis-module)
+  :out mill-yaxis-assy :role Component :kind axis-module)
 
-(refine e64z :in (mill-v1/z-axis) :out zax2 :role Component
+(refine e64z :in (mill-v1/z-axis) :out mill-zaxis :role Component
   :transform (decompose
     :into (z-rail z-screw z-servo z-carriage)
     :roles ((z-rail Part) (z-screw Part) (z-servo Part) (z-carriage Part))
@@ -350,14 +308,14 @@
       (z-screw :budget ((mass_kg ("<=" 0.1))) :guarantees ((gzs2 "Z screw" :bounds ((mass_kg ("<=" 0.1))))))
       (z-servo :budget ((mass_kg ("<=" 2.5))) :guarantees ((gzv2 "Z servo" :bounds ((mass_kg ("<=" 2.5))))))
       (z-carriage :budget ((mass_kg ("<=" 3))) :guarantees ((gzc2 "Z carriage" :bounds ((mass_kg ("<=" 3)))))))))
-(exact e65z :target zax2/z-rail :from catalog :match "travel_mm>=400"
+(exact e65z :target mill-zaxis/z-rail :from catalog :match "travel_mm>=400"
   :out zrail-std :at ((-4650 3390 500) (0 1 0 90)))
-(procure e65zs :target zax2/z-screw :from catalog :match "dia_mm=8"
+(procure e65zs :target mill-zaxis/z-screw :from catalog :match "dia_mm=8"
   :out zscrew-bought :at ((-4710 3390 500) (0 1 0 90)))
-(exact e65zv :target zax2/z-servo :from catalog
+(exact e65zv :target mill-zaxis/z-servo :from catalog
   :match "torque_nm>=0.35 mass_g<=2500" :out zservo-std
   :at ((-4770 3390 1400) (0 1 0 90)))
-(refine e65zc :in (zax2/z-carriage) :out zcar2-sk :kind sketch
+(refine e65zc :in (mill-zaxis/z-carriage) :out zcar2-sk :kind sketch
   :transform (ground-sketch :sketch (sketch
     (pts (t0 0 0) (t1 150 0) (t2 150 120) (t3 0 120)) (constraints))))
 (refine e65zc2 :in (zcar2-sk) :out zcar2-solid :role Part :kind carriage
@@ -367,11 +325,11 @@
 (print e65zc4 :in (zcar2-fil) :printer reference-printer
   :out zcar2-printed)
 (compose e66z :in (zrail-std zscrew-bought zservo-std zcar2-printed)
-  :out zax2-assy :role Component :kind axis-module)
+  :out mill-zaxis-assy :role Component :kind axis-module)
 
-(compose e69 :in (mbed-printed mcolL-printed mcolR-printed
-                 mbeam-printed mhead-printed
-                 xax2-assy yax2-assy zax2-assy mill-spindle mill-cnc)
+(compose e69 :in (mill-bed-printed mill-colL-printed mill-colR-printed
+                 mill-beam-printed mill-head-printed
+                 mill-xaxis-assy mill-yaxis-assy mill-zaxis-assy mill-spindle mill-cnc)
   :out fab-mill2 :role Resource :kind gantry-mill)
 ;; the machining chain: cross-member milled ON the developed mill
 (manufacture e70 :in (xmb-fil) :out xmb-proc :machine fab-mill2

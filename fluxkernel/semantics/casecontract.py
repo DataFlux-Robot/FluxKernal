@@ -91,32 +91,45 @@ def _descendants(dag, root, nodes, seen=None):
 
 
 def _terminal_sets(dag):
-    """leaves grouped by how they closed: standard-parts / printable /
-    process-family / open."""
-    from .goals import _closed_nodes, _out_edges
+    """TERMINAL ARTIFACTS (production-graph sinks) grouped by how they
+    closed: standard-parts / printable / process-family / open.
+    Intermediates (consumed by a downstream refine/print/compose) are
+    not leaves and do not count."""
+    from .goals import _closed_nodes
     closed = _closed_nodes(dag)
     nodes = dict(dag.iter_nodes())
+    consumed = set()
+    for _, e in dag.iter_edges():
+        if e.get("state") == "promoted" and e.get("op") in (
+                "refine", "manufacture", "print", "compose",
+                "exact", "procure"):
+            # a catalog closure consumes its slot too: the slot node is
+            # an intermediate, the -std artifact is the terminal leaf
+            consumed.update(e.get("inputs") or [])
     stats = {"standard-parts": 0, "printable": 0, "process-family": 0,
              "open": 0}
     for d, p in nodes.items():
-        if p.get("role") != "Part" or d not in closed:
-            if p.get("role") == "Part" and d not in closed:
-                stats["open"] += 1
+        if p.get("role") != "Part":
             continue
+        if d not in closed:
+            stats["open"] += 1
+            continue
+        if d in consumed:
+            continue                          # intermediate, not a leaf
         how = _how_closed(dag, d)
         stats[how] = stats.get(how, 0) + 1
     return stats
 
 
 def _how_closed(dag, d):
-    for _, e in dag.iter_edges():
-        if d in (e.get("inputs") or []):
-            if e.get("op") in ("exact", "procure"):
-                return "standard-parts"
-            if (e.get("transform") or {}).get("name") == "print":
-                return "printable"
-            if e.get("op") == "manufacture":
-                return "process-family"
+    pe = dag.producing_edge(d)
+    if pe is not None:
+        if pe.get("op") in ("exact", "procure"):
+            return "standard-parts"
+        if (pe.get("transform") or {}).get("name") == "print":
+            return "printable"
+        if pe.get("op") == "manufacture":
+            return "process-family"
     return "other"
 
 
@@ -146,10 +159,24 @@ def _mfg_chains(dag):
     return chains, machines
 
 
+def _norm(key, want):
+    """DSL list-forms -> the shapes evaluate expects.  E.g.
+    (reference-fidelity (issues-max 2)) arrives as ["issues-max", 2]."""
+    if key in ("reference-fidelity", "manufacturing-chains")             and isinstance(want, list) and want             and not isinstance(want[0], str):
+        return {want[0]: want[1]}
+    if key in ("reference-fidelity", "manufacturing-chains")             and isinstance(want, list) and want             and isinstance(want[0], str):
+        d = {want[0]: want[1] if len(want) > 1 else True}
+        for extra in want[2:]:
+            if isinstance(extra, list) and len(extra) == 2:
+                d[str(extra[0]).lstrip(":")] = extra[1]
+        return d
+    return want
+
+
 def evaluate(dag, cc: dict) -> list[dict]:
     """Every require -> one obligation (id=case:<key>, hard)."""
     obs = []
-    reqs = dict(cc.get("requires") or {})
+    reqs = {k: _norm(k, v) for k, v in (cc.get("requires") or {}).items()}
     for key, want in reqs.items():
         if key == "min-part-decompose-depth":
             total, dec, _ = _part_stats(dag)

@@ -602,11 +602,14 @@ def cmd_render(a):
     # (printer frames, mills) reads as clutter and has been mistaken
     # for defects two reviews running; --with-equipment opts in
     if not getattr(a, "with_equipment", False):
-        equip_kinds = {"frame", "printer-frame"}
         parts = [(n, p2, shp) for n, p2, shp in parts
-                 if p2.get("kind") not in equip_kinds
-                 and "printer" not in n and "pframe" not in n
-                 and "mill" not in n]
+                 if not any(t in n for t in
+                            ("printer", "pframe", "p-stepper", "p-board",
+                             "mill", "mbed", "mcol", "mbeam", "mhead",
+                             "xax2", "yax2", "zax2",
+                             "xrail", "yrail", "zrail", "xscrew",
+                             "yscrew", "zscrew", "xservo", "yservo",
+                             "zservo", "xcar2", "ycar2", "zcar2"))]
     tri_groups = []
     for name, payload, shp in parts:
         tri_groups.append((scene.role_color(payload), scene.mesh_shape(shp)))

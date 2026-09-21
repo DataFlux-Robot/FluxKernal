@@ -41,7 +41,8 @@ def _design_nodes(dag):
     records (kind=review, P7a) — definitional/archival objects, never
     design goals or risks."""
     return [(d, p) for d, p in dag.iter_nodes()
-            if p.get("kind") not in ("params", "review", "case-contract")]
+            if p.get("kind") not in ("params", "review", "case-contract",
+                                     "reference-image")]
 
 
 def _out_edges(dag) -> dict[str, list[dict]]:
