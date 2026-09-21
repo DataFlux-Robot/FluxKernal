@@ -1,6 +1,6 @@
 # FluxKernel 开发进展报告
 
-日期：2026-09-21（v05 评审修复后更新）· 仓库：`E:\DATA\vscode\fluxkernel` · 43 次提交
+日期：2026-09-21（TK-6x4 卡车案例后更新，55 次提交）· 仓库：`E:\DATA\vscode\fluxkernel` · 43 次提交
 配套文档：`INTRODUCTION.md`（架构介绍，面向评审）· `REPORT.md`（初版交付报告）· `docs/design/`（设计文档系列）
 
 > 定位回顾：面向 LLM 的**通用**机械系统工程内核 + CAD CLI（build123d 形态的 `.fcad` DSL + 33 子命令）。核不是几何而是**带证书的内容寻址精化图（CARG）**——几何是节点的求值投影。开发纪律：机制通用、内容（案例/目录/模板）为数据、内核 L0/L1 零第三方依赖且零改动。
@@ -10,10 +10,10 @@
 | 指标 | 值 |
 |---|---|
 | 测试 | **50/50 全绿**（`python tests/run_tests.py`） |
-| 规模 | 99 个 git 追踪文件，Python 9275 行 |
+| 规模 | 101 个 git 追踪文件，Python 9336 行 |
 | CLI | 36 子命令（+render/review/iterate）；`.fcad` DSL 含 `:at`、`:machine`、`:template`、`:roles`、`:no-assembly`、`:tier` |
 | 求解插件 | 15 个（+cut）；目录 7 文件（含 panels+geom.py 代表性几何）；机制库 3 条目；skill 库 5 件 |
-| 案例 ×2 | SHA-PEK（96 表单）+ **SR-4M 侦察无人机**（40 表单，skill 闭环首测）/ 49/49 测试 / 双案例冷库 OPEN(0)+verify 全绿 |
+| 案例 ×3 | SHA-PEK 飞机（96 表单/191 边）+ SR-4M 侦察无人机（40/120）+ **TK-6x4 卡车**（51/105，第二任务类别）/ 50/50 测试 / 三案例冷库各 rejected 1（故意样本）+ OPEN(0) + verify OK |
 | 案例终态 | **OPEN GOALS (0)** · verify 全绿 · dc-bus Σbudget 3820/4000W（容量 5000、margin 0.2）· 装配干涉门 = 0 干涉 |
 | 整机形态 | **翼型蒙皮薄壁翼盒**（NACA 4 位族，tc/camber 入参）+ 八角舱壳 + 翼型尾翼；目录件带代表性包络（青色）；渲染 35 形状 |
 | 任务链 | 假设航程 5344.7 km（L/D=14）→ **闭环复算 6127.3 km**（aero-2d 实测 L/D=16.05 覆写假设；数字取自运行证据） |
@@ -100,6 +100,26 @@ MakeThickSolidByJoin 不挖空放置后的 loft；薄壁筒口倒角撞 "only 2 
 
 test_50：破坏的装配网必须 surface（合法 compose 对照闭合）；失败 eval 开 scope、informative 豁免。
 双案例冷库终态：SHA-PEK 96 表单 / SR-4M 40 表单，各 rejected 1（e2x/e2x 类故意样本），OPEN(0)，verify OK。
+
+## 0.65 第十阶段：TK-6x4 卡车——skill 闭环第二任务类别（`18cf3fe`）
+
+用户指令"帮我设计一辆卡车"再次触发 fcad-design。要点是**机制复用**：cabin-fuselage 一次
+实例化两次（驾驶室 tail-frac 0.75 微缩 + 货箱 1.0 等截面——机制参数 range 放宽到 1.0），
+车架为两根打印纵梁，行走系为新增目录类（running-gear.json + wheel/axle 生成器）。
+
+终态（冷库证据）：51 表单/105 边，OPEN(0)，verify OK，唯一拒绝 = e2x 类故意样本；
+任务航程 153.0 km（要求 150）；结构 863.2 kg = 驾驶室 180.8 + 货箱 587.1 + 底盘 95.3（≤1200 GVW）。
+
+闭环抓到四个真问题（每次都沉淀为通用修复）：
+1. **无界目录查询命中错类**（`mass_kg<=50` 找轮子返回 8kg 座椅）——v05 伺服选型 bug 同型再现；
+   修法=查询带类别限定量（dia_mm=900）。**这是第二次出现同类问题：目录查询纪律应进 skill 速查表**
+2. **车架横放**——渲染+数值 bbox 双通道发现纵梁沿车宽；修草图朝向
+3. **干涉门真实执法**——v05 修掉静默 import bug 后，门拒绝轮胎压纵梁/车桥穿轮辋的原始布置；
+   修法=物理分离（轮外移、桥 1700 居中），不是关门
+4. **机制默认参数语义错配**——货箱不该收缩尾部；tail-frac 显式传参 + range 放宽
+
+三案例矩阵（单跑口径，全部当日冷库复跑）：SHA-PEK 96 表单/191 边、SR-4M 40/120、TK-6x4 51/105，
+各 rejected 1（故意 informative 样本），OPEN(0)，verify OK。
 
 ## 1. 开发阶段总览
 
@@ -193,7 +213,8 @@ P6（G5 b123d-script / G6 solve）按路线图为可选增强，本轮未实施�
 
 ```bash
 cd E:\DATAscodeluxkernel
-.venv\Scripts\python.exe testsun_tests.py      # 50/50 passed
+.venv\Scripts\python.exe tests
+un_tests.py      # 50/50 passed
 # 双案例冷库（每次新目录，防热库旧绑定）：
 for c in sha_pek sr4_recon do (mkdir %TMP%kchk && cd %TMP%kchk &&
   E:\DATAscodeluxkernel\.venv\Scripts\python.exe -m fluxkernel.interface.cli init &&
