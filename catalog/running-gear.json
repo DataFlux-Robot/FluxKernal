@@ -1,0 +1,52 @@
+{
+ "entries": [
+  {
+   "name": "truck-tire-900",
+   "kind": "wheel",
+   "supplier": "gear-catalog",
+   "tier": 1,
+   "bounds": {
+    "mass_kg": {
+     "<=": 50
+    },
+    "dia_mm": {
+     "=": 900
+    }
+   },
+   "ground": {
+    "mass_g": 40000.0
+   },
+   "geometry": {
+    "generator": "catalog/geom.py#wheel",
+    "params": {
+     "dia": 900,
+     "width": 300
+    }
+   }
+  },
+  {
+   "name": "truck-axle-2200",
+   "kind": "axle",
+   "supplier": "gear-catalog",
+   "tier": 1,
+   "bounds": {
+    "mass_kg": {
+     "<=": 95
+    },
+    "length_mm": {
+     ">=": 1500
+    }
+   },
+   "ground": {
+    "mass_g": 80000.0
+   },
+   "geometry": {
+    "generator": "catalog/geom.py#axle",
+    "params": {
+     "length": 1700,
+     "dia": 90
+    }
+   }
+  }
+ ]
+}

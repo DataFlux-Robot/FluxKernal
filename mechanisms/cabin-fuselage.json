@@ -28,7 +28,7 @@
    "type": "ratio",
    "range": [
     0.2,
-    0.9
+    1.0
    ],
    "default-expr": 0.45
   },

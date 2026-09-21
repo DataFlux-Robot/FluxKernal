@@ -1,0 +1,208 @@
+;; ═══════════════════════════════════════════════════════════════════
+;; TK-6x4: light cargo truck (printed-chassis design study) — built
+;; with the fcad-design loop.  The cabin-fuselage mechanism does BOTH
+;; enclosed volumes (cab + cargo box: octagon shell, bulkheads as
+;; cross members); the ladder frame is two printed rails; axles/wheels
+;; are catalog envelopes; the printer bootstrap closes the recursion.
+;; ═══════════════════════════════════════════════════════════════════
+
+;; ── glossary ──
+(term range "distance flown between charges with reserve, km")
+(term mass "curb + payload mass of the vehicle, kg")
+(term payload "cargo mass carried, kg")
+(term power "electrical watts drawn from the bus under load")
+(term printer "additive fabrication resource")
+(term frame "structural frame of a machine")
+
+;; ── media ──
+(node dc-bus :role Medium :kind dc-bus
+  :spec (medium (capacity (power_w (<= 6000))) (margin 0.2)))
+
+(node reference-printer :role Resource :kind unbounded-fdm-printer
+  :spec (contract
+    (goals (rp1 "print every structural part of this product tree"
+                :falsifiable t
+                :measure "dfam-print hard gate per printed part"
+                :terms (printer frame)))
+    (semantics printer frame)
+    (assumes (rp-a1 "build volume effectively unbounded (demand-layer promise)"
+                    :bounds ((dim_mm (>= 0)))))
+    (guarantees (rp-g1 "prints grounded parts that pass dfam-print"
+                       :bounds ((mass_g (<= 100000)))))
+    (budget (mass_kg (<= 60)))
+    (forbidden (rp-f1 "unattended overnight operation" :check test))
+    (not-responsible "filament supply logistics")
+    (time-scale fabrication)))
+
+;; ── single-source parameters ──
+(params tk ((wheelbase-f 900) (wheelbase-r 5600)
+            (cab-len 1800) (cab-w 2200) (cab-h 1800)
+            (box-len 4100) (box-w 2200) (box-h 2000)))
+
+;; ── the demand, contract-native ──
+(goal tk6x4 :kind truck
+  :spec (contract
+    (goals (r1 "regional delivery runs of 200 km out and back per shift"
+               :falsifiable t
+               :measure "mission sim: range_km vs duty cycle + reserve"
+               :terms (range mass))
+           (p1 "haul the rated cargo over the full mission"
+               :falsifiable t :measure "payload manifest at GVW"
+               :terms (payload)))
+    (semantics range mass payload power)
+    (assumes (route1 "regional delivery corridor"
+                     :bounds ((dist_km (>= 180) (<= 240)))))
+    (guarantees (gr1 "delivers the rated cargo with reserves"
+                     :bounds ((range_km (>= 150)) (payload_kg (>= 800)))))
+    (budget (mass_kg (<= 1200)))
+    (effluent (heat_w (<= 200 :medium dc-bus)))
+    (forbidden (f1 "frame resonance below 8 Hz" :check test)
+               (f2 "load bed deflection over L/200" :check inspection))
+    (not-responsible "driver licensing" "road tolls")
+    (time-scale mission)))
+
+;; ── mission model ──
+(refine e1 :in (tk6x4) :out tk-pm :role System :kind point-mass
+  :transform (point-mass-model))
+(eval e2 :target tk-pm :with mission-analysis :fidelity 0
+  :expect ((range-margin-km (> 0))))
+(refine e2b :in (tk-pm) :out tk-pm :kind point-mass
+  :transform (param-perturb :values ((mtow 1200) (ff 0.08) (ld 6)
+                                     (sfc 0.000008333) (v 25))))
+(eval e2c :target tk-pm :with mission-analysis :fidelity 0
+  :expect ((range_km (>= 150))))
+;; deliberately impossible: informative failure, kept forever
+(eval e2x :target tk-pm :with mission-analysis :fidelity 0
+  :expect ((range-margin-km (> 999999))) :informative t)
+
+;; ── decompose; budgets flow down (Σ=1130 ≤ 1200) ──
+(refine e3 :in (tk-pm) :out tk-v1 :role System
+  :transform (decompose
+    :into (cab cargo-box frame-l frame-r
+               axle-f axle-m axle-r
+               wheel-fl wheel-fr wheel-ml wheel-mr wheel-rl wheel-rr
+               powertrain seat)
+    :flow-down (
+      (cab :budget ((mass_kg ("<=" 125))) :guarantees ((gc "cab shell protects" :bounds ((mass_kg ("<=" 100))))))
+      (cargo-box :budget ((mass_kg ("<=" 250))) :guarantees ((gb "cargo box carries" :bounds ((mass_kg ("<=" 250))))))
+      (frame-l :budget ((mass_kg ("<=" 95))) :guarantees ((gfl "left rail" :bounds ((mass_kg ("<=" 95))))))
+      (frame-r :budget ((mass_kg ("<=" 95))) :guarantees ((gfr "right rail" :bounds ((mass_kg ("<=" 95))))))
+      (axle-f :budget ((mass_kg ("<=" 95))) :guarantees ((gaf "front axle" :bounds ((mass_kg ("<=" 95))))))
+      (axle-m :budget ((mass_kg ("<=" 95))) :guarantees ((gam "mid axle" :bounds ((mass_kg ("<=" 95))))))
+      (axle-r :budget ((mass_kg ("<=" 95))) :guarantees ((gar "rear axle" :bounds ((mass_kg ("<=" 95))))))
+      (wheel-fl :budget ((mass_kg ("<=" 50))) :guarantees ((gw1 "front left wheel" :bounds ((mass_kg ("<=" 50))))))
+      (wheel-fr :budget ((mass_kg ("<=" 50))) :guarantees ((gw2 "front right wheel" :bounds ((mass_kg ("<=" 50))))))
+      (wheel-ml :budget ((mass_kg ("<=" 50))) :guarantees ((gw3 "mid left wheel" :bounds ((mass_kg ("<=" 50))))))
+      (wheel-mr :budget ((mass_kg ("<=" 50))) :guarantees ((gw4 "mid right wheel" :bounds ((mass_kg ("<=" 50))))))
+      (wheel-rl :budget ((mass_kg ("<=" 50))) :guarantees ((gw5 "rear left wheel" :bounds ((mass_kg ("<=" 50))))))
+      (wheel-rr :budget ((mass_kg ("<=" 50))) :guarantees ((gw6 "rear right wheel" :bounds ((mass_kg ("<=" 50))))))
+      (powertrain :budget ((mass_kg ("<=" 15))) :guarantees ((gpt "drive motor" :bounds ((mass_kg ("<=" 15))))))
+      (seat :budget ((mass_kg ("<=" 20))) :guarantees ((gst "driver seat" :bounds ((mass_kg ("<=" 20)))))))))
+
+;; ── cab: octagon shell + bulkheads (mechanism reuse #1) ──
+(instantiate e4 :at (tk-v1/cab) :mechanism cabin-fuselage
+  :params ((length (:param tk/cab-len)) (width (:param tk/cab-w))
+           (height (:param tk/cab-h)) (tail-frac 0.75)
+           (x0 0) (y0 0) (z0 150))
+  :printer reference-printer :out cab)
+
+;; ── cargo box: the same mechanism, longer/taller (reuse #2) ──
+(instantiate e5 :at (tk-v1/cargo-box) :mechanism cabin-fuselage
+  :params ((length (:param tk/box-len)) (width (:param tk/box-w))
+           (height (:param tk/box-h)) (tail-frac 1.0)
+           (x0 0) (y0 1900) (z0 150))
+  :printer reference-printer :out box)
+
+;; ── ladder frame: two printed rails ──
+(refine e6 :in (tk-v1/frame-l) :out frame-l-sk :kind sketch
+  :transform (ground-sketch :sketch (sketch
+    (pts (a0 0 0) (a1 120 0) (a2 120 6000) (a3 0 6000)) (constraints))))
+(refine e7 :in (frame-l-sk) :out frame-l-solid :kind frame
+  :transform (extrude :height 60 :material pla :at ((-1060 0 0))))
+(refine e7f :in (frame-l-solid) :out frame-l-fil :kind frame
+  :transform (fillet :edges all :radius 0.6))
+(print e8 :in (frame-l-fil) :printer reference-printer :out frame-l-printed)
+(refine e9 :in (tk-v1/frame-r) :out frame-r-sk :kind sketch
+  :transform (ground-sketch :sketch (sketch
+    (pts (b0 0 0) (b1 120 0) (b2 120 6000) (b3 0 6000)) (constraints))))
+(refine e10 :in (frame-r-sk) :out frame-r-solid :kind frame
+  :transform (extrude :height 60 :material pla :at ((940 0 0))))
+(refine e10f :in (frame-r-solid) :out frame-r-fil :kind frame
+  :transform (fillet :edges all :radius 0.6))
+(print e11 :in (frame-r-fil) :printer reference-printer :out frame-r-printed)
+
+;; ── axles + wheels: catalog envelopes at the running positions ──
+(exact e12 :target tk-v1/axle-f :from catalog
+  :match "mass_kg<=95 length_mm>=1500" :out axle-f-std
+  :at ((-850 900 -330)))
+(exact e13 :target tk-v1/axle-m :from catalog
+  :match "mass_kg<=95 length_mm>=1500" :out axle-m-std
+  :at ((-850 3800 -330)))
+(exact e14 :target tk-v1/axle-r :from catalog
+  :match "mass_kg<=95 length_mm>=1500" :out axle-r-std
+  :at ((-850 5600 -330)))
+(exact e15 :target tk-v1/wheel-fl :from catalog
+  :match "mass_kg<=50 dia_mm=900" :out wheel-fl-std :at ((-1400 900 -330)))
+(exact e16 :target tk-v1/wheel-fr :from catalog
+  :match "mass_kg<=50 dia_mm=900" :out wheel-fr-std :at ((1100 900 -330)))
+(exact e17 :target tk-v1/wheel-ml :from catalog
+  :match "mass_kg<=50 dia_mm=900" :out wheel-ml-std :at ((-1400 3800 -330)))
+(exact e18 :target tk-v1/wheel-mr :from catalog
+  :match "mass_kg<=50 dia_mm=900" :out wheel-mr-std :at ((1100 3800 -330)))
+(exact e19 :target tk-v1/wheel-rl :from catalog
+  :match "mass_kg<=50 dia_mm=900" :out wheel-rl-std :at ((-1400 5600 -330)))
+(exact e20 :target tk-v1/wheel-rr :from catalog
+  :match "mass_kg<=50 dia_mm=900" :out wheel-rr-std :at ((1100 5600 -330)))
+
+;; ── powertrain + interior ──
+(exact e21 :target tk-v1/powertrain :from catalog
+  :match "torque_nm>=8 power_w>=1500" :out motor-std
+  :at ((0 5300 220)))
+(exact e22 :target tk-v1/seat :from catalog
+  :match "mass_kg<=15" :out seat-std :at ((0 900 400)))
+
+;; ── assemblies + the vehicle (U4: every terminal artifact chained) ──
+(compose e23 :in (frame-l-printed frame-r-printed
+                 axle-f-std axle-m-std axle-r-std
+                 wheel-fl-std wheel-fr-std wheel-ml-std wheel-mr-std
+                 wheel-rl-std wheel-rr-std)
+  :out chassis-assy :role Component :kind chassis)
+(compose e24 :in (cab/assembly box/assembly chassis-assy
+                 motor-std seat-std)
+  :out tk-design :role System :kind truck)
+
+;; ══ printer bootstrap (device recursion closes) ══
+(refine e30 :in (reference-printer) :out printer-v1 :role System
+  :transform (decompose
+    :into (p-frame p-stepper p-board)
+    :flow-down (
+      (p-frame :budget ((mass_g ("<=" 9000))) :guarantees ((gpf "stiff gantry frame" :bounds ((mass_g ("<=" 9000))))))
+      (p-stepper :budget ((mass_g ("<=" 400))) :guarantees ((gps "extruder stepper torque" :bounds ((torque_nm (">=" 0.35))))))
+      (p-board :budget ((mass_g ("<=" 300))) :guarantees ((gpb "4-axis motion board" :bounds ((axis_count (">=" 4)))))))))
+(refine e31 :in (printer-v1/p-frame) :out pframe-sk :kind sketch
+  :transform (ground-sketch :sketch (sketch
+    (pts (r0 0 0) (r1 600 0) (r2 600 600) (r3 0 600)) (constraints))))
+(refine e32 :in (pframe-sk) :out pframe-solid :kind frame
+  :transform (extrude :height 8 :material pla :at ((-3000 3000 0))))
+(refine e32f :in (pframe-solid) :out pframe-fil :kind frame
+  :transform (fillet :edges all :radius 0.6))
+(print e33 :in (pframe-fil) :printer reference-printer :out pframe-printed)
+(exact e34 :target printer-v1/p-stepper :from catalog
+  :match "torque_nm>=0.35 mass_g<=400" :out p-stepper-std
+  :at ((-3060 3600 608)))
+(procure e35 :target printer-v1/p-board :from catalog
+  :match "axis_count>=4" :out p-board-bought
+  :at ((-2940 3300 606)))
+(compose e36 :in (pframe-printed p-stepper-std p-board-bought)
+  :out printer-assy :role Resource :kind fdm-printer)
+
+;; ══ closed-loop re-verification ══
+(eval e40 :target cab/assembly :with mass-rollup :fidelity 2
+  :expect ((mass_kg (<= 100))))
+(eval e41 :target box/assembly :with mass-rollup :fidelity 2
+  :expect ((mass_kg (<= 250))))
+(eval e42 :target chassis-assy :with mass-rollup :fidelity 2
+  :expect ((mass_kg (<= 700))))
+(eval e43 :target tk-pm :with mission-analysis :fidelity 1
+  :overrides ((ld 6) (ff 0.08) (sfc 0.000008333) (v 25) (mtow 1200))
+  :expect ((range_km (>= 150))))

@@ -78,3 +78,17 @@ def panel(p):
     chord = float(p.get("chord", 200))
     t = float(p.get("thick", 4))
     return _box(span, chord, t)
+
+
+def wheel(p):
+    """Tire envelope: cylinder across the axle (X axis)."""
+    dia = float(p.get("dia", 900))
+    width = float(p.get("width", 300))
+    return _cyl(dia / 2, width, axis=(1, 0, 0))
+
+
+def axle(p):
+    """Beam axle envelope: cylinder along X."""
+    length = float(p.get("length", 2200))
+    dia = float(p.get("dia", 90))
+    return _cyl(dia / 2, length, axis=(1, 0, 0))
