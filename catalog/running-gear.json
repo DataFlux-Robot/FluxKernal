@@ -47,6 +47,30 @@
      "dia": 90
     }
    }
+  },
+  {
+   "name": "truck-tire-750",
+   "kind": "wheel",
+   "supplier": "gear-catalog",
+   "tier": 1,
+   "bounds": {
+    "mass_kg": {
+     "<=": 50
+    },
+    "dia_mm": {
+     "=": 750
+    }
+   },
+   "ground": {
+    "mass_g": 30000.0
+   },
+   "geometry": {
+    "generator": "catalog/geom.py#wheel",
+    "params": {
+     "dia": 750,
+     "width": 260
+    }
+   }
   }
  ]
 }

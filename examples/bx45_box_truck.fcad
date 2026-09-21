@@ -1,0 +1,213 @@
+;; ═══════════════════════════════════════════════════════════════════
+;; BX-45: light cab-over box truck, reverse-engineered from a photo via
+;; the fcad-from-image six-station pipeline.
+;;   ① VLM parse: cab-over cab at the very front, enclosed box directly
+;;      behind and TALLER than the cab, 4x2 running gear
+;;   ② web: comparable class chassis 5400x1840 (wheelbase 3000, Ollin)
+;;      and box 4180x2300x2200 (Kangling J6)
+;;   ③ every image/web number carries :tier and lives in assumes ONLY —
+;;      guarantees cite the mission, never the photo
+;;   ④ mechanisms: cabin-fuselage x2 (cab + straight box), printed
+;;      rails, catalog running gear
+;; ═══════════════════════════════════════════════════════════════════
+
+;; ── glossary ──
+(term range "distance flown between charges with reserve, km")
+(term mass "curb + payload mass of the vehicle, kg")
+(term payload "cargo mass carried, kg")
+(term power "electrical watts drawn from the bus under load")
+(term printer "additive fabrication resource")
+(term frame "structural frame of a machine")
+
+;; ── media ──
+(node dc-bus :role Medium :kind dc-bus
+  :spec (medium (capacity (power_w (<= 6000))) (margin 0.2)))
+
+(node reference-printer :role Resource :kind unbounded-fdm-printer
+  :spec (contract
+    (goals (rp1 "print every structural part of this product tree"
+                :falsifiable t
+                :measure "dfam-print hard gate per printed part"
+                :terms (printer frame)))
+    (semantics printer frame)
+    (assumes (rp-a1 "build volume effectively unbounded (demand-layer promise)"
+                    :bounds ((dim_mm (>= 0)))))
+    (guarantees (rp-g1 "prints grounded parts that pass dfam-print"
+                       :bounds ((mass_g (<= 100000)))))
+    (budget (mass_kg (<= 60)))
+    (forbidden (rp-f1 "unattended overnight operation" :check test))
+    (not-responsible "filament supply logistics")
+    (time-scale fabrication)))
+
+;; ── single-source parameters (④: from ①+②, not literals) ──
+(params bx ((overall-len 5200) (cab-len 1250) (cab-w 1900) (cab-h 2250)
+            (box-len 3600) (box-w 2050) (box-h 2450)
+            (wheelbase 3000) (rail-h 100)))
+
+;; ── the demand, contract-native ──
+(goal bx45 :kind truck
+  :spec (contract
+    (goals (r1 "urban distribution runs of 200 km per shift with reserve"
+               :falsifiable t
+               :measure "mission sim: range_km vs duty cycle + reserve"
+               :terms (range mass))
+           (p1 "haul the rated box cargo over the full mission"
+               :falsifiable t :measure "payload manifest at GVW"
+               :terms (payload)))
+    (semantics range mass payload power)
+    (assumes (img1 "overall length 4500-5500mm from photo proportions"
+                   :bounds ((length_mm (>= 4500) (<= 5500)))
+                   :tier image-inferred)
+             (web1 "comparable class chassis 5400x1840, wheelbase 3000"
+                   :bounds ((length_mm (>= 5000) (<= 6000))
+                            (width_mm (>= 1700) (<= 2100)))
+                   :tier web-sourced)
+             (web2 "class box 4180x2300x2200 (Kangling J6)"
+                   :bounds ((box_len_mm (>= 3500) (<= 4300))
+                            (box_h_mm (>= 2000) (<= 2400)))
+                   :tier web-sourced)
+             (route1 "urban corridor"
+                     :bounds ((dist_km (>= 180) (<= 240)))))
+    (guarantees (gr1 "delivers the box cargo with reserves"
+                     :bounds ((range_km (>= 150)) (payload_kg (>= 1500)))))
+    (budget (mass_kg (<= 4495)))
+    (effluent (heat_w (<= 200 :medium dc-bus)))
+    (forbidden (f1 "frame resonance below 8 Hz" :check test)
+               (f2 "box door seal failure at GVW" :check inspection))
+    (not-responsible "driver licensing" "cold-chain refrigeration")
+    (time-scale mission)))
+
+;; ── mission model ──
+(refine e1 :in (bx45) :out bx-pm :role System :kind point-mass
+  :transform (point-mass-model))
+(eval e2 :target bx-pm :with mission-analysis :fidelity 0
+  :expect ((range-margin-km (> 0))))
+;; L/D 6.5 assumes a cab roof fairing closing the cab/box step (design
+;; intent carried by the cab tail-frac 0.85); cruise 90 km/h
+(refine e2b :in (bx-pm) :out bx-pm :kind point-mass
+  :transform (param-perturb :values ((mtow 4495) (ff 0.08) (ld 6.5)
+                                     (sfc 0.000008333) (v 25))))
+(eval e2c :target bx-pm :with mission-analysis :fidelity 0
+  :expect ((range_km (>= 150))))
+(eval e2x :target bx-pm :with mission-analysis :fidelity 0
+  :expect ((range-margin-km (> 999999))) :informative t)
+
+;; ── decompose; budgets flow down (Σ=1500 ≤ 4495) ──
+(refine e3 :in (bx-pm) :out bx-v1 :role System
+  :transform (decompose
+    :into (cab cargo-box frame-l frame-r axle-f axle-r
+               wheel-fl wheel-fr wheel-rl wheel-rr powertrain seat)
+    :flow-down (
+      (cab :budget ((mass_kg ("<=" 160))) :guarantees ((gc "cab shell protects" :bounds ((mass_kg ("<=" 160))))))
+      (cargo-box :budget ((mass_kg ("<=" 260))) :guarantees ((gb "box carries" :bounds ((mass_kg ("<=" 260))))))
+      (frame-l :budget ((mass_kg ("<=" 90))) :guarantees ((gfl "left rail" :bounds ((mass_kg ("<=" 90))))))
+      (frame-r :budget ((mass_kg ("<=" 90))) :guarantees ((gfr "right rail" :bounds ((mass_kg ("<=" 90))))))
+      (axle-f :budget ((mass_kg ("<=" 95))) :guarantees ((gaf "front axle" :bounds ((mass_kg ("<=" 95))))))
+      (axle-r :budget ((mass_kg ("<=" 95))) :guarantees ((gar "rear axle" :bounds ((mass_kg ("<=" 95))))))
+      (wheel-fl :budget ((mass_kg ("<=" 50))) :guarantees ((gw1 "front left wheel" :bounds ((mass_kg ("<=" 50))))))
+      (wheel-fr :budget ((mass_kg ("<=" 50))) :guarantees ((gw2 "front right wheel" :bounds ((mass_kg ("<=" 50))))))
+      (wheel-rl :budget ((mass_kg ("<=" 50))) :guarantees ((gw3 "rear left wheel" :bounds ((mass_kg ("<=" 50))))))
+      (wheel-rr :budget ((mass_kg ("<=" 50))) :guarantees ((gw4 "rear right wheel" :bounds ((mass_kg ("<=" 50))))))
+      (powertrain :budget ((mass_kg ("<=" 15))) :guarantees ((gpt "drive motor" :bounds ((mass_kg ("<=" 15))))))
+      (seat :budget ((mass_kg ("<=" 20))) :guarantees ((gst "driver seat" :bounds ((mass_kg ("<=" 20)))))))))
+
+;; ── cab: cab-over, at the very front (①: no hood in the photo) ──
+(instantiate e4 :at (bx-v1/cab) :mechanism cabin-fuselage
+  :params ((length (:param bx/cab-len)) (width (:param bx/cab-w))
+           (height (:param bx/cab-h)) (tail-frac 0.85)
+           (x0 0) (y0 0) (z0 300))
+  :printer reference-printer :out cab)
+
+;; ── box: straight walls, directly behind the cab and taller (①) ──
+(instantiate e5 :at (bx-v1/cargo-box) :mechanism cabin-fuselage
+  :params ((length (:param bx/box-len)) (width (:param bx/box-w))
+           (height (:param bx/box-h)) (tail-frac 1.0)
+           (x0 0) (y0 1300) (z0 280))
+  :printer reference-printer :out box)
+
+;; ── ladder frame ──
+(refine e6 :in (bx-v1/frame-l) :out frame-l-sk :kind sketch
+  :transform (ground-sketch :sketch (sketch
+    (pts (a0 0 0) (a1 120 0) (a2 120 5000) (a3 0 5000)) (constraints))))
+(refine e7 :in (frame-l-sk) :out frame-l-solid :role Part :kind frame
+  :transform (extrude :height (:param bx/rail-h) :material pla
+                      :at ((-920 0 0))))
+(refine e7f :in (frame-l-solid) :out frame-l-fil :role Part :kind frame
+  :transform (fillet :edges all :radius 0.6))
+(print e8 :in (frame-l-fil) :printer reference-printer :out frame-l-printed)
+(refine e9 :in (bx-v1/frame-r) :out frame-r-sk :kind sketch
+  :transform (ground-sketch :sketch (sketch
+    (pts (b0 0 0) (b1 120 0) (b2 120 5000) (b3 0 5000)) (constraints))))
+(refine e10 :in (frame-r-sk) :out frame-r-solid :role Part :kind frame
+  :transform (extrude :height (:param bx/rail-h) :material pla
+                      :at ((800 0 0))))
+(refine e10f :in (frame-r-solid) :out frame-r-fil :role Part :kind frame
+  :transform (fillet :edges all :radius 0.6))
+(print e11 :in (frame-r-fil) :printer reference-printer :out frame-r-printed)
+
+;; ── 4x2 running gear (①: two axles) ──
+(exact e12 :target bx-v1/axle-f :from catalog
+  :match "mass_kg<=95 length_mm>=1500" :out axle-f-std
+  :at ((-850 1150 -280)))
+(exact e13 :target bx-v1/axle-r :from catalog
+  :match "mass_kg<=95 length_mm>=1500" :out axle-r-std
+  :at ((-850 4150 -280)))
+(exact e14 :target bx-v1/wheel-fl :from catalog
+  :match "mass_kg<=50 dia_mm=750" :out wheel-fl-std :at ((-1600 775 -655)))
+(exact e15 :target bx-v1/wheel-fr :from catalog
+  :match "mass_kg<=50 dia_mm=750" :out wheel-fr-std :at ((850 775 -655)))
+(exact e16 :target bx-v1/wheel-rl :from catalog
+  :match "mass_kg<=50 dia_mm=750" :out wheel-rl-std :at ((-1600 3775 -655)))
+(exact e17 :target bx-v1/wheel-rr :from catalog
+  :match "mass_kg<=50 dia_mm=750" :out wheel-rr-std :at ((850 3775 -655)))
+
+;; ── powertrain + interior ──
+(exact e18 :target bx-v1/powertrain :from catalog
+  :match "torque_nm>=8 power_w>=1500" :out motor-std
+  :at ((0 3900 250)))
+(exact e19 :target bx-v1/seat :from catalog
+  :match "mass_kg<=15" :out seat-std :at ((0 600 450)))
+
+;; ── assemblies + the vehicle ──
+(compose e20 :in (frame-l-printed frame-r-printed axle-f-std axle-r-std
+                 wheel-fl-std wheel-fr-std wheel-rl-std wheel-rr-std)
+  :out chassis-assy :role Component :kind chassis)
+(compose e21 :in (cab/assembly box/assembly chassis-assy
+                 motor-std seat-std)
+  :out bx-design :role System :kind truck)
+
+;; ══ printer bootstrap ══
+(refine e30 :in (reference-printer) :out printer-v1 :role System
+  :transform (decompose
+    :into (p-frame p-stepper p-board)
+    :flow-down (
+      (p-frame :budget ((mass_g ("<=" 9000))) :guarantees ((gpf "stiff gantry frame" :bounds ((mass_g ("<=" 9000))))))
+      (p-stepper :budget ((mass_g ("<=" 400))) :guarantees ((gps "extruder stepper torque" :bounds ((torque_nm (">=" 0.35))))))
+      (p-board :budget ((mass_g ("<=" 300))) :guarantees ((gpb "4-axis motion board" :bounds ((axis_count (">=" 4)))))))))
+(refine e31 :in (printer-v1/p-frame) :out pframe-sk :kind sketch
+  :transform (ground-sketch :sketch (sketch
+    (pts (r0 0 0) (r1 600 0) (r2 600 600) (r3 0 600)) (constraints))))
+(refine e32 :in (pframe-sk) :out pframe-solid :kind frame
+  :transform (extrude :height 8 :material pla :at ((-3000 3000 0))))
+(refine e32f :in (pframe-solid) :out pframe-fil :kind frame
+  :transform (fillet :edges all :radius 0.6))
+(print e33 :in (pframe-fil) :printer reference-printer :out pframe-printed)
+(exact e34 :target printer-v1/p-stepper :from catalog
+  :match "torque_nm>=0.35 mass_g<=400" :out p-stepper-std
+  :at ((-3060 3600 608)))
+(procure e35 :target printer-v1/p-board :from catalog
+  :match "axis_count>=4" :out p-board-bought
+  :at ((-2940 3300 606)))
+(compose e36 :in (pframe-printed p-stepper-std p-board-bought)
+  :out printer-assy :role Resource :kind fdm-printer)
+
+;; ══ closed-loop re-verification ══
+(eval e40 :target cab/assembly :with mass-rollup :fidelity 2
+  :expect ((mass_kg (<= 160))))
+(eval e41 :target box/assembly :with mass-rollup :fidelity 2
+  :expect ((mass_kg (<= 260))))
+(eval e42 :target chassis-assy :with mass-rollup :fidelity 2
+  :expect ((mass_kg (<= 480))))
+(eval e43 :target bx-pm :with mission-analysis :fidelity 1
+  :overrides ((ld 6.5) (ff 0.08) (sfc 0.000008333) (v 25) (mtow 4495))
+  :expect ((range_km (>= 150))))
