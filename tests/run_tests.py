@@ -2244,6 +2244,59 @@ def test_50_broken_scope_net_never_closes():
     assert not _eval_tree(eng4, informative=True), \
         ":informative exempts the scope (e2x pattern)"
 
+def test_51_case_contract_gates():
+    """CC1/CC2: the methodology is now a hard gate.  A case-contract
+    with an unmet require keeps OPEN != 0; unknown keys are refused;
+    the prsi-full profile reports equipment-development termination;
+    L7/L8 lint fire on a shallow store without any contract."""
+    from fluxkernel.semantics import goals as gv
+    from fluxkernel.semantics import contracts as fc
+    from fluxkernel.semantics import casecontract as ccm
+    eng = fresh()
+    t = terms(eng, 'mass')
+    eng.node('m', 'System', 'thing', contract(eng, t))
+    eng.case_contract('mini', 'product',
+                      {'manufacturing-chains': {'n': 1, 'with-machine': True}})
+    g = gv.goals_view(eng.dag)
+    assert g['case'], 'unmet require must surface'
+    assert any(c['kind'] == 'case-requirement' for c in g['case'])
+    # schema: unknown require key refused
+    errs = ccm.validate_schema({'requires': {'bogus-key': 1}})
+    assert errs and 'bogus-key' in errs[0]
+    # prsi-full termination label on a grounded open part
+    eng2 = fresh()
+    t2 = terms(eng2, 'mass')
+    eng2.node('m2', 'System', 'thing', contract(eng2, t2))
+    eng2.case_contract('p2', 'prsi-full', {})
+    sketch = {'pts': {'a': [0, 0], 'b': [50, 0], 'c': [50, 30], 'd': [0, 30]},
+              'constraints': [['fix', 'a', 0, 0]]}
+    eng2.refine('m2', {'name': 'ground-sketch', 'args': {'sketch': sketch}},
+                out_name='s2')
+    eng2.refine('s2', {'name': 'extrude',
+                       'args': {'height': 4, 'material': 'pla'}},
+                out_name='p2-solid', out_role='Part')
+    g2 = gv.goals_view(eng2.dag)
+    terms2 = [o.get('termination') for o in g2['open']]
+    assert any('requires-equipment-development' in str(x) for x in terms2), terms2
+    # L7/L8 fire on a CONTRACT-FREE shallow store (eng2 carries a
+    # contract so it is exempt by design)
+    eng3 = fresh()
+    t3 = terms(eng3, 'mass')
+    eng3.node('m3', 'System', 'thing', contract(eng3, t3))
+    sketch = {'pts': {'a': [0, 0], 'b': [50, 0], 'c': [50, 30], 'd': [0, 30]},
+              'constraints': [['fix', 'a', 0, 0]]}
+    eng3.refine('m3', {'name': 'ground-sketch', 'args': {'sketch': sketch}},
+                out_name='s3')
+    eng3.refine('s3', {'name': 'extrude',
+                       'args': {'height': 4, 'material': 'pla'}},
+                out_name='p3-solid', out_role='Part')
+    eng3.compose(['p3-solid'], out_name='veh', out_role='System')
+    fired = fc.lint_case(eng3.dag)
+    assert 'L8' in fired, fired
+    assert fc.lint_case(eng2.dag) == [], 'contract-carrying store exempt'
+
+
+
 # ================================================ discipline ==============
 
 

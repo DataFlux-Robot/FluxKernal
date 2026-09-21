@@ -148,12 +148,21 @@ def cmd_lint(a):
         for c in failed:
             print(f"  [{c}] {diagnostics.explain(c)}")
         return 0 if not failed else 1
+    if getattr(a, "rule", None):
+        # single-rule query (skill command mapping)
+        case = contracts.lint_case(eng.dag)
+        print(f"{a.rule}: {'FAIL' if a.rule in case else 'pass'}")
+        return 0 if a.rule not in case else 1
     bad = 0
     for d, payload in eng.dag.iter_nodes():
         failed = contracts.lint_node(payload, eng.store)
         if failed:
             bad += 1
             print(f"{_short(d)} {_name_of(eng.store, d):<20} {','.join(failed)}")
+    case = contracts.lint_case(eng.dag)
+    for r in case:
+        print(f"case {'':<24} {r}  ({diagnostics.explain(r)})")
+    bad += len(case)
     print("all nodes clean" if not bad else f"{bad} node(s) failing lint")
     return 0 if not bad else 1
 
@@ -620,7 +629,9 @@ def cmd_report(a):
     gv = goalsview.goals_view(eng.dag)
     snap = {"nodes": len(list(eng.dag.iter_nodes())),
             "edges": len(edges), "rejected": rejected,
-            "open_goals": len(gv["open"]),
+            "open_goals": len(gv["open"]) + len(gv.get("case", [])),
+            "open_design_goals": len(gv["open"]),
+            "open_case_requires": len(gv.get("case", [])),
             "verify": "OK" if not verify_store(eng) else "FAILED"}
     print(json.dumps(snap, ensure_ascii=False, indent=1))
     return 0
@@ -711,7 +722,8 @@ def build_parser() -> argparse.ArgumentParser:
     s = sub.add_parser("goal"); s.add_argument("ref"); s.set_defaults(fn=cmd_goal)
     s = sub.add_parser("next"); s.set_defaults(fn=cmd_next)
 
-    s = sub.add_parser("lint"); s.add_argument("ref", nargs="?"); s.set_defaults(fn=cmd_lint)
+    s = sub.add_parser("lint"); s.add_argument("ref", nargs="?")
+    s.add_argument("--rule", default=None); s.set_defaults(fn=cmd_lint)
     s = sub.add_parser("ledger"); s.add_argument("medium"); s.set_defaults(fn=cmd_ledger)
     s = sub.add_parser("elicit"); s.add_argument("node")
     s.add_argument("--answers"); s.set_defaults(fn=cmd_elicit)

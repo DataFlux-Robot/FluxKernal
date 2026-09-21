@@ -991,6 +991,22 @@ class Engine:
             self.store.bind_name(target, res["node"])
         return res
 
+    # ------------------------------------------------ case-contract (CC1) --
+    def case_contract(self, name: str, typ: str, requires: dict) -> str:
+        """Store the case profile as a node (kind=case-contract); the
+        closure predicate evaluates it on every goals_view call."""
+        from . import casecontract as cc_mod
+        node = Node(role="CaseContract", kind="case-contract",
+                    spec={"type": typ, "requires": requires})
+        d = self.dag.put_node(node, name)
+        errs = cc_mod.validate_schema(node.spec)
+        if errs:
+            self.journal.append(f"case-contract {name} SCHEMA ERRORS: {errs}")
+        else:
+            self.journal.append(f"case-contract {name} :type {typ} "
+                                f"({len(requires)} requires)")
+        return d
+
     # ---------------------------------------------------- review (P7a) --
     def review(self, target: str, findings: list[dict], meta: dict) -> dict:
         """Archive a VLM visual review as a `review` edge on the target.

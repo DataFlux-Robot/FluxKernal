@@ -68,6 +68,20 @@ class Runner:
         d = self.engine.params_override(name, key, float(val))
         return {"state": "ok", "node": d, "params": name}
 
+    def _form_case_contract(self, body):
+        """(case-contract <name> :type <t> :requires ((k v)...)):
+        the methodology as a hard gate — the node rides the DAG and
+        goals_view evaluates its profile every call."""
+        pos, kw = split_kwargs(body)
+        name = str(pos[0]) if pos else "case"
+        typ = str(kw.get("type", "product"))
+        reqs = {}
+        for entry in kw.get("requires") or []:
+            if isinstance(entry, list) and len(entry) >= 2:
+                reqs[str(entry[0])] = entry[1]
+        d = self.engine.case_contract(name, typ, reqs)
+        return {"state": "ok", "node": d}
+
     def _form_params(self, body):
         pos, kw = split_kwargs(body)
         if len(pos) < 2:

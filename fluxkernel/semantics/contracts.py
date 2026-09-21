@@ -212,6 +212,30 @@ def _term_exists(t: str, store) -> bool:
     return TERM_PREFIX + t in store.names()
 
 
+def lint_case(dag) -> list[str]:
+    """CC2/C4: case-level lint.  L7 warns on Part-leaf-heavy stores
+    without a case-contract; L8 warns on whole-vehicle composes with no
+    :machine chain and no case-contract declaring the profile."""
+    from .casecontract import _part_stats, _mfg_chains
+    has_cc = any(p.get("kind") == "case-contract"
+                 for _, p in dag.iter_nodes())
+    failed = []
+    total, dec, leaf = _part_stats(dag)
+    if total >= 10 and not has_cc:
+        ratio = leaf / total if total else 0
+        if ratio > 0.8:
+            failed.append("L7")
+    chains, _m = _mfg_chains(dag)
+    if not has_cc and chains == 0:
+        for _, e in dag.iter_edges():
+            if e.get("op") == "compose" and e.get("state") == "promoted":
+                out_p = dag.store.get_object(e.get("output", ""))["payload"]                     if e.get("output") else {}
+                if (out_p or {}).get("role") == "System":
+                    failed.append("L8")
+                    break
+    return failed
+
+
 def make_lint_gate(store):
     """Promotion gate injected into the kernel DAG (v1.2 §18): nodes failing
     lint may exist but their producing edge never rises above `proposed`."""

@@ -31,6 +31,9 @@ CODES: dict[str, tuple[int, str]] = {
     "L4": (2, "lint: spec noun does not resolve to the term registry"),
     "L5": (2, "lint: time scale missing or not single/stratified"),
     "L6": (2, "lint: free parameter lacks a range or a checker"),
+    "L7": (2, "case: Part-leaf-heavy store without a case-contract"),
+    "L8": (2, "case: whole-vehicle compose with no :machine chain "
+             "and no case-contract"),
     # ---- v1.1 co-design addition ----
     "P1": (4, "plant-model-current failed: MIND evidence built on a stale BODY"),
 }

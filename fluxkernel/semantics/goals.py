@@ -41,7 +41,7 @@ def _design_nodes(dag):
     records (kind=review, P7a) — definitional/archival objects, never
     design goals or risks."""
     return [(d, p) for d, p in dag.iter_nodes()
-            if p.get("kind") not in ("params", "review")]
+            if p.get("kind") not in ("params", "review", "case-contract")]
 
 
 def _out_edges(dag) -> dict[str, list[dict]]:
@@ -238,9 +238,19 @@ def _closed_nodes(dag, consumers: dict[str, list[dict]] | None = None) -> set[st
     return closed
 
 
-def _termination_of(payload: dict) -> str:
-    """What stands between an open node and its terminal set."""
-    return "machining-needed" if _is_grounded(payload) else "undecomposed"
+def _termination_of(payload: dict, dag=None) -> str:
+    """What stands between an open node and its terminal set.  CC2/C3:
+    under a prsi-full case profile, a grounded-but-unassigned part
+    reports the equipment-development requirement instead of plain
+    machining-needed."""
+    term = "machining-needed" if _is_grounded(payload) else "undecomposed"
+    if dag is not None and term == "machining-needed":
+        for _, p2 in dag.iter_nodes():
+            if p2.get("kind") != "case-contract":
+                continue
+            if (p2.get("spec") or {}).get("type") == "prsi-full":
+                return "requires-equipment-development"
+    return term
 
 
 # ------------------------------------------------------------------ goals --
@@ -259,7 +269,7 @@ def goals_view(dag) -> dict:
         open_goals.append({
             "ref": node_d, "role": payload.get("role"),
             "kind": payload.get("kind"), "state": state,
-            "termination": _termination_of(payload),
+            "termination": _termination_of(payload, dag),
             "holes": sorted(_holes_of(payload)),
             "risks": lint,
         })
@@ -268,9 +278,39 @@ def goals_view(dag) -> dict:
             rejected.append({"edge": edge_d, "op": e.get("op"),
                              "reason": e.get("reason", ""),
                              "output": e.get("output", "")})
+    # CC1/C2 (design-gaps D1): case-contract profile — OPEN(0) now
+    # means goal closure AND case completeness
+    case_open = _case_violations(dag)
     holes = holes_view(dag)
     return {"open": sorted(open_goals, key=lambda g: g["ref"]),
+            "case": case_open,
             "holes": holes["holes"], "rejected": rejected}
+
+
+def _case_violations(dag) -> list[dict]:
+    """Unmet case-contract requires as open goals (kind=case-requirement).
+    A store without any CaseContract node behaves exactly as before."""
+    from . import casecontract as cc_mod
+    out = []
+    for node_d, payload in dag.iter_nodes():
+        if payload.get("kind") != "case-contract":
+            continue
+        reqs = payload.get("spec") or {}
+        errs = cc_mod.validate_schema(reqs)
+        if errs:
+            out.append({"ref": node_d, "role": "CaseContract",
+                        "kind": "case-contract", "state": "promoted",
+                        "termination": "schema-error",
+                        "holes": [], "risks": errs})
+            continue
+        for o in cc_mod.evaluate(dag, reqs):
+            if o.get("holds") is not True:
+                out.append({"ref": node_d, "role": "CaseContract",
+                            "kind": "case-requirement",
+                            "state": "promoted",
+                            "termination": o.get("id", "case"),
+                            "holes": [], "risks": [o.get("detail", "")]})
+    return out
 
 
 def open_goals_under(dag, root_ref: str) -> list[dict]:
