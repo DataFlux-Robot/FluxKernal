@@ -21,7 +21,7 @@ import time
 from pathlib import Path
 
 from ..core.objects import (Edge, Node, Certificate, ResourceVector, Obligation, ROLES)
-from ..core.dag import DAG, DagError
+from ..core.dag import DAG, DagError, LINEAGE_PREFIX
 from ..store.objstore import Store
 from .ontology import transition_legal
 from . import contracts
@@ -1082,9 +1082,39 @@ class Engine:
                                {"name": "visual-review",
                                 "args": {"model": meta.get("model", ""),
                                          "views": meta.get("views", [])}})
+        # L1.2 (perception fail-closed): a VLM-unavailable review is
+        # archived as REJECTED — it stays in the store as evidence that
+        # perception was ATTEMPTED and FAILED, and its absence of a
+        # promoted edge keeps reference-fidelity case goals open.
+        if meta.get("state") == "rejected":
+            edge.state = "rejected"
+            edge.reason = meta.get("reason", "vlm-unavailable")
+            return self._commit_rejected(edge, node, cert,
+                                          node_name=meta.get("out"))
         return self._commit(edge, node, cert, ResourceVector(),
                             node_name=meta.get("out"))
 
+    def _commit_rejected(self, edge, node, cert, node_name=None):
+        """Archive an edge in rejected state (evidence of a failed
+        perception attempt) without the C0 machinery.  Serializes
+        only JSON-safe fields; the rejection reason IS the record."""
+        import json as _j
+        node_d = self.dag.put_node(node, node_name)
+        safe = {}
+        for k, v in edge.payload().items():
+            try:
+                _j.dumps(v)
+                safe[k] = v
+            except (TypeError, ValueError):
+                pass
+        safe["output"] = node_d
+        safe["state"] = "rejected"
+        safe["reason"] = edge.reason
+        edge_d = self.store.put_object("edge", safe)
+        self.store.bind_name("LINEAGE/" + node_d, edge_d)
+        return {"edge": edge_d, "node": node_d, "state": "rejected",
+                "reason": edge.reason,
+                "obligations": [o.to_dict() for o in cert.obligations]}
     # --------------------------------------------------- exact / procure --
     def _close_from_catalog(self, op: str, goal: str, catalog: str, match: str,
                             tier: int, out_name: str | None = None,

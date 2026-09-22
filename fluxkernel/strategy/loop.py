@@ -82,14 +82,20 @@ def _run_round(script_text: str, workdir: Path, want_vlm: bool) -> dict:
                     break
         except Exception as e:                    # noqa: BLE001
             review = [f"review skipped: {e}"]
-    # C8: score prices what the case-contract prices (design-gaps D2)
+    # L3.2: four-dimension score (design-gaps D2) — closure, case
+    # profile, fidelity, depth.  All machine-read from the store; the
+    # stall detector watches THIS number, not just open goals.
+    review_issues = len(review)
     case_reqs = len(gv.get("case", []))
+    depth_ok = 1.0 if grounded > 0 else 0.0
     score = (1.0 / (1.0 + len(gv.get("open", [])))
              + 1.0 / (1.0 + case_reqs)
-             + 0.5 / (1.0 + len(review)))
+             + 1.0 / (1.0 + review_issues)
+             + depth_ok)
     return {"rc": rc, "score": round(score, 4),
             "open_goals": len(gv.get("open", [])),
             "open_case_requires": case_reqs,
+            "review_issues": review_issues,
             "open": [{"kind": g.get("kind"), "role": g.get("role"),
                       "termination": g.get("termination")}
                      for g in gv.get("open", [])][:20],

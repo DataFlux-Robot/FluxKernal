@@ -63,11 +63,41 @@ def cmd_run(a):
     for line in eng.journal:
         print(line)
     rejected = [r for r in runner.results if r.get("state") == "rejected"]
+
     print(f"\nforms: {len(runner.results)}  rejected: {len(rejected)}")
     if rejected:
         print("REJECTED:")
         for r in rejected:
             print(f"  {r.get('form')}: {r.get('reason') or r.get('error')}")
+
+    # L2.2 + perception fail-closed: reference-carrying cases archive
+    # four-view renders as a default run artifact; unmet case requires
+    # force rc != 0 (perception unavailable != perception passed)
+    gv = goalsview.goals_view(eng.dag)
+    case = gv.get("case", [])
+    has_ref = any(p.get("kind") == "reference-image"
+                  for _, p in eng.dag.iter_nodes())
+    if has_ref:
+        try:
+            from ..strategy import scene, render_png
+            parts = scene.collect_grounded(eng)
+            if parts:
+                tri = [(scene.role_color(p2), scene.mesh_shape(shp))
+                       for _, p2, shp in parts]
+                out_dir = Path(".fk") / "renders" / "last"
+                paths = render_png.render_views(tri, out_dir,
+                                                 title="run archive")
+                print(f"renders archived: {len(paths)} views in {out_dir}")
+        except Exception as e:  # noqa: BLE001
+            print(f"render archive skipped: {e}")
+    if case:
+        print("CASE CONTRACT UNMET:")
+        for c in case:
+            print(f"  {c.get('termination', 'case-requirement')}")
+            for rr in c.get("risks", []):
+                print(f"    - {rr}")
+        if code == 0:
+            code = 1
     return code
 
 
@@ -635,8 +665,12 @@ def cmd_render(a):
 
 
 def cmd_review(a):
-    """fk review <ref> [--vs original.jpg] — see strategy/review.py (P7a)."""
-    from ..strategy.review import run_review
+    """fk review <ref> [--vs original.jpg] [--selftest] — strategy/review.py."""
+    from ..strategy.review import run_review, run_selftest
+    if getattr(a, "selftest", False):
+        return run_selftest()
+    if not a.ref:
+        sys.exit("fatal: fk review needs a goal ref (or --selftest)")
     return run_review(_engine(), a)
 
 
@@ -827,7 +861,8 @@ def build_parser() -> argparse.ArgumentParser:
     s.add_argument("--theme", default="dark", choices=["dark", "light"])
     s.add_argument("--with-equipment", action="store_true")
     s.set_defaults(fn=cmd_render)
-    s = sub.add_parser("review"); s.add_argument("ref")
+    s = sub.add_parser("review"); s.add_argument("ref", nargs="?")
+    s.add_argument("--selftest", action="store_true")
     s.add_argument("--vs", default="")
     s.add_argument("--budget-rounds", type=int, default=1)
     s.set_defaults(fn=cmd_review)

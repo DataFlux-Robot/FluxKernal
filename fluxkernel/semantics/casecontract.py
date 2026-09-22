@@ -246,20 +246,40 @@ def evaluate(dag, cc: dict) -> list[dict]:
                         "detail": "" if not missing else
                         f"missing eval evidence: {missing}"})
         elif key == "reference-fidelity":
-            max_i = int((want or {}).get("issues-max", 2))            if isinstance(want, dict) else int(want)
+            max_i = int(want.get("issues-max", 2))
+            waive = str(want.get("waive", "")).strip()
             issues = None
+            vlm_failed = False
             for _, e in dag.iter_edges():
-                if e.get("op") == "review" and e.get("state") == "promoted":
+                if e.get("op") != "review":
+                    continue
+                if e.get("state") == "promoted":
                     issues = sum(1 for o in
                                  (e.get("certificate") or {})
                                  .get("obligations", [])
                                  if o.get("holds") is False)
-            ok = issues is not None and issues <= max_i
+                elif "vlm-unavailable" in str(e.get("reason", "")):
+                    vlm_failed = True
+            if waive:
+                ok = True
+                detail = ("waived: " + waive + " (on record — perception "
+                          "was " + ("attempted but failed"
+                                     if vlm_failed else "never run") + ")")
+            elif issues is None:
+                ok = False
+                detail = ("perception-missing: no promoted review edge — "
+                          "run fk review --vs <ref>"
+                          + (" (a previous attempt failed: vlm-unavailable)"
+                             if vlm_failed else ""))
+            elif issues > max_i:
+                ok = False
+                detail = str(issues) + " issues exceed " + str(max_i)
+            else:
+                ok = True
+                detail = ""
             obs.append({"id": "case:reference-fidelity", "prop":
-                        f"review issues {issues} <= {max_i}",
+                        "review issues " + str(issues) + " <= " + str(max_i),
                         "holds": ok, "checker": "casecontract",
-                        "detail": "" if ok else
-                        ("no review edge yet — run fk review --vs <ref>"
-                         if issues is None else
-                         f"{issues} issues exceed {max_i}")})
+                        "detail": detail})
+    return obs
     return obs

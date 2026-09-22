@@ -21,7 +21,9 @@ from __future__ import annotations
 import base64
 import json
 import os
+import math
 import re
+import tempfile as _tf
 import urllib.request
 
 PROMPT = """You are reviewing an engineering CAD render against the declared intent.
@@ -130,14 +132,30 @@ def run_review(eng, a) -> int:
     key = os.environ.get("FK_VLM_API_KEY", "")
     model = os.environ.get("FK_VLM_MODEL", "")
     if not (base and model):
-        print("fatal: fk review needs FK_VLM_BASE_URL and FK_VLM_MODEL "
-              "(FK_VLM_API_KEY if the endpoint requires one)")
+        # L1.2 meta-rule: perception unavailable != perception passed.
+        # Archive a REJECTED review edge so the case stays open
+        # (perception-missing) instead of silently skipping station 5.
+        eng.review(a.ref, [], {
+            "model": "none", "images": [str(p) for p in pngs], "vs": vs,
+            "intent": intent[:500], "views": ["iso", "front", "top", "right"],
+            "out": None, "state": "rejected",
+            "reason": "vlm-unavailable: FK_VLM_BASE_URL/FK_VLM_MODEL not configured"})
+        print("PERCEPTION-MISSING: fk review needs FK_VLM_BASE_URL and "
+              "FK_VLM_MODEL — rejected review edge archived; the case "
+              "stays OPEN until perception runs (or :waive with a reason)")
         return 2
     try:
         findings = call_vlm(PROMPT.format(intent=intent, vs_block=vs_block),
                             images, base, key, model)
     except Exception as e:                       # noqa: BLE001 — report, don't crash
-        print(f"fatal: VLM call failed: {e}")
+        # L1.2: VLM call failure archives a rejected review edge too
+        eng.review(a.ref, [], {
+            "model": model, "images": [str(p) for p in pngs], "vs": vs,
+            "intent": intent[:500], "views": ["iso", "front", "top", "right"],
+            "out": None, "state": "rejected",
+            "reason": f"vlm-unavailable: {e}"})
+        print(f"PERCEPTION-MISSING: VLM call failed ({e}) — rejected "
+              f"review edge archived; case stays OPEN")
         return 2
 
     res = eng.review(a.ref, findings, {
@@ -151,4 +169,68 @@ def run_review(eng, a) -> int:
                      ensure_ascii=False, indent=1))
     print(f"review edge {res['state']}: {len(findings)} findings "
           f"({len(issues)} issues) — soft obligations, never gate")
+    return 0
+
+
+def _selftest_image(out_path):
+    """Built-in known-answer test image: a circle with a MISSING WEDGE
+    (the analogue of the missing-tail test).  A working VLM reports the
+    gap; an unavailable/degenerate one cannot."""
+    try:
+        import matplotlib
+        matplotlib.use("Agg")
+        import matplotlib.pyplot as plt
+        import numpy as np
+        fig, ax = plt.subplots(figsize=(4, 4), dpi=100)
+        fig.patch.set_facecolor("white")
+        th = np.linspace(0.35, 2 * math.pi - 0.15, 200)
+        ax.plot(np.cos(th), np.sin(th), lw=14, color="#2a4d69",
+                solid_capstyle="round")
+        ax.plot([math.cos(0.35) * 0.2, math.cos(0.35)], [math.sin(0.35) * 0.2,
+                 math.sin(0.35)], lw=14, color="#2a4d69")
+        ax.set_xlim(-1.4, 1.4); ax.set_ylim(-1.4, 1.4)
+        ax.set_aspect("equal"); ax.axis("off")
+        fig.savefig(out_path, facecolor="white")
+        plt.close(fig)
+        return True
+    except Exception:
+        return False
+
+
+def run_selftest() -> int:
+    """fk review --selftest: call the configured VLM with a known-answer
+    image (a circle with a missing wedge).  PASS requires: JSON parses,
+    findings non-empty.  Any failure is an ERROR — never a silent skip."""
+    base = os.environ.get("FK_VLM_BASE_URL", "")
+    key = os.environ.get("FK_VLM_API_KEY", "")
+    model = os.environ.get("FK_VLM_MODEL", "")
+    if not (base and model):
+        print("SELFTEST ERROR: FK_VLM_BASE_URL / FK_VLM_MODEL not "
+              "configured — selftest cannot run, and perception is NOT "
+              "available (fix the environment; do not skip)")
+        return 2
+    import tempfile
+    from pathlib import Path as _P
+    tmp = _P(_tf.mkdtemp(prefix="fk-selftest-"))
+    img = tmp / "known_answer.png"
+    if not _selftest_image(str(img)):
+        print("SELFTEST ERROR: could not render the built-in test image")
+        return 2
+    prompt = ("This image shows a shape. Reply with STRICT JSON only: "
+              '[{"id": "selftest", "prop": "<what you see>", '
+              '"holds": false, "detail": "<defects you observe>"}] — '
+              "report any defect you can observe (gap, missing part, "
+              "incomplete shape). No prose outside the JSON.")
+    try:
+        findings = call_vlm(prompt, [str(img)], base, key, model)
+    except Exception as e:                        # noqa: BLE001
+        print(f"SELFTEST ERROR: VLM call failed: {e}")
+        return 2
+    if not findings:
+        print("SELFTEST ERROR: VLM returned an empty finding list for a "
+              "known-defect image — the endpoint is not usable for "
+              "perception (do not skip; fix the endpoint)")
+        return 2
+    print(f"SELFTEST PASS: {model} returned {len(findings)} finding(s) "
+          f"on the known-answer image — perception channel usable")
     return 0

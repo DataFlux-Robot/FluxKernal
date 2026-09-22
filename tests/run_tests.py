@@ -2337,6 +2337,76 @@ def test_52_shape_gap_and_reference():
 
 
 
+def test_53_perception_fail_closed():
+    """PL-S1: from-image case (reference node + reference-fidelity
+    require) with NO review edge and NO VLM endpoint must keep OPEN != 0
+    with a perception-missing termination — perception unavailable is
+    never equivalent to perception passed."""
+    from fluxkernel.semantics import goals as gv
+    eng = fresh()
+    t = terms(eng, 'mass')
+    eng.node('m', 'System', 'thing', contract(eng, t))
+    # bind a reference image (from-image case marker)
+    import tempfile as _tf
+    from pathlib import Path as _P
+    img = _P(_tf.mkdtemp()) / 'ref.png'
+    img.write_bytes(bytes([0x89, 0x50, 0x4E, 0x47, 0x0D, 0x0A, 0x1A, 0x0A]) + bytes(32))
+    eng.reference_image(str(img), 'm')
+    eng.case_contract('cc1', 'product-reverse',
+                      {'reference-fidelity': {'issues-max': 2}})
+    g = gv.goals_view(eng.dag)
+    assert g['case'], 'no review edge + no VLM must block'
+    assert any('perception-missing' in c.get('termination', '')
+               for c in g['case']), g['case']
+
+    # but a :waive with reason lets it pass (documented on record)
+    eng.case_contract('cc2', 'product-reverse',
+                      {'reference-fidelity':
+                       {'issues-max': 2, 'waive': 'mock study, no VLM'}})
+    # cc2 has a different name so it is a second contract; check via API
+    from fluxkernel.semantics import casecontract as ccm
+    obs = ccm.evaluate(eng.dag,
+                       {'reference-fidelity':
+                        {'issues-max': 2,
+                         'waive': 'mock study only'}})
+    assert all(o.get('holds') for o in obs), obs
+
+
+def test_54_vlm_failure_archives_rejected():
+    """PL-S2: VLM call failure archives a REJECTED review edge (not a
+    silent skip) — the store carries evidence that perception was
+    ATTEMPTED and FAILED; the case stays open (fail-closed)."""
+    eng = fresh()
+    t = terms(eng, 'mass')
+    eng.node('m', 'System', 'thing', contract(eng, t))
+    sketch = {'pts': {'p0': [0, 0], 'p1': [50, 0], 'p2': [50, 30],
+                      'p3': [0, 30]},
+              'constraints': [['fix', 'p0', 0, 0]]}
+    eng.refine('m', {'name': 'ground-sketch', 'args': {'sketch': sketch}},
+               out_name='s1')
+    eng.refine('s1', {'name': 'extrude',
+                      'args': {'height': 4, 'material': 'pla'}},
+               out_name='p1')
+    # NO endpoint configured (FK_VLM_* absent) — fk review archives a
+    # rejected review edge with reason vlm-unavailable
+    os.environ.pop('FK_VLM_BASE_URL', None)
+    os.environ.pop('FK_VLM_MODEL', None)
+    from fluxkernel.strategy import review as fkreview
+    rc = fkreview.run_review(eng, type('A', (), {
+        'ref': 'p1', 'vs': ''})())
+    assert rc == 2  # error return, but the edge IS archived
+    rej = [e for _, e in eng.dag.iter_edges()
+           if e.get('op') == 'review' and e.get('state') == 'rejected']
+    assert rej, 'rejected review edge must be archived'
+    assert 'vlm-unavailable' in rej[-1].get('reason', '')
+    # the case stays open (fail-closed: no promoted review edge)
+    from fluxkernel.semantics import goals as gv
+    # (no case-contract here, so goals has no case section — the
+    #  archive itself is the assertion)
+
+
+# ================================================ discipline ==============
+
 # ================================================ discipline ==============
 
 

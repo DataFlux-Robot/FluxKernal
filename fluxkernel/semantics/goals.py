@@ -306,10 +306,13 @@ def _case_violations(dag) -> list[dict]:
             continue
         for o in cc_mod.evaluate(dag, reqs):
             if o.get("holds") is not True:
+                term = o.get("id", "case")
+                if "perception-missing" in o.get("detail", ""):
+                    term = "perception-missing"
                 out.append({"ref": node_d, "role": "CaseContract",
                             "kind": "case-requirement",
                             "state": "promoted",
-                            "termination": o.get("id", "case"),
+                            "termination": term,
                             "holes": [], "risks": [o.get("detail", "")]})
     return out
 
