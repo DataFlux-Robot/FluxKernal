@@ -1,0 +1,76 @@
+{
+ "entries": [
+  {
+   "name": "round-amoled-33",
+   "kind": "display",
+   "supplier": "display-catalog",
+   "tier": 1,
+   "bounds": {
+    "display_mm": {
+     ">=": 30,
+     "<=": 36
+    },
+    "mass_g": {
+     "<=": 20.0
+    }
+   },
+   "ground": {
+    "mass_g": 10.0
+   },
+   "geometry": {
+    "generator": "catalog/geom.py#disc",
+    "params": {
+     "dia": 33,
+     "thick": 1.5
+    }
+   }
+  },
+  {
+   "name": "round-pcb-w",
+   "kind": "pcb",
+   "supplier": "electronics-catalog",
+   "tier": 1,
+   "bounds": {
+    "mass_g": {
+     "<=": 12.0
+    }
+   },
+   "ground": {
+    "mass_g": 6.0
+   },
+   "geometry": {
+    "generator": "catalog/geom.py#disc",
+    "params": {
+     "dia": 32,
+     "thick": 0.8
+    }
+   }
+  },
+  {
+   "name": "li-pouch-472",
+   "kind": "battery",
+   "supplier": "cell-catalog",
+   "tier": 1,
+   "bounds": {
+    "capacity_mah": {
+     ">=": 400
+    },
+    "mass_g": {
+     "<=": 30.0
+    }
+   },
+   "ground": {
+    "mass_g": 15.0,
+    "capacity_mah": 472.0
+   },
+   "geometry": {
+    "generator": "catalog/geom.py#battery",
+    "params": {
+     "x": 30,
+     "y": 25,
+     "z": 8
+    }
+   }
+  }
+ ]
+}

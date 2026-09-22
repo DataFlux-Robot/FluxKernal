@@ -1,0 +1,124 @@
+;; ==================================================================
+;; SW-45 round smart watch - fcad-from-image six stations.  New
+;; product class: hand-written branch; fk-mechanism-author will
+;; abstract it to a mechanism when a second watch appears.  Circles
+;; are 24-gon prisms; the case cavity is a boolean cut.
+;; ==================================================================
+
+;; -- glossary --
+(term mass "total worn mass of the device, kg")
+(term display "visible display diameter, mm")
+(term capacity "battery charge capacity, mAh")
+(term printer "additive fabrication resource")
+(term frame "structural frame of a machine")
+
+;; -- the reference photo enters the DAG (blob + provenance) --
+(reference-image C:/Users/zhang/.zcode/cli/image-cache/sess_c614d16a-25a7-45fa-a4a6-8a06fa331ea0/image-cb86ab041cb6f6e60e264a48c323028d.png :for sw45)
+
+;; -- case contract: fidelity is a requirement for from-image cases --
+(case-contract sw45 :type product-reverse
+  :requires (
+    (termination (standard-parts printable))
+    (reference-fidelity (issues-max 2))))
+
+(node reference-printer :role Resource :kind unbounded-fdm-printer
+  :spec (contract
+    (goals (rp1 "print every structural part" :falsifiable t
+                :measure "dfam gate" :terms (printer frame)))
+    (semantics printer frame)
+    (assumes (rp-a1 "unbounded volume" :bounds ((dim_mm (>= 0)))))
+    (guarantees (rp-g1 "prints grounded parts" :bounds ((mass_g (<= 100000)))))
+    (budget (mass_kg (<= 60)))
+    (forbidden (rp-f1 "overnight run" :check test))
+    (not-responsible "filament logistics")
+    (time-scale fabrication)))
+
+;; -- the demand (dims: photo proportions, class web sources) --
+(goal sw45 :kind smartwatch
+  :spec (contract
+    (goals (g1 "round smart watch matching the reference photo"
+               :falsifiable t :measure "render review vs photo"
+               :terms (mass display))
+           (g2 "all-day battery per class standard"
+               :falsifiable t :measure "capacity vs class 400mAh"
+               :terms (capacity)))
+    (semantics mass display capacity)
+    (assumes (route1 "wearable duty" :bounds ((shifts (>= 1) (<= 3)))))
+    (guarantees (gm "wearable mass" :bounds ((mass_kg (<= 0.09))))
+                (gd "round display" :bounds ((display_mm (>= 30)))))
+    (budget (mass_kg (<= 0.15)))
+    (forbidden (f1 "skin irritation" :check inspection))
+    (not-responsible "phone pairing app" "cellular radio")
+    (time-scale mission)))
+
+;; -- decompose: slots from the photo's part list --
+(refine e3 :in (sw45) :out sw45-v1 :role System
+  :transform (decompose
+    :into (case display pcb battery crown strap-l strap-r)
+    :flow-down (
+      (case :budget ((mass_kg (<= 0.02))) :guarantees ((gcs "case houses all" :bounds ((mass_kg (<= 0.02))))))
+      (display :budget ((mass_kg (<= 0.015))) :guarantees ((gdp "round display" :bounds ((display_mm (>= 30))))))
+      (pcb :budget ((mass_kg (<= 0.01))) :guarantees ((gpc "compute" :bounds ((mass_kg (<= 0.01))))))
+      (battery :budget ((mass_kg (<= 0.02))) :guarantees ((gbt "energy" :bounds ((capacity_mah (>= 400))))))
+      (crown :budget ((mass_kg (<= 0.005))) :guarantees ((gcr "side control" :bounds ((mass_kg (<= 0.005))))))
+      (strap-l :budget ((mass_kg (<= 0.015))) :guarantees ((gsl "left strap" :bounds ((mass_kg (<= 0.015))))))
+      (strap-r :budget ((mass_kg (<= 0.015))) :guarantees ((gsr "right strap" :bounds ((mass_kg (<= 0.015)))))))))
+
+;; -- case: 24-gon prism, cavity cut (hand branch) --
+(refine e4 :in (sw45-v1/case) :out case-outer-sk :kind sketch
+  :transform (ground-sketch :sketch (sketch
+    (pts (c0 23.000 0.000) (c1 22.216 5.953) (c2 19.919 11.500) (c3 16.263 16.263) (c4 11.500 19.919) (c5 5.953 22.216) (c6 0.000 23.000) (c7 -5.953 22.216) (c8 -11.500 19.919) (c9 -16.263 16.263) (c10 -19.919 11.500) (c11 -22.216 5.953) (c12 -23.000 0.000) (c13 -22.216 -5.953) (c14 -19.919 -11.500) (c15 -16.263 -16.263) (c16 -11.500 -19.919) (c17 -5.953 -22.216) (c18 0.000 -23.000) (c19 5.953 -22.216) (c20 11.500 -19.919) (c21 16.263 -16.263) (c22 19.919 -11.500) (c23 22.216 -5.953)) (constraints))))
+(refine e5 :in (case-outer-sk) :out case-outer :role Part :kind case
+  :transform (extrude :height 13 :material aluminum))
+(refine e6 :in (sw45-v1/case) :out case-cut-sk :kind sketch
+  :transform (ground-sketch :sketch (sketch
+    (pts (k0 21.500 0.000) (k1 20.767 5.565) (k2 18.620 10.750) (k3 15.203 15.203) (k4 10.750 18.620) (k5 5.565 20.767) (k6 0.000 21.500) (k7 -5.565 20.767) (k8 -10.750 18.620) (k9 -15.203 15.203) (k10 -18.620 10.750) (k11 -20.767 5.565) (k12 -21.500 0.000) (k13 -20.767 -5.565) (k14 -18.620 -10.750) (k15 -15.203 -15.203) (k16 -10.750 -18.620) (k17 -5.565 -20.767) (k18 0.000 -21.500) (k19 5.565 -20.767) (k20 10.750 -18.620) (k21 15.203 -15.203) (k22 18.620 -10.750) (k23 20.767 -5.565)) (constraints))))
+(refine e7 :in (case-cut-sk) :out case-cutter :role Part :kind cavity
+  :transform (extrude :height 11.5 :material pla :at ((0 0 1.5))))
+(refine e8 :in (case-outer case-cutter) :out case-hollow :role Part :kind case
+  :transform (cut))
+(print e9 :in (case-hollow) :printer reference-printer :out case-printed)
+
+;; -- display / pcb / battery: catalog envelopes --
+(exact e10 :target sw45-v1/display :from catalog
+  :match "display_mm>=30" :out display-std :at ((0 0 11.6)))
+(exact e11 :target sw45-v1/pcb :from catalog
+  :match "mass_g<=10000" :out pcb-std :at ((0 0 9.8)))
+(exact e12 :target sw45-v1/battery :from catalog
+  :match "capacity_mah>=400" :out battery-std :at ((-15 -12.5 1.6)))
+
+;; -- crown: side control, printed --
+(refine e13 :in (sw45-v1/crown) :out crown-sk :kind sketch
+  :transform (ground-sketch :sketch (sketch
+    (pts (w0 3.000 0.000) (w1 2.898 0.776) (w2 2.598 1.500) (w3 2.121 2.121) (w4 1.500 2.598) (w5 0.776 2.898) (w6 0.000 3.000) (w7 -0.776 2.898) (w8 -1.500 2.598) (w9 -2.121 2.121) (w10 -2.598 1.500) (w11 -2.898 0.776) (w12 -3.000 0.000) (w13 -2.898 -0.776) (w14 -2.598 -1.500) (w15 -2.121 -2.121) (w16 -1.500 -2.598) (w17 -0.776 -2.898) (w18 0.000 -3.000) (w19 0.776 -2.898) (w20 1.500 -2.598) (w21 2.121 -2.121) (w22 2.598 -1.500) (w23 2.898 -0.776)) (constraints))))
+(refine e14b :in (crown-sk) :out crown-solid :role Part :kind crown
+  :transform (extrude :height 5 :material aluminum
+                      :at ((23.5 0 7) (0 1 0 90))))
+(print e15 :in (crown-solid) :printer reference-printer :out crown-printed)
+
+;; -- straps: printed strips --
+(refine e16 :in (sw45-v1/strap-l) :out strap-l-sk :kind sketch
+  :transform (ground-sketch :sketch (sketch
+    (pts (s0 0 0) (s1 90 0) (s2 90 22) (s3 0 22)) (constraints))))
+(refine e17 :in (strap-l-sk) :out strap-l-solid :role Part :kind strap
+  :transform (extrude :height 3 :material pla :at ((-115 -11 8))))
+(refine e17f :in (strap-l-solid) :out strap-l-fil :role Part :kind strap
+  :transform (fillet :edges all :radius 0.6))
+(print e18 :in (strap-l-fil) :printer reference-printer :out strap-l-printed)
+(refine e19 :in (sw45-v1/strap-r) :out strap-r-sk :kind sketch
+  :transform (ground-sketch :sketch (sketch
+    (pts (t0 0 0) (t1 90 0) (t2 90 22) (t3 0 22)) (constraints))))
+(refine e20 :in (strap-r-sk) :out strap-r-solid :role Part :kind strap
+  :transform (extrude :height 3 :material pla :at ((30 -11 8))))
+(refine e20f :in (strap-r-solid) :out strap-r-fil :role Part :kind strap
+  :transform (fillet :edges all :radius 0.6))
+(print e21 :in (strap-r-fil) :printer reference-printer :out strap-r-printed)
+
+;; -- the watch --
+(compose e22 :in (case-printed display-std pcb-std battery-std
+                 crown-printed strap-l-printed strap-r-printed)
+  :out watch-assy :role System :kind smartwatch)
+
+;; -- closed-loop mass check --
+(eval e40 :target watch-assy :with mass-rollup :fidelity 2
+  :expect ((mass_kg (<= 0.09))))

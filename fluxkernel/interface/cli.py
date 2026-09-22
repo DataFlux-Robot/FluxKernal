@@ -74,7 +74,9 @@ def cmd_run(a):
 # ---------------------------------------------------------- tactic state --
 def cmd_goals(a):
     view = goalsview.goals_view(_engine().dag)
-    print(f"OPEN GOALS ({len(view['open'])})")
+    n_case = len(view.get("case", []))
+    total = len(view["open"]) + n_case
+    print(f"OPEN GOALS ({total})")
     for g in view["open"]:
         line = (f"  {g['kind']:<18} {g['role']:<10} state={g['state']}"
                 f"  term={g.get('termination', '?')}")
@@ -83,6 +85,14 @@ def cmd_goals(a):
         if g["risks"]:
             line += f"  risks: {','.join(g['risks'])}"
         print(line)
+    if n_case:
+        print(f"CASE CONTRACT ({n_case} requires unmet — process not "
+              f"finished, not a design error):")
+        for c in view["case"]:
+            print(f"  {c.get('kind', 'case-requirement'):<18} "
+                  f"{c.get('termination', '?')}")
+            for r in c.get("risks", []):
+                print(f"    - {r}")
     if view["holes"]:
         print(f"HOLES ({len(view['holes'])})")
         for h in view["holes"]:

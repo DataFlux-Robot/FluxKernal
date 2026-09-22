@@ -92,3 +92,16 @@ def axle(p):
     length = float(p.get("length", 2200))
     dia = float(p.get("dia", 90))
     return _cyl(dia / 2, length, axis=(1, 0, 0))
+
+
+def disc(p):
+    """Round flat envelope (display glass, round PCB): cylinder on Z."""
+    dia = float(p.get("dia", 34))
+    thick = float(p.get("thick", 1.5))
+    return _cyl(dia / 2, thick, axis=(0, 0, 1))
+
+
+def battery(p):
+    """Pouch cell envelope: plain box."""
+    return _box(float(p.get("x", 30)), float(p.get("y", 25)),
+                float(p.get("z", 8)))
