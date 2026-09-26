@@ -1,0 +1,73 @@
+{
+  "run": "https://github.com/ExuberantWitness/fluxkernel/actions/runs/36251304980",
+  "tested_commit": "9100ecbb6c3ce0f753c5189d4c6cd02f653b7e52",
+  "status": "completed",
+  "conclusion": "success",
+  "integration_tests_passed": 134,
+  "jobs": [
+    {
+      "name": "CAD + real Lean + installed wheel",
+      "status": "completed",
+      "conclusion": "success",
+      "url": "https://github.com/ExuberantWitness/fluxkernel/actions/runs/36251304980/job/108429723674"
+    },
+    {
+      "name": "MCP / ubuntu-latest / Python 3.12",
+      "status": "completed",
+      "conclusion": "success",
+      "url": "https://github.com/ExuberantWitness/fluxkernel/actions/runs/36251304980/job/108429723802"
+    },
+    {
+      "name": "Core / macos-latest / Python 3.13",
+      "status": "completed",
+      "conclusion": "success",
+      "url": "https://github.com/ExuberantWitness/fluxkernel/actions/runs/36251304980/job/108429723803"
+    },
+    {
+      "name": "Core / ubuntu-latest / Python 3.13",
+      "status": "completed",
+      "conclusion": "success",
+      "url": "https://github.com/ExuberantWitness/fluxkernel/actions/runs/36251304980/job/108429723812"
+    },
+    {
+      "name": "Core / macos-latest / Python 3.12",
+      "status": "completed",
+      "conclusion": "success",
+      "url": "https://github.com/ExuberantWitness/fluxkernel/actions/runs/36251304980/job/108429723821"
+    },
+    {
+      "name": "Core / windows-latest / Python 3.13",
+      "status": "completed",
+      "conclusion": "success",
+      "url": "https://github.com/ExuberantWitness/fluxkernel/actions/runs/36251304980/job/108429723830"
+    },
+    {
+      "name": "Core / windows-latest / Python 3.12",
+      "status": "completed",
+      "conclusion": "success",
+      "url": "https://github.com/ExuberantWitness/fluxkernel/actions/runs/36251304980/job/108429723868"
+    },
+    {
+      "name": "MCP / macos-latest / Python 3.12",
+      "status": "completed",
+      "conclusion": "success",
+      "url": "https://github.com/ExuberantWitness/fluxkernel/actions/runs/36251304980/job/108429723880"
+    },
+    {
+      "name": "Core / ubuntu-latest / Python 3.12",
+      "status": "completed",
+      "conclusion": "success",
+      "url": "https://github.com/ExuberantWitness/fluxkernel/actions/runs/36251304980/job/108429723915"
+    },
+    {
+      "name": "MCP / windows-latest / Python 3.12",
+      "status": "completed",
+      "conclusion": "success",
+      "url": "https://github.com/ExuberantWitness/fluxkernel/actions/runs/36251304980/job/108429723924"
+    }
+  ],
+  "local_build_sha256": {
+    "fluxkernel-0.4.0-py3-none-any.whl": "c318eae9acdeef955e3703c3d93f51cddf833a9c4ea2dfaebe784d10e4d277fc",
+    "fluxkernel-0.4.0.tar.gz": "c84bba1fd302ea38a5c466670ddff0cb22450127baa6b568c229bdb03c50408f"
+  }
+}
