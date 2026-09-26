@@ -85,6 +85,6 @@ class Design(StrictModel):
 class Request(StrictModel):
     brief: str = Field(default='根据图片设计外形相近、功能架构合理的可制造产品。', max_length=3000)
     equipment_depth: int = Field(default=1, ge=0, le=1)
-    mode: Literal['live', 'reference'] = 'live'
+    mode: Literal['live', 'reference', 'fixture', 'revision'] = 'live'
     reference: Literal['phone', 'car', 'aircraft'] | None = None
     parent: str | None = Field(default=None, pattern=r'^[a-f0-9]{16}$')

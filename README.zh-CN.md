@@ -61,6 +61,23 @@ print(run.to_dict())
 
 真实图片生成、GLM 配置、Lean 安装和交付包复检见[快速开始](docs/QUICKSTART.md)。密钥只放在私有配置或环境变量中。当前尚未发布到 PyPI，请从源码或构建出的 wheel 安装。
 
+## 带冻结约束的局部修订
+
+新增 `fk task`、`fk inspect`、`fk revise --preview` 和版本化 Python 接口。Agent 可以修改具名零件的尺寸、位置、旋转或壁厚；不能通过修订请求改掉验收条件、零件身份和制造路线，也不能直接缩放采购件。
+
+```bash
+fk task enclosure --output ./runs --require-proof --json
+fk inspect ./runs/<id> --json
+fk schema revision
+fk revise ./runs/<id> --patch change.json --preview --json
+fk revise ./runs/<id> --patch change.json --require-proof --json
+fk benchmark --output ./revision-evaluation
+```
+
+外壳任务允许把壁厚从 2 mm 改为 3 mm；改成 5 mm 会因冻结条件不满足而拒绝。成功修订复用未变 CAD，重建制造计划与证明；失败请求单独留档，父版本不被覆盖。
+
+[Agent API 指南](docs/AGENT_API.md)包含完整 Python 示例、请求格式和诊断码。三个固定任务检查外壳容纳、轴套名义配合与安装基准间距；数值检查由 Python 执行，Lean 另行证明制造计划闭合，尚未进行物理装配试验。
+
 ## 工程边界
 
 - 核心图与存储采用 Python 合同及完整性检查；制造计划另外使用真正的 Lean 4 检查。

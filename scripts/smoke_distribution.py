@@ -46,6 +46,8 @@ def main():
         assert Path(installed).resolve().is_relative_to(environment.resolve()) and Path(installed).name == '_assets', installed
         report = json.loads(run([fk, 'doctor', '--json']))
         assert report['ok']
+        schema = json.loads(run([fk, 'schema', 'revision']))
+        assert schema['properties']['schema']['const'] == 'fk-revision-v1'
         if not args.studio:
             run([python, '-c', "import importlib.util; assert importlib.util.find_spec('OCP') is None; assert importlib.util.find_spec('numpy') is None"])
         for command in [('example',), ('init',), ('run', 'hello.fcad'), ('verify',)]:
@@ -66,6 +68,9 @@ def main():
             rejected = subprocess.run([str(python), str(output / 'verify.py'), str(output)],
                                       cwd=work, env=env, capture_output=True, text=True, timeout=30)
             assert rejected.returncode != 0 and 'Manifest mismatch' in rejected.stderr
+            benchmark = json.loads(run([fk, 'benchmark', '--output', str(work/'benchmark'), '--json']))
+            assert benchmark['accepted'] and benchmark['model_calls'] == 0
+            assert len(benchmark['cases']) == 3
         print(json.dumps({'wheel': wheel.name, 'isolated_install': True, 'core_workflow': 'passed',
                           'studio_and_independent_lean': 'passed' if args.studio else 'not requested'}))
 

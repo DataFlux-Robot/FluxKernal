@@ -1,0 +1,148 @@
+{
+  "schema": "fk-task-v1",
+  "id": "shaft-fit",
+  "design": {
+    "title": "Nominal coaxial shaft and sleeve fit",
+    "family": "other",
+    "summary": "Curated parametric engineering task; not image inference.",
+    "observations": [
+      {
+        "text": "Dimensions and layout are authored fixture data.",
+        "source": "selected"
+      }
+    ],
+    "assumptions": [
+      "Millimetres; nominal dimensions without a manufacturing tolerance stack.",
+      "Printed and purchased capabilities remain external assumptions."
+    ],
+    "requirements": [
+      "Preserve the frozen numeric interface constraints across local revisions."
+    ],
+    "parts": [
+      {
+        "id": "shaft",
+        "name": "Shaft blank",
+        "group": "Fit",
+        "route": "machine",
+        "shape": "cylinder",
+        "size": [
+          9.8,
+          9.8,
+          20.0
+        ],
+        "position": [
+          0.0,
+          0.0,
+          0.0
+        ],
+        "rotation": [
+          0,
+          0,
+          0
+        ],
+        "wall": 2.0,
+        "material": "steel",
+        "color": "#a8b9c7",
+        "catalog_ref": "",
+        "purpose": "",
+        "source": "selected"
+      },
+      {
+        "id": "sleeve",
+        "name": "Sleeve envelope",
+        "group": "Fit",
+        "route": "catalog",
+        "shape": "tube",
+        "size": [
+          18.0,
+          18.0,
+          8.0
+        ],
+        "position": [
+          0.0,
+          0.0,
+          0.0
+        ],
+        "rotation": [
+          0,
+          0,
+          0
+        ],
+        "wall": 4.0,
+        "material": "petg",
+        "color": "#a8b9c7",
+        "catalog_ref": "10 mm bore fixture sleeve; supplier pending",
+        "purpose": "",
+        "source": "selected"
+      },
+      {
+        "id": "base",
+        "name": "Support concept",
+        "group": "Support",
+        "route": "print",
+        "shape": "box",
+        "size": [
+          40.0,
+          30.0,
+          4.0
+        ],
+        "position": [
+          0.0,
+          0.0,
+          -12.0
+        ],
+        "rotation": [
+          0,
+          0,
+          0
+        ],
+        "wall": 2.0,
+        "material": "petg",
+        "color": "#a8b9c7",
+        "catalog_ref": "",
+        "purpose": "",
+        "source": "selected"
+      }
+    ],
+    "unresolved": [
+      "Physical fit, process qualification and catalog authenticity require independent evidence."
+    ]
+  },
+  "constraints": {
+    "schema": "fk-constraints-v1",
+    "rules": [
+      {
+        "id": "diametric-fit",
+        "kind": "radial-fit",
+        "shaft": "shaft",
+        "sleeve": "sleeve",
+        "min": 0.1,
+        "max": 0.4
+      }
+    ]
+  },
+  "valid_edits": [
+    {
+      "part": "shaft",
+      "set": {
+        "size": [
+          9.75,
+          9.75,
+          20
+        ]
+      }
+    }
+  ],
+  "invalid_edits": [
+    {
+      "part": "shaft",
+      "set": {
+        "size": [
+          9.95,
+          9.95,
+          20
+        ]
+      }
+    }
+  ]
+}

@@ -22,7 +22,15 @@ Implemented in this iteration:
 See `docs/releases/` for measured validation. A configured CI workflow is not the
 same as a passing remote run; release records distinguish the two.
 
-## Next gate — useful edits, not just first generation
+## v0.3 — bounded edits with frozen nominal constraints
+
+Implemented: versioned inspection/preview/apply operations, pinned parent snapshots,
+protected parameter patches, inherited contracts, verified CAD reuse, regenerated
+manufacturing evidence, and a three-task regression runner. See
+[the API guide](docs/AGENT_API.md). The numeric checkers are Python checks, separate
+from the Lean plan theorem. Catalog replacement and physical validation remain open.
+
+## Next gate — extend useful edits to qualified assemblies
 
 Ship a bounded set of small engineering tasks: enclosure fit, shaft/bearing interface,
 mounting bracket and fixture changes. For each task, publish the input, assumptions,

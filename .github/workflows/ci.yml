@@ -26,7 +26,7 @@ jobs:
       - run: python -m build
       - run: python scripts/smoke_distribution.py
       - run: python -m pip install .
-      - run: python -m pytest tests/test_onboarding.py -q
+      - run: python -m pytest tests/test_onboarding.py tests/test_constraints.py -q
   studio:
     name: CAD + real Lean + installed wheel
     runs-on: ubuntu-latest

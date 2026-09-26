@@ -1,0 +1,175 @@
+{
+  "schema": "fk-task-v1",
+  "id": "enclosure",
+  "design": {
+    "title": "Enclosure cavity and payload clearance",
+    "family": "other",
+    "summary": "Curated parametric engineering task; not image inference.",
+    "observations": [
+      {
+        "text": "Dimensions and layout are authored fixture data.",
+        "source": "selected"
+      }
+    ],
+    "assumptions": [
+      "Millimetres; nominal dimensions without a manufacturing tolerance stack.",
+      "Printed and purchased capabilities remain external assumptions."
+    ],
+    "requirements": [
+      "Preserve the frozen numeric interface constraints across local revisions."
+    ],
+    "parts": [
+      {
+        "id": "housing",
+        "name": "Housing",
+        "group": "Enclosure",
+        "route": "print",
+        "shape": "shell",
+        "size": [
+          80.0,
+          60.0,
+          24.0
+        ],
+        "position": [
+          0.0,
+          0.0,
+          0.0
+        ],
+        "rotation": [
+          0,
+          0,
+          0
+        ],
+        "wall": 2.0,
+        "material": "petg",
+        "color": "#a8b9c7",
+        "catalog_ref": "",
+        "purpose": "",
+        "source": "selected"
+      },
+      {
+        "id": "payload",
+        "name": "Payload envelope",
+        "group": "Electronics",
+        "route": "catalog",
+        "shape": "box",
+        "size": [
+          70.0,
+          50.0,
+          10.0
+        ],
+        "position": [
+          0.0,
+          0.0,
+          0.0
+        ],
+        "rotation": [
+          0,
+          0,
+          0
+        ],
+        "wall": 2.0,
+        "material": "petg",
+        "color": "#a8b9c7",
+        "catalog_ref": "Fixture envelope only; supplier pending",
+        "purpose": "",
+        "source": "selected"
+      },
+      {
+        "id": "lid",
+        "name": "Lid",
+        "group": "Enclosure",
+        "route": "print",
+        "shape": "box",
+        "size": [
+          80.0,
+          60.0,
+          2.0
+        ],
+        "position": [
+          0.0,
+          0.0,
+          13.0
+        ],
+        "rotation": [
+          0,
+          0,
+          0
+        ],
+        "wall": 2.0,
+        "material": "petg",
+        "color": "#a8b9c7",
+        "catalog_ref": "",
+        "purpose": "",
+        "source": "selected"
+      },
+      {
+        "id": "carrier",
+        "name": "Carrier blank",
+        "group": "Mounting",
+        "route": "machine",
+        "shape": "box",
+        "size": [
+          70.0,
+          50.0,
+          2.0
+        ],
+        "position": [
+          0.0,
+          0.0,
+          -8.0
+        ],
+        "rotation": [
+          0,
+          0,
+          0
+        ],
+        "wall": 2.0,
+        "material": "aluminum",
+        "color": "#a8b9c7",
+        "catalog_ref": "",
+        "purpose": "",
+        "source": "selected"
+      }
+    ],
+    "unresolved": [
+      "Physical fit, process qualification and catalog authenticity require independent evidence."
+    ]
+  },
+  "constraints": {
+    "schema": "fk-constraints-v1",
+    "rules": [
+      {
+        "id": "housing-wall",
+        "kind": "dimension",
+        "part": "housing",
+        "measure": "wall",
+        "min": 1.5,
+        "max": 4
+      },
+      {
+        "id": "payload-clearance",
+        "kind": "inside-shell",
+        "container": "housing",
+        "item": "payload",
+        "min": 1
+      }
+    ]
+  },
+  "valid_edits": [
+    {
+      "part": "housing",
+      "set": {
+        "wall": 3
+      }
+    }
+  ],
+  "invalid_edits": [
+    {
+      "part": "housing",
+      "set": {
+        "wall": 5
+      }
+    }
+  ]
+}

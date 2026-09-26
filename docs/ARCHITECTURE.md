@@ -12,7 +12,9 @@ storage and explicit evidence, but do not yet expose one unified stable agent AP
 | L3 | `fluxkernel/semantics/` | Design operations, contracts, goals and policies |
 | L4 | `fluxkernel/interface/` | `.fcad`, CLI and diagnostics |
 | Studio | `fluxkernel/demo/` | Image planning, finite CAD recipes, runs and web UI |
-| Headless entry | `fluxkernel/studio.py` | Isolated curated reference generation |
+| Headless entry | `fluxkernel/studio.py` | Isolated reference/task generation and revision execution |
+| Revision protocol | `fluxkernel/revision.py` | Pinned parents, protected edits, preflight and evidence invalidation |
+| Nominal checks | `fluxkernel/demo/constraints.py` | Frozen finite interface checks; independently bundled Python evaluator |
 | Formal plan | `formal/FluxKernel/Closure.lean` | Finite-plan checker and soundness theorem |
 
 `core/` and `store/` may only import the standard library and internal modules;
@@ -73,7 +75,7 @@ not import optional CAD or web dependencies.
 ## Current limits
 
 The Studio recipes, one-generation equipment concept and fixed reference cases are
-bounded prototypes. Revision has explicit parent tracking but is not yet a general
-transactional agent API. Native solver plugins run in-process with the engine and
+bounded prototypes. Revision has a versioned, bounded local patch API with pinned parent snapshots; it
+is not yet a general assembly-editing transaction API. Native solver plugins run in-process with the engine and
 are not a security sandbox. Physical tests, catalog qualification, richer assembly
 interfaces and robust process feasibility are separate roadmap work.

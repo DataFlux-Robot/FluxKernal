@@ -1,7 +1,4 @@
-"""Small headless API for reproducible reference runs, with isolated CAD output.
-
-Reference runs use curated designs, never an API or an image-inference fallback.
-"""
+"""Isolated reference generation, engineering tasks and local design revisions."""
 from __future__ import annotations
 
 import json
@@ -12,6 +9,8 @@ from dataclasses import asdict, dataclass
 from pathlib import Path
 
 from .runtime import data_dir
+
+TASKS = ('enclosure', 'shaft-fit', 'mounting-pitch')
 
 
 class StudioError(RuntimeError):
@@ -32,61 +31,140 @@ class Run:
         return asdict(self)
 
 
-def generate_reference(reference: str = "phone", *, output_dir: str | Path | None = None,
-                       equipment_depth: int = 1, timeout: float = 300) -> Run:
-    """Generate CAD + a checked plan without a model key. Each run gets a new ID.
-
-    Missing Lean leaves the plan explicitly open. Missing CAD dependencies or
-    failed geometry raise StudioError; partial evidence remains in the run folder.
-    The worker isolates native CAD stdout and process state from calling agents.
-    """
-    if reference not in ("phone", "car", "aircraft"):
-        raise ValueError("reference must be phone, car, or aircraft")
-    if type(equipment_depth) is not int or equipment_depth not in (0, 1):
-        raise ValueError("equipment_depth must be 0 or 1")
+def _new_run(output_dir, timeout):
     if timeout <= 0:
-        raise ValueError("timeout must be positive")
+        raise ValueError('timeout must be positive')
     root = Path(output_dir).expanduser().resolve() if output_dir is not None else data_dir()
     run = root / uuid.uuid4().hex[:16]
     run.mkdir(parents=True)
-    command = [sys.executable, "-m", "fluxkernel.studio", "--run", str(run),
-               "--reference", reference, "--equipment-depth", str(equipment_depth)]
+    return run
+
+
+def _worker(run, arguments, timeout):
+    command = [sys.executable, '-m', 'fluxkernel.studio', '--run', str(run), *arguments]
     try:
         proc = subprocess.run(command, capture_output=True, text=True, timeout=timeout)
     except subprocess.TimeoutExpired as exc:
-        status = run / "status.json"
-        record = json.loads(status.read_text(encoding="utf-8")) if status.is_file() else {"id": run.name, "events": []}
-        record.update(state="failed", stage="failed", error="Reference worker exceeded its time limit")
-        status.write_text(json.dumps(record, ensure_ascii=False, indent=2), encoding="utf-8")
-        raise StudioError(f"Reference run timed out; partial evidence: {run}") from exc
-    # Diagnostics are not added retroactively to the immutable manifest.
-    (run / "worker.log").write_text(proc.stdout + proc.stderr, encoding="utf-8")
-    if proc.returncode or not (run / "result.json").is_file():
-        raise StudioError(f"Reference run failed; inspect {run / 'status.json'} and worker.log. "
-                          "Install the demo extra and run `fk doctor --profile studio`.")
-    status = json.loads((run / "status.json").read_text(encoding="utf-8"))
-    if status["state"] != "complete":
-        raise StudioError(f"Reference run is incomplete; inspect {run / 'status.json'}")
-    result = json.loads((run / "result.json").read_text(encoding="utf-8"))
-    return Run(run.name, str(run), result["model"]["mode"], result["status"],
-               result["proof"]["accepted"], result["physical_status"], result["counts"])
+        status = run/'status.json'
+        record = json.loads(status.read_text(encoding='utf-8')) if status.is_file() else {'id':run.name,'events':[]}
+        record.update(state='failed', stage='failed', error='Worker exceeded its time limit')
+        status.write_text(json.dumps(record, ensure_ascii=False, indent=2), encoding='utf-8')
+        raise StudioError(f'Run timed out; partial evidence: {run}') from exc
+    (run/'worker.log').write_text(proc.stdout + proc.stderr, encoding='utf-8')
+    return proc.returncode
+
+
+def _result(run):
+    if not (run/'result.json').is_file() or not (run/'status.json').is_file():
+        raise StudioError(f'Run failed; inspect {run}/status.json and worker.log. Run `fk doctor --profile studio`.')
+    status = json.loads((run/'status.json').read_text(encoding='utf-8'))
+    if status['state'] != 'complete':
+        raise StudioError(f'Run is incomplete; inspect {run}/status.json')
+    result = json.loads((run/'result.json').read_text(encoding='utf-8'))
+    return Run(run.name, str(run), result['model']['mode'], result['status'],
+               result['proof']['accepted'], result['physical_status'], result['counts'])
+
+
+def generate_reference(reference='phone', *, output_dir=None, equipment_depth=1, timeout=300) -> Run:
+    """Curated design without image inference; absent Lean leaves an open proof."""
+    if reference not in ('phone','car','aircraft'):
+        raise ValueError('reference must be phone, car, or aircraft')
+    if type(equipment_depth) is not int or equipment_depth not in (0, 1):
+        raise ValueError('equipment_depth must be 0 or 1')
+    run = _new_run(output_dir, timeout)
+    _worker(run, ['--reference',reference,'--equipment-depth',str(equipment_depth)], timeout)
+    return _result(run)
+
+
+def load_task(name):
+    if name not in TASKS:
+        raise ValueError('Unknown engineering task')
+    return json.loads((Path(__file__).parent/'demo/tasks'/f'{name}.json').read_text(encoding='utf-8'))
+
+
+def generate_task(name, *, output_dir=None, timeout=300) -> Run:
+    """Build an authored fixture with a frozen numeric interface contract."""
+    load_task(name)
+    run = _new_run(output_dir, timeout)
+    _worker(run, ['--task',name], timeout)
+    return _result(run)
+
+
+def apply_revision(parent, request, *, output_dir=None, timeout=300):
+    """Apply a pinned local patch; rejections are archived, never overwrite a parent.
+
+    Returns a versioned JSON report. `ok` describes execution and constraints;
+    inspect `run.proof_accepted` separately for Lean and physical_status for scope.
+    """
+    parent = Path(parent).expanduser().resolve()
+    encoded = json.dumps(request, ensure_ascii=False, indent=2, allow_nan=False)
+    run = _new_run(output_dir if output_dir is not None else parent.parent, timeout)
+    (run/'revision-request.json').write_text(encoded, encoding='utf-8')
+    _worker(run, ['--revision-parent',str(parent)], timeout)
+    report = {'schema':'fk-revision-result-v1','ok':False,'directory':str(run),'id':run.name}
+    if (run/'revision-check.json').is_file():
+        report['preview'] = json.loads((run/'revision-check.json').read_text(encoding='utf-8'))
+    status = json.loads((run/'status.json').read_text(encoding='utf-8')) if (run/'status.json').exists() else {'state':'failed'}
+    report['state'] = status['state']
+    if status['state'] == 'complete':
+        report.update(ok=True, run=_result(run).to_dict(),
+                      reuse=json.loads((run/'reuse.json').read_text(encoding='utf-8')))
+    elif status['state'] != 'rejected':
+        report['error'] = status.get('error', 'Worker failed; inspect worker.log')
+    return report
 
 
 def _main() -> int:
     import argparse
-    parser = argparse.ArgumentParser(description="Internal isolated reference worker")
-    parser.add_argument("--run", required=True, type=Path)
-    parser.add_argument("--reference", required=True, choices=("phone", "car", "aircraft"))
-    parser.add_argument("--equipment-depth", type=int, choices=(0, 1), default=1)
+    parser = argparse.ArgumentParser(description='Internal isolated Studio worker')
+    parser.add_argument('--run', required=True, type=Path)
+    mode = parser.add_mutually_exclusive_group(required=True)
+    mode.add_argument('--reference', choices=('phone','car','aircraft'))
+    mode.add_argument('--task', choices=TASKS)
+    mode.add_argument('--revision-parent', type=Path)
+    parser.add_argument('--equipment-depth', type=int, choices=(0, 1), default=1)
     args = parser.parse_args()
     from .demo.models import Request
-    from .demo.pipeline import execute
-    image = Path(__file__).parent / "demo/static/references" / (args.reference + ".jpg")
-    execute(args.run, Request(mode="reference", reference=args.reference,
-                             equipment_depth=args.equipment_depth), image.read_bytes())
-    status = json.loads((args.run / "status.json").read_text(encoding="utf-8"))
-    return 0 if status["state"] == "complete" else 1
+    from .demo.pipeline import execute, write_json
+    if args.revision_parent:
+        from .revision import prepare_revision, read_json
+        request = json.loads((args.run/'revision-request.json').read_text(encoding='utf-8'))
+        preview, snap, candidate, contract = prepare_revision(args.revision_parent, request)
+        write_json(args.run/'revision-check.json', preview)
+        if not preview['accepted']:
+            write_json(args.run/'status.json', {'id':args.run.name,'state':'rejected','stage':'preflight',
+                                              'events':[],'diagnostics':preview['diagnostics']})
+            return 2
+        original = read_json(snap,'design.json'); equipment = read_json(snap,'equipment.json')
+        scene = read_json(snap,'scene.json')
+        cache = {'read':lambda name:snap['files'][name], 'design':original, 'constraints':contract,
+                 'parts':{p['id']:p for p in original['parts']+equipment},
+                 'meshes':{p['id']:p for p in scene['product']+scene['equipment']},
+                 'checks':read_json(snap,'geometry-checks.json')}
+        before_input = read_json(snap,'input.json')
+        depth = read_json(snap,'manufacturing.json')['policy']['equipment_depth']
+        parent_id = read_json(snap,'result.json')['id']
+        execute(args.run, Request(mode='revision', parent=parent_id, equipment_depth=depth,
+                                  brief=before_input['request']['brief']), snap['files']['image.png'],
+                original, design_override=candidate, constraint_contract=contract,
+                parent_cache_override=cache,
+                revision_record={'schema':'fk-revision-v1','base_manifest_sha256':snap['identity'],
+                                 'edits':request['edits']})
+    elif args.task:
+        import io
+        from PIL import Image
+        task = load_task(args.task)
+        image = io.BytesIO(); Image.new('RGB',(32,32),'#dce4eb').save(image,'PNG')
+        write_json(args.run/'task.json', {'id':args.task,'schema':'fk-task-v1','input':'authored parametric fixture'})
+        execute(args.run, Request(mode='fixture', brief=task['design']['title']), image.getvalue(),
+                design_override=task['design'], constraint_contract=task['constraints'])
+    else:
+        image = Path(__file__).parent/'demo/static/references'/(args.reference+'.jpg')
+        execute(args.run, Request(mode='reference', reference=args.reference,
+                                 equipment_depth=args.equipment_depth), image.read_bytes())
+    status = json.loads((args.run/'status.json').read_text(encoding='utf-8'))
+    return 0 if status['state'] == 'complete' else 1
 
 
-if __name__ == "__main__":
+if __name__ == '__main__':
     raise SystemExit(_main())

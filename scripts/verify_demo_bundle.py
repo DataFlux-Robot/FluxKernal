@@ -25,6 +25,24 @@ if digest(input_record)!=p['request_sha256']:raise SystemExit('Frozen request bi
 if input_record['image_sha256']!=p['image_sha256']:raise SystemExit('Source image commitment mismatch')
 if sha((root/'image.png').read_bytes())!=input_record['normalized_image_sha256']:
     raise SystemExit('Actual model image differs from the frozen input')
+if 'constraints_sha256' in input_record:
+    import importlib.util
+    contract=json.loads((root/'constraints.json').read_text())
+    if digest(contract)!=input_record['constraints_sha256']:
+        raise SystemExit('Frozen constraint binding mismatch')
+    if sha((root/'constraint_checker.py').read_bytes())!=input_record.get('constraint_checker_sha256'):
+        raise SystemExit('Constraint checker differs from the frozen input')
+    spec=importlib.util.spec_from_file_location('fk_bundle_constraints',root/'constraint_checker.py')
+    checker=importlib.util.module_from_spec(spec);spec.loader.exec_module(checker)
+    design=json.loads((root/'design.json').read_text())
+    checked=checker.evaluate(design,contract)
+    if not checked['accepted'] or checked!=json.loads((root/'constraint-checks.json').read_text()):
+        raise SystemExit('Nominal constraint checks failed or differ from recorded evidence')
+    occurrences={s['id']:s for s in p['steps']}
+    for part in design['parts']:
+        step=occurrences.get(part['id'])
+        if not step or p['receipts'][step['receipt']].get('recipe')!=part:
+            raise SystemExit('Design recipe differs from manufacturing occurrence')
 steps=p['steps'];pos={s['id']:i for i,s in enumerate(steps)}
 if len(pos)!=len(steps):raise SystemExit('Duplicate occurrence')
 rows=[]
@@ -48,4 +66,4 @@ for cmd in [['lake','build'],['lake','env','lean','ManufacturingPlan.lean']]:
     print(result.stdout,end='');print(result.stderr,end='',file=sys.stderr)
     if result.returncode or any(x in result.stdout for x in ['sorryAx','Lean.trustCompiler','_native.']):
         raise SystemExit('Lean rejected the plan or has unapproved dependencies')
-print('PASS: manifest, occurrence receipts, JSON-to-Lean binding and Lean plan closure. Physical capability remains unverified.')
+print('PASS: manifest, declared nominal constraints (when present), occurrence receipts, JSON-to-Lean binding and Lean plan closure. Physical capability remains unverified.')

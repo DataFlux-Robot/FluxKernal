@@ -1,0 +1,167 @@
+{
+  "schema": "fk-task-v1",
+  "id": "mounting-pitch",
+  "design": {
+    "title": "Mounting datum spacing",
+    "family": "other",
+    "summary": "Curated parametric engineering task; not image inference.",
+    "observations": [
+      {
+        "text": "Dimensions and layout are authored fixture data.",
+        "source": "selected"
+      }
+    ],
+    "assumptions": [
+      "Millimetres; nominal dimensions without a manufacturing tolerance stack.",
+      "Printed and purchased capabilities remain external assumptions."
+    ],
+    "requirements": [
+      "Preserve the frozen numeric interface constraints across local revisions."
+    ],
+    "parts": [
+      {
+        "id": "plate",
+        "name": "Plate blank",
+        "group": "Mounting",
+        "route": "machine",
+        "shape": "box",
+        "size": [
+          60.0,
+          30.0,
+          4.0
+        ],
+        "position": [
+          0.0,
+          0.0,
+          -4.0
+        ],
+        "rotation": [
+          0,
+          0,
+          0
+        ],
+        "wall": 2.0,
+        "material": "aluminum",
+        "color": "#a8b9c7",
+        "catalog_ref": "",
+        "purpose": "",
+        "source": "selected"
+      },
+      {
+        "id": "left",
+        "name": "Left datum post",
+        "group": "Mounting",
+        "route": "print",
+        "shape": "cylinder",
+        "size": [
+          6.0,
+          6.0,
+          8.0
+        ],
+        "position": [
+          -20.0,
+          0.0,
+          2.0
+        ],
+        "rotation": [
+          0,
+          0,
+          0
+        ],
+        "wall": 2.0,
+        "material": "petg",
+        "color": "#a8b9c7",
+        "catalog_ref": "",
+        "purpose": "",
+        "source": "selected"
+      },
+      {
+        "id": "right",
+        "name": "Right datum post",
+        "group": "Mounting",
+        "route": "print",
+        "shape": "cylinder",
+        "size": [
+          6.0,
+          6.0,
+          8.0
+        ],
+        "position": [
+          20.0,
+          0.0,
+          2.0
+        ],
+        "rotation": [
+          0,
+          0,
+          0
+        ],
+        "wall": 2.0,
+        "material": "petg",
+        "color": "#a8b9c7",
+        "catalog_ref": "",
+        "purpose": "",
+        "source": "selected"
+      }
+    ],
+    "unresolved": [
+      "Physical fit, process qualification and catalog authenticity require independent evidence."
+    ]
+  },
+  "constraints": {
+    "schema": "fk-constraints-v1",
+    "rules": [
+      {
+        "id": "datum-pitch",
+        "kind": "axis-distance",
+        "first": "left",
+        "second": "right",
+        "axis": "x",
+        "min": 39.9,
+        "max": 40.1
+      },
+      {
+        "id": "plate-thickness",
+        "kind": "dimension",
+        "part": "plate",
+        "measure": "size.z",
+        "min": 4,
+        "max": 8
+      }
+    ]
+  },
+  "valid_edits": [
+    {
+      "part": "left",
+      "set": {
+        "position": [
+          -18,
+          0,
+          2
+        ]
+      }
+    },
+    {
+      "part": "right",
+      "set": {
+        "position": [
+          22,
+          0,
+          2
+        ]
+      }
+    }
+  ],
+  "invalid_edits": [
+    {
+      "part": "left",
+      "set": {
+        "position": [
+          -17,
+          0,
+          2
+        ]
+      }
+    }
+  ]
+}

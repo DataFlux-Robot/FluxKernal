@@ -37,16 +37,28 @@ def reusable_parent(run, request):
         return data
     design=json.loads(read('design.json'));equipment=json.loads(read('equipment.json'))
     scenes=json.loads(read('scene.json'));checks=json.loads(read('geometry-checks.json'))
-    return {'read':read,'parts':{p['id']:p for p in design['parts']+equipment},
+    contract=json.loads(read('constraints.json')) if 'constraints.json' in manifest else {'schema':'fk-constraints-v1','rules':[]}
+    return {'read':read,'design':design,'constraints':contract,'parts':{p['id']:p for p in design['parts']+equipment},
             'meshes':{p['id']:p for p in scenes['product']+scenes['equipment']},'checks':checks}
 
 
-def execute(run: Path, request: Request, image: bytes, previous=None):
+def execute(run: Path, request: Request, image: bytes, previous=None, *,
+            design_override=None, constraint_contract=None, parent_cache_override=None,
+            revision_record=None):
     start=time.monotonic(); events=[]
     def event(stage,message):
         events.append({'stage':stage,'message':message,'elapsed_s':round(time.monotonic()-start,1)})
         write_json(run/'status.json',{'id':run.name,'state':'running','stage':stage,'events':events})
     try:
+        parent_cache=parent_cache_override if parent_cache_override is not None else reusable_parent(run,request)
+        if parent_cache:
+            if previous is not None and previous != parent_cache['design']:
+                raise ValueError('Parent design changed before revision execution')
+            previous=parent_cache['design']
+            inherited=parent_cache['constraints']
+            if constraint_contract is not None and constraint_contract != inherited:
+                raise ValueError('A revision cannot replace the parent constraint contract')
+            constraint_contract=inherited
         event('input','锁定参考图片、需求与一轮设备展开预算')
         normalized=normalize_image(image);(run/'image.png').write_bytes(normalized)
         image_hash=hashlib.sha256(image).hexdigest()
@@ -57,8 +69,25 @@ def execute(run: Path, request: Request, image: bytes, previous=None):
                 'available_material_processes':['pla','petg','abs','aluminum','steel'],
                 'supplied_externally':['feedstock','power','support removal','basic assembly'],
                 'status':'explicit demonstration assumptions; not measured capabilities'}}
+        from .constraints import evaluate, validate_contract
+        constraint_contract = constraint_contract if constraint_contract is not None else {'schema':'fk-constraints-v1','rules':[]}
+        validate_contract(constraint_contract)
+        input_record['constraints_sha256']=manufacturing.digest(constraint_contract)
+        constraint_checker_source=Path(__file__).with_name('constraints.py').read_bytes()
+        input_record['constraint_checker_sha256']=hashlib.sha256(constraint_checker_source).hexdigest()
+        if revision_record is not None:
+            input_record['revision']=revision_record
+        if request.mode in ('fixture','revision'):
+            input_record['interpretation']='explicit parametric design; no image inference or model call'
         write_json(run/'input.json',input_record)
-        if request.mode=='reference':
+        write_json(run/'constraints.json',constraint_contract)
+        if request.mode in ('fixture','revision'):
+            if design_override is None: raise ValueError('Explicit design input is required')
+            from .models import Design
+            design=Design.model_validate(design_override)
+            model={'mode':request.mode,'model':'local-parameters-v1','elapsed_s':0}
+            event('design','Explicit parametric design; no model call')
+        elif request.mode=='reference':
             if not request.reference: raise ValueError('参考回放需要选择案例')
             design=reference(request.reference)
             model={'mode':'reference','model':'curated-reference','elapsed_s':0}
@@ -66,6 +95,10 @@ def execute(run: Path, request: Request, image: bytes, previous=None):
         else:
             design,model=vision.plan(normalized,request.brief,run,event,previous)
         write_json(run/'design.json',design.model_dump());write_json(run/'model.json',model)
+        constraint_report=evaluate(design.model_dump(),constraint_contract)
+        write_json(run/'constraint-checks.json',constraint_report)
+        if not constraint_report['accepted']:
+            raise ValueError('Frozen nominal constraints failed: '+', '.join(c['id'] for c in constraint_report['checks'] if not c['passed']))
         before={p['id']:p for p in (previous or {}).get('parts',[])}
         after={p.id:p.model_dump() for p in design.parts}
         write_json(run/'trajectory.json',{'parent':request.parent,'input':input_record,
@@ -80,7 +113,6 @@ def execute(run: Path, request: Request, image: bytes, previous=None):
         event('equipment',f'设备展开：{len(equipment)} 个标准与打印部件' if equipment else '本轮没有展开加工设备')
         store=Store(run/'.fk');artifact_dir=run/'cad';artifact_dir.mkdir(exist_ok=True)
         scene=[];cell_scene=[];checks={};blobs={};reused=[]
-        parent_cache=reusable_parent(run,request)
         for i,p in enumerate(design.parts+equipment):
             if parent_cache and parent_cache['parts'].get(p.id)==p.model_dump():
                 event('geometry',f'校验并复用父版本未变零件：{p.name}')
@@ -123,11 +155,13 @@ def execute(run: Path, request: Request, image: bytes, previous=None):
                 'steps':len(plan['steps'])},
             'status':'conditional-closure' if proof['accepted'] else 'open',
             'physical_status':'unverified','gaps':list(dict.fromkeys(gaps)),
+            'constraints':constraint_report,
             'duration_s':round(time.monotonic()-start,2),'image_sha256':image_hash,
             'parent':request.parent,'geometry_reused':len(reused)}
         write_json(run/'result.json',result)
         evidence=run/'formal/FluxKernel';evidence.mkdir(parents=True,exist_ok=True)
         shutil.copyfile(manufacturing.ROOT/'scripts/verify_demo_bundle.py',run/'verify.py')
+        (run/'constraint_checker.py').write_bytes(constraint_checker_source)
         (run/'README.txt').write_text('FluxKernel conditional manufacturing plan\n'
             'Extract this ZIP, install elan/Lean, then run: python verify.py\n'
             'STEP/STL files are concept geometry; catalog parts are envelopes and machined parts are blanks.\n'
@@ -143,7 +177,8 @@ def execute(run: Path, request: Request, image: bytes, previous=None):
     except Exception as exc:
         # Never store headers, keys, or a raw HTTP request in public artifacts.
         message=str(exc)
-        cfg=vision.model_config()
+        try: cfg=vision.model_config()
+        except (ValueError,OSError,TypeError): cfg={}
         if cfg.get('api_key'): message=message.replace(cfg['api_key'],'[REDACTED]')
         write_json(run/'status.json',{'id':run.name,'state':'failed','stage':'failed',
             'error':message[:2000],'events':events})

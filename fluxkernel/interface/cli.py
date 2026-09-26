@@ -780,6 +780,8 @@ def build_parser() -> argparse.ArgumentParser:
                                  description="FluxKernel — CAD+MBSE design kernel CLI")
     p.add_argument("--version", action="version", version=f"FluxKernel {version()}")
     sub = p.add_subparsers(dest="cmd", required=True)
+    from .revision_cli import register
+    register(sub)
 
     s = sub.add_parser("doctor", help="diagnose an installation without API calls")
     s.add_argument("--profile", choices=("core", "studio", "proof", "live"), default="core")

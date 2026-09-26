@@ -90,6 +90,33 @@ This API isolates native CAD output in a worker process and creates a fresh run
 for every call. It uses curated references; the local Studio provides live image
 planning through the configured Anthropic-compatible or Ollama backend.
 
+## Revise a design without rewriting its requirements
+
+```python
+from fluxkernel.studio import generate_task, apply_revision
+from fluxkernel.revision import inspect_run, preview_revision
+
+base = generate_task("enclosure", output_dir="./runs")
+patch = {
+    "schema": "fk-revision-v1",
+    "base_manifest_sha256": inspect_run(base.directory)["manifest_sha256"],
+    "edits": [{"part": "housing", "set": {"wall": 3.0}}],
+}
+if preview_revision(base.directory, patch)["accepted"]:
+    revision = apply_revision(base.directory, patch)
+    print(revision["state"], revision.get("reuse"))
+```
+
+The allowed patch changes named numeric parameters. Frozen interface constraints,
+requirements, identities and procurement routes stay outside its edit vocabulary.
+A 3 mm wall passes the enclosure fixture; a 5 mm wall is rejected. Unchanged CAD is
+verified and reused; the manufacturing plan and proof are rebuilt.
+
+Run `fk benchmark --output ./revision-evaluation` for three curated CAD + Lean
+revision tasks. See the [versioned agent API](docs/AGENT_API.md) for JSON schemas,
+CLI commands, diagnostics and the exact distinction between nominal checks and
+formal plan closure.
+
 ## What is verified?
 
 | Layer | Current evidence | What remains outside it |
