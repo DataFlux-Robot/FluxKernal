@@ -775,9 +775,23 @@ def verify_store(eng: Engine) -> list[str]:
 
 # ------------------------------------------------------------------ main --
 def build_parser() -> argparse.ArgumentParser:
+    from .onboarding import cmd_doctor, cmd_example, cmd_demo, version
     p = argparse.ArgumentParser(prog="fk",
                                  description="FluxKernel — CAD+MBSE design kernel CLI")
+    p.add_argument("--version", action="version", version=f"FluxKernel {version()}")
     sub = p.add_subparsers(dest="cmd", required=True)
+
+    s = sub.add_parser("doctor", help="diagnose an installation without API calls")
+    s.add_argument("--profile", choices=("core", "studio", "proof", "live"), default="core")
+    s.add_argument("--json", action="store_true"); s.set_defaults(fn=cmd_doctor)
+    s = sub.add_parser("example", help="write a dependency-free getting-started example")
+    s.add_argument("--output", default="hello.fcad"); s.set_defaults(fn=cmd_example)
+    s = sub.add_parser("demo", help="generate a complete curated reference run without a model key")
+    s.add_argument("--reference", choices=("phone", "car", "aircraft"), default="phone")
+    s.add_argument("--output", help="parent folder for a new uniquely identified run")
+    s.add_argument("--equipment-depth", type=int, choices=(0, 1), default=1)
+    s.add_argument("--require-proof", action="store_true", help="exit nonzero if Lean closure is not accepted")
+    s.add_argument("--json", action="store_true"); s.set_defaults(fn=cmd_demo)
 
     s = sub.add_parser("init"); s.add_argument("--force", action="store_true")
     s.set_defaults(fn=cmd_init)

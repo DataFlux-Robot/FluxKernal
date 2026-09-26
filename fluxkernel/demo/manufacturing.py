@@ -8,8 +8,9 @@ from fluxkernel.core.objects import Node, Edge, Certificate, Obligation, Resourc
 from fluxkernel.semantics.operators import Engine
 from fluxkernel.semantics import contracts
 from fluxkernel.interface.cli import verify_store
+from fluxkernel.runtime import assets_root, copy_proof_project
 
-ROOT=Path(__file__).resolve().parents[2]
+ROOT=assets_root()
 
 
 def digest(value):
@@ -120,14 +121,22 @@ def lean_source(plan):
 
 
 def prove(plan, directory):
+    directory=Path(directory).resolve()
+    copy_proof_project(directory)
     source=lean_source(plan);target=directory/'ManufacturingPlan.lean';target.write_text(source)
     issues=validate(plan)
     try:
-        proc=subprocess.run(['lake','env','lean',str(target)],cwd=ROOT,capture_output=True,text=True,timeout=90)
-        log=proc.stdout+proc.stderr
+        build=subprocess.run(['lake','build'],cwd=directory,capture_output=True,text=True,timeout=120)
+        if build.returncode:
+            proc=build
+        else:
+            proc=subprocess.run(['lake','env','lean',target.name],cwd=directory,capture_output=True,text=True,timeout=90)
+        log=build.stdout+build.stderr+(proc.stdout+proc.stderr if proc is not build else '')
         accepted=proc.returncode==0 and not issues
+        if proc.returncode: issues.append('Lean rejected the plan or its proof project could not be built; see lean-check.log')
     except (OSError,subprocess.TimeoutExpired) as exc:
         log=f'Lean unavailable or timed out: {type(exc).__name__}';accepted=False
+        issues.append('Lean unavailable or timed out; install the pinned toolchain and rerun verification')
     (directory/'lean-check.log').write_text(log)
     if 'sorryAx' in log or 'Lean.trustCompiler' in log or '_native.' in log:
         accepted=False;issues.append('unapproved proof dependency')

@@ -13,9 +13,10 @@ from fastapi.staticfiles import StaticFiles
 from .models import Request
 from .pipeline import execute, write_json, normalize_image
 from .vision import health
+from fluxkernel.runtime import data_dir
 
 STATIC=Path(__file__).parent/'static'
-DATA=Path(os.getenv('FK_DEMO_DATA',str(Path(__file__).resolve().parents[2]/'.demo/runs'))).resolve()
+DATA=data_dir()
 DATA.mkdir(parents=True,exist_ok=True)
 app=FastAPI(title='FluxKernel Studio',docs_url=None,redoc_url=None)
 app.mount('/static',StaticFiles(directory=STATIC),name='static')

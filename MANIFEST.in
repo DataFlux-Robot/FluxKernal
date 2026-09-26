@@ -1,0 +1,8 @@
+include lean-toolchain lakefile.toml LICENSE
+include scripts/verify_demo_bundle.py
+recursive-include formal *.lean
+recursive-include examples *.fcad
+recursive-include docs *.md
+include README.zh-CN.md CONTRIBUTING.md SECURITY.md ROADMAP.md
+recursive-include docs *.png
+include scripts/smoke_distribution.py

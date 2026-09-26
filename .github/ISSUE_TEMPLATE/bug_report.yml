@@ -1,0 +1,24 @@
+name: Bug report
+description: A reproducible installation, design or evidence failure
+body:
+  - type: textarea
+    id: environment
+    attributes:
+      label: Version and environment
+      description: Commit, OS, Python and relevant fk doctor output. Remove private paths if needed.
+    validations:
+      required: true
+  - type: textarea
+    id: reproduction
+    attributes:
+      label: Smallest reproduction
+      description: Commands or a minimal non-sensitive design fixture.
+    validations:
+      required: true
+  - type: textarea
+    id: behavior
+    attributes:
+      label: Expected and actual behavior
+      description: Include the diagnostic or failed check. Never paste API keys.
+    validations:
+      required: true

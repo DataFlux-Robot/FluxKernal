@@ -1,74 +1,145 @@
+<div align="center">
+
 # FluxKernel
 
-## 图片驱动演示：FluxKernel Studio
+**An evidence-carrying design and manufacturing kernel for AI agents.**
 
-新增本地网页：GLM-5.3-Flash 图片规划 → 独立 STEP/STL → 一轮参数化加工设备展开 → 制造依赖图 → **实际 Lean 4 计划检查**。支持爆炸图、零件检查、版本修订和可独立复检的交付包。
+Turn a product reference into named parts, CAD artifacts, manufacturing dependencies,
+and a plan whose stated closure conditions can be checked by Lean 4.
 
-```bash
-uv venv --python 3.12
-uv pip install -e '.[demo,dev]'
-./scripts/start_studio.sh
-```
+[Interactive showcase](https://www.datafluxdynamics.ltd/technology/fluxkernel/) · [Quickstart](docs/QUICKSTART.md) · [中文](README.zh-CN.md) · [Contribute](CONTRIBUTING.md)
 
-打开 <http://127.0.0.1:8740>。私有模型配置、演示步骤和能力边界见 [演示指南](docs/demo/RUN_DEMO.md)，形式化命题见 [证明包](PROOF_PACKAGE.md)。
-这里证明的是在显式外部能力假设下的**有限制造计划闭合**；图片隐含结构、采购、打印工艺和实物性能仍待验证。参考架构回放始终明确标注。
+</div>
 
----
+> **Development preview.** This repository currently requires access. A checked
+> manufacturing plan is conditional on its declared inputs; it is not a certificate
+> of physical manufacturability, supplier availability, or product performance.
 
-**命令行形态的 CAD + MBSE 设计系统内核** —— "SolidWorks × MBSE × git × Lean 战术证明器" 的 CLI 实现。
-面向 LLM agent 与人类工程师：模糊需求 → 逐层拆解到标准件 → 逐层回装验证，每一步都是
-**可审计的生产边**（内容寻址 digest + 证书 + 资源向量，fail-closed）。
+## See the workflow
 
-- 命令 `fk`（战术模式，人面）与 `.fcad` S-表达式 DSL（项模式，LLM 面）共享同一内核检查。
-- Lean 同构：goal=spec / tactic=算子 / Mathlib=标准件目录 / sorry=参数洞 / kernel=L1 核。
-- v1.2 合同原生规格：spec = 五槽位合同（Goals/Semantics/Assumptions/Contracts/Forbidden），
-  四段式接口（Assume/Guarantee/Budget/Effluent），compose 按 C1–C4 有损耗组合规则核验，
-  共享介质（直流母线/热场/结构）是一等 `Medium` 节点，账本可派生（`fk ledger`）。
+[![FluxKernel Studio — product and equipment exploration](docs/media/studio.png)](https://www.datafluxdynamics.ltd/technology/fluxkernel/)
 
-## 布局（L0–L4 分层，依赖只许自上而下）
+**Image + requirements → candidate parts → STEP/STL → manufacturing equipment → evidence.**
 
-```
-L4 fluxkernel/interface/   .fcad 解析/打印 · fk CLI · 类型化诊断码
-L3 fluxkernel/semantics/   算子引擎 · 合同算术(C1–C4) · 角色/术语本体 · goals/sorry/risks
-L2 fluxkernel/solvers/     插件：sketch2d · feature3d(OCP) · mission · mate · dfam ·
-                           process · line · catalog · cosim
-L1 fluxkernel/core/        Node/Edge/Certificate · DAG 提交纪律 · fail-closed 生命周期
-L0 fluxkernel/store/       内容寻址对象库 · append-only 边日志 · 名字索引
-```
+- **Keep design state.** Parts have stable names and content identities; revisions retain history and reuse unchanged geometry after checking its integrity.
+- **Include the equipment.** A machined part depends on a blank and a manufacturing cell. The demo expands one equipment generation into purchased candidates and printed structures.
+- **Check the actual plan.** Lean checks dependency ordering, route rules, depth limits, and coverage for that run. Missing tools and rejected proofs leave an open result.
+- **Take the evidence with you.** Each completed run contains CAD files, assumptions, receipts, a manifest, and an independent verifier.
+- **Start without a model account.** Curated phone, car, and aircraft references run locally. Reference mode is always labeled and does not perform image inference.
 
-**纪律**：`core/` 与 `store/` 零第三方 import（测试强制）；诊断码表只增不改；
-插件不可信、必须返回证据；失败轨迹永不删除。
+## Start with the kernel — no CAD or model dependencies
 
-## 环境
-
-- Python ≥ 3.12；几何层需 `cadquery-ocp`（OCP）。
-- Windows：若 Smart App Control 拦截 OCP 的未签名 DLL（ImportError），
-  关闭 SAC 或改用 WSL。本仓库 `.venv/` 为本地开发环境（不入库，可随时重建）：
+Python **3.12+** is required. From a checkout:
 
 ```bash
 python -m venv .venv
-.venv/Scripts/pip install -e ".[all,dev]"   # 或  pip install -e . --no-deps  # 纯内核零依赖
+# Linux / macOS
+source .venv/bin/activate
+# Windows PowerShell: .venv\Scripts\Activate.ps1
+python -m pip install -e .
+fk doctor
+
+mkdir my-first-design
+cd my-first-design
+fk example
+fk init
+fk run hello.fcad
+fk show housing-v2 --json
+fk verify
 ```
 
-## 快速上手
+The example records two housing parameter sets with different content identities.
+`fk verify` checks recorded store integrity; it does not run a physics simulation.
+
+## Generate a complete reference design
+
+From the repository root, with the same environment active:
 
 ```bash
-fk init                                # 建 .fk/ 对象库（类 git）
-fk run examples/aircraft.fcad          # 项模式：整脚本 = 一串 DAG 提交
-fk goals                               # 战术状态：未关闭 subgoal / 参数洞 / 义务
-fk why <ref>                           # 谱系回溯到 Intent
-fk ledger <medium>                     # 介质账本：Σbudget/Σeffluent vs capacity
-fk risks                               # 未结算风险（洞+lint 不达标+未履行义务）
-fk trace --out trace_out/              # MechanogenesisBench 证书包
+python -m pip install -e '.[demo]'
+fk doctor --profile studio
+fk demo --reference phone --output ./runs --json
+fk-studio
 ```
 
-## 文档
+Open **http://127.0.0.1:8740**. Without model credentials, select **参考架构回放**
+(curated reference mode) in Studio. To browse command-line runs in Studio, point
+`FK_DEMO_DATA` to the same output folder before starting the server.
 
-设计文档与增补（v1.0 交接方案 / v1.1 integrate+co-design+evolve / v1.2 合同原生 spec）
-见 `docs/design/`。验收测试 1–20 见 `tests/run_tests.py`。
+The CLI writes a new run directory containing individual STEP/STL parts and a
+manufacturing plan. With the pinned Lean toolchain installed, the plan is checked;
+without it, CAD is still generated and the proof remains explicitly open.
+Use `--require-proof` when an agent or CI job must fail unless Lean accepts the plan.
 
-## 测试
+For Lean installation, live image generation, configuration and troubleshooting,
+see the [quickstart](docs/QUICKSTART.md). The project is not published to PyPI yet;
+install from a checkout or a built wheel, not an assumed public package listing.
+
+## Use it from Python
+
+```python
+from fluxkernel.studio import generate_reference
+
+run = generate_reference("phone", output_dir="./runs")
+print(run.directory)
+print(run.proof_accepted)  # False means unproven; never silently promoted.
+print(run.to_dict())      # Includes reference mode and physical_status.
+```
+
+This API isolates native CAD output in a worker process and creates a fresh run
+for every call. It uses curated references; the local Studio provides live image
+planning through the configured Anthropic-compatible or Ollama backend.
+
+## What is verified?
+
+| Layer | Current evidence | What remains outside it |
+| --- | --- | --- |
+| Image interpretation | Explicit visible / inferred / selected labels | Hidden internal structure and accurate dimensions |
+| Geometry | Constructive B-rep checks and independent STEP/STL | Fit, strength, fatigue, thermal behavior and function |
+| Manufacturing plan | Receipt binding; Lean checks finite dependency closure and route rules | True equipment capability and actual process qualification |
+| Procurement | Named specification/model candidates and envelopes | Verified supplier data, inventory and exact interfaces |
+| Revision | Parent identity, changed-part records, verified geometry reuse | User acceptance and improvement of real-world performance |
+
+Unlimited printer size is an explicit demonstration assumption. Materials,
+precision, post-processing, power and assembly still need evidence. The core
+refinement graph uses Python checks; the concrete manufacturing-plan checker uses
+Lean. See [PROOF_PACKAGE.md](PROOF_PACKAGE.md) for the exact theorem and boundaries.
+
+## Architecture and extension points
+
+```text
+Agent / Studio / fk CLI / .fcad
+              │
+    stateful design operators
+              │
+    solver evidence + contracts
+              │
+    content-addressed graph + store
+              │
+    CAD / receipts / plan / Lean / manifest
+```
+
+The core and store have no third-party dependencies. Geometry, process and catalog
+solvers live outside that trusted storage layer. Start with the
+[architecture and extension guide](docs/ARCHITECTURE.md) before adding a solver,
+geometry recipe or checker.
+
+## Develop
 
 ```bash
-.venv/Scripts/python -m pytest tests/ -v     # 或  python tests/run_tests.py
+python -m pip install -e '.[demo,dev]'
+lake build
+python -m pytest -q
+python -m build
+python scripts/smoke_distribution.py --studio
 ```
+
+CI covers the dependency-free kernel on Linux, macOS and Windows, plus CAD and
+real Lean checks on Linux. The distribution smoke test installs a wheel into a
+fresh environment and runs outside the source tree. See the [roadmap](ROADMAP.md)
+and [contributing guide](CONTRIBUTING.md) for scoped work and acceptance criteria.
+
+## License
+
+[MIT](LICENSE). Vendored Three.js retains its [upstream license](fluxkernel/demo/static/vendor/THREE-LICENSE.txt).
+Reference image attribution is recorded in [sources.json](fluxkernel/demo/static/references/sources.json).

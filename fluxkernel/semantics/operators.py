@@ -50,24 +50,25 @@ def _deep_merge(base: dict, extra: dict) -> dict:
 
 
 _PLUGINS_LOADED = False
+_PLUGIN_FAILURES: tuple[str, ...] = ()
 
 
 def load_plugins() -> list[str]:
     """Import all solver modules so their @register decorators fire.
     OCP-dependent modules keep OCP imports lazy (inside functions), so this
     never fails on machines where the geometry backend is unavailable."""
-    global _PLUGINS_LOADED
+    global _PLUGINS_LOADED, _PLUGIN_FAILURES
     if _PLUGINS_LOADED:
-        return []
+        return list(_PLUGIN_FAILURES)
     failed = []
-    from ..solvers import sketch2d, registry  # noqa: F401
-    for mod in ("feature3d", "features", "mission", "mate", "dfam",
+    for mod in ("sketch2d", "feature3d", "features", "mission", "mate", "dfam",
                 "process", "line", "catalog", "cosim", "sims"):
         try:
             __import__(f"fluxkernel.solvers.{mod}", fromlist=["*"])
         except Exception as e:  # missing optional backend etc.
             failed.append(f"{mod}: {e}")
     _PLUGINS_LOADED = True
+    _PLUGIN_FAILURES = tuple(failed)
     return failed
 
 

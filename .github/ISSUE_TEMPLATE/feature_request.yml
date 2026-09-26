@@ -1,0 +1,21 @@
+name: Engineering use case
+description: Propose a bounded operation, recipe, adapter or checker
+body:
+  - type: textarea
+    id: task
+    attributes:
+      label: What engineering task is blocked?
+    validations:
+      required: true
+  - type: textarea
+    id: acceptance
+    attributes:
+      label: What would demonstrate success?
+      description: Inputs, constraints, outputs, evidence and a failure case.
+    validations:
+      required: true
+  - type: textarea
+    id: scope
+    attributes:
+      label: Existing work and proposed scope
+      description: Relevant modules, external data, licenses or unresolved assumptions.

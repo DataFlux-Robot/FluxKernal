@@ -1,0 +1,7 @@
+;; A dependency-free first workspace: no model, geometry engine, or Lean needed.
+;; A node is a design statement, not proof that a physical part works.
+(term housing "protective enclosure with dimensions in millimetres")
+(node housing-v1 :role Part :kind housing :params ((width_mm 70) (height_mm 140) (depth_mm 12)))
+(node housing-v2 :role Part :kind housing :params ((width_mm 70) (height_mm 140) (depth_mm 14)))
+;; Explore: fk show housing-v1 --json, fk show housing-v2 --json, fk verify
+;; Different parameter values produce different content identities.

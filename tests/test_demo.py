@@ -56,6 +56,18 @@ def test_no_equipment_remains_open():
     assert any('machining needs' in e for e in m.validate(plan(0)))
 
 
+def test_missing_lean_keeps_artifacts_but_does_not_claim_a_proof(tmp_path, monkeypatch):
+    def unavailable(*args, **kwargs):
+        raise FileNotFoundError('lake')
+    monkeypatch.setattr(m.subprocess, 'run', unavailable)
+    result=m.prove(plan(),tmp_path)
+    assert not result['accepted']
+    assert any('Lean unavailable' in issue for issue in result['issues'])
+    assert (tmp_path/'ManufacturingPlan.lean').is_file()
+    assert (tmp_path/'formal/FluxKernel/Closure.lean').is_file()
+    assert json.loads((tmp_path/'proof.json').read_text())['accepted'] is False
+
+
 @pytest.mark.skipif(not shutil.which('lake'),reason='Lean toolchain absent')
 @pytest.mark.parametrize('mutation',['valid','self','forward','depth','route','orphan','no_machine'])
 def test_actual_lean_rejects_invalid_graph(tmp_path,mutation):

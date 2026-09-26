@@ -4,8 +4,8 @@ build-backend = "setuptools.build_meta"
 
 [project]
 name = "fluxkernel"
-version = "0.1.0"
-description = "FluxKernel: content-addressed, certificate-carrying refinement-graph kernel for LLM-driven CAD + MBSE (fk CLI + .fcad DSL)"
+version = "0.2.0"
+description = "An evidence-carrying design and manufacturing kernel for AI agents"
 readme = "README.md"
 requires-python = ">=3.12"
 license = { text = "MIT" }
@@ -18,8 +18,14 @@ dependencies = []
 solvers = ["numpy", "scipy"]
 geom = ["cadquery-ocp>=8.0"]
 all = ["numpy", "scipy", "cadquery-ocp>=8.0"]
-dev = ["pytest"]
-demo = ["fastapi>=0.115", "uvicorn>=0.30", "httpx[socks]>=0.27", "python-multipart>=0.0.12", "pillow>=10", "numpy", "scipy", "cadquery-ocp>=8.0"]
+dev = ["pytest", "build>=1.2"]
+demo = ["pydantic>=2.10,<3", "fastapi>=0.115", "uvicorn>=0.30", "httpx[socks]>=0.27", "python-multipart>=0.0.12", "pillow>=10", "numpy", "scipy", "cadquery-ocp>=8.0"]
+
+[project.urls]
+Homepage = "https://www.datafluxdynamics.ltd/technology/fluxkernel/"
+Repository = "https://github.com/ExuberantWitness/fluxkernel"
+Documentation = "https://github.com/ExuberantWitness/fluxkernel/tree/master/docs"
+Issues = "https://github.com/ExuberantWitness/fluxkernel/issues"
 
 [project.scripts]
 fk = "fluxkernel.interface.cli:main"

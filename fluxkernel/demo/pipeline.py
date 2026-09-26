@@ -127,8 +127,6 @@ def execute(run: Path, request: Request, image: bytes, previous=None):
             'parent':request.parent,'geometry_reused':len(reused)}
         write_json(run/'result.json',result)
         evidence=run/'formal/FluxKernel';evidence.mkdir(parents=True,exist_ok=True)
-        for filename in ['formal/FluxKernel/Closure.lean','formal/FluxKernel.lean','lean-toolchain','lakefile.toml']:
-            shutil.copyfile(manufacturing.ROOT/filename,run/filename)
         shutil.copyfile(manufacturing.ROOT/'scripts/verify_demo_bundle.py',run/'verify.py')
         (run/'README.txt').write_text('FluxKernel conditional manufacturing plan\n'
             'Extract this ZIP, install elan/Lean, then run: python verify.py\n'
@@ -136,7 +134,8 @@ def execute(run: Path, request: Request, image: bytes, previous=None):
             'A passing Lean check verifies the finite plan, not physical performance or supplier authenticity.\n'
             'model-response-*.json is the actual API output; model-request-*.json records prompts without credentials.\n')
         manifest={str(p.relative_to(run)):hashlib.sha256(p.read_bytes()).hexdigest()
-            for p in run.rglob('*') if p.is_file() and p.name!='status.json'}
+            for p in run.rglob('*') if p.is_file() and p.name not in ('status.json','manifest.json')
+            and '.lake' not in p.relative_to(run).parts}
         write_json(run/'manifest.json',manifest)
         events.append({'stage':'complete','message':'条件化制造路线已通过检查' if proof['accepted'] else '方案已生成，检查发现未闭合项',
                        'elapsed_s':round(time.monotonic()-start,1)})

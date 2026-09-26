@@ -1,0 +1,85 @@
+# FluxKernel
+
+**面向 AI Agent 的设计与制造证据内核。**
+
+[English](README.md) · [交互演示](https://www.datafluxdynamics.ltd/technology/fluxkernel/) · [快速开始](docs/QUICKSTART.md) · [贡献指南](CONTRIBUTING.md)
+
+把产品图片与需求推进为具名零件、独立 CAD、制造依赖和可复检的证据；允许修改设计，并保留父版本与未变几何。当前仓库保持私有，克隆需要访问权限。
+
+![FluxKernel Studio](docs/media/studio.png)
+
+当前已有：三类参考设计、真实图片模型调用、STEP/STL 导出、一轮加工设备展开、实际计划的 Lean 4 检查、交付包独立复检。单张图片不能恢复全部隐藏结构，图上的条件化闭合也不等于实物制造、采购或整机性能已经通过。
+
+## 第一次使用
+
+Python 3.12 及以上，在仓库目录创建并激活虚拟环境：
+
+```bash
+python -m venv .venv
+source .venv/bin/activate
+# Windows PowerShell 使用 .venv\Scripts\Activate.ps1
+python -m pip install -e .
+fk doctor
+```
+
+零依赖内核体验：
+
+```bash
+mkdir my-first-design
+cd my-first-design
+fk example
+fk init
+fk run hello.fcad
+fk show housing-v2 --json
+fk verify
+```
+
+`hello.fcad` 记录两个不同尺寸版本及其内容身份，不需要 GPU、模型密钥、OCP 或 Lean。`fk verify` 复核存储和记录的义务，不会替代仿真。
+
+## 无密钥生成 CAD 与制造计划
+
+回到仓库根目录，在同一环境运行：
+
+```bash
+python -m pip install -e '.[demo]'
+fk doctor --profile studio
+fk demo --reference phone --output ./runs --json
+fk-studio
+```
+
+打开 http://127.0.0.1:8740。无模型配置时，在界面勾选“参考架构回放”。要让网页读取命令行生成的记录，启动前将 `FK_DEMO_DATA` 指向相同的输出目录。
+
+参考模式不调用模型，不能称为图片识别。安装固定 Lean 工具链后可得到实际证明；未安装时照常生成几何，但证明状态保持 open。自动化任务可使用 `--require-proof`，没有证明就返回非零退出码。
+
+Python 接口：
+
+```python
+from fluxkernel.studio import generate_reference
+run = generate_reference("phone", output_dir="./runs")
+print(run.to_dict())
+```
+
+真实图片生成、GLM 配置、Lean 安装和交付包复检见[快速开始](docs/QUICKSTART.md)。密钥只放在私有配置或环境变量中。当前尚未发布到 PyPI，请从源码或构建出的 wheel 安装。
+
+## 工程边界
+
+- 核心图与存储采用 Python 合同及完整性检查；制造计划另外使用真正的 Lean 4 检查。
+- 证明覆盖有限依赖、先后顺序、路线类型、设备深度和最终产品覆盖。
+- 标准件为待核验采购候选；加工件为毛坯；结构与功能还需仿真、供应商资料及物理实验。
+- 不限打印尺寸是显式前提，不取消材料、精度、支撑、后处理和装配限制。
+
+详见[证明范围](PROOF_PACKAGE.md)、[架构与扩展](docs/ARCHITECTURE.md)和[路线图](ROADMAP.md)。
+
+## 开发与测试
+
+```bash
+python -m pip install -e '.[demo,dev]'
+lake build
+python -m pytest -q
+python -m build
+python scripts/smoke_distribution.py --studio
+```
+
+分发测试会创建全新环境，安装 wheel，离开源码目录运行完整参考设计，再复检证明并验证篡改会被拒绝。
+
+代码采用 [MIT](LICENSE)；Three.js 与样例图片保留各自许可和来源信息。
