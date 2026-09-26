@@ -1,0 +1,95 @@
+{
+  "schema": "fk-revision-benchmark-v1",
+  "kind": "curated-regression-suite",
+  "accepted": true,
+  "elapsed_s": 20.7,
+  "model_calls": 0,
+  "scope": "Three authored nominal-interface tasks; no physical testing or general image benchmark",
+  "tested_commit": "e4bf4afcecbffb181357ddb001b01d030d316179",
+  "checks_passed": 39,
+  "cases": [
+    {
+      "task": "enclosure",
+      "accepted": true,
+      "checks": {
+        "baseline_lean": true,
+        "valid_preflight": true,
+        "valid_run": true,
+        "invalid_rejected": true,
+        "rejection_has_no_cad": true,
+        "parent_unchanged": true,
+        "child_lean": true,
+        "reuse_agrees_with_preview": true,
+        "cad_reuse_exact": true,
+        "contract_preserved": true,
+        "requirements_preserved": true,
+        "proof_rebuilt": true,
+        "independent_bundle_verifier": true
+      },
+      "parent_manifest_sha256": "bc0fbfd0d2c194c6ab8c53a5e223776aa71aa28bca4d507ac1960591d3829eda",
+      "reused_count": 23,
+      "rebuilt": [
+        "housing"
+      ],
+      "rejection_codes": [
+        "REV_CONSTRAINT_FAILED",
+        "REV_CONSTRAINT_FAILED"
+      ]
+    },
+    {
+      "task": "shaft-fit",
+      "accepted": true,
+      "checks": {
+        "baseline_lean": true,
+        "valid_preflight": true,
+        "valid_run": true,
+        "invalid_rejected": true,
+        "rejection_has_no_cad": true,
+        "parent_unchanged": true,
+        "child_lean": true,
+        "reuse_agrees_with_preview": true,
+        "cad_reuse_exact": true,
+        "contract_preserved": true,
+        "requirements_preserved": true,
+        "proof_rebuilt": true,
+        "independent_bundle_verifier": true
+      },
+      "parent_manifest_sha256": "a97e824e78a486e11a73ca98e073a1d42ddaea1ea7f6a4f977257849498752ff",
+      "reused_count": 22,
+      "rebuilt": [
+        "shaft"
+      ],
+      "rejection_codes": [
+        "REV_CONSTRAINT_FAILED"
+      ]
+    },
+    {
+      "task": "mounting-pitch",
+      "accepted": true,
+      "checks": {
+        "baseline_lean": true,
+        "valid_preflight": true,
+        "valid_run": true,
+        "invalid_rejected": true,
+        "rejection_has_no_cad": true,
+        "parent_unchanged": true,
+        "child_lean": true,
+        "reuse_agrees_with_preview": true,
+        "cad_reuse_exact": true,
+        "contract_preserved": true,
+        "requirements_preserved": true,
+        "proof_rebuilt": true,
+        "independent_bundle_verifier": true
+      },
+      "parent_manifest_sha256": "8bcbafdb77bb4d95a1f903566030c97ed9a32c5bbc16b10dd75ad730aef8b56a",
+      "reused_count": 21,
+      "rebuilt": [
+        "left",
+        "right"
+      ],
+      "rejection_codes": [
+        "REV_CONSTRAINT_FAILED"
+      ]
+    }
+  ]
+}
