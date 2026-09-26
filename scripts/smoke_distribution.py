@@ -25,7 +25,8 @@ def main():
     env.pop('PYTHONPATH', None)
     env.pop('FK_MODEL_API_KEY', None)
     with tempfile.TemporaryDirectory(prefix='fk-wheel-smoke-') as directory:
-        work = Path(directory); environment = work / 'venv'
+        # macOS /var aliases /private/var; Windows TEMP can use an 8.3 name.
+        work = Path(directory).resolve(); environment = work / 'venv'
         venv.EnvBuilder(with_pip=True).create(environment)
         python = environment / ('Scripts/python.exe' if os.name == 'nt' else 'bin/python')
         fk = environment / ('Scripts/fk.exe' if os.name == 'nt' else 'bin/fk')
@@ -42,7 +43,7 @@ def main():
                      if shutil.which('uv') else [python, '-m', 'pip', 'install', spec])
         run(installer)
         installed = run([python, '-c', 'from fluxkernel.runtime import assets_root; print(assets_root())']).strip()
-        assert Path(installed).is_relative_to(environment) and Path(installed).name == '_assets', installed
+        assert Path(installed).resolve().is_relative_to(environment.resolve()) and Path(installed).name == '_assets', installed
         report = json.loads(run([fk, 'doctor', '--json']))
         assert report['ok']
         if not args.studio:

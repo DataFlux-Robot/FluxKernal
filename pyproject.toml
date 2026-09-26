@@ -1,5 +1,5 @@
 [build-system]
-requires = ["setuptools>=68"]
+requires = ["setuptools>=77"]
 build-backend = "setuptools.build_meta"
 
 [project]
@@ -8,7 +8,8 @@ version = "0.2.0"
 description = "An evidence-carrying design and manufacturing kernel for AI agents"
 readme = "README.md"
 requires-python = ">=3.12"
-license = { text = "MIT" }
+license = "MIT"
+license-files = ["LICENSE"]
 # NOTE layer discipline: core/ and store/ import NOTHING third-party.
 # numpy/scipy/OCP are used only inside solvers/ (L2). Kept as optional extras
 # so the pure kernel (L0-L4 minus geometry) installs with zero dependencies.
