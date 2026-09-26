@@ -165,7 +165,13 @@ class DAG:
         if edge_name:
             self.store.bind_name(edge_name, edge_d)
         # lineage as store metadata (not identity)
-        self.store.bind_name(LINEAGE_PREFIX + node_d, edge_d)
+        # Content may have multiple derivations. Keep every one, and never
+        # let a later rejected attempt erase a previously accepted origin.
+        self.store.bind_name(f"@derivation/{node_d}/{edge_d}", edge_d)
+        previous = self.producing_edge(node_d)
+        if node_d not in edge.inputs and (previous is None or
+                edge.state == "promoted" or previous.get("state") != "promoted"):
+            self.store.bind_name(LINEAGE_PREFIX + node_d, edge_d)
         self.store.append_edge(edge_d, {"op": edge.op, "output": node_d,
                                         "state": edge.state, "reason": edge.reason})
         return edge_d, node_d

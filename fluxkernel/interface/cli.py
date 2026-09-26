@@ -708,8 +708,8 @@ def cmd_verify(a):
         for p in problems:
             print(f"  {p}")
         return 1
-    print("verify OK: all edges replay, links exact, contracts current, "
-          "media within capacity")
+    print("verify OK: object/blob integrity, graph links, recorded obligations, "
+          "current references and medium budgets checked (no solver replay)")
     return 0
 
 
@@ -719,7 +719,26 @@ def verify_store(eng: Engine) -> list[str]:
     P7a red line: `review` edges are schema-checked only — soft
     obligations, evidence present — and the VLM is NEVER re-run here."""
     problems = []
+    # Verify bytes before interpreting any claims stored in them.
+    for digest in eng.store.list_objects():
+        try:
+            eng.store.get_object(digest)
+        except (ValueError, KeyError, OSError) as exc:
+            problems.append(str(exc))
+    for path in eng.store.blobs.iterdir():
+        if path.is_file():
+            try:
+                eng.store.get_blob(path.name.replace("_", ":", 2))
+            except (ValueError, OSError) as exc:
+                problems.append(str(exc))
+    if problems:
+        return problems
     for edge_d, e in eng.dag.iter_edges():
+        for ref in [*e.get("inputs", []), e.get("output", "")]:
+            if not eng.store.has_object(ref):
+                problems.append(f"{_short(edge_d)}: missing node {ref}")
+            elif eng.store.get_object(ref)["kind"] != "node":
+                problems.append(f"{_short(edge_d)}: non-node graph reference {ref}")
         state = e.get("state")
         if state == "promoted":
             obs = e.get("certificate", {}).get("obligations", [])

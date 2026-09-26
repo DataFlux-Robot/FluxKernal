@@ -1794,12 +1794,12 @@ def _metric(evidence: list, name: str):
 
 
 def _holds_bound(val, bp: dict) -> bool:
-    ok = True
-    if bp["lo"] is not None:
-        ok = ok and val >= bp["lo"] - 1e-12
-    if bp["hi"] is not None:
-        ok = ok and val <= bp["hi"] + 1e-12
-    return ok
+    import math
+    if not math.isfinite(float(val)):
+        return False
+    lo, hi = bp["lo"], bp["hi"]
+    return ((lo is None or (val > lo if bp.get("lo_open") else val >= lo)) and
+            (hi is None or (val < hi if bp.get("hi_open") else val <= hi)))
 
 
 def _spec_superset(entry_spec: dict, goal_spec: dict) -> bool:

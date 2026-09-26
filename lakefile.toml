@@ -1,0 +1,7 @@
+name = "fluxkernel"
+version = "0.1.0"
+defaultTargets = ["FluxKernel"]
+
+[[lean_lib]]
+name = "FluxKernel"
+srcDir = "formal"

@@ -42,7 +42,10 @@ class Store:
         p = self._obj_path(digest)
         if not p.exists():
             raise KeyError(f"object not found: {digest}")
-        return json.loads(p.read_bytes().decode("utf-8"))
+        obj = json.loads(p.read_bytes().decode("utf-8"))
+        if obj.get("digest") != digest or digest_of(obj["kind"], obj["payload"]) != digest:
+            raise ValueError(f"object integrity mismatch: {digest}")
+        return obj
 
     def has_object(self, digest: str) -> bool:
         return self._obj_path(digest).exists()
@@ -63,7 +66,10 @@ class Store:
         return d
 
     def get_blob(self, digest: str) -> bytes:
-        return (self.blobs / digest.replace(":", "_")).read_bytes()
+        data = (self.blobs / digest.replace(":", "_")).read_bytes()
+        if blob_digest(data) != digest:
+            raise ValueError(f"blob integrity mismatch: {digest}")
+        return data
 
     # ---- edge log (append-only) ----
     def append_edge(self, edge_digest: str, record: dict) -> None:

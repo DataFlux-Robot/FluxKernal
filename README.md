@@ -1,5 +1,20 @@
 # FluxKernel
 
+## 图片驱动演示：FluxKernel Studio
+
+新增本地网页：GLM-5.3-Flash 图片规划 → 独立 STEP/STL → 一轮参数化加工设备展开 → 制造依赖图 → **实际 Lean 4 计划检查**。支持爆炸图、零件检查、版本修订和可独立复检的交付包。
+
+```bash
+uv venv --python 3.12
+uv pip install -e '.[demo,dev]'
+./scripts/start_studio.sh
+```
+
+打开 <http://127.0.0.1:8740>。私有模型配置、演示步骤和能力边界见 [演示指南](docs/demo/RUN_DEMO.md)，形式化命题见 [证明包](PROOF_PACKAGE.md)。
+这里证明的是在显式外部能力假设下的**有限制造计划闭合**；图片隐含结构、采购、打印工艺和实物性能仍待验证。参考架构回放始终明确标注。
+
+---
+
 **命令行形态的 CAD + MBSE 设计系统内核** —— "SolidWorks × MBSE × git × Lean 战术证明器" 的 CLI 实现。
 面向 LLM agent 与人类工程师：模糊需求 → 逐层拆解到标准件 → 逐层回装验证，每一步都是
 **可审计的生产边**（内容寻址 digest + 证书 + 资源向量，fail-closed）。

@@ -11,3 +11,7 @@ dist/
 htmlcov/
 *.step
 *.stl
+.demo/
+.lake/
+.env
+*.local.json

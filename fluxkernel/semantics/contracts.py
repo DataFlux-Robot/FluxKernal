@@ -36,59 +36,66 @@ class ContractError(Exception):
 
 # ---------------------------------------------------------------- bounds ----
 def parse_bound(b) -> dict:
-    """Normalize a bound to {"lo": float|None, "hi": float|None, "medium": str|None}.
-
-    Accepted forms:
-      ["<=", 30]  [">=", 22]  ["=", 28]                one-sided
-      {"<=": 30, ">=": 22}                             interval
-      {"op": "<=", "value": 30, "medium": "<digest>"}  one-sided + medium ref
-      {"<=": 4, "medium": "<digest>"}                   interval + medium ref
-    """
-    if isinstance(b, dict):
-        if "op" in b:
-            if b["op"] not in BOUND_OPS:
-                raise ContractError("T2", f"bad bound op {b['op']!r}")
-            v = float(b["value"])
-            lo = v if b["op"] in (">=", "=", ">") else None
-            hi = v if b["op"] in ("<=", "=", "<") else None
-            return {"lo": lo, "hi": hi, "medium": b.get("medium")}
-        if "=" in b:                       # exact-value form {qty: {"=": v}}
-            v = float(b["="])
-            return {"lo": v, "hi": v, "medium": b.get("medium")}
-        lo = float(b[">="]) if ">=" in b else None
-        hi = float(b["<="]) if "<=" in b else None
-        return {"lo": lo, "hi": hi, "medium": b.get("medium")}
-    if isinstance(b, (list, tuple)) and len(b) == 2 and b[0] in BOUND_OPS:
-        v = float(b[1])
-        lo = v if b[0] in (">=", "=", ">") else None
-        hi = v if b[0] in ("<=", "=", "<") else None
-        return {"lo": lo, "hi": hi, "medium": None}
-    raise ContractError("T2", f"unparseable bound: {b!r}")
+    """Finite bounds with explicit open/closed endpoints; invalid intervals fail."""
+    import math
+    medium = b.get("medium") if isinstance(b, dict) else None
+    if isinstance(b, (list, tuple)) and len(b) == 2:
+        b = {"op": b[0], "value": b[1]}
+    if not isinstance(b, dict):
+        raise ContractError("T2", f"unparseable bound: {b!r}")
+    if "op" in b:
+        if b["op"] not in BOUND_OPS:
+            raise ContractError("T2", f"bad bound op {b['op']!r}")
+        b = {b["op"]: b["value"]}
+    def number(value):
+        try:
+            v = float(value)
+        except (TypeError, ValueError, OverflowError) as exc:
+            raise ContractError("T2", "non-numeric bound") from exc
+        if not math.isfinite(v):
+            raise ContractError("T2", "non-finite bound")
+        return v
+    lower, upper = [], []
+    for key in (">", ">=", "=", "<", "<="):
+        if key not in b:
+            continue
+        v = number(b[key])
+        if key in (">", ">=", "="):
+            lower.append((v, key == ">"))
+        if key in ("<", "<=", "="):
+            upper.append((v, key == "<"))
+    lo, lo_open = max(lower) if lower else (None, False)
+    hi, hi_open = min(upper, key=lambda x: (x[0], not x[1])) if upper else (None, False)
+    if lo is not None and hi is not None and (lo > hi or
+            (lo == hi and (lo_open or hi_open))):
+        raise ContractError("T2", "empty interval")
+    return {"lo": lo, "hi": hi, "lo_open": lo_open,
+            "hi_open": hi_open, "medium": medium}
 
 
 def bound_str(qty: str, b) -> str:
     p = parse_bound(b)
     parts = []
     if p["lo"] is not None:
-        parts.append(f"{qty}>={p['lo']:g}")
+        parts.append(f"{qty}{'>' if p['lo_open'] else '>='}{p['lo']:g}")
     if p["hi"] is not None:
-        parts.append(f"{qty}<={p['hi']:g}")
+        parts.append(f"{qty}{'<' if p['hi_open'] else '<='}{p['hi']:g}")
     return " & ".join(parts) or qty
 
 
 def covers(assume_b, guarantee_b) -> tuple[bool, bool]:
-    """Is the provider's guarantee interval INSIDE the consumer's tolerance?
-
-    Returns (covered, contradiction): covered = guarantee ⊆ assume;
-    contradiction = provably disjoint intervals (K1 contract conflict —
-    exposed BEFORE detailed design, v1.2 §21).
-    """
+    """Provider interval is a subset of consumer interval, preserving endpoints."""
     a, g = parse_bound(assume_b), parse_bound(guarantee_b)
-    contradiction = ((g["lo"] is not None and a["hi"] is not None and g["lo"] > a["hi"])
-                     or (g["hi"] is not None and a["lo"] is not None and g["hi"] < a["lo"]))
-    covered = ((a["lo"] is None or (g["lo"] is not None and g["lo"] >= a["lo"]))
-               and (a["hi"] is None or (g["hi"] is not None and g["hi"] <= a["hi"])))
-    return covered, contradiction
+    def disjoint(lo, hi, lo_open, hi_open):
+        return lo is not None and hi is not None and (
+            lo > hi or (lo == hi and (lo_open or hi_open)))
+    contradiction = (disjoint(g["lo"], a["hi"], g["lo_open"], a["hi_open"]) or
+                     disjoint(a["lo"], g["hi"], a["lo_open"], g["hi_open"]))
+    low = a["lo"] is None or (g["lo"] is not None and (g["lo"] > a["lo"] or
+          (g["lo"] == a["lo"] and (not a["lo_open"] or g["lo_open"]))))
+    high = a["hi"] is None or (g["hi"] is not None and (g["hi"] < a["hi"] or
+           (g["hi"] == a["hi"] and (not a["hi_open"] or g["hi_open"]))))
+    return low and high, contradiction
 
 
 def qty_entries(spec: dict, slot: str) -> dict:

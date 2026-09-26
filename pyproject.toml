@@ -19,9 +19,11 @@ solvers = ["numpy", "scipy"]
 geom = ["cadquery-ocp>=8.0"]
 all = ["numpy", "scipy", "cadquery-ocp>=8.0"]
 dev = ["pytest"]
+demo = ["fastapi>=0.115", "uvicorn>=0.30", "httpx[socks]>=0.27", "python-multipart>=0.0.12", "pillow>=10", "numpy", "scipy", "cadquery-ocp>=8.0"]
 
 [project.scripts]
 fk = "fluxkernel.interface.cli:main"
+fk-studio = "fluxkernel.demo.server:main"
 
 [tool.setuptools.packages.find]
 include = ["fluxkernel*"]
@@ -29,3 +31,6 @@ include = ["fluxkernel*"]
 [tool.pytest.ini_options]
 testpaths = ["tests"]
 python_files = ["run_tests.py", "test_*.py"]
+
+[tool.setuptools.package-data]
+"fluxkernel.demo" = ["static/*", "static/vendor/*", "static/references/*"]
