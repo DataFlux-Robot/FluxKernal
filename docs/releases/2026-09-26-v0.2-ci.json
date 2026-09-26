@@ -1,0 +1,55 @@
+{
+  "run": "https://github.com/ExuberantWitness/fluxkernel/actions/runs/36219931553",
+  "tested_commit": "7c48ffa5d47b464eef7f7c4db4572a30f1fc8db0",
+  "status": "completed",
+  "conclusion": "success",
+  "integration_tests_passed": 85,
+  "jobs": [
+    {
+      "name": "CAD + real Lean + installed wheel",
+      "status": "completed",
+      "conclusion": "success",
+      "url": "https://github.com/ExuberantWitness/fluxkernel/actions/runs/36219931553/job/108343161519"
+    },
+    {
+      "name": "Core / ubuntu-latest / Python 3.13",
+      "status": "completed",
+      "conclusion": "success",
+      "url": "https://github.com/ExuberantWitness/fluxkernel/actions/runs/36219931553/job/108343161564"
+    },
+    {
+      "name": "Core / windows-latest / Python 3.12",
+      "status": "completed",
+      "conclusion": "success",
+      "url": "https://github.com/ExuberantWitness/fluxkernel/actions/runs/36219931553/job/108343161599"
+    },
+    {
+      "name": "Core / macos-latest / Python 3.12",
+      "status": "completed",
+      "conclusion": "success",
+      "url": "https://github.com/ExuberantWitness/fluxkernel/actions/runs/36219931553/job/108343161601"
+    },
+    {
+      "name": "Core / windows-latest / Python 3.13",
+      "status": "completed",
+      "conclusion": "success",
+      "url": "https://github.com/ExuberantWitness/fluxkernel/actions/runs/36219931553/job/108343161607"
+    },
+    {
+      "name": "Core / macos-latest / Python 3.13",
+      "status": "completed",
+      "conclusion": "success",
+      "url": "https://github.com/ExuberantWitness/fluxkernel/actions/runs/36219931553/job/108343161626"
+    },
+    {
+      "name": "Core / ubuntu-latest / Python 3.12",
+      "status": "completed",
+      "conclusion": "success",
+      "url": "https://github.com/ExuberantWitness/fluxkernel/actions/runs/36219931553/job/108343161660"
+    }
+  ],
+  "local_build_sha256": {
+    "fluxkernel-0.2.0-py3-none-any.whl": "779d83dd7663e3c8d7e505da34777613d2a59694ea2f5a19cc14d5881cc4b316",
+    "fluxkernel-0.2.0.tar.gz": "40adee84c125c79a838fae5a5e1e6379ac1a95303ff39f5608c98f05591132f1"
+  }
+}
