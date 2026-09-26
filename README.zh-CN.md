@@ -100,3 +100,24 @@ python scripts/smoke_distribution.py --studio
 分发测试会创建全新环境，安装 wheel，离开源码目录运行完整参考设计，再复检证明并验证篡改会被拒绝。
 
 代码采用 [MIT](LICENSE)；Three.js 与样例图片保留各自许可和来源信息。
+
+## 通过 MCP 接入 Agent
+
+```bash
+python -m pip install -e '.[demo,agent]'
+fk doctor --profile agent
+fk-mcp --workspace /absolute/path/to/design-runs
+```
+
+在 MCP 客户端中配置上述启动命令。八个工具支持任务发现、CAD 生成、父版本检查、
+修改预览、局部修订和证据读取；`--read-only` 可仅开放检查与预览。
+服务通过本地 stdio 通信，不调用模型。接入方式见 [MCP 文档](docs/MCP.md)。
+
+不用 LLM 也能复现完整客户端流程：
+
+```bash
+python -m fluxkernel.agent_smoke --workspace ./agent-runs --require-proof
+```
+
+该命令实际生成 CAD、复用未变零件、拒绝违约修改并复检 Lean 证据。
+它验证协议与工程流程，不代表模型已经能推断任意产品，也不代表实物制造验证。

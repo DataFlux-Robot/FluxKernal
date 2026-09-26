@@ -784,7 +784,7 @@ def build_parser() -> argparse.ArgumentParser:
     register(sub)
 
     s = sub.add_parser("doctor", help="diagnose an installation without API calls")
-    s.add_argument("--profile", choices=("core", "studio", "proof", "live"), default="core")
+    s.add_argument("--profile", choices=("core", "studio", "proof", "live", "agent"), default="core")
     s.add_argument("--json", action="store_true"); s.set_defaults(fn=cmd_doctor)
     s = sub.add_parser("example", help="write a dependency-free getting-started example")
     s.add_argument("--output", default="hello.fcad"); s.set_defaults(fn=cmd_example)

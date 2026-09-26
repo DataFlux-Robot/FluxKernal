@@ -117,6 +117,26 @@ revision tasks. See the [versioned agent API](docs/AGENT_API.md) for JSON schema
 CLI commands, diagnostics and the exact distinction between nominal checks and
 formal plan closure.
 
+## Connect your agent over MCP
+
+```bash
+python -m pip install -e '.[demo,agent]'
+fk doctor --profile agent
+# Launch through your MCP host with an explicit run directory:
+fk-mcp --workspace /absolute/path/to/design-runs
+```
+
+Eight discoverable tools cover authored tasks, verified inspection, constraint
+preflight, local revisions and evidence reports. A read-only mode is available.
+The server uses stdio, makes no model calls, and preserves the existing revision
+contract. See [MCP setup and reproducible client workflow](docs/MCP.md).
+
+```bash
+python -m fluxkernel.agent_smoke --workspace ./agent-runs --require-proof
+```
+
+This exercises a real MCP client → server → CAD → Lean workflow without an LLM.
+
 ## What is verified?
 
 | Layer | Current evidence | What remains outside it |

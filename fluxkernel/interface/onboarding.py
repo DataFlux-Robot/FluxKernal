@@ -17,11 +17,11 @@ def version() -> str:
     try:
         return importlib.metadata.version("fluxkernel")
     except importlib.metadata.PackageNotFoundError:
-        return "0.3.0 (source checkout)"
+        return "0.4.0 (source checkout)"
 
 
 def diagnose(profile: str = "core") -> dict:
-    if profile not in ("core", "studio", "proof", "live"):
+    if profile not in ("core", "studio", "proof", "live", "agent"):
         raise ValueError("unknown diagnostic profile")
     checks = []
 
@@ -38,7 +38,7 @@ def diagnose(profile: str = "core") -> dict:
     except FileNotFoundError:
         root = None
         add("resources", False, "Bundled resources missing", "Reinstall FluxKernel.")
-    if profile in ("studio", "live"):
+    if profile in ("studio", "live", "agent"):
         for module, distribution in [("fastapi", "fastapi"), ("uvicorn", "uvicorn"),
                                      ("httpx", "httpx"), ("PIL", "pillow"),
                                      ("pydantic", "pydantic"), ("multipart", "python-multipart"),
@@ -49,7 +49,14 @@ def diagnose(profile: str = "core") -> dict:
             except importlib.metadata.PackageNotFoundError:
                 installed = "not installed"
             add(module, present, installed, 'Install the demo extra: python -m pip install -e ".[demo]"')
-    if profile in ("proof", "live"):
+    if profile == "agent":
+        try:
+            sdk = importlib.metadata.version('mcp')
+            supported = sdk.split('.')[0] == '2' and int(sdk.split('.')[1]) >= 2
+        except (importlib.metadata.PackageNotFoundError, ValueError):
+            sdk, supported = 'not installed or unsupported', False
+        add('mcp', supported, sdk, 'Install the agent extra: python -m pip install -e ".[demo,agent]"')
+    if profile in ("proof", "live", "agent"):
         pinned = (root / "lean-toolchain").read_text().strip() if root else "unknown"
         ready = False
         if shutil.which("elan") and shutil.which("lake"):

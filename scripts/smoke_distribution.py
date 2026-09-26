@@ -17,7 +17,9 @@ def main():
     parser = argparse.ArgumentParser(description=__doc__)
     parser.add_argument('--wheel', type=Path)
     parser.add_argument('--studio', action='store_true')
+    parser.add_argument('--agent', action='store_true', help='Also exercise a real MCP stdio client; implies --studio')
     args = parser.parse_args()
+    args.studio = args.studio or args.agent
     wheels = sorted((Path(__file__).resolve().parents[1] / 'dist').glob('fluxkernel-*.whl'))
     wheel = (args.wheel or (wheels[-1] if wheels else Path('missing.whl'))).resolve()
     if not wheel.is_file(): parser.error('Build a wheel first: python -m build')
@@ -32,7 +34,7 @@ def main():
         fk = environment / ('Scripts/fk.exe' if os.name == 'nt' else 'bin/fk')
         env['FK_MODEL_CONFIG'] = str(work / 'no-model-config.json')
         env['FK_DEMO_DATA'] = str(work / 'runs')
-        spec = str(wheel) + ('[demo]' if args.studio else '')
+        spec = str(wheel) + ('[demo,agent]' if args.agent else '[demo]' if args.studio else '')
         def run(command):
             p = subprocess.run([str(x) for x in command], cwd=work, env=env,
                                capture_output=True, text=True, timeout=600)
@@ -71,8 +73,13 @@ def main():
             benchmark = json.loads(run([fk, 'benchmark', '--output', str(work/'benchmark'), '--json']))
             assert benchmark['accepted'] and benchmark['model_calls'] == 0
             assert len(benchmark['cases']) == 3
+        if args.agent:
+            agent = json.loads(run([python, '-m', 'fluxkernel.agent_smoke', '--workspace',
+                                   str(work/'agent-runs'), '--require-proof']))
+            assert agent['accepted'] and agent['model_calls'] == 0
         print(json.dumps({'wheel': wheel.name, 'isolated_install': True, 'core_workflow': 'passed',
-                          'studio_and_independent_lean': 'passed' if args.studio else 'not requested'}))
+                          'studio_and_independent_lean': 'passed' if args.studio else 'not requested',
+                          'mcp_stdio_workflow': 'passed' if args.agent else 'not requested'}))
 
 
 if __name__ == '__main__':

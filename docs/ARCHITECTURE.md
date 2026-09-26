@@ -15,6 +15,8 @@ storage and explicit evidence, but do not yet expose one unified stable agent AP
 | Headless entry | `fluxkernel/studio.py` | Isolated reference/task generation and revision execution |
 | Revision protocol | `fluxkernel/revision.py` | Pinned parents, protected edits, preflight and evidence invalidation |
 | Nominal checks | `fluxkernel/demo/constraints.py` | Frozen finite interface checks; independently bundled Python evaluator |
+| Agent transport | `fluxkernel/agent_server.py` | Official MCP SDK, stdio tools/resources and protocol errors |
+| Agent workspace | `fluxkernel/agent_workspace.py` | Run-ID boundary, report allowlist, read-only mode and serialized writes |
 | Formal plan | `formal/FluxKernel/Closure.lean` | Finite-plan checker and soundness theorem |
 
 `core/` and `store/` may only import the standard library and internal modules;
@@ -71,6 +73,19 @@ them in the source archive, so building a wheel from an sdist also works.
 A proof run copies its project into its own writable run directory. `.lake` build
 outputs are excluded from the immutable artifact manifest. Core installation does
 not import optional CAD or web dependencies.
+
+## Agent transport
+
+The MCP adapter composes existing Studio/revision operations; it does not own a
+second design representation or infer images. Revision tool schemas embed the
+canonical `revision_schema()`. SDK and CAD dependencies remain optional. Protocol
+callbacks move blocking work to a worker thread, while native CAD stays in the
+existing isolated subprocess. Stdout belongs to MCP messages, not CAD logs.
+
+The workspace chooses output paths; tool callers supply run IDs. Read-only mode
+omits write tools and also refuses writes at the workspace layer. A process-local
+lock rejects concurrent writes rather than queueing more CAD work. Completed runs
+remain usable through the Python/CLI APIs and Studio. See [MCP semantics](MCP.md).
 
 ## Current limits
 

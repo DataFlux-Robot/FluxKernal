@@ -30,20 +30,13 @@ manufacturing evidence, and a three-task regression runner. See
 [the API guide](docs/AGENT_API.md). The numeric checkers are Python checks, separate
 from the Lean plan theorem. Catalog replacement and physical validation remain open.
 
-## Next gate — extend useful edits to qualified assemblies
+## v0.4 — connect external agents
 
-Ship a bounded set of small engineering tasks: enclosure fit, shaft/bearing interface,
-mounting bracket and fixture changes. For each task, publish the input, assumptions,
-expected constraints, executable checks and baseline artifact set.
-
-Acceptance criteria:
-
-- An agent can request a local revision with stable part identities through a
-  documented API, and inspect changed, reused and invalidated evidence.
-- A failed operation leaves an actionable diagnostic and a recoverable parent.
-- No required check can be turned into a pass by silently changing the requirement.
-- Each published success is reproducible without a live model call; live-model cost,
-  latency and failures are recorded separately.
+Implemented: an official-SDK MCP stdio adapter with discoverable tools, canonical
+revision schemas, workspace-scoped run IDs, read-only operation, explicit rejection
+results and a reproducible real-client CAD/Lean workflow. No model provider is
+required. See [MCP setup](docs/MCP.md) and release evidence for the platforms actually
+checked. Host cancellation/retry and local trust boundaries remain explicit.
 
 ## Next gate — interfaces and real manufacturing evidence
 
@@ -58,8 +51,8 @@ Acceptance criteria:
 
 ## Next gate — an extension ecosystem
 
-- Stabilize versioned agent operations, JSON schemas and diagnostic codes before
-  adding an MCP or other transport adapter.
+- Maintain compatibility tests for versioned agent operations, JSON schemas and
+  diagnostic codes across supported MCP SDK/client revisions.
 - Define external solver discovery and evidence contracts; require accepted/rejected
   examples for every new checker.
 - Provide a reproducible evaluation runner for changes, using fixed tasks and budgets.

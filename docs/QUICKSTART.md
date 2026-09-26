@@ -8,6 +8,7 @@ distributed from this repository or a locally built wheel; no PyPI release is im
 | Content-addressed kernel | `python -m pip install -e .` | No | No |
 | Curated CAD + plan | `python -m pip install -e '.[demo]'` | Optional; missing means open proof | No |
 | Accepted plan / independent verification | Demo extra | Pinned toolchain required | No |
+| Local MCP agent integration | `python -m pip install -e ".[demo,agent]"` | Required for an accepted proof | No |
 | New image planning in Studio | Demo extra | Required for an accepted proof | Configured vision backend |
 
 Use Python 3.12+ and an activated virtual environment. Windows users can run the
@@ -23,11 +24,12 @@ fk doctor --json
 fk doctor --profile studio
 fk doctor --profile proof
 fk doctor --profile live
+fk doctor --profile agent
 ```
 
 Profiles check only the selected requirements. Studio checks Python packages; proof
 checks the installed pinned toolchain; live includes Studio, proof and local model
-configuration. These commands do not call a model, download a toolchain or expose
+configuration. Agent includes Studio, proof and the MCP SDK; see [MCP setup](MCP.md). These commands do not call a model, download a toolchain or expose
 credentials. Package discovery does not certify that every native CAD operation
 will succeed; the reference run exercises the full path.
 

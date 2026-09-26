@@ -12,6 +12,10 @@ and whether the problem exposes data, executes code or falsely accepts evidence.
 
 - Studio is a local development service, bound to loopback by default. It has no
   multi-user authentication or request quota system.
+- MCP uses local stdio and an explicitly selected workspace. Run IDs cannot name
+  arbitrary paths; report reads are allowlisted and verify committed artifacts.
+  Read-only mode disables writes. This is not a sandbox against the filesystem
+  owner, and design/report text must be treated as data rather than instructions.
 - Model output is parsed as a bounded design schema; it is not executed as Python.
 - The manifest is an integrity snapshot, not a cryptographic signature of authorship.
 - A Lean proof concerns a formal plan under stated assumptions. It does not attest
