@@ -38,6 +38,19 @@ results and a reproducible real-client CAD/Lean workflow. No model provider is
 required. See [MCP setup](docs/MCP.md) and release evidence for the platforms actually
 checked. Host cancellation/retry and local trust boundaries remain explicit.
 
+## v0.5 — render–review–act in the live Studio path
+
+Implemented: actual B-rep four-view rendering, reference/render VLM review, bounded
+parameter/recipe actions, one validation-feedback repair, best-reviewed candidate
+selection, explicit quality status and trace inspection. Smooth body/segment recipes
+extend the action vocabulary without replacing historical recipes. See
+[PAL semantics](docs/PERCEPTION_ACTION_LOOP.md) and release evidence.
+
+Next visual gate: calibrated reference-camera alignment, independently evaluated
+silhouettes/keypoints, richer vehicle surfaces and attachment/clearance constraints.
+No claim of arbitrary-product reconstruction or investor-ready fidelity follows from
+closing this software loop.
+
 ## Next gate — interfaces and real manufacturing evidence
 
 - Add interface types for mounting patterns, shaft fits, electrical connectors and

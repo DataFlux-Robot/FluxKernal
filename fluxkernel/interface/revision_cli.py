@@ -70,8 +70,24 @@ def cmd_benchmark(args):
     return 0 if report['accepted'] else 1
 
 
+def cmd_perceive(args):
+    from ..studio import refine_visual, StudioError
+    try:
+        run = refine_visual(args.parent,output_dir=args.output,rounds=args.rounds,timeout=1500)
+        summary = json.loads((Path(run.directory)/'perception/summary.json').read_text())
+        emit({**run.to_dict(),'perception':summary},args.json)
+        return 1 if args.require_proof and not run.proof_accepted else 0
+    except (StudioError,ValueError,OSError,ImportError) as exc:
+        emit({'ok':False,'error':str(exc)},args.json)
+        return 1
+
+
 def register(sub):
     from ..studio import TASKS
+    p = sub.add_parser('perceive', help='run real image/render feedback on a saved parent (model API calls)')
+    p.add_argument('parent'); p.add_argument('--rounds',type=int,choices=range(1,5),default=3)
+    p.add_argument('--output'); p.add_argument('--json',action='store_true')
+    p.add_argument('--require-proof',action='store_true'); p.set_defaults(fn=cmd_perceive)
     p = sub.add_parser('schema', help='print a versioned agent request schema')
     p.add_argument('name', choices=('revision',)); p.set_defaults(fn=cmd_schema)
     p = sub.add_parser('inspect', help='verify and inspect a completed Studio run')

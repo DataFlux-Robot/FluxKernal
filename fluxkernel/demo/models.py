@@ -19,7 +19,7 @@ class Part(StrictModel):
     name: str = Field(min_length=1, max_length=100)
     group: str = Field(min_length=1, max_length=60)
     route: Literal['print', 'catalog', 'machine']
-    shape: Literal['box', 'shell', 'frame', 'cylinder', 'tube', 'wing', 'fuselage', 'car_body']
+    shape: Literal['box', 'shell', 'frame', 'cylinder', 'tube', 'wing', 'fuselage', 'car_body', 'smooth_fuselage', 'smooth_car_body', 'fuselage_section', 'fuselage_nose', 'fuselage_tail']
     size: list[float] = Field(min_length=3, max_length=3)
     position: list[float] = Field(min_length=3, max_length=3)
     rotation: list[float] = Field(default_factory=lambda: [0, 0, 0], min_length=3, max_length=3)
@@ -49,11 +49,11 @@ class Part(StrictModel):
         if ((self.shape == 'tube' and 2*self.wall >= self.size[0]) or
             (self.shape == 'shell' and (2*self.wall >= min(self.size[:2]) or self.wall >= self.size[2])) or
             (self.shape == 'frame' and 2*self.wall >= min(self.size[:2])) or
-            (self.shape in ('car_body','fuselage') and 12*self.wall >= min(self.size))):
+            (self.shape in ('car_body','fuselage','smooth_car_body','smooth_fuselage','fuselage_section','fuselage_nose','fuselage_tail') and 12*self.wall >= min(self.size))):
             raise ValueError(f'{self.id}: wall must be less than half the smallest dimension')
         if self.shape in ('cylinder','tube') and self.size[0]!=self.size[1]:
             raise ValueError(f'{self.id}: cylinder/tube X and Y dimensions must be equal')
-        if self.shape in ('car_body','fuselage') and self.size[0]<1.5*self.size[1]:
+        if self.shape in ('car_body','fuselage','smooth_car_body','smooth_fuselage','fuselage_section','fuselage_nose','fuselage_tail') and self.size[0]<1.5*self.size[1]:
             raise ValueError(f'{self.id}: car_body/fuselage local X is length and must be at least 1.5 times local Y width; use rotation for a different world axis')
         if self.route == 'catalog' and not self.catalog_ref:
             raise ValueError(f'{self.id}: catalog route needs a specific catalog item')
@@ -87,4 +87,5 @@ class Request(StrictModel):
     equipment_depth: int = Field(default=1, ge=0, le=1)
     mode: Literal['live', 'reference', 'fixture', 'revision'] = 'live'
     reference: Literal['phone', 'car', 'aircraft'] | None = None
+    visual_rounds: int = Field(default=3, ge=0, le=4)
     parent: str | None = Field(default=None, pattern=r'^[a-f0-9]{16}$')

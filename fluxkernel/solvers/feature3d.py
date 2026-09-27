@@ -67,7 +67,7 @@ def _props(shape) -> dict:
             "bbox": [[xmin, ymin, zmin], [xmax, ymax, zmax]]}
 
 
-def _write_blobs(shape, ctx) -> dict:
+def _write_blobs(shape, ctx, *, linear=0.1, angular=0.1) -> dict:
     import tempfile, os
     from OCP.BRepMesh import BRepMesh_IncrementalMesh
     from OCP.StlAPI import StlAPI_Writer
@@ -80,7 +80,7 @@ def _write_blobs(shape, ctx) -> dict:
         w.Transfer(shape, STEPControl_StepModelType.STEPControl_AsIs)
         if w.Write(sp) == IFSelect_ReturnStatus.IFSelect_RetDone:
             out["step"] = ctx.store.put_blob(open(sp, "rb").read())
-        BRepMesh_IncrementalMesh(shape, 0.1, False, 0.1, True)
+        BRepMesh_IncrementalMesh(shape, linear, False, angular, True)
         tp = os.path.join(td, "o.stl")
         sw = StlAPI_Writer()
         sw.ASCIIMode = False          # binary STL (OCCT defaults to ASCII)

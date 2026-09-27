@@ -17,6 +17,8 @@ storage and explicit evidence, but do not yet expose one unified stable agent AP
 | Nominal checks | `fluxkernel/demo/constraints.py` | Frozen finite interface checks; independently bundled Python evaluator |
 | Agent transport | `fluxkernel/agent_server.py` | Official MCP SDK, stdio tools/resources and protocol errors |
 | Agent workspace | `fluxkernel/agent_workspace.py` | Run-ID boundary, report allowlist, read-only mode and serialized writes |
+| Perception–action loop | `fluxkernel/demo/perception.py` | Render/image review, protected edits, failure evidence and selection |
+| CAD diagnostic rendering | `fluxkernel/demo/perception_render.py` | Fixed orthographic views with actual B-rep meshes and a depth buffer |
 | Formal plan | `formal/FluxKernel/Closure.lean` | Finite-plan checker and soundness theorem |
 
 `core/` and `store/` may only import the standard library and internal modules;

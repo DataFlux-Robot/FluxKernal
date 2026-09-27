@@ -1,0 +1,218 @@
+{
+  "scope": "Real GLM development runs; implementation evolved between attempts; not a controlled model comparison",
+  "runs": [
+    {
+      "run": "da7699398c9e4abd",
+      "family": "aircraft",
+      "selected_round": 1,
+      "quality_status": "needs-review",
+      "stop_reason": "evaluation-or-action-failed",
+      "model_calls": 4,
+      "elapsed_s": 321.6,
+      "plan_accepted": true,
+      "summary_sha256": "38e6f351dc5e7572536fb48e491e3e10ba1a629b5b4eac6e070538f9976381c1",
+      "loop_source_sha256": null,
+      "rounds": [
+        {
+          "round": 0,
+          "rank": [
+            -7,
+            0,
+            64.8
+          ],
+          "action_attempts": []
+        },
+        {
+          "round": 1,
+          "rank": [
+            -2,
+            0,
+            58.5
+          ],
+          "action_attempts": []
+        }
+      ]
+    },
+    {
+      "run": "dc2487f6a5af455d",
+      "family": "car",
+      "selected_round": 0,
+      "quality_status": "needs-review",
+      "stop_reason": "evaluation-or-action-failed",
+      "model_calls": 2,
+      "elapsed_s": 35.17,
+      "plan_accepted": true,
+      "summary_sha256": "6015d299b6c165baec225d9d4afc41b126262950832bc84fe71e22690ccda197",
+      "loop_source_sha256": null,
+      "rounds": [
+        {
+          "round": 0,
+          "rank": [
+            0,
+            0,
+            63.2
+          ],
+          "action_attempts": []
+        }
+      ]
+    },
+    {
+      "run": "2e6ee6b6ca3b4c41",
+      "family": "aircraft",
+      "selected_round": 1,
+      "quality_status": "needs-review",
+      "stop_reason": "budget-exhausted",
+      "model_calls": 7,
+      "elapsed_s": 233.1,
+      "plan_accepted": true,
+      "summary_sha256": "d7e2cee932af3a3dd5c57030b23dccf7025d5442dd04190a37c74be01c42457a",
+      "loop_source_sha256": "0ce0d389086d538afb177f31c8da49c79e28ba8a674cb670ef1730f17c123bbb",
+      "rounds": [
+        {
+          "round": 0,
+          "rank": [
+            -7,
+            -2,
+            -3,
+            53.5
+          ],
+          "action_attempts": [
+            {
+              "attempt": 0,
+              "accepted": false,
+              "error": "1 validation error for Design\nparts.4\n  Value error, radome: car_body/fuselage local X is length and must be at least 1.5 times local Y width; use rotation for a different world axis [type=value_error, input_value={'id': 'radome', 'name': ...', 'source': 'selected'}, input_type=dict]\n    For further information visit https://errors.pydantic.dev/2.13/v/value_error"
+            },
+            {
+              "attempt": 1,
+              "accepted": true
+            }
+          ]
+        },
+        {
+          "round": 1,
+          "rank": [
+            0,
+            -1,
+            -3,
+            57.1
+          ],
+          "action_attempts": [
+            {
+              "attempt": 0,
+              "accepted": false,
+              "error": "2 validation errors for Design\nparts.3\n  Value error, tail-cone: car_body/fuselage local X is length and must be at least 1.5 times local Y width; use rotation for a different world axis [type=value_error, input_value={'id': 'tail-cone', 'name...', 'source': 'selected'}, input_type=dict]\n    For further information visit https://errors.pydantic.dev/2.13/v/value_error\nparts.4\n  Value error, radome: car_body/fuselage local X is length and must be at least 1.5 times local Y width; use rotation for a different world axis [type=value_error, input_value={'id': 'radome', 'name': ...', 'source': 'selected'}, input_type=dict]\n    For further information visit https://errors.pydantic.dev/2.13/v/value_error"
+            },
+            {
+              "attempt": 1,
+              "accepted": true
+            }
+          ]
+        },
+        {
+          "round": 2,
+          "rank": [
+            -1,
+            -1,
+            -3,
+            60.2
+          ],
+          "action_attempts": []
+        }
+      ]
+    },
+    {
+      "run": "8fea8bbb42dc48a2",
+      "family": "car",
+      "selected_round": 2,
+      "quality_status": "needs-review",
+      "stop_reason": "budget-exhausted",
+      "model_calls": 6,
+      "elapsed_s": 141.64,
+      "plan_accepted": true,
+      "summary_sha256": "c62bd3cd8ba836837aa416716bb9e79e5647e6e3f4b101d59d05a4208f20f41d",
+      "loop_source_sha256": "fe4f9ce463bf0c08c2ca3893fe13a52de9ed815cd0116371ebabe6591ca9b2ab",
+      "rounds": [
+        {
+          "round": 0,
+          "rank": [
+            0,
+            0,
+            -3,
+            64.7
+          ],
+          "action_attempts": [
+            {
+              "attempt": 0,
+              "accepted": false,
+              "error": "Catalog dimensions are immutable; only pose can change"
+            },
+            {
+              "attempt": 1,
+              "accepted": true
+            }
+          ]
+        },
+        {
+          "round": 1,
+          "rank": [
+            0,
+            0,
+            -3,
+            67.4
+          ],
+          "action_attempts": [
+            {
+              "attempt": 0,
+              "accepted": true
+            }
+          ]
+        },
+        {
+          "round": 2,
+          "rank": [
+            0,
+            0,
+            -3,
+            69.1
+          ],
+          "action_attempts": []
+        }
+      ]
+    },
+    {
+      "run": "a18f35c0c57e42bc",
+      "family": "aircraft",
+      "selected_round": 0,
+      "quality_status": "needs-review",
+      "stop_reason": "evaluation-or-action-failed",
+      "model_calls": 3,
+      "elapsed_s": 88.59,
+      "plan_accepted": true,
+      "summary_sha256": "8001a25098b732f648ddf2e54579e24452c3529e9adc76f53ee29f36acb2203b",
+      "loop_source_sha256": "915e82f1112862501484fb8942629258090defe71e383ce442512893f7237ae7",
+      "rounds": [
+        {
+          "round": 0,
+          "rank": [
+            -7,
+            -1,
+            -3,
+            56.3
+          ],
+          "action_attempts": [
+            {
+              "attempt": 0,
+              "accepted": false,
+              "error": "Unknown or repeated part"
+            },
+            {
+              "attempt": 1,
+              "accepted": false,
+              "error": "Catalog dimensions are immutable; only pose can change"
+            }
+          ]
+        }
+      ]
+    }
+  ]
+}

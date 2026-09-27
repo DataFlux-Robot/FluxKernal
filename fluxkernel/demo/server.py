@@ -59,12 +59,12 @@ def history():
 @app.post('/api/jobs')
 async def create(image: UploadFile | None=File(default=None),brief: str=Form(default=''),
         mode: str=Form(default='live'),reference: str=Form(default=''),
-        equipment_depth: int=Form(default=1),parent: str=Form(default='')):
+        equipment_depth: int=Form(default=1),parent: str=Form(default=''),visual_rounds: int=Form(default=3)):
     if mode not in ('live','reference'):
         raise HTTPException(422,'Use the versioned local revision API for fixture/revision jobs')
     try:
         req=Request(brief=brief or '根据图片拆解产品，生成标准件、打印件与一轮加工设备设计。',
-            mode=mode,reference=reference or None,equipment_depth=equipment_depth,parent=parent or None)
+            mode=mode,reference=reference or None,equipment_depth=equipment_depth,parent=parent or None,visual_rounds=visual_rounds)
     except ValueError as exc: raise HTTPException(422,str(exc))
     previous=None
     if parent:

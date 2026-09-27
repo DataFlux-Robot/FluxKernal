@@ -18,15 +18,28 @@ def _cut(a,b):
     return op.Shape()
 
 
-def _loft(x,y,z,wall=0,car=False):
+def _loft(x,y,z,wall=0,car=False,smooth=False,section=None):
     from OCP.BRepOffsetAPI import BRepOffsetAPI_ThruSections
     from OCP.BRepBuilderAPI import BRepBuilderAPI_MakePolygon
     from OCP.gp import gp_Pnt
     # Polygonal, ruled loft is robust and explicitly a concept surface.
     stations=[(-.5,.30,.40),(-.34,.90,.83),(-.12,1,1),(.22,.95,.94),(.5,.40,.48)]
     if car: stations=[(-.5,.8,.45),(-.30,1,.6),(-.13,.85,1),(.23,.85,1),(.5,.88,.6)]
-    mk=BRepOffsetAPI_ThruSections(True,True,1e-6)
+    if smooth and not car:
+        stations=[(-.5,.04,.04),(-.36,.65,.7),(-.24,1,1),(.28,1,1),(.43,.6,.65),(.5,.035,.035)]
+    if section=='fuselage_section':stations=[(-.5,1,1),(.5,1,1)]
+    elif section=='fuselage_nose':stations=[(-.5,1,1),(.05,1,1),(.35,.7,.7),(.5,.04,.04)]
+    elif section=='fuselage_tail':stations=[(-.5,.04,.04),(-.25,.5,.5),(.25,.9,.9),(.5,1,1)]
+    mk=BRepOffsetAPI_ThruSections(True,not smooth,1e-6)
     for fx,fy,fz in stations:
+        if smooth:
+            from OCP.gp import gp_Elips,gp_Ax2,gp_Dir
+            from OCP.BRepBuilderAPI import BRepBuilderAPI_MakeEdge,BRepBuilderAPI_MakeWire
+            ry,rz=y*fy/2-wall,z*fz/2-wall
+            axis=gp_Ax2(gp_Pnt(fx*x,0,0),gp_Dir(1,0,0),gp_Dir(0,1,0) if ry>=rz else gp_Dir(0,0,1))
+            ellipse=gp_Elips(axis,max(ry,rz),min(ry,rz))
+            mk.AddWire(BRepBuilderAPI_MakeWire(BRepBuilderAPI_MakeEdge(ellipse).Edge()).Wire())
+            continue
         poly=BRepBuilderAPI_MakePolygon()
         for i in range(8):
             t=2*math.pi*i/8
@@ -59,10 +72,10 @@ def build(part: Part):
         poly.Close();face=BRepBuilderAPI_MakeFace(poly.Wire()).Face()
         shape=BRepPrimAPI_MakePrism(face,gp_Vec(0,0,z)).Shape()
     else:
-        shape=_loft(x,y,z,car=part.shape=='car_body')
+        shape=_loft(x,y,z,car=part.shape.endswith('car_body'),smooth=part.shape.startswith(('smooth_','fuselage_')),section=part.shape)
         # Scaled inner loft leaves finite end walls; true volume checked below.
         if min(x,y,z)>12*w:
-            inner=_loft(x-4*w,y-4*w,z-4*w,car=part.shape=='car_body')
+            inner=_loft(x-4*w,y-4*w,z-4*w,car=part.shape.endswith('car_body'),smooth=part.shape.startswith(('smooth_','fuselage_')),section=part.shape)
             shape=_cut(shape,inner)
     if not BRepCheck_Analyzer(shape).IsValid(): raise ValueError(f'{part.id}: invalid B-rep')
     for axis,angle in zip([(1,0,0),(0,1,0),(0,0,1)],part.rotation):
@@ -84,7 +97,7 @@ def artifacts(part: Part, directory: Path, store):
     ex=TopExp_Explorer(shape,TopAbs_SOLID);solids=0
     while ex.More(): solids+=1;ex.Next()
     if solids!=1: raise ValueError(f'{part.id}: expected one solid, got {solids}')
-    blobs=_write_blobs(shape,SimpleNamespace(store=store))
+    blobs=_write_blobs(shape,SimpleNamespace(store=store),**({'linear':max(max(part.size)/1200,.1),'angular':.22} if part.shape.startswith(('smooth_','fuselage_')) else {}))
     if set(blobs)!= {'step','stl'}: raise ValueError('STEP/STL export did not complete')
     for ext,digest in blobs.items(): (directory/f'{part.id}.{ext}').write_bytes(store.get_blob(digest))
     triangles=mesh_shape(shape,linear=max(max(part.size)/2000,0.1),angular=0.3)

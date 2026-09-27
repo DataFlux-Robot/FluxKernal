@@ -137,6 +137,21 @@ python -m fluxkernel.agent_smoke --workspace ./agent-runs --require-proof
 
 This exercises a real MCP client → server → CAD → Lean workflow without an LLM.
 
+## Render, review and revise against the image
+
+Live Studio generation now includes a bounded perception–action loop: actual CAD
+four-view renders go back to the configured vision model alongside the reference.
+Rejected edits receive validation feedback; regressions and failures remain in the
+trace. Visual quality and Lean plan closure are displayed separately.
+
+```bash
+# Real model API calls; preserve the parent and write a new run.
+fk perceive ./runs/<id> --rounds 3 --output ./visual-runs --require-proof --json
+```
+
+See [the loop, its limits and evidence](docs/PERCEPTION_ACTION_LOOP.md). Scores are
+model judgments, not calibrated similarity or proof of physical performance.
+
 ## What is verified?
 
 | Layer | Current evidence | What remains outside it |

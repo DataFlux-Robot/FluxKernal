@@ -43,6 +43,19 @@ if 'constraints_sha256' in input_record:
         step=occurrences.get(part['id'])
         if not step or p['receipts'][step['receipt']].get('recipe')!=part:
             raise SystemExit('Design recipe differs from manufacturing occurrence')
+visual_summary=root/'perception/summary.json'
+if visual_summary.is_file():
+    visual=json.loads(visual_summary.read_text())
+    design=json.loads((root/'design.json').read_text())
+    if digest(design)!=visual['selected_design_sha256']:
+        raise SystemExit('Visual selection differs from final design')
+    selected=visual['selected_round']
+    if selected is not None:
+        if type(selected) is not int or not 0 <= selected < visual['max_rounds']:
+            raise SystemExit('Invalid visual selection index')
+        candidate=json.loads((root/f'perception/round-{selected:02d}/design.json').read_text())
+        if candidate != design:raise SystemExit('Selected visual candidate differs from final design')
+    if visual.get('physical_status')!='unverified':raise SystemExit('Unexpected physical visual-loop claim')
 steps=p['steps'];pos={s['id']:i for i,s in enumerate(steps)}
 if len(pos)!=len(steps):raise SystemExit('Duplicate occurrence')
 rows=[]

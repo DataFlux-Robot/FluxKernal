@@ -114,6 +114,19 @@ def apply_revision(parent, request, *, output_dir=None, timeout=300):
     return report
 
 
+def refine_visual(parent, *, output_dir=None, rounds=3, timeout=1200):
+    """Run real image/render feedback from a verified saved parent; uses model API."""
+    from .revision import snapshot
+    if type(rounds) is not int or not 1 <= rounds <= 4:
+        raise ValueError('rounds must be 1..4')
+    snap = snapshot(parent)
+    run = _new_run(output_dir if output_dir is not None else snap['root'].parent, timeout)
+    (run/'perception-request.json').write_text(json.dumps({
+        'parent_manifest_sha256':snap['identity'],'rounds':rounds}),encoding='utf-8')
+    _worker(run, ['--perception-parent',str(snap['root'])],timeout)
+    return _result(run)
+
+
 def _main() -> int:
     import argparse
     parser = argparse.ArgumentParser(description='Internal isolated Studio worker')
@@ -122,19 +135,26 @@ def _main() -> int:
     mode.add_argument('--reference', choices=('phone','car','aircraft'))
     mode.add_argument('--task', choices=TASKS)
     mode.add_argument('--revision-parent', type=Path)
+    mode.add_argument('--perception-parent', type=Path)
     parser.add_argument('--equipment-depth', type=int, choices=(0, 1), default=1)
     args = parser.parse_args()
     from .demo.models import Request
     from .demo.pipeline import execute, write_json
-    if args.revision_parent:
-        from .revision import prepare_revision, read_json
-        request = json.loads((args.run/'revision-request.json').read_text(encoding='utf-8'))
-        preview, snap, candidate, contract = prepare_revision(args.revision_parent, request)
-        write_json(args.run/'revision-check.json', preview)
-        if not preview['accepted']:
-            write_json(args.run/'status.json', {'id':args.run.name,'state':'rejected','stage':'preflight',
-                                              'events':[],'diagnostics':preview['diagnostics']})
-            return 2
+    if args.revision_parent or args.perception_parent:
+        from .revision import prepare_revision, read_json, snapshot
+        if args.revision_parent:
+            request = json.loads((args.run/'revision-request.json').read_text(encoding='utf-8'))
+            preview, snap, candidate, contract = prepare_revision(args.revision_parent, request)
+            write_json(args.run/'revision-check.json', preview)
+            if not preview['accepted']:
+                write_json(args.run/'status.json', {'id':args.run.name,'state':'rejected','stage':'preflight',
+                                                  'events':[],'diagnostics':preview['diagnostics']})
+                return 2
+        else:
+            request = json.loads((args.run/'perception-request.json').read_text(encoding='utf-8'))
+            snap = snapshot(args.perception_parent, request['parent_manifest_sha256'])
+            candidate = read_json(snap,'design.json')
+            contract = read_json(snap,'constraints.json') if 'constraints.json' in snap['files'] else {'schema':'fk-constraints-v1','rules':[]}
         original = read_json(snap,'design.json'); equipment = read_json(snap,'equipment.json')
         scene = read_json(snap,'scene.json')
         cache = {'read':lambda name:snap['files'][name], 'design':original, 'constraints':contract,
@@ -144,12 +164,13 @@ def _main() -> int:
         before_input = read_json(snap,'input.json')
         depth = read_json(snap,'manufacturing.json')['policy']['equipment_depth']
         parent_id = read_json(snap,'result.json')['id']
-        execute(args.run, Request(mode='revision', parent=parent_id, equipment_depth=depth,
+        execute(args.run, Request(mode='live' if args.perception_parent else 'revision', parent=parent_id, equipment_depth=depth,
+                                  visual_rounds=request.get('rounds',0),
                                   brief=before_input['request']['brief']), snap['files']['image.png'],
                 original, design_override=candidate, constraint_contract=contract,
                 parent_cache_override=cache,
                 revision_record={'schema':'fk-revision-v1','base_manifest_sha256':snap['identity'],
-                                 'edits':request['edits']})
+                                 'edits':request['edits']} if args.revision_parent else {'schema':'fk-perception-parent-v1','base_manifest_sha256':snap['identity']})
     elif args.task:
         import io
         from PIL import Image

@@ -121,3 +121,17 @@ python -m fluxkernel.agent_smoke --workspace ./agent-runs --require-proof
 
 该命令实际生成 CAD、复用未变零件、拒绝违约修改并复检 Lean 证据。
 它验证协议与工程流程，不代表模型已经能推断任意产品，也不代表实物制造验证。
+
+## 图片与 CAD 的视觉反馈闭环
+
+Studio 的真实模型生成默认开启最多 3 轮“实际 CAD 渲染 → 对照原图评审 → 局部修订”。
+修改违背约束时返回原因并允许一次纠错；每轮截图、反馈、动作与候选选择全部保留。
+外观未达模型评审门槛时显示“仍需改进”，与 Lean 制造计划证明分开。
+
+```bash
+# 调用真实模型，在新目录中修订已保存的设计
+fk perceive ./runs/<id> --rounds 3 --output ./visual-runs --require-proof --json
+```
+
+详见 [Perception–Action Loop](docs/PERCEPTION_ACTION_LOOP.md)。评分是模型意见，
+不是客观相似度、人工验收或实物性能证明。

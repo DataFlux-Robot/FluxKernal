@@ -92,8 +92,26 @@ def execute(run: Path, request: Request, image: bytes, previous=None, *,
             design=reference(request.reference)
             model={'mode':'reference','model':'curated-reference','elapsed_s':0}
             event('vision','离线参考回放 · 未调用视觉模型')
+        elif design_override is not None:
+            from .models import Design
+            if not parent_cache or design_override != parent_cache['design']:
+                raise ValueError('Visual refinement must start from the verified parent design')
+            design=Design.model_validate(design_override)
+            cfg=vision.model_config()
+            model={'mode':'live','model':cfg['model'],'provider':cfg['provider'],
+                   'attempts':0,'initial_design':'verified-parent','elapsed_s':0}
         else:
             design,model=vision.plan(normalized,request.brief,run,event,previous)
+        perception={'enabled':False,'quality_status':'not-evaluated','model_calls':0}
+        if request.mode=='live' and request.visual_rounds:
+            from .perception import run_loop
+            design,perception=run_loop(design,normalized,request.brief,run,event,
+                                      contract=constraint_contract,rounds=request.visual_rounds)
+            model['perception_calls']=perception['model_calls']
+            model['total_calls']=model.get('attempts',0)+perception['model_calls']
+            model['elapsed_s']=round(model.get('elapsed_s',0)+perception['elapsed_s'],2)
+            for token_kind in ('input_tokens','output_tokens'):
+                model[token_kind]=(model.get(token_kind) or 0)+sum(c.get('usage',{}).get(token_kind,0) for c in perception['calls'])
         write_json(run/'design.json',design.model_dump());write_json(run/'model.json',model)
         constraint_report=evaluate(design.model_dump(),constraint_contract)
         write_json(run/'constraint-checks.json',constraint_report)
@@ -142,6 +160,8 @@ def execute(run: Path, request: Request, image: bytes, previous=None, *,
             write_json(run/'fluxkernel.json',fk)
         # A checked route graph remains conditional on physical assumptions.
         gaps=list(design.unresolved)
+        if perception['quality_status']!='model-threshold-met':
+            gaps.append('外观质量尚未通过视觉评审门槛；Lean通过不代表图片重构质量合格')
         gaps.extend(['标准件型号与布局包络尚需供应商资料核实',
             '打印局部厚度、支撑、材料性能与后加工精度尚需验证',
             '加工设备为参数化概念方案，未验证实际刚度、行程与加工能力'])
@@ -153,7 +173,8 @@ def execute(run: Path, request: Request, image: bytes, previous=None, *,
                 'print':sum(p.route=='print' for p in design.parts+equipment),
                 'machine':sum(p.route=='machine' for p in design.parts),
                 'steps':len(plan['steps'])},
-            'status':'conditional-closure' if proof['accepted'] else 'open',
+            'status':('needs-review' if perception['enabled'] and perception['quality_status']=='needs-review' else 'conditional-closure') if proof['accepted'] else 'open',
+            'perception':perception,
             'physical_status':'unverified','gaps':list(dict.fromkeys(gaps)),
             'constraints':constraint_report,
             'duration_s':round(time.monotonic()-start,2),'image_sha256':image_hash,
@@ -171,7 +192,7 @@ def execute(run: Path, request: Request, image: bytes, previous=None, *,
             for p in run.rglob('*') if p.is_file() and p.name not in ('status.json','manifest.json')
             and '.lake' not in p.relative_to(run).parts}
         write_json(run/'manifest.json',manifest)
-        events.append({'stage':'complete','message':'条件化制造路线已通过检查' if proof['accepted'] else '方案已生成，检查发现未闭合项',
+        events.append({'stage':'complete','message':('候选方案已保存；外观仍需改进，制造计划单独检查' if perception['enabled'] and perception['quality_status']=='needs-review' else '条件化制造路线已通过检查') if proof['accepted'] else '方案已生成，检查发现未闭合项',
                        'elapsed_s':round(time.monotonic()-start,1)})
         write_json(run/'status.json',{'id':run.name,'state':'complete','events':events,'stage':'complete'})
     except Exception as exc:

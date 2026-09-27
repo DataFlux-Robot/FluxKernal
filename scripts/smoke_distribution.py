@@ -73,6 +73,24 @@ def main():
             benchmark = json.loads(run([fk, 'benchmark', '--output', str(work/'benchmark'), '--json']))
             assert benchmark['accepted'] and benchmark['model_calls'] == 0
             assert len(benchmark['cases']) == 3
+            # Exercise the shipped PAL renderer/selection with a declared mock, no API.
+            run([python, '-c', '''
+from pathlib import Path
+from fluxkernel.demo.models import Design
+from fluxkernel.studio import load_task
+from fluxkernel.demo import perception as p
+from PIL import Image
+import io,json
+root=Path('pal-package-check');root.mkdir()
+image=io.BytesIO();Image.new('RGB',(32,32),'white').save(image,'PNG')
+p.vision.model_config=lambda:{'model':'distribution-test','api_key':''}
+review={'silhouette':85,'proportions':85,'layout':85,'reference_limitations':'Mock integration test','findings':[]}
+p.vision._call=lambda *a:(json.dumps(review),{'usage':{}})
+design=Design.model_validate(load_task('enclosure')['design'])
+chosen,report=p.run_loop(design,image.getvalue(),'fixture',root,lambda *a:None,contract=load_task('enclosure')['constraints'],rounds=1)
+assert chosen==design and report['reviewed'] and report['quality_status']=='model-threshold-met'
+assert (root/'perception/round-00/views.png').exists()
+'''])
         if args.agent:
             agent = json.loads(run([python, '-m', 'fluxkernel.agent_smoke', '--workspace',
                                    str(work/'agent-runs'), '--require-proof']))
