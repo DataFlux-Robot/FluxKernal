@@ -56,6 +56,29 @@ if visual_summary.is_file():
         candidate=json.loads((root/f'perception/round-{selected:02d}/design.json').read_text())
         if candidate != design:raise SystemExit('Selected visual candidate differs from final design')
     if visual.get('physical_status')!='unverified':raise SystemExit('Unexpected physical visual-loop claim')
+    if visual.get('schema')=='fk-perception-loop-v2':
+        if visual.get('decision_author')!='glm-5.3-flash' or visual.get('human_design_edits') is not False:
+            raise SystemExit('Unexpected workflow decision author')
+        for name,expected in visual['sources_sha256'].items():
+            source=(root/'perception'/name).resolve()
+            if source.parent!=root/'perception' or sha(source.read_bytes())!=expected:
+                raise SystemExit('Workflow source hash mismatch')
+        retained=None
+        for candidate in visual['rounds']:
+            if 'decision' not in candidate:continue
+            decision=json.loads((root/f"perception/round-{candidate['round']:02d}/decision.json").read_text())
+            if decision!=candidate['decision'] or decision['selected_round'] not in (candidate['round'],retained):
+                raise SystemExit('Invalid model candidate selection chain')
+            retained=decision['selected_round']
+        if retained!=selected:raise SystemExit('Final design differs from recorded GLM selection')
+        for call in visual['calls']:
+            if call['model']!='glm-5.3-flash':raise SystemExit('Non-GLM call in GLM workflow')
+            if call.get('state')=='received':
+                if call.get('reported_model')!='glm-5.3-flash':raise SystemExit('Provider reported another model')
+                name=call['response_file']
+                if name not in manifest or sha((root/name).read_bytes())!=call['response_sha256']:
+                    raise SystemExit('Model response binding mismatch')
+
 steps=p['steps'];pos={s['id']:i for i,s in enumerate(steps)}
 if len(pos)!=len(steps):raise SystemExit('Duplicate occurrence')
 rows=[]

@@ -17,7 +17,7 @@ def design():return Design.model_validate(load_task('enclosure')['design'])
 
 @pytest.fixture
 def fake_config(monkeypatch):
-    monkeypatch.setattr(pal.vision,'model_config',lambda:{'model':'test-vlm','api_key':'test-private-key'})
+    monkeypatch.setattr(pal.vision,'model_config',lambda:{'model':'glm-5.3-flash','api_key':'test-private-key'})
 
 
 def review(score,major=True):
@@ -103,7 +103,7 @@ def test_catalog_resize_rejected_but_pose_allowed(design):
 
 def test_regression_keeps_best_reviewed_candidate(design,tmp_path,monkeypatch,fake_config):
     calls=install_responses(monkeypatch,[review(70),action(design),review(30)])
-    selected,summary=pal.run_loop(design,image_bytes(),'retain requirements',tmp_path,lambda *a:None,
+    selected,summary=pal.run_legacy_loop(design,image_bytes(),'retain requirements',tmp_path,lambda *a:None,
                                 contract=load_task('enclosure')['constraints'],rounds=2)
     assert selected==design and summary['selected_round']==0
     assert summary['quality_status']=='needs-review' and summary['model_calls']==3
@@ -114,7 +114,7 @@ def test_regression_keeps_best_reviewed_candidate(design,tmp_path,monkeypatch,fa
 
 def test_review_failure_is_not_synthetic_acceptance(design,tmp_path,monkeypatch,fake_config):
     install_responses(monkeypatch,[RuntimeError('provider failure test-private-key')])
-    selected,summary=pal.run_loop(design,image_bytes(),'brief',tmp_path,lambda *a:None,
+    selected,summary=pal.run_legacy_loop(design,image_bytes(),'brief',tmp_path,lambda *a:None,
                                  contract=load_task('enclosure')['constraints'],rounds=3)
     assert selected==design and not summary['reviewed']
     assert summary['quality_status']=='needs-review' and summary['selected_round'] is None
@@ -123,7 +123,7 @@ def test_review_failure_is_not_synthetic_acceptance(design,tmp_path,monkeypatch,
 
 def test_valid_review_threshold_stops_early(design,tmp_path,monkeypatch,fake_config):
     install_responses(monkeypatch,[review(85,major=False)])
-    _,summary=pal.run_loop(design,image_bytes(),'brief',tmp_path,lambda *a:None,
+    _,summary=pal.run_legacy_loop(design,image_bytes(),'brief',tmp_path,lambda *a:None,
                            contract=load_task('enclosure')['constraints'],rounds=3)
     assert summary['model_calls']==1 and summary['stop_reason']=='review-threshold'
     assert summary['quality_status']=='model-threshold-met'
@@ -131,7 +131,7 @@ def test_valid_review_threshold_stops_early(design,tmp_path,monkeypatch,fake_con
 
 def test_bad_action_archived_parent_retained(design,tmp_path,monkeypatch,fake_config):
     install_responses(monkeypatch,[review(70),action(design,5),action(design,5)])
-    selected,summary=pal.run_loop(design,image_bytes(),'brief',tmp_path,lambda *a:None,
+    selected,summary=pal.run_legacy_loop(design,image_bytes(),'brief',tmp_path,lambda *a:None,
                                  contract=load_task('enclosure')['constraints'],rounds=3)
     assert selected==design and summary['rounds'][0]['action_state']=='rejected'
     assert (tmp_path/'perception/round-00/action.json').is_file()
@@ -149,7 +149,8 @@ def test_engine_orientation_check_uses_actual_euler_convention():
 
 def test_live_pipeline_routes_through_visual_loop(design,tmp_path,monkeypatch,fake_config):
     from fluxkernel.demo.pipeline import execute
-    monkeypatch.setattr(pal.vision,'plan',lambda *a:(design,{'mode':'live','model':'test-vlm','attempts':1}))
+    monkeypatch.setattr(pal,"run_loop",pal.run_legacy_loop)
+    monkeypatch.setattr(pal.vision,'plan',lambda *a:(design,{'mode':'live','model':'glm-5.3-flash','attempts':1}))
     install_responses(monkeypatch,[review(65)])
     execute(tmp_path,Request(mode='live',visual_rounds=1),image_bytes())
     result=json.loads((tmp_path/'result.json').read_text())
@@ -172,7 +173,7 @@ def test_live_pipeline_routes_through_visual_loop(design,tmp_path,monkeypatch,fa
 
 def test_rejected_action_gets_one_feedback_repair(design,tmp_path,monkeypatch,fake_config):
     calls=install_responses(monkeypatch,[review(60),action(design,5),action(design,3),review(85,major=False)])
-    changed,summary=pal.run_loop(design,image_bytes(),'brief',tmp_path,lambda *a:None,
+    changed,summary=pal.run_legacy_loop(design,image_bytes(),'brief',tmp_path,lambda *a:None,
                                 contract=load_task('enclosure')['constraints'],rounds=2)
     assert changed.parts[0].wall==3 and summary['selected_round']==1
     assert summary['model_calls']==4

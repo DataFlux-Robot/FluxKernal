@@ -114,6 +114,9 @@ def _call(cfg, messages, schema, event=None):
 
 def plan(image: bytes, brief: str, run: Path, event, previous: dict | None = None):
     cfg=model_config();schema=Design.model_json_schema()
+    # Rule planning selects semantic upgrades after this initial occurrence design.
+    for key in ('parametric','reflection'):schema['$defs']['Part']['properties'].pop(key,None)
+    schema['$defs']['Part']['properties']['shape']['enum']=[v for v in schema['$defs']['Part']['properties']['shape']['enum'] if v not in ('parametric_wing','section_body')]
     prompt=brief+'\nJSON schema:\n'+json.dumps(schema,ensure_ascii=False)
     if previous: prompt+='\n前一版本（仅作为修改起点，遵守本次需求）:\n'+json.dumps(previous,ensure_ascii=False)
     messages=[{'role':'system','content':SYSTEM},
@@ -128,12 +131,16 @@ def plan(image: bytes, brief: str, run: Path, event, previous: dict | None = Non
         text,raw=_call(cfg,messages,schema,event)
         attempts.append(raw.get('usage',{}))
         (run/f'model-response-{attempt+1}.json').write_text(json.dumps(raw,ensure_ascii=False,indent=2))
+        if cfg['model']=='glm-5.3-flash' and raw.get('model')!='glm-5.3-flash':
+            raise RuntimeError('Initial planner provider did not report glm-5.3-flash; no fallback')
         # Model may wrap its JSON in a Markdown fence. No content is executed.
         clean=text.strip()
         if clean.startswith('```'):
             clean=clean.split('\n',1)[-1].rsplit('```',1)[0].strip()
         try:
             design=Design.model_validate_json(clean)
+            if any(p.parametric is not None or p.reflection is not None for p in design.parts):
+                raise ValueError('Declare semantic geometry and reflection through the following symmetry workflow; initial parts use the supplied finite recipe schema')
             # Feed real constructive geometry failures back to the same model.
             # This evaluates only the finite recipe vocabulary, never code.
             from .geometry import build

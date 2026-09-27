@@ -61,9 +61,10 @@ def action_schema(design=None):
     return schema
 
 
-def apply_action(design, action, contract):
+def apply_action(design, action, contract, *, parameter_kinds=None):
     action=Action.model_validate(action)
     if action.base_design_sha256 != digest(design.model_dump()):raise ValueError('Stale visual action base')
+    parameter_kinds=parameter_kinds or {}
     candidate=design.model_dump();parts={p['id']:p for p in candidate['parts']};seen=set();errors=[]
     for edit in action.edits:
         if not isinstance(edit,dict) or set(edit)!={'part','set'}:
@@ -73,7 +74,7 @@ def apply_action(design, action, contract):
             errors.append(f'Unknown part: {ident!r}; use an existing ID');continue
         if ident in seen:errors.append(f'Repeated part: {ident}; combine its changes into one edit')
         seen.add(ident)
-        if not isinstance(patch,dict) or not patch or not patch.keys()<={'size','position','rotation','wall','shape'}:
+        if not isinstance(patch,dict) or not patch or not patch.keys()<=({'size','position','rotation','wall','shape','parametric'} if ident in parameter_kinds else {'size','position','rotation','wall','shape'}):
             errors.append(f'{ident}: Protected design field; cannot change requirements, routes, identities or catalog references');continue
         for field,value in patch.items():
             if field in ('size','position','rotation') and (not isinstance(value,list) or len(value)!=3 or not all(number(v) for v in value)):
@@ -83,6 +84,9 @@ def apply_action(design, action, contract):
         part=parts[ident]
         if part['route']=='catalog' and set(patch)-{'position','rotation'}:
             errors.append(f'{ident}: Catalog dimensions are immutable; remove fields {sorted(set(patch)-{"position","rotation"})}; only pose can change')
+        if 'parametric' in patch:
+            if set(patch)&{'shape','size'}:errors.append(f'{ident}: semantic parameters derive shape/size; do not also set shape or size')
+            if not isinstance(patch['parametric'],dict) or patch['parametric'].get('kind')!=parameter_kinds.get(ident):errors.append(f'{ident}: parameters differ from GLM-approved binding')
         if 'shape' in patch and isinstance(patch['shape'],str):
             fuselage={'fuselage','smooth_fuselage','fuselage_section','fuselage_nose','fuselage_tail'}
             allowed=(part['shape'] in fuselage and patch['shape'] in fuselage-{'fuselage'}) or (part['shape'] in {'car_body','smooth_car_body'} and patch['shape']=='smooth_car_body')
@@ -90,7 +94,11 @@ def apply_action(design, action, contract):
     if errors:raise ValueError('Action rejected: '+ '; '.join(errors))
     for edit in action.edits:
         part=parts[edit['part']];patch=edit['set']
-        if any(part[k]!=v for k,v in patch.items()):
+        if 'parametric' in patch:
+            from .parametric import WingParameters,BodyParameters,envelope
+            params=(WingParameters if parameter_kinds[edit['part']]=='wing' else BodyParameters).model_validate(patch['parametric'])
+            patch={**patch,'parametric':params.model_dump(),'shape':'parametric_wing' if parameter_kinds[edit['part']]=='wing' else 'section_body','size':envelope(params)}
+        if any(part.get(k)!=v for k,v in patch.items()):
             part.update(copy.deepcopy(patch));part['source']='selected'
     candidate=Design.model_validate(candidate)
     if candidate==design:raise ValueError('Action has no effect')
@@ -142,7 +150,9 @@ def model_json(cfg, system, prompt, images, schema, directory, label, event, cal
     try:
         text,raw=vision._call(cfg,messages,schema,lambda stage,message:event('perception',message.replace('正在规划','正在视觉评审' if label=='review' else '正在修订')))
         save(directory/(label+'-response.json'),raw)
-        call.update(state='received',elapsed_s=round(time.monotonic()-started,2),usage=raw.get('usage',{}))
+        call.update(state='received',elapsed_s=round(time.monotonic()-started,2),usage=raw.get('usage',{}),reported_model=raw.get('model'),response_sha256=hashlib.sha256((directory/(label+'-response.json')).read_bytes()).hexdigest())
+        if cfg.get('required_model') and raw.get('model')!=cfg['required_model']:
+            raise RuntimeError('Provider model identity does not match required GLM model; no fallback')
         clean=text.strip()
         if clean.startswith('```'):clean=clean.split('\n',1)[-1].rsplit('```',1)[0].strip()
         return json.loads(clean)
@@ -159,7 +169,7 @@ def rank(review, checks):
     return (-len(checks['issues']),-blockers,-majors,round(visual,2))
 
 
-def run_loop(design, image, brief, run, event, *, contract, rounds=3, deadline_s=900):
+def run_legacy_loop(design, image, brief, run, event, *, contract, rounds=3, deadline_s=900):
     if type(rounds) is not int or not 1<=rounds<=4:raise ValueError('Visual rounds must be 1..4')
     root=run/'perception';root.mkdir(exist_ok=False)
     (root/'loop-source.py').write_bytes(Path(__file__).read_bytes())
@@ -252,3 +262,9 @@ def run_loop(design, image, brief, run, event, *, contract, rounds=3, deadline_s
         'model_calls':len(calls),'elapsed_s':round(time.monotonic()-started,2)}
     save(root/'summary.json',summary)
     return selected,summary
+
+
+def run_loop(design, image, brief, run, event, *, contract, rounds=3, deadline_s=900):
+    """Default live path: model-authored rules and model-only design decisions."""
+    from .pal_workflow import run as execute_workflow
+    return execute_workflow(design,image,brief,run,event,contract=contract,rounds=rounds,deadline_s=deadline_s)

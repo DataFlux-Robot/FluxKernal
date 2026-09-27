@@ -2,8 +2,9 @@ from __future__ import annotations
 
 import math
 from typing import Literal
-from pydantic import BaseModel, ConfigDict, Field, field_validator, model_validator
+from pydantic import BaseModel, ConfigDict, Field, field_validator, model_validator, model_serializer
 
+from .parametric import WingParameters, BodyParameters, envelope
 
 class StrictModel(BaseModel):
     model_config = ConfigDict(extra='forbid', allow_inf_nan=False)
@@ -19,7 +20,17 @@ class Part(StrictModel):
     name: str = Field(min_length=1, max_length=100)
     group: str = Field(min_length=1, max_length=60)
     route: Literal['print', 'catalog', 'machine']
-    shape: Literal['box', 'shell', 'frame', 'cylinder', 'tube', 'wing', 'fuselage', 'car_body', 'smooth_fuselage', 'smooth_car_body', 'fuselage_section', 'fuselage_nose', 'fuselage_tail']
+    shape: Literal['box', 'shell', 'frame', 'cylinder', 'tube', 'wing', 'fuselage', 'car_body', 'smooth_fuselage', 'smooth_car_body', 'fuselage_section', 'fuselage_nose', 'fuselage_tail', 'parametric_wing', 'section_body']
+    parametric: WingParameters | BodyParameters | None = None
+    reflection: Literal['x','y','z'] | None = None
+
+    @model_serializer(mode='wrap')
+    def compatible_dump(self, handler):
+        result=handler(self)
+        for key in ('parametric','reflection'):
+            if result.get(key) is None:result.pop(key,None)
+        return result
+
     size: list[float] = Field(min_length=3, max_length=3)
     position: list[float] = Field(min_length=3, max_length=3)
     rotation: list[float] = Field(default_factory=lambda: [0, 0, 0], min_length=3, max_length=3)
@@ -46,6 +57,12 @@ class Part(StrictModel):
 
     @model_validator(mode='after')
     def consistent(self):
+        expected={'parametric_wing':WingParameters,'section_body':BodyParameters}.get(self.shape)
+        if expected:
+            if not isinstance(self.parametric,expected):raise ValueError('Shape requires matching semantic parameters')
+            derived=envelope(self.parametric)
+            if any(abs(a-b)>1e-5*max(1,b) for a,b in zip(self.size,derived)):raise ValueError('Parametric size must equal derived section envelope; use semantic parameters')
+        elif self.parametric is not None:raise ValueError('Semantic parameters require parametric_wing or section_body')
         if ((self.shape == 'tube' and 2*self.wall >= self.size[0]) or
             (self.shape == 'shell' and (2*self.wall >= min(self.size[:2]) or self.wall >= self.size[2])) or
             (self.shape == 'frame' and 2*self.wall >= min(self.size[:2])) or

@@ -83,3 +83,11 @@ without maintainer intervention.
 Track setup completion, time to first verified artifact, repeat use, successful
 constraint-preserving revisions, reproducible failures and contributed adapters.
 Stars are a secondary signal; do not buy them, gate features on them or invent users.
+
+## v0.6 — model-authored symmetry and parametric refinement
+
+GLM-only plan/review/action/selection, executable mirror declarations, semantic wing
+and body-section controls, runtime skill packaging, current-parameter fact checks
+and common-frame comparison. Next: reference-camera estimation, attachment constraints,
+more expressive surfaces and externally evaluated visual convergence. These remain
+open capabilities; additional iterations alone are not promised to solve them.

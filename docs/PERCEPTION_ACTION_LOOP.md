@@ -1,119 +1,114 @@
-# Studio perception–action loop
+# GLM-only, rule-based perception–action workflow (v0.6)
 
-Live Studio runs now render their actual CAD, compare those renders with the input
-image through the configured vision model, apply bounded local edits, and evaluate
-again. A successful model request or a valid solid is no longer treated as visual
-acceptance. The manufacturing-plan proof remains a separate result.
-
-## Run it
-
-Install the existing `demo` extra and configure the image-capable model as described
-in [Quickstart](QUICKSTART.md). In Studio, choose the visual budget before generating:
-
-- **3 rounds** (default): baseline review plus up to two candidate revisions.
-- **4 rounds**: up to three candidate revisions.
-- **1 round**: review only; no automatic edit.
-- **0 rounds**: explicitly disable visual evaluation.
-
-Reference/fixture/local numeric revision modes do not call the visual model.
-Existing runs do not acquire an evaluation retroactively. To refine a saved run:
+The live Studio path and `fk perceive` now run the same workflow: GLM-5.3-Flash
+judges symmetry, declares rules and parameterization, reviews actual CAD, proposes
+edits, selects the retained candidate and decides whether to continue. The host
+provides deterministic tools and validation. No other model supplies design edits
+or chooses the visually preferred candidate.
 
 ```bash
-fk perceive ./runs/<parent-id> --rounds 3 --output ./visual-runs --require-proof --json
+fk perceive ./runs/<verified-parent> --rounds 3 --output ./visual-runs --require-proof --json
 ```
 
-```python
-from fluxkernel.studio import refine_visual
-run = refine_visual("./runs/<parent-id>", output_dir="./visual-runs", rounds=3)
-```
+These are real API calls. Configure the existing private model settings for
+`glm-5.3-flash`; another configured/reported model fails explicitly. New live images
+first use GLM's existing occurrence planner; saved-parent refinement skips that step.
+Symmetry is judged before refinement edits, not before the saved parent existed.
+Fixture/reference/numeric revision modes remain model-free. Studio permits 0 rounds
+(disabled), 1 review round, or up to 4 review rounds. Three remains the default.
 
-This **makes real model API calls**, creates a new directory, verifies/pins the parent
-manifest, and preserves its image, requirements, catalog dimensions and numeric
-contract. A new live upload first runs the existing image planner; a saved-parent
-refinement starts from its verified design without another initial planning call.
-The existing MCP fixture tools remain model-free; the live loop is available through
-Studio, this CLI and the Python API.
+## Skill and workflow
 
-## One round
+The packaged [skill](../fluxkernel/demo/skills/fluxkernel-glm-pal/SKILL.md) and its
+[parameter conventions](../fluxkernel/demo/skills/fluxkernel-glm-pal/references/parameters.md)
+are loaded into every GLM planning, review, action and selection request. They are
+runtime instructions, not merely a document for a human operator. The wheel ships
+both resources; the run archives their exact bytes and implementation source hashes.
 
-1. Construct each part through the finite B-rep recipes. Tessellate that geometry
-   and render ISO, side, top and front views with a depth buffer. Studio coordinates
-   are X longitudinal, Y lateral, Z up. The evaluation frame stays fixed across rounds.
-2. Run narrow independent checks: aircraft engine-axis alignment, longitudinal
-   interval overlap of unrotated fuselage segments, and geometry outside the fixed
-   render frame. These are **not** a general collision or assembly solver.
-3. Send the reference image and actual four-view sheet to the vision model. Later
-   rounds also include the current best candidate's sheet. Require structured
-   silhouette/proportion/layout ratings and findings tied to existing part IDs.
-4. Ask for a local edit against the exact design digest. Requirements, part IDs,
-   part count, materials, routes and procurement references are protected. Purchased
-   dimensions cannot change; purchased part poses may change.
-5. Validate the edit and frozen constraints. On rejection, record the invalid action
-   and return its error for **one** repair attempt. No silent partial application.
-6. Render and review the candidate in the next round. Keep the best actually reviewed
-   design. Export its CAD and regenerate the manufacturing plan and Lean evidence.
+1. Render the untouched parent. GLM returns symmetry evidence/confidence,
+   bilateral/partial/none/uncertain mode, plane, disjoint source/target IDs,
+   exceptions, semantic parameter bindings and refinement stages.
+2. Validate and compile its declared mirrors. Unknown/uncertain symmetry leaves
+   geometry unchanged. Only declared pairs are mirrored. Unpaired components remain
+   editable. This compiled design is the first reviewed candidate; the untouched
+   baseline has its own saved design/render and is not mislabelled as a GLM revision.
+3. Render actual B-reps; supply current recipe facts and before/after differences.
+   Compare current and retained candidates in a common frame encompassing both and
+   the baseline. Frame expansion is recorded, not ranked as a structural defect.
+4. GLM reviews silhouette, proportions and layout. Structured numeric claims must
+   match current recipe fields. This catches stale structured numbers; it does not
+   prove that every free-text sentence is correct or resolve camera ambiguity.
+5. GLM chooses the current or retained reviewed candidate, the next stage and whether
+   to stop. The host's old lexicographic score remains diagnostic metadata only.
+6. GLM proposes bounded edits. Validate the whole action, compile mirrored targets,
+   check frozen nominal constraints and construct geometry. Review again before any
+   new candidate can be selected. A validation rejection gets one model repair.
 
-Allowed actions are size, position, rotation and wall edits, plus explicit recipe
-changes within the fuselage family and `car_body` → `smooth_car_body`. The original
-low-poly recipes remain unchanged. New smooth recipes include a complete fuselage,
-a constant-section middle, a nose taper toward +X, and a tail taper toward -X. These
-are concept surfaces with capped hollow solids, not production tooling surfaces or
-validated airframes. They do not add wheel arches or a general surface editor.
+At most `6 * rounds` requests are available: plan/review/selection/action, each with
+at most one validation repair. Three rounds normally use 9 requests; at most 18,
+plus up to 3 initial planning requests for a new image. The 900-second loop budget
+prevents starting new requests after expiry; an in-flight call can overrun it.
+Provider/render failures retain the last GLM-selected reviewed candidate, or return
+an explicitly unreviewed original when none exists. There is no model/replay fallback.
 
-## Selection and stopping
+## Symmetry and semantic geometry
 
-Candidate ranking is lexicographic: fewer independent diagnostic failures, fewer
-model-reported blocking findings, fewer major findings, then a weighted visual score
-(40% silhouette, 30% proportions, 30% layout). This policy can favor fixing a known
-axis error even if the model's visual rating drops. The recorded components remain
-visible; do not claim universal monotonic improvement.
+Mirrors use an actual local geometric reflection and a conjugated rotation/translated
+pose. Negating only Y or Euler yaw is insufficient. Targets retain identities,
+materials, routes and procurement references. Editing a derived target directly is
+rejected. Catalog pairs require compatible identical symmetric primitive envelopes;
+the compiler changes their poses, never their procurement dimensions.
 
-The model review threshold requires no independent failures, no blocking/major
-findings, and all three ratings at least 80. `model-threshold-met` means exactly
-that; it is not calibrated similarity, human acceptance or a physical certificate.
-Otherwise the result remains `needs-review`, even if Lean accepts its plan.
+GLM can bind fabricated wing/body occurrences to:
 
-Model ratings vary and should only be interpreted within the recorded run. No
-reference-camera pose has been estimated, no segmentation ground truth is available,
-and no reference-image IoU or objective likeness percentage is claimed. Orthographic
-views help identify geometry faults but do not reproduce the source perspective.
+- **Parametric wing:** semispan, root/tip chord, sweep, dihedral, tip twist and thickness
+  ratio. The local origin is the root leading edge. The opposite wing can be derived
+  exactly through a mirror rule. Size is derived from the sections.
+- **Section body:** length and 3–12 elliptical sections with longitudinal fraction,
+  width/height and lateral/vertical offsets. Section order and envelope bounds are
+  validated. The body is capped and uses ruled transitions.
 
-The loop limits rounds to four. At most `3 * rounds - 2` review/action requests are
-made (including one action repair per transition), plus up to three initial planner
-requests for a new image. Requests are not started after the 900-second loop budget;
-an in-flight call can extend beyond that boundary. Worker/client limits remain
-separate. No rollback is implied by client cancellation.
+These are concept solids, not validated thin-walled production parts. Section bodies
+are not generally curvature-continuous; elliptical sections cannot cut wheel arches.
+The new wing uses a symmetric four-digit thickness distribution and a root/tip loft.
+No aerodynamic solver or manufacturing qualification is implied. Frozen constraints
+still apply after all derived occurrences are compiled.
 
-## Evidence and UI
+This design is **inspired by OpenVSP**, not an OpenVSP binding or a claim of its feature
+coverage. References: [XSec API](https://openvsp.org/api_docs/latest/group___x_sec.html),
+[NASA wing documentation](https://www.nasa.gov/reference/openvsp-wings/),
+[wing planform](https://vspu.larc.nasa.gov/training-content/chapter-1-vspfundamentals/wings/wing-planform/).
+No OpenVSP source code was copied into these recipes.
 
-Each run keeps:
+## Evidence and acceptance
 
-- `perception/reference.png` and a copy of the loop/render implementation.
-- Per-round `design.json`, four renders, silhouette masks, render metadata, narrow
-  layout checks and declared numeric checks.
-- Review/action request metadata with image hashes and raw model responses/usage.
-- Rejected actions with validation errors and any corrective response.
-- `perception/summary.json`: candidates, selection, stop reason and actual API calls.
+A run records the skill/implementation snapshots, untouched parent, GLM plan,
+mirror compilation identities, current facts/differences, four-view renders,
+requests/responses (with hashes and provider-reported model), validation failures,
+GLM selection reasons, candidate lineage and final selection. The bundle verifier
+binds the selection chain and archived responses to the final design and checks the
+actual manufacturing plan with Lean separately.
 
-Images and reports enter the bundle manifest. The independent bundle verifier also
-checks that the selected candidate digest/design agrees with final `design.json`.
-It does not turn the model's visual opinion into a Lean theorem. Studio displays
-candidate sheets, scores, retained round and unresolved quality separately from
-manufacturing-plan proof status.
+`human_design_edits: false` describes this execution path, not a signed attestation
+that an external operator could never tamper with a bundle. Hashes detect changes
+relative to their recorded manifest. Model identity is requested and provider-reported,
+not independent inspection of the provider's internal weights.
 
-On reviewer/API/render failure, retain the best reviewed candidate and explicitly
-record the failure. If none was reviewed, retain the initial design as **unreviewed**.
-There are no invented scores and no reference replay fallback. Native CAD execution
-and supplier/physical claims retain their existing limitations.
+The quality threshold requires no current independent diagnostic issues, no model
+blocking/major findings and three model ratings at least 80. It is a model threshold,
+not calibrated image similarity, human approval or physical certification. Camera
+pose is still unestimated, hidden internals remain hypotheses and layout checks are
+not a general collision/attachment solver. All other outcomes remain `needs-review`.
 
-## Tests and interpretation
+The v0.5 runner remains `run_legacy_loop` for historical regression tests only; live
+Studio/CLI use v0.6. Existing recorded cases keep their original workflow identity.
+A website backend update does not automatically replace public recorded cases.
 
-Automated tests use explicitly mocked model responses to cover image delivery,
-render depth, recipe export, action protection, rejection/repair, regression retention,
-failure handling, stopping and pipeline integration. Installed-wheel checks also
-exercise rendering and selection with a mock provider. Separate real GLM runs must
-be identified as such in release evidence; a mock test is never a model-quality result.
+## Testing without intervening in a design
 
-The old website cases remain earlier recorded outputs until an explicitly reviewed
-site release replaces them. A new backend version does not improve their stored
-meshes automatically.
+Unit/package tests use explicit mock providers to verify actual reflection, protected
+procurement dimensions, semantic B-reps, stale-fact rejection, model-only selection,
+failure preservation and runtime skill delivery. Real GLM runs must be separately
+identified. Freeze the implementation before running a live validation; do not inject
+hand-written geometry, patch a candidate, replace a failed response or override GLM's
+selection. Report failures and limitations alongside any improvements.

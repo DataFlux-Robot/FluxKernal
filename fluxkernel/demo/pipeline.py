@@ -81,6 +81,9 @@ def execute(run: Path, request: Request, image: bytes, previous=None, *,
             input_record['interpretation']='explicit parametric design; no image inference or model call'
         write_json(run/'input.json',input_record)
         write_json(run/'constraints.json',constraint_contract)
+        if request.mode=='live' and request.visual_rounds:
+            from .pal_workflow import require_glm
+            require_glm()
         if request.mode in ('fixture','revision'):
             if design_override is None: raise ValueError('Explicit design input is required')
             from .models import Design

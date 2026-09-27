@@ -83,13 +83,18 @@ from PIL import Image
 import io,json
 root=Path('pal-package-check');root.mkdir()
 image=io.BytesIO();Image.new('RGB',(32,32),'white').save(image,'PNG')
-p.vision.model_config=lambda:{'model':'distribution-test','api_key':''}
+p.vision.model_config=lambda:{'model':'glm-5.3-flash','api_key':''}
 review={'silhouette':85,'proportions':85,'layout':85,'reference_limitations':'Mock integration test','findings':[]}
-p.vision._call=lambda *a:(json.dumps(review),{'usage':{}})
+review['numeric_claims']=[{'part':'housing','field':'wall','value':2}]
+plan={'symmetry':'uncertain','axis':'y','plane_offset':0,'confidence':.1,'rationale':'Mock package test','visible_evidence':['Mock'],'exceptions':[],'pairs':[],'parameterization':[],'stages':['proportions']}
+decision={'selected_round':0,'next_step':'stop','stage':'proportions','reason':'Mock package test'}
+responses=iter([plan,review,decision])
+p.vision._call=lambda *a:(json.dumps(next(responses)),{'usage':{},'model':'glm-5.3-flash'})
 design=Design.model_validate(load_task('enclosure')['design'])
 chosen,report=p.run_loop(design,image.getvalue(),'fixture',root,lambda *a:None,contract=load_task('enclosure')['constraints'],rounds=1)
 assert chosen==design and report['reviewed'] and report['quality_status']=='model-threshold-met'
 assert (root/'perception/round-00/views.png').exists()
+assert report['model_calls']==3 and (root/'perception/skill.md').exists()
 '''])
         if args.agent:
             agent = json.loads(run([python, '-m', 'fluxkernel.agent_smoke', '--workspace',

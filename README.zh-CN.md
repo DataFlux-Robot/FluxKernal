@@ -135,3 +135,7 @@ fk perceive ./runs/<id> --rounds 3 --output ./visual-runs --require-proof --json
 
 详见 [Perception–Action Loop](docs/PERCEPTION_ACTION_LOOP.md)。评分是模型意见，
 不是客观相似度、人工验收或实物性能证明。
+
+### v0.6：GLM 独立执行的规则闭环
+
+GLM-5.3-Flash 先判断对称性，声明配对、例外与参数化方式，再进行评审、修改和候选选择。执行器提供真实镜像、机翼语义参数、机身截面和约束校验；不注入人工设计修正。每阶段实际加载打包的 skill，失败与模型选择均留档。[流程与边界](docs/PERCEPTION_ACTION_LOOP.md)。

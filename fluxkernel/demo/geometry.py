@@ -56,7 +56,10 @@ def build(part: Part):
     from OCP.BRepCheck import BRepCheck_Analyzer
     from OCP.gp import gp_Pnt,gp_Trsf,gp_Vec,gp_Ax1,gp_Dir
     x,y,z=part.size;w=part.wall
-    if part.shape=='box': shape=_box(x,y,z)
+    if part.parametric is not None:
+        from .parametric import build_parametric
+        shape=build_parametric(part.parametric)
+    elif part.shape=='box': shape=_box(x,y,z)
     elif part.shape=='shell':
         shape=_cut(_box(x,y,z),_box(x-2*w,y-2*w,z,cx=0,cy=0,cz=w))
     elif part.shape=='frame':
@@ -78,6 +81,11 @@ def build(part: Part):
             inner=_loft(x-4*w,y-4*w,z-4*w,car=part.shape.endswith('car_body'),smooth=part.shape.startswith(('smooth_','fuselage_')),section=part.shape)
             shape=_cut(shape,inner)
     if not BRepCheck_Analyzer(shape).IsValid(): raise ValueError(f'{part.id}: invalid B-rep')
+    if part.reflection is not None:
+        from OCP.gp import gp_Ax2
+        normal=[0,0,0];normal['xyz'.index(part.reflection)]=1
+        tr=gp_Trsf();tr.SetMirror(gp_Ax2(gp_Pnt(0,0,0),gp_Dir(*normal)))
+        shape=BRepBuilderAPI_Transform(shape,tr,True).Shape()
     for axis,angle in zip([(1,0,0),(0,1,0),(0,0,1)],part.rotation):
         if angle:
             tr=gp_Trsf();tr.SetRotation(gp_Ax1(gp_Pnt(0,0,0),gp_Dir(*axis)),math.radians(angle))
@@ -97,7 +105,7 @@ def artifacts(part: Part, directory: Path, store):
     ex=TopExp_Explorer(shape,TopAbs_SOLID);solids=0
     while ex.More(): solids+=1;ex.Next()
     if solids!=1: raise ValueError(f'{part.id}: expected one solid, got {solids}')
-    blobs=_write_blobs(shape,SimpleNamespace(store=store),**({'linear':max(max(part.size)/1200,.1),'angular':.22} if part.shape.startswith(('smooth_','fuselage_')) else {}))
+    blobs=_write_blobs(shape,SimpleNamespace(store=store),**({'linear':max(max(part.size)/1200,.1),'angular':.22} if part.parametric is not None or part.shape.startswith(('smooth_','fuselage_')) else {}))
     if set(blobs)!= {'step','stl'}: raise ValueError('STEP/STL export did not complete')
     for ext,digest in blobs.items(): (directory/f'{part.id}.{ext}').write_bytes(store.get_blob(digest))
     triangles=mesh_shape(shape,linear=max(max(part.size)/2000,0.1),angular=0.3)

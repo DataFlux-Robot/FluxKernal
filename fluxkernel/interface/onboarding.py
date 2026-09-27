@@ -17,7 +17,7 @@ def version() -> str:
     try:
         return importlib.metadata.version("fluxkernel")
     except importlib.metadata.PackageNotFoundError:
-        return "0.5.0 (source checkout)"
+        return "0.6.0 (source checkout)"
 
 
 def diagnose(profile: str = "core") -> dict:

@@ -140,7 +140,10 @@ This exercises a real MCP client → server → CAD → Lean workflow without an
 ## Render, review and revise against the image
 
 Live Studio generation now includes a bounded perception–action loop: actual CAD
-four-view renders go back to the configured vision model alongside the reference.
+four-view renders go back to **GLM-5.3-Flash** alongside the reference. GLM first
+declares symmetry and semantic wing/body controls, then reviews, edits and selects
+candidates itself. The packaged skill is loaded into every phase; the host enforces
+contracts and compiles mirrored occurrences.
 Rejected edits receive validation feedback; regressions and failures remain in the
 trace. Visual quality and Lean plan closure are displayed separately.
 
