@@ -1,0 +1,173 @@
+{
+  "scope": "All four real attempts; two frozen workflow versions; GLM selects candidates, not the operator. Scores are subjective and not a controlled comparison across versions.",
+  "runs": [
+    {
+      "run": "7026d336e25c4aeb",
+      "family": "car",
+      "frozen_code": "f1999a321efcc0d8855a8c9a74aedbe82e764fb5",
+      "status": "needs-review",
+      "model_calls": 1,
+      "decision_author": "glm-5.3-flash",
+      "selected_round": null,
+      "stop_reason": "workflow-failed",
+      "error": "Expecting property name enclosed in double quotes: line 29 column 61 (char 1365)",
+      "symmetry": null,
+      "symmetry_pairs": 0,
+      "parameter_bindings": 0,
+      "parametric_occurrences": 0,
+      "reflected_occurrences": 0,
+      "plan_accepted": true,
+      "summary_sha256": "462cff72c82486ae75a3903c8ed9c9e3e4eb4f1195aeafbaebfa29e6965e400d",
+      "rounds": []
+    },
+    {
+      "run": "b898adb99e3841b1",
+      "family": "aircraft",
+      "frozen_code": "f1999a321efcc0d8855a8c9a74aedbe82e764fb5",
+      "status": "needs-review",
+      "model_calls": 2,
+      "decision_author": "glm-5.3-flash",
+      "selected_round": null,
+      "stop_reason": "workflow-failed",
+      "error": "Exceptions must exist and cannot be mirrored",
+      "symmetry": null,
+      "symmetry_pairs": 0,
+      "parameter_bindings": 0,
+      "parametric_occurrences": 0,
+      "reflected_occurrences": 0,
+      "plan_accepted": true,
+      "summary_sha256": "a7557af8ebb0d022377c3700b0a1e7eda9b1bc1244d29ca98034de59115c3ba2",
+      "rounds": []
+    },
+    {
+      "run": "c59d5c0edad34a94",
+      "family": "aircraft",
+      "frozen_code": "4411aa548fc2daca67468ef99ab249e6cf35ab53",
+      "status": "needs-review",
+      "model_calls": 11,
+      "decision_author": "glm-5.3-flash",
+      "selected_round": 2,
+      "stop_reason": "model-stop",
+      "error": null,
+      "symmetry": "bilateral",
+      "symmetry_pairs": 9,
+      "parameter_bindings": 5,
+      "parametric_occurrences": 9,
+      "reflected_occurrences": 7,
+      "plan_accepted": true,
+      "summary_sha256": "d2d10c96b4efb35d296244c2a7db01237bf1e3583fa2478a20d72e5294ca5296",
+      "rounds": [
+        {
+          "round": 0,
+          "rank": [
+            -7,
+            -1,
+            -3,
+            55.7
+          ],
+          "decision": {
+            "selected_round": 0,
+            "next_step": "revise",
+            "stage": "proportions",
+            "reason": "第0轮是唯一已评审候选，予以保留为当前基线。但渲染显示与参考照片差距仍大：1) 四台发动机rotation.0=90导致轴线沿Y向，与照片中沿机身方向的吊挂发动机不符，属布局检查确认的blocking问题；2) 机翼呈无后掠平板感，缺少照片中约25°后掠与翼尖弦长收窄，应通过proportions阶段对wing-l等源件设置语义参数（sweep_deg≈25、tip_chord小于root_chord）实现；3) 机身四段包络重叠，轮廓分段感明显；4) 翼梢小翼呈脱离翼尖的悬浮块，未连续衔接。以上均需修订，优先进入proportions阶段：机翼后掠收窄与发动机轴向为外形相似度的主导因素，先修正比例与翼面参数化，再在connections阶段处理机身段排布、翼梢小翼对位与襟翼贴合。"
+          }
+        },
+        {
+          "round": 1,
+          "rank": [
+            -7,
+            0,
+            -1,
+            66.5
+          ],
+          "decision": {
+            "selected_round": 1,
+            "next_step": "revise",
+            "stage": "connections",
+            "reason": "第1轮候选（保留件）在比例阶段已实质性改善：发动机轴线归零、机翼/小翼/襟翼/平尾/垂尾语义参数化并镜像编译， Silhouette/Proportions/Layout评分均高于第0轮，渲染中后掠与收窄已可见，故保留第1轮候选。但渲染显示连接问题仍是主要差距：布局检查仍报告三处机身段包络重叠（前-中4500、中-后3000、后-尾锥500mm），SIDE视图机身分段错位感明显；TOP/ISO中小翼根部与翼尖仍略显悬空；源件wing-l.rotation.2=-15为旧平板残留偏航，与parametric.sweep_deg=22叠加使实际后掠偏离设计值。下一步在连接阶段沿X无重叠重排机身段（前段position.0约17150、后段约-3500、尾锥约-9600，与radome衔接），将wing-l.rotation归零使后掠完全由语义参数表达，并微调winglet-l位置贴合翼尖（右件由镜像规则派生）。参考图为仰视滚转姿态，透视限制已在评审中声明，不做超出来源的推断。"
+          }
+        },
+        {
+          "round": 2,
+          "rank": [
+            -4,
+            0,
+            -1,
+            71.0
+          ],
+          "decision": {
+            "selected_round": 2,
+            "next_step": "stop",
+            "stage": "connections",
+            "reason": "选择第2轮候选：机身段纵向重叠（第1轮的三处FUSELAGE_INTERVAL_OVERLAP）已由连接阶段修复，主翼旧偏航残留已归零、后掠由parametric.sweep_deg=22表达，各项评分（轮廓74/比例72/布局66）均高于第1轮，渲染对比机身轮廓连续性更好，应保留第2轮。但布局检查仍报告四个发动机件AIRcraft_ENGINE_AXIS未对齐X轴，且remaining_candidate_revisions=0，本轮无剩余修正额度，无法再下发连接阶段编辑（将发动机源件rotation设为[0,90,0]、右件由镜像派生）。该问题未解决，运行不能以通过状态收尾，应保持needs-review并在新身份的新运行中修复。评分属目视对比而非几何或气动量度，参考照片透视缩短限制了对真实尺寸的判断。"
+          }
+        }
+      ]
+    },
+    {
+      "run": "d88574fcd83a4b9a",
+      "family": "car",
+      "frozen_code": "4411aa548fc2daca67468ef99ab249e6cf35ab53",
+      "status": "needs-review",
+      "model_calls": 9,
+      "decision_author": "glm-5.3-flash",
+      "selected_round": 2,
+      "stop_reason": "model-stop",
+      "error": null,
+      "symmetry": "bilateral",
+      "symmetry_pairs": 6,
+      "parameter_bindings": 2,
+      "parametric_occurrences": 2,
+      "reflected_occurrences": 2,
+      "plan_accepted": true,
+      "summary_sha256": "df6f5a5419229a15a3803175745cff18db07b64e233ff14e21ed8bce59717aa1",
+      "rounds": [
+        {
+          "round": 0,
+          "rank": [
+            0,
+            0,
+            -3,
+            56.2
+          ],
+          "decision": {
+            "selected_round": 0,
+            "next_step": "revise",
+            "stage": "proportions",
+            "reason": "当前0轮候选是规则编译基线：镜像关系已正确应用（wheel_fr/rr、exhaust_right、seat_frame_front_r含反射标记），布局检查通过，参数表与structured claims一致，故保留为当前基准。但渲染确认存在两处major缺陷，均指向proportions阶段：(1) 车体宽1940mm且底缘Z=300mm低于轮心Z=350mm，四轮几乎被壳体完全包裹，与参考照片中外露车轮不符；(2) main_body_shell为简单楔形体，缺少照片中C柱至贯穿尾灯的连续溜背曲线。将main_body_shell升级为section_body（分段收窄下部截面、抬高底缘、u≈0.55~0.95渐降高度模拟溜背）是解决轮拱让位与轮廓问题的前提，尾部附件贴合与玻璃定位需待新截面确定后在connections/surfaces阶段处理。"
+          }
+        },
+        {
+          "round": 1,
+          "rank": [
+            0,
+            0,
+            -3,
+            61.2
+          ],
+          "decision": {
+            "selected_round": 1,
+            "next_step": "revise",
+            "stage": "proportions",
+            "reason": "第1轮候选整体优于第0轮：main_body_shell已由楔形car_body升级为section_body，侧视出现溜背收敛（尾段height=750、offset_z=10），正视轮廓更收拢，且扩散器、尾灯等附件有所贴合，各评分均提高。选其保留。但major问题尚未解决：①侧视四轮仍大部分被车体包络遮挡——车体下部截面宽（u=0.5处width=1900、offset_z=235）仍覆盖Y=±825轮距与外径700车轮；②尾部附件（尾灯带Z=1150、牌照Z=880）高于渐收尾部实体顶缘，ISO图中仍有悬浮脱节；③rear_wing_blade仍是wing盒体（size=[300,1400,25]、position.z=1420），浮于溜背末段上方，未按parameterization升级为parametric_wing并贴至C柱延长线。下一轮继续proportions阶段：收窄并上抬u=0.3~0.65下部截面（width约1840~1880）以让出轮拱，同时重定尾灯带/牌照/扩散器位置嵌入新尾面，并提供完整parametric对象升级尾翼、将root前缘放在溜背末段顶面相交处。参考照片为后侧45度低光视角，正视比例与前脸细节仍属假设，不作为相似度标定。"
+          }
+        },
+        {
+          "round": 2,
+          "rank": [
+            0,
+            0,
+            -3,
+            64.2
+          ],
+          "decision": {
+            "selected_round": 2,
+            "next_step": "stop",
+            "stage": "proportions",
+            "reason": "第2轮候选在所有维度上均优于第1轮（轮廓63/69/61 对 60/66/58）：车身按建议收窄并下移，尾翼已升级为parametric_wing，尾部附件嵌入感改善，且参数事实与差异表均与评审数值声明一致，布局检查通过。虽然仍存在未解决问题（尾翼单侧悬挑未构成镜像对、轮拱让位不足、尾灯带偏窄、玻璃件沉入顶面、排气与纯电架构冲突），但remaining_candidate_revisions=0，本轮预算已耗尽，无更多修订机会；这些遗留项应保留为needs-review记录，由新一轮计划（如对称声明补充尾翼镜像对、surfaces阶段重排玻璃位姿、connections阶段处理排气）处理，而非在本轮强行继续。故保留第2轮候选并停止。"
+          }
+        }
+      ]
+    }
+  ]
+}

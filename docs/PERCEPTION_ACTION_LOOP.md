@@ -98,7 +98,9 @@ The quality threshold requires no current independent diagnostic issues, no mode
 blocking/major findings and three model ratings at least 80. It is a model threshold,
 not calibrated image similarity, human approval or physical certification. Camera
 pose is still unestimated, hidden internals remain hypotheses and layout checks are
-not a general collision/attachment solver. All other outcomes remain `needs-review`.
+not a general collision/attachment solver. The legacy aircraft body-envelope check
+covers the named fuselage recipes; the new general section_body recipe has no
+collision/attachment coverage. All other outcomes remain `needs-review`.
 
 The v0.5 runner remains `run_legacy_loop` for historical regression tests only; live
 Studio/CLI use v0.6. Existing recorded cases keep their original workflow identity.

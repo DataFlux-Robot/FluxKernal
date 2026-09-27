@@ -1,0 +1,17 @@
+{
+  "runs": [
+    {
+      "run": "c59d5c0edad34a94",
+      "details": "3 轮候选 · 11 次模型调用 · 保留第 3 轮 · 评分为模型意见，尚未做参考相机对齐或物理验证。 GLM 规则：bilateral · 9 组镜像配对 · 5 个参数化源件。候选由 GLM 选择，首轮是规则编译后的初始候选。",
+      "rounds": 3
+    },
+    {
+      "run": "d88574fcd83a4b9a",
+      "details": "3 轮候选 · 9 次模型调用 · 保留第 3 轮 · 评分为模型意见，尚未做参考相机对齐或物理验证。 GLM 规则：bilateral · 6 组镜像配对 · 2 个参数化源件。候选由 GLM 选择，首轮是规则编译后的初始候选。",
+      "rounds": 3
+    }
+  ],
+  "failed_run_reason_visible": true,
+  "history_records": 17,
+  "errors": []
+}

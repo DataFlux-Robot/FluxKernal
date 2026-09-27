@@ -1,0 +1,18 @@
+[
+  {
+    "run": "7026d336e25c4aeb",
+    "exit_code": 0,
+    "last_lines": [
+      "'manufacturingClosed' depends on axioms: [propext]",
+      "PASS: manifest, declared nominal constraints (when present), occurrence receipts, JSON-to-Lean binding and Lean plan closure. Physical capability remains unverified."
+    ]
+  },
+  {
+    "run": "b898adb99e3841b1",
+    "exit_code": 0,
+    "last_lines": [
+      "'manufacturingClosed' depends on axioms: [propext]",
+      "PASS: manifest, declared nominal constraints (when present), occurrence receipts, JSON-to-Lean binding and Lean plan closure. Physical capability remains unverified."
+    ]
+  }
+]
