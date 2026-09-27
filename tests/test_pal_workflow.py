@@ -197,3 +197,26 @@ def test_nominal_constraint_checked_after_complete_mirror_compilation():
     a={'base_design_sha256':pal.digest(d.model_dump()),'rationale':'Mock invalid derived wall','edits':[{'part':'source','set':{'wall':2}}]}
     with pytest.raises(ValueError,match='frozen'):apply_workflow_action(d,a,contract,p)
     assert d.parts[0].wall==1 and d.parts[1].wall==1
+
+
+def test_exception_schema_and_errors_require_exact_part_ids():
+    from fluxkernel.demo.pal_rules import plan_schema
+    d=pair_design();schema=plan_schema(d)
+    assert set(schema['properties']['exceptions']['items']['enum'])=={p.id for p in d.parts}
+    plan=plain_plan();plan['exceptions']=['source: visual explanation']
+    with pytest.raises(ValueError,match='Move explanations'):validate_plan(plan,d)
+
+
+def test_invalid_json_enters_automatic_model_repair(tmp_path,monkeypatch):
+    d=Design.model_validate(load_task('enclosure')['design']);calls=provider(monkeypatch,[plain_plan(),review(d,85),decision(0,'stop')])
+    good=pal.vision._call;count=0
+    def malformed_first(*args):
+        nonlocal count
+        count+=1
+        if count==1:return '{invalid json}',{'model':workflow.MODEL,'content':[{'type':'text','text':'{invalid json}'}]}
+        return good(*args)
+    monkeypatch.setattr(pal.vision,'_call',malformed_first)
+    _,s=pal.run_loop(d,image(),'brief',tmp_path,lambda *a:None,contract=EMPTY,rounds=1)
+    assert s['model_calls']==4 and s['reviewed'] and s['quality_status']=='model-threshold-met'
+    assert '{invalid json}' in calls[0]['messages'][1]['content']
+    assert (tmp_path/'perception/planning/plan-rejected.json').exists()

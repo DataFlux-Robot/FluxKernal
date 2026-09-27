@@ -10,7 +10,7 @@ from pydantic import Field
 from . import perception as pal
 from .models import StrictModel
 from .parametric import WingParameters,BodyParameters
-from .pal_rules import WorkflowPlan,validate_plan,compile_symmetry,apply_workflow_action,parameter_facts
+from .pal_rules import WorkflowPlan,plan_schema,validate_plan,compile_symmetry,apply_workflow_action,parameter_facts
 from .perception_render import render_design
 
 MODEL='glm-5.3-flash'
@@ -79,17 +79,21 @@ def run(design,image,brief,run,event,*,contract,rounds=3,deadline_s=900):
             if time.monotonic()-started>=deadline_s or len(calls)>=max_calls:raise TimeoutError('Workflow budget exhausted before next model request')
             label=phase if attempt==0 else phase+'-repair'
             event('perception',f'{MODEL} · {phase}'+(' · 自动纠错' if attempt else ''))
+            raw=None
+            response_file=directory/(label+'-response.json')
             try:
                 raw=pal.model_json(cfg,instructions+'\nCurrent phase: '+phase+'\nReturn JSON only; use Chinese explanations.',
                     json.dumps({**payload,'validation_feedback':feedback},ensure_ascii=False),images,schema,directory,label,event,calls)
-            finally:
-                response_file=directory/(label+'-response.json')
-                if calls and response_file.exists():calls[-1]['response_file']=response_file.relative_to(run).as_posix()
-            try:return validate(raw)
+                return validate(raw)
             except (ValueError,TypeError,KeyError) as exc:
+                if raw is None and response_file.exists():
+                    response=json.loads(response_file.read_text())
+                    raw=''.join(b.get('text','') for b in response.get('content',[]) if b.get('type')=='text')[:16000]
                 feedback={'error':str(exc)[:6000],'rejected_response':raw}
                 pal.save(directory/(label+'-rejected.json'),feedback)
                 if attempt:raise
+            finally:
+                if calls and response_file.exists():calls[-1]['response_file']=response_file.relative_to(run).as_posix()
         raise AssertionError('Unreachable')
 
     try:
@@ -102,7 +106,7 @@ def run(design,image,brief,run,event,*,contract,rounds=3,deadline_s=900):
             return value
         plan=ask('plan',{'brief':brief,'design':design.model_dump(),'frozen_constraints':contract,
             'instruction':'Judge symmetry before any edit. Declare compatible source/target pairs and semantic parameter bindings; list explicit exceptions. Do not invent a new design.'},
-            [reference,baseline/'views.png'],WorkflowPlan.model_json_schema(),planning,check_plan)
+            [reference,baseline/'views.png'],plan_schema(design),planning,check_plan)
         pal.save(planning/'plan.json',plan.model_dump())
         # Deterministic interpretation of GLM's declaration, not a host design edit.
         candidate=compile_symmetry(design,plan,contract)
@@ -135,6 +139,7 @@ def run(design,image,brief,run,event,*,contract,rounds=3,deadline_s=900):
             record.update(state='reviewed',review=review.model_dump(),layout=checks,rank=list(pal.rank(review,checks)))
             options=[index]+([best['round']] if best else [])
             decision_schema=Decision.model_json_schema();decision_schema['properties']['selected_round']['enum']=options
+            decision_schema['properties']['stage']['enum']=plan.stages
             def check_decision(raw):
                 d=Decision.model_validate(raw)
                 if d.selected_round not in options:raise ValueError('Select only the current or retained reviewed candidate')

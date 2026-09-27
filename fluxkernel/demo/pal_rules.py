@@ -21,7 +21,7 @@ class WorkflowPlan(StrictModel):
     confidence: float=Field(ge=0,le=1)
     rationale: str=Field(min_length=1,max_length=1600)
     visible_evidence: list[str]=Field(min_length=1,max_length=12)
-    exceptions: list[str]=Field(max_length=64)
+    exceptions: list[str]=Field(max_length=64,description='Exact existing part IDs only, without labels or explanations; put explanations in rationale')
     pairs: list[Pair]=Field(max_length=32)
     parameterization: list[Parameterization]=Field(max_length=32)
     stages: list[Literal['proportions','connections','surfaces']]=Field(min_length=1,max_length=3)
@@ -40,7 +40,8 @@ def validate_plan(plan,design):
         if a.route=='catalog' and (a.shape not in ('box','cylinder','tube') or a.shape!=b.shape or a.size!=b.size or a.wall!=b.wall):
             raise ValueError('Catalog pairs require equal symmetric primitive envelopes; no catalog dimension changes')
         seen.update((pair.source,pair.target))
-    if not set(plan.exceptions)<=parts.keys() or set(plan.exceptions)&seen:raise ValueError('Exceptions must exist and cannot be mirrored')
+    invalid=set(plan.exceptions)-parts.keys();overlap=set(plan.exceptions)&seen
+    if invalid or overlap:raise ValueError(f'Exceptions must be exact existing IDs, not descriptions. Unknown entries: {sorted(invalid)}; already mirrored: {sorted(overlap)}. Move explanations to rationale.')
     targets={p.target for p in plan.pairs};bound=set()
     for binding in plan.parameterization:
         if binding.part not in parts or binding.part in targets or binding.part in bound:raise ValueError('Parameterize unique independent source parts, not symmetry targets')
@@ -88,3 +89,11 @@ def parameter_facts(design,previous=None):
         facts.append({'part':part.id,'current':{k:data[k] for k in fields if k in data},
             'changed':{k:{'before':old[part.id].get(k),'after':data.get(k)} for k in fields if part.id in old and old[part.id].get(k)!=data.get(k)}})
     return {'units':'mm and degrees','authority':'Computed from current CAD recipes; numeric claims must agree with this table','parts':facts}
+
+
+def plan_schema(design):
+    schema=WorkflowPlan.model_json_schema();ids=[p.id for p in design.parts]
+    schema['properties']['exceptions']['items']={'type':'string','enum':ids}
+    for key in ('source','target'):schema['$defs']['Pair']['properties'][key]['enum']=ids
+    schema['$defs']['Parameterization']['properties']['part']['enum']=ids
+    return schema
