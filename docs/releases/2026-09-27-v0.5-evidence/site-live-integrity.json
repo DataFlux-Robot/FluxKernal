@@ -1,0 +1,507 @@
+{
+  "deployment": "9fdc1312a1ae0a83ab2a3d4fe335eb43626a7612",
+  "base": "https://www.datafluxdynamics.ltd/",
+  "files": [
+    {
+      "path": "technology/index.html",
+      "checks": [
+        {
+          "query": "?release=9fdc1312a1ae0a83ab2a3d4fe335eb43626a7612&probe=1790468865565944721",
+          "status": 200,
+          "sha256": "356f50c372d770d036b0469643f03d4c124695064afcc90d6f241b4550cf1bd7",
+          "bytes": 146751,
+          "content_encoding": "gzip"
+        },
+        {
+          "query": "",
+          "status": 200,
+          "sha256": "356f50c372d770d036b0469643f03d4c124695064afcc90d6f241b4550cf1bd7",
+          "bytes": 146751,
+          "content_encoding": "gzip"
+        }
+      ]
+    },
+    {
+      "path": "technology/fluxkernel/index.html",
+      "checks": [
+        {
+          "query": "?release=9fdc1312a1ae0a83ab2a3d4fe335eb43626a7612&probe=1790468865565944721",
+          "status": 200,
+          "sha256": "e00c012a9c6bb4e99feba4b6d5692aaf3b75b16687a781dedfaab78a52b1efba",
+          "bytes": 166707,
+          "content_encoding": "gzip"
+        },
+        {
+          "query": "",
+          "status": 200,
+          "sha256": "e00c012a9c6bb4e99feba4b6d5692aaf3b75b16687a781dedfaab78a52b1efba",
+          "bytes": 166707,
+          "content_encoding": "gzip"
+        }
+      ]
+    },
+    {
+      "path": "fluxkernel/viewer.js",
+      "checks": [
+        {
+          "query": "?v=08a4feb994d506af&release=9fdc1312a1ae0a83ab2a3d4fe335eb43626a7612&probe=1790468865565944721",
+          "status": 200,
+          "sha256": "15dd98453d51104c3a7e85597354c3cb54b5984a8f957fc4beffa34e8c1baf47",
+          "bytes": 9812,
+          "content_encoding": "gzip"
+        },
+        {
+          "query": "?v=08a4feb994d506af",
+          "status": 200,
+          "sha256": "15dd98453d51104c3a7e85597354c3cb54b5984a8f957fc4beffa34e8c1baf47",
+          "bytes": 9812,
+          "content_encoding": "gzip"
+        }
+      ]
+    },
+    {
+      "path": "fluxkernel/aircraft-input.png",
+      "checks": [
+        {
+          "query": "?release=9fdc1312a1ae0a83ab2a3d4fe335eb43626a7612&probe=1790468865565944721",
+          "status": 200,
+          "sha256": "96ea4948eca281c204429a0e6dfbbc629025a061eb40f0b36e45e7b0f0110fb9",
+          "bytes": 374864,
+          "content_encoding": null
+        },
+        {
+          "query": "",
+          "status": 200,
+          "sha256": "96ea4948eca281c204429a0e6dfbbc629025a061eb40f0b36e45e7b0f0110fb9",
+          "bytes": 374864,
+          "content_encoding": null
+        }
+      ]
+    },
+    {
+      "path": "fluxkernel/car.json",
+      "checks": [
+        {
+          "query": "?v=08a4feb994d506af&release=9fdc1312a1ae0a83ab2a3d4fe335eb43626a7612&probe=1790468865565944721",
+          "status": 200,
+          "sha256": "b1e92007789e72f583f1e02f59bc43287134f899412e0d6e36af009c6d595a0a",
+          "bytes": 691137,
+          "content_encoding": "gzip"
+        },
+        {
+          "query": "?v=08a4feb994d506af",
+          "status": 200,
+          "sha256": "b1e92007789e72f583f1e02f59bc43287134f899412e0d6e36af009c6d595a0a",
+          "bytes": 691137,
+          "content_encoding": "gzip"
+        }
+      ]
+    },
+    {
+      "path": "fluxkernel/phone-input.png",
+      "checks": [
+        {
+          "query": "?release=9fdc1312a1ae0a83ab2a3d4fe335eb43626a7612&probe=1790468865565944721",
+          "status": 200,
+          "sha256": "a01aca496dd172b915606c6eb87cb38fc94d292be9048e28bd5ef0a56b71f0a3",
+          "bytes": 1649776,
+          "content_encoding": null
+        },
+        {
+          "query": "",
+          "status": 200,
+          "sha256": "a01aca496dd172b915606c6eb87cb38fc94d292be9048e28bd5ef0a56b71f0a3",
+          "bytes": 1649776,
+          "content_encoding": null
+        }
+      ]
+    },
+    {
+      "path": "fluxkernel/aircraft.json",
+      "checks": [
+        {
+          "query": "?v=08a4feb994d506af&release=9fdc1312a1ae0a83ab2a3d4fe335eb43626a7612&probe=1790468865565944721",
+          "status": 200,
+          "sha256": "feaf71264202a7c9c5be7fb462205057c804f78ea13c6cf2dcb9c5e63de3ab44",
+          "bytes": 3680731,
+          "content_encoding": "gzip"
+        },
+        {
+          "query": "?v=08a4feb994d506af",
+          "status": 200,
+          "sha256": "feaf71264202a7c9c5be7fb462205057c804f78ea13c6cf2dcb9c5e63de3ab44",
+          "bytes": 3680731,
+          "content_encoding": "gzip"
+        }
+      ]
+    },
+    {
+      "path": "fluxkernel/walkthrough.mp4",
+      "checks": [
+        {
+          "query": "?release=9fdc1312a1ae0a83ab2a3d4fe335eb43626a7612&probe=1790468865565944721",
+          "status": 200,
+          "sha256": "b252a09c7e32cdb70886c75e5692045868658944372abe559f9e121924fc2839",
+          "bytes": 3345699,
+          "content_encoding": null
+        },
+        {
+          "query": "",
+          "status": 200,
+          "sha256": "b252a09c7e32cdb70886c75e5692045868658944372abe559f9e121924fc2839",
+          "bytes": 3345699,
+          "content_encoding": null
+        }
+      ]
+    },
+    {
+      "path": "fluxkernel/car-input.png",
+      "checks": [
+        {
+          "query": "?release=9fdc1312a1ae0a83ab2a3d4fe335eb43626a7612&probe=1790468865565944721",
+          "status": 200,
+          "sha256": "806abee5f1c462f3be2c86e71bedacb7f34ead9df228a3515d5303fda235468d",
+          "bytes": 708774,
+          "content_encoding": null
+        },
+        {
+          "query": "",
+          "status": 200,
+          "sha256": "806abee5f1c462f3be2c86e71bedacb7f34ead9df228a3515d5303fda235468d",
+          "bytes": 708774,
+          "content_encoding": null
+        }
+      ]
+    },
+    {
+      "path": "fluxkernel/walkthrough-poster.png",
+      "checks": [
+        {
+          "query": "?release=9fdc1312a1ae0a83ab2a3d4fe335eb43626a7612&probe=1790468865565944721",
+          "status": 200,
+          "sha256": "ad06085e6220711ef23c06b364d132b42498fe25d80201c4d5f63f8511e8e983",
+          "bytes": 498027,
+          "content_encoding": null
+        },
+        {
+          "query": "",
+          "status": 200,
+          "sha256": "ad06085e6220711ef23c06b364d132b42498fe25d80201c4d5f63f8511e8e983",
+          "bytes": 498027,
+          "content_encoding": null
+        }
+      ]
+    },
+    {
+      "path": "fluxkernel/phone.json",
+      "checks": [
+        {
+          "query": "?v=08a4feb994d506af&release=9fdc1312a1ae0a83ab2a3d4fe335eb43626a7612&probe=1790468865565944721",
+          "status": 200,
+          "sha256": "5e1d21a7a8de89dd25aa3ecb1110a43d11770a90ae618947aca9932f41cead5a",
+          "bytes": 99253,
+          "content_encoding": "gzip"
+        },
+        {
+          "query": "?v=08a4feb994d506af",
+          "status": 200,
+          "sha256": "5e1d21a7a8de89dd25aa3ecb1110a43d11770a90ae618947aca9932f41cead5a",
+          "bytes": 99253,
+          "content_encoding": "gzip"
+        }
+      ]
+    },
+    {
+      "path": "fluxkernel/photo-sources.json",
+      "checks": [
+        {
+          "query": "?release=9fdc1312a1ae0a83ab2a3d4fe335eb43626a7612&probe=1790468865565944721",
+          "status": 200,
+          "sha256": "2a1d8ff2557e7c7bf076956fa4d99a4edc9721a1b41e33be2a17d3999025b055",
+          "bytes": 729,
+          "content_encoding": "gzip"
+        },
+        {
+          "query": "",
+          "status": 200,
+          "sha256": "2a1d8ff2557e7c7bf076956fa4d99a4edc9721a1b41e33be2a17d3999025b055",
+          "bytes": 729,
+          "content_encoding": "gzip"
+        }
+      ]
+    },
+    {
+      "path": "fluxkernel/release.json",
+      "checks": [
+        {
+          "query": "?release=9fdc1312a1ae0a83ab2a3d4fe335eb43626a7612&probe=1790468865565944721",
+          "status": 200,
+          "sha256": "431815f4cb3e8ee805cdb000ad1e7b98c3a53bc5bdd5c927e199fee6ec300078",
+          "bytes": 1013,
+          "content_encoding": "gzip"
+        },
+        {
+          "query": "",
+          "status": 200,
+          "sha256": "431815f4cb3e8ee805cdb000ad1e7b98c3a53bc5bdd5c927e199fee6ec300078",
+          "bytes": 1013,
+          "content_encoding": "gzip"
+        }
+      ]
+    },
+    {
+      "path": "fluxkernel/vendor/THREE-LICENSE.txt",
+      "checks": [
+        {
+          "query": "?release=9fdc1312a1ae0a83ab2a3d4fe335eb43626a7612&probe=1790468865565944721",
+          "status": 200,
+          "sha256": "bfe119ea4fd413f5f7ca3fcd63adb0c4a073ed39daa2fe7d3e6b769e21272601",
+          "bytes": 1081,
+          "content_encoding": "gzip"
+        },
+        {
+          "query": "",
+          "status": 200,
+          "sha256": "bfe119ea4fd413f5f7ca3fcd63adb0c4a073ed39daa2fe7d3e6b769e21272601",
+          "bytes": 1081,
+          "content_encoding": "gzip"
+        }
+      ]
+    },
+    {
+      "path": "fluxkernel/vendor/three.core.js",
+      "checks": [
+        {
+          "query": "?release=9fdc1312a1ae0a83ab2a3d4fe335eb43626a7612&probe=1790468865565944721",
+          "status": 200,
+          "sha256": "94337bbcde63e61eb954f00d2ad72d122d1cc3dc3e0de68e57277eca3d30af47",
+          "bytes": 1403454,
+          "content_encoding": "gzip"
+        },
+        {
+          "query": "",
+          "status": 200,
+          "sha256": "94337bbcde63e61eb954f00d2ad72d122d1cc3dc3e0de68e57277eca3d30af47",
+          "bytes": 1403454,
+          "content_encoding": "gzip"
+        }
+      ]
+    },
+    {
+      "path": "fluxkernel/vendor/OrbitControls.js",
+      "checks": [
+        {
+          "query": "?release=9fdc1312a1ae0a83ab2a3d4fe335eb43626a7612&probe=1790468865565944721",
+          "status": 200,
+          "sha256": "06864a0fcb647730bfbc690b6c25a121199d716a3e299a40158509cbd247c3bf",
+          "bytes": 38715,
+          "content_encoding": "gzip"
+        },
+        {
+          "query": "",
+          "status": 200,
+          "sha256": "06864a0fcb647730bfbc690b6c25a121199d716a3e299a40158509cbd247c3bf",
+          "bytes": 38715,
+          "content_encoding": "gzip"
+        }
+      ]
+    },
+    {
+      "path": "fluxkernel/vendor/three.module.js",
+      "checks": [
+        {
+          "query": "?release=9fdc1312a1ae0a83ab2a3d4fe335eb43626a7612&probe=1790468865565944721",
+          "status": 200,
+          "sha256": "c8211c69345d2e9949dc7a8ac969380497aa0600a5a8ac6a459c8cd02dd9cb8a",
+          "bytes": 603113,
+          "content_encoding": "gzip"
+        },
+        {
+          "query": "",
+          "status": 200,
+          "sha256": "c8211c69345d2e9949dc7a8ac969380497aa0600a5a8ac6a459c8cd02dd9cb8a",
+          "bytes": 603113,
+          "content_encoding": "gzip"
+        }
+      ]
+    },
+    {
+      "path": "fluxkernel/perception/car/round-01.png",
+      "checks": [
+        {
+          "query": "?release=9fdc1312a1ae0a83ab2a3d4fe335eb43626a7612&probe=1790468865565944721",
+          "status": 200,
+          "sha256": "16e64686cac260896ed8ea9049c702be3af57fd900e9f950276dfc9cc6f6fa64",
+          "bytes": 41651,
+          "content_encoding": null
+        },
+        {
+          "query": "",
+          "status": 200,
+          "sha256": "16e64686cac260896ed8ea9049c702be3af57fd900e9f950276dfc9cc6f6fa64",
+          "bytes": 41651,
+          "content_encoding": null
+        }
+      ]
+    },
+    {
+      "path": "fluxkernel/perception/car/round-02.png",
+      "checks": [
+        {
+          "query": "?release=9fdc1312a1ae0a83ab2a3d4fe335eb43626a7612&probe=1790468865565944721",
+          "status": 200,
+          "sha256": "e97a32a2a3f013777d6d4c522f2175d9f8696d68dab7adb44909729ce195f3e8",
+          "bytes": 41741,
+          "content_encoding": null
+        },
+        {
+          "query": "",
+          "status": 200,
+          "sha256": "e97a32a2a3f013777d6d4c522f2175d9f8696d68dab7adb44909729ce195f3e8",
+          "bytes": 41741,
+          "content_encoding": null
+        }
+      ]
+    },
+    {
+      "path": "fluxkernel/perception/car/round-00.png",
+      "checks": [
+        {
+          "query": "?release=9fdc1312a1ae0a83ab2a3d4fe335eb43626a7612&probe=1790468865565944721",
+          "status": 200,
+          "sha256": "889d9aa8efa38c85dcdabfb96e6de9c58d5876a98418b707a6f9e011fc3e84d9",
+          "bytes": 25074,
+          "content_encoding": null
+        },
+        {
+          "query": "",
+          "status": 200,
+          "sha256": "889d9aa8efa38c85dcdabfb96e6de9c58d5876a98418b707a6f9e011fc3e84d9",
+          "bytes": 25074,
+          "content_encoding": null
+        }
+      ]
+    },
+    {
+      "path": "fluxkernel/perception/aircraft/round-01.png",
+      "checks": [
+        {
+          "query": "?release=9fdc1312a1ae0a83ab2a3d4fe335eb43626a7612&probe=1790468865565944721",
+          "status": 200,
+          "sha256": "c6805ded94b80963c105b8c7b91f69891819a18e24919d4b15efc7e8ddd197a2",
+          "bytes": 39557,
+          "content_encoding": null
+        },
+        {
+          "query": "",
+          "status": 200,
+          "sha256": "c6805ded94b80963c105b8c7b91f69891819a18e24919d4b15efc7e8ddd197a2",
+          "bytes": 39557,
+          "content_encoding": null
+        }
+      ]
+    },
+    {
+      "path": "fluxkernel/perception/aircraft/round-02.png",
+      "checks": [
+        {
+          "query": "?release=9fdc1312a1ae0a83ab2a3d4fe335eb43626a7612&probe=1790468865565944721",
+          "status": 200,
+          "sha256": "1f1b89173688d07015fb649a7b1e0280c0c82a3e87bc8fdb0eeb404c94f249cd",
+          "bytes": 46922,
+          "content_encoding": null
+        },
+        {
+          "query": "",
+          "status": 200,
+          "sha256": "1f1b89173688d07015fb649a7b1e0280c0c82a3e87bc8fdb0eeb404c94f249cd",
+          "bytes": 46922,
+          "content_encoding": null
+        }
+      ]
+    },
+    {
+      "path": "fluxkernel/perception/aircraft/round-00.png",
+      "checks": [
+        {
+          "query": "?release=9fdc1312a1ae0a83ab2a3d4fe335eb43626a7612&probe=1790468865565944721",
+          "status": 200,
+          "sha256": "d9ce4053930d5550efd95405a069c7970398c880fe0697ed34c57b3f13c63b96",
+          "bytes": 24578,
+          "content_encoding": null
+        },
+        {
+          "query": "",
+          "status": 200,
+          "sha256": "d9ce4053930d5550efd95405a069c7970398c880fe0697ed34c57b3f13c63b96",
+          "bytes": 24578,
+          "content_encoding": null
+        }
+      ]
+    }
+  ],
+  "dns": {
+    "Status": 0,
+    "TC": false,
+    "RD": true,
+    "RA": true,
+    "AD": false,
+    "CD": false,
+    "Question": [
+      {
+        "name": "www.datafluxdynamics.ltd",
+        "type": 1
+      }
+    ],
+    "Answer": [
+      {
+        "name": "www.datafluxdynamics.ltd",
+        "type": 1,
+        "TTL": 300,
+        "data": "172.67.176.57"
+      },
+      {
+        "name": "www.datafluxdynamics.ltd",
+        "type": 1,
+        "TTL": 300,
+        "data": "104.21.31.107"
+      }
+    ]
+  },
+  "tls": {
+    "version": "TLSv1.3",
+    "issuer": [
+      [
+        [
+          "countryName",
+          "US"
+        ]
+      ],
+      [
+        [
+          "organizationName",
+          "Google Trust Services"
+        ]
+      ],
+      [
+        [
+          "commonName",
+          "WE1"
+        ]
+      ]
+    ],
+    "subjectAltName": [
+      [
+        "DNS",
+        "datafluxdynamics.ltd"
+      ],
+      [
+        "DNS",
+        "*.datafluxdynamics.ltd"
+      ]
+    ],
+    "notAfter": "Oct 29 03:13:51 2026 GMT",
+    "trusted": true,
+    "hostname_verified": true
+  }
+}

@@ -1,0 +1,9 @@
+{
+  "source": {
+    "branch": "gh-pages",
+    "path": "/"
+  },
+  "cname": "www.datafluxdynamics.ltd",
+  "https_enforced": false,
+  "https_certificate": null
+}

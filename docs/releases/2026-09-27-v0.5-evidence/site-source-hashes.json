@@ -1,0 +1,9 @@
+{
+  "app/technology/fluxkernel/page.tsx": "ec10636d84d7834004b9b8c19805f8020c9a053ff63a12d58173028d55609ef6",
+  "app/technology/fluxkernel/fluxkernel.module.css": "4fa537b617d2ed242f7658f8bf724fbe19f72542398544d86517cd84c2f4ef1c",
+  "public/fluxkernel/viewer.js": "15dd98453d51104c3a7e85597354c3cb54b5984a8f957fc4beffa34e8c1baf47",
+  "scripts/prepare-fluxkernel-showcase.py": "0e2ec69123fb747f1a0f6ce82f3b4fe26c1ad01723a656f27685b0699e3d6fb4",
+  "scripts/verify-fluxkernel-page.py": "e046c36bf3ed2ef3b86a9f8264f7be4323155397a7130f5e9b1d2f282e7b7be4",
+  "scripts/verify-fluxkernel-live.py": "e05c0a2b297fd2c73cc75d8c946182b7f19965add003068a02cb3c8e852ebc3f",
+  "scripts/build-offline-preview.mjs": "e99e202e8b94c7276dcb89adb9fb97b80ee3ae5604ecb20663064ad0e477607b"
+}
