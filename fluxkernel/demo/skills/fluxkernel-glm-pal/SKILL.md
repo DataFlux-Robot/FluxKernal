@@ -1,6 +1,6 @@
 ---
 name: fluxkernel-glm-pal
-description: Run FluxKernel's GLM-5.3-Flash-only CAD perception-action workflow with model-declared symmetry, semantic geometry controls and auditable candidate selection. Use for image-driven CAD refinement through fk perceive or live Studio.
+description: Run FluxKernel's GLM-5.3-Flash-only CAD perception-action workflow with whole-body profiles, assembly anchors, axis constraints, symmetry and auditable candidate selection. Use for image-driven CAD refinement through fk perceive or live Studio.
 ---
 
 # GLM-only perception–action loop
@@ -26,9 +26,16 @@ configured model must be `glm-5.3-flash`; there is no model/replay fallback.
    mirror plane, disjoint source/target IDs and exceptions. Distinguish observed facts
    from assumptions about hidden structure. Never force asymmetrical details into
    symmetry. Parameterize only compatible fabricated source parts. Plan a subset of
-   proportions/connections/surfaces stages. Do not supply an invented product template.
+   proportions/connections/surfaces stages. Declare a coherent overall exterior BEFORE
+   refining separate manufacturing parts: use assembly.bodies for continuous body
+   profiles partitioned into existing fabricated occurrences. Initialize semantic
+   parameters and poses in parameterization entries when needed for anchors. Choose
+   dimensions from the reference and clearly marked assumptions, not a fixed template.
+   Inspect the whole body silhouette and appendage directions, not only symmetry.
+   Declare attachment anchors and axis alignments for meaningful relationships.
 2. **Compile and inspect.** The tool applies your mirror relationships exactly; it
-   preserves identities, routes, materials and procurement dimensions. The first
+   compiles whole-body partitions, axis constraints, anchors and mirrors in dependency
+   order. It preserves identities, routes, materials and procurement dimensions. The first
    reviewed candidate is the rule-compiled baseline, not the untouched parent.
 3. **Review actual geometry.** Compare current four views with the reference and, when
    available, the retained candidate rendered in the same frame. Read the current
@@ -36,15 +43,27 @@ configured model must be `glm-5.3-flash`; there is no model/replay fallback.
    Supply structured numeric claims pointing to exact recipe fields. Visual appearance
    remains a judgment: perspective differences are not proof of a geometric fault.
    Cite existing part IDs. Do not treat Lean acceptance as a visual score.
+   Independently reported geometry failures MUST appear as major/blocking findings
+   covering every affected part. Floating visible components, disconnected body segments
+   and wrongly oriented primary geometry are major even if the model is symmetric.
+   Check that wing roots are inboard and tips outboard in TOP and FRONT views.
 4. **Choose and act.** Select the current or retained candidate and explain the tradeoff.
    Choose the next stage or stop. Edit source occurrences only; symmetry targets are
    derived. Use semantic parameters for section/wing geometry and pose for placement.
    Purchased components allow pose edits only. Preserve all frozen requirements.
-   Prioritize your chosen stage; do not repeat an edit already shown in the diff table.
+   Prioritize major exterior/connection failures before internal or cosmetic details;
+   do not repeat an edit already shown in the diff table. Actions can replace the full
+   assembly rule set to change the overall profile, partition boundaries or attachment
+   topology, keeping existing IDs/procurement frozen. Edit driver rules instead of
+   derived member poses. Do not label a failed contact as placement just to clear a
+   diagnostic; explain genuine placement relationships such as nested assemblies.
 5. **Re-evaluate.** Every candidate must be rendered and reviewed before selection.
    A rejected declaration/review/action/selection gets at most one corrective response
    with explicit errors. Never silently drop an invalid edit. Stop when satisfied,
-   when available tools cannot fix the issue, or when the finite budget ends.
+   when available tools cannot fix the issue, or when the finite budget ends. If major
+   fixable issues remain and revisions are available, prioritize repairing them. Three
+   review rounds provide two action opportunities; extended runs allow up to eight
+   review rounds. Do not claim a terminal review's suggestions were actually executed.
 
 ## Interpretation and evidence
 

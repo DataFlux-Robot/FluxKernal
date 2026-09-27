@@ -114,6 +114,7 @@ def _call(cfg, messages, schema, event=None):
 
 def plan(image: bytes, brief: str, run: Path, event, previous: dict | None = None):
     cfg=model_config();schema=Design.model_json_schema()
+    schema['properties'].pop('assembly',None)
     # Rule planning selects semantic upgrades after this initial occurrence design.
     for key in ('parametric','reflection'):schema['$defs']['Part']['properties'].pop(key,None)
     schema['$defs']['Part']['properties']['shape']['enum']=[v for v in schema['$defs']['Part']['properties']['shape']['enum'] if v not in ('parametric_wing','section_body')]

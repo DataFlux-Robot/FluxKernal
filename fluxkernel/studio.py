@@ -117,8 +117,8 @@ def apply_revision(parent, request, *, output_dir=None, timeout=300):
 def refine_visual(parent, *, output_dir=None, rounds=3, timeout=1200):
     """Run real image/render feedback from a verified saved parent; uses model API."""
     from .revision import snapshot
-    if type(rounds) is not int or not 1 <= rounds <= 4:
-        raise ValueError('rounds must be 1..4')
+    if type(rounds) is not int or not 1 <= rounds <= 8:
+        raise ValueError('rounds must be 1..8')
     snap = snapshot(parent)
     run = _new_run(output_dir if output_dir is not None else snap['root'].parent, timeout)
     (run/'perception-request.json').write_text(json.dumps({

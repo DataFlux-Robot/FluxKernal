@@ -10,7 +10,8 @@ from pydantic import Field
 from . import perception as pal
 from .models import StrictModel
 from .parametric import WingParameters,BodyParameters
-from .pal_rules import WorkflowPlan,plan_schema,validate_plan,compile_symmetry,apply_workflow_action,parameter_facts
+from .pal_rules import WorkflowPlan,WorkflowAction,plan_schema,validate_plan,activate_plan,apply_workflow_action,parameter_facts
+from .assembly import assembly_checks
 from .perception_render import render_design
 
 MODEL='glm-5.3-flash'
@@ -55,6 +56,10 @@ def validate_review(raw,design):
 
 def _action_schema(design):
     schema=pal.action_schema(design)
+    assembly_schema=WorkflowAction.model_json_schema()
+    schema['$defs']=assembly_schema['$defs']
+    schema['properties']['assembly']=assembly_schema['properties']['assembly']
+    schema['properties']['edits']['minItems']=0
     properties=schema['properties']['edits']['items']['properties']['set']['properties']
     # Model receives these full object schemas separately to avoid unresolved $refs.
     properties['parametric']={'type':'object','description':'Complete wing or body object matching parameter_schemas; binding must be approved in workflow plan'}
@@ -62,10 +67,10 @@ def _action_schema(design):
 
 
 def run(design,image,brief,run,event,*,contract,rounds=3,deadline_s=900):
-    if type(rounds) is not int or not 1<=rounds<=4:raise ValueError('Visual rounds must be 1..4')
+    if type(rounds) is not int or not 1<=rounds<=8:raise ValueError('Visual rounds must be 1..8')
     cfg=require_glm();root=run/'perception';root.mkdir(exist_ok=False)
     sources={}
-    for name in ['pal_workflow.py','pal_rules.py','parametric.py','models.py','geometry.py','perception.py','perception_render.py']:
+    for name in ['pal_workflow.py','pal_rules.py','assembly.py','parametric.py','models.py','geometry.py','perception.py','perception_render.py']:
         content=Path(__file__).with_name(name).read_bytes();(root/name).write_bytes(content);sources[name]=hashlib.sha256(content).hexdigest()
     instructions=(SKILL/'SKILL.md').read_text()+'\n'+(SKILL/'references/parameters.md').read_text()
     (root/'skill.md').write_text(instructions);sources['skill.md']=hashlib.sha256(instructions.encode()).hexdigest()
@@ -102,15 +107,17 @@ def run(design,image,brief,run,event,*,contract,rounds=3,deadline_s=900):
         planning=root/'planning';planning.mkdir()
         def check_plan(raw):
             value=validate_plan(raw,design)
-            compile_symmetry(design,value,contract)
+            activated=activate_plan(design,value,contract)
+            from .geometry import build
+            for part in activated.parts:build(part)
             return value
         plan=ask('plan',{'brief':brief,'design':design.model_dump(),'frozen_constraints':contract,
-            'instruction':'Judge symmetry before any edit. Declare compatible source/target pairs and semantic parameter bindings; list explicit exceptions. Do not invent a new design.'},
+            'instruction':'Judge symmetry and whole-product structure before detail. You may replace independent body segments with a shared body profile and partition into existing IDs; initialize wing parameters/poses and declare attachment anchors and axis alignments. Preserve identity/material/route/catalog dimensions. All dimensions and structural choices are yours; distinguish hypotheses from observations.'},
             [reference,baseline/'views.png'],plan_schema(design),planning,check_plan)
         pal.save(planning/'plan.json',plan.model_dump())
         # Deterministic interpretation of GLM's declaration, not a host design edit.
-        candidate=compile_symmetry(design,plan,contract)
-        pal.save(planning/'symmetry-activation.json',{'actor':MODEL,'operation':'compile-declared-mirrors','before':pal.digest(design.model_dump()),'after':pal.digest(candidate.model_dump()),'pairs':[p.model_dump() for p in plan.pairs]})
+        candidate=activate_plan(design,plan,contract)
+        pal.save(planning/'symmetry-activation.json',{'actor':MODEL,'operation':'compile-declared-assembly-and-mirrors','before':pal.digest(design.model_dump()),'after':pal.digest(candidate.model_dump()),'pairs':[p.model_dump() for p in plan.pairs]})
         stage=plan.stages[0]
         for index in range(rounds):
             directory=root/f'round-{index:02d}';directory.mkdir()
@@ -129,12 +136,21 @@ def run(design,image,brief,run,event,*,contract,rounds=3,deadline_s=900):
                 images.append(directory/'retained-comparison/views.png')
             facts=parameter_facts(candidate,best['design'] if best else design);pal.save(directory/'parameter-facts.json',facts)
             checks=pal.layout_checks(candidate);pal.save(directory/'layout-checks.json',checks)
+            assembly=assembly_checks(candidate,plan.pairs);pal.save(directory/'assembly-checks.json',assembly)
+            checks={**checks,'passed':checks['passed'] and assembly['passed'],'issues':checks['issues']+assembly['issues'],
+                'assembly':assembly}
             record['view']=f'perception/round-{index:02d}/views.png'
             record['render_frame']='union of baseline/current/retained; both comparison sheets share bounds'
+            def check_review(raw):
+                value=validate_review(raw,candidate)
+                acknowledged={part for f in value.findings if f.severity in ('major','blocking') for part in f.parts}
+                missing={part for issue in checks['issues'] for part in issue['parts']}-acknowledged
+                if missing:raise ValueError(f'Independent geometry failures must be acknowledged as major/blocking findings for these exact parts: {sorted(missing)}')
+                return value
             review=ask('review',{'brief':brief,'design':candidate.model_dump(),'current_parameter_facts':facts,
                 'workflow':plan.model_dump(),'stage':stage,'layout_checks':checks,'prior_best_review':best['review'] if best else None,
-                'instruction':'Read current facts first. Check visual appearance and supply exact numeric_claims; do not repeat obsolete values. Images: reference, current, retained if present.'},
-                images,Review.model_json_schema(),directory,lambda raw:validate_review(raw,candidate))
+                'instruction':'Read current facts and independent assembly checks first. Disconnected visible components and wrongly oriented primary geometry are major, not cosmetic. Check whole silhouette before details; do not equate symmetry or a small seam residual with correct appearance. Supply exact numeric_claims. Images: reference, current, retained if present.'},
+                images,Review.model_json_schema(),directory,check_review)
             pal.save(directory/'review.json',review.model_dump())
             record.update(state='reviewed',review=review.model_dump(),layout=checks,rank=list(pal.rank(review,checks)))
             options=[index]+([best['round']] if best else [])
@@ -174,7 +190,7 @@ def run(design,image,brief,run,event,*,contract,rounds=3,deadline_s=900):
                 'workflow':plan.model_dump(),'stage':stage,'selection_reason':decision.reason,'review':best['review'],
                 'current_parameter_facts':parameter_facts(base),'last_candidate':record,'frozen_constraints':contract,
                 'parameter_schemas':{'wing':WingParameters.model_json_schema(),'body':BodyParameters.model_json_schema()},
-                'instruction':'Edit source occurrences only. Full semantic objects derive size/shape; adjust origin when upgrading a wing. Address the selected stage; no free code or hidden manual repairs.'},
+                'instruction':'Fix outstanding major geometry/connection issues before detail. Edit source occurrences only; assembly is an optional COMPLETE replacement of current assembly rules. Body-group members, attached positions and aligned rotations are derived; edit their driver rules. Initialize semantic wings via parameters before using wing anchors. No free code or hidden manual repairs.'},
                 [reference,root/f"round-{best['round']:02d}"/'views.png'],_action_schema(base),action_directory,check_action)
             record['action_state']='accepted-for-evaluation'
     except Exception as exc:
@@ -183,7 +199,7 @@ def run(design,image,brief,run,event,*,contract,rounds=3,deadline_s=900):
         if records:records[-1]['error']=failure
     selected=best['design'] if best else design
     approved=bool(best and not best['layout']['issues'] and not any(f['severity'] in ('major','blocking') for f in best['review']['findings']) and min(best['review'][k] for k in ('silhouette','proportions','layout'))>=80)
-    summary={'schema':'fk-perception-loop-v2','workflow':'glm-symmetry-parametric-v1','enabled':True,
+    summary={'schema':'fk-perception-loop-v2','workflow':'glm-assembly-parametric-v2','enabled':True,
         'model':MODEL,'decision_author':MODEL,'human_design_edits':False,'selection_policy':'GLM decision among reviewed current/retained candidates; host only validates',
         'sources_sha256':sources,'plan':plan.model_dump() if plan else None,'max_rounds':rounds,'rounds':records,
         'selected_round':best['round'] if best else None,'selected_design_sha256':pal.digest(selected.model_dump()),

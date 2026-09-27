@@ -170,7 +170,7 @@ def test_default_live_pipeline_uses_rule_workflow(tmp_path,monkeypatch):
     monkeypatch.setattr(pal.vision,'plan',lambda *a:(d,{'mode':'live','model':workflow.MODEL,'attempts':1}))
     execute(tmp_path,Request(mode='live',visual_rounds=1),image())
     result=json.loads((tmp_path/'result.json').read_text());s=result['perception']
-    assert s['workflow']=='glm-symmetry-parametric-v1' and s['model_calls']==3
+    assert s['workflow']=='glm-assembly-parametric-v2' and s['model_calls']==3
     assert 'perception/skill.md' in json.loads((tmp_path/'manifest.json').read_text())
 
 

@@ -5,6 +5,8 @@ from typing import Literal
 from pydantic import Field
 from .models import StrictModel,Design
 from .constraints import evaluate
+from .parametric import WingParameters, BodyParameters, envelope
+from .assembly import AssemblyRules, validate_rules, compile_bodies, apply_alignment, dependency_order, anchor_world, anchor_local, matrix
 
 class Pair(StrictModel):
     source: str
@@ -13,8 +15,13 @@ class Pair(StrictModel):
 class Parameterization(StrictModel):
     part: str
     kind: Literal['wing','body']
+    parameters: WingParameters | BodyParameters | None = None
+    position: list[float] | None = Field(default=None, min_length=3, max_length=3)
+    rotation: list[float] | None = Field(default=None, min_length=3, max_length=3)
+    reflection: str | None = Field(default=None, pattern='^[xyz]$')
 
 class WorkflowPlan(StrictModel):
+    assembly: AssemblyRules | None = None
     symmetry: Literal['bilateral','partial','none','uncertain']
     axis: Literal['x','y','z']
     plane_offset: float=Field(ge=-100000,le=100000)
@@ -25,6 +32,13 @@ class WorkflowPlan(StrictModel):
     pairs: list[Pair]=Field(max_length=32)
     parameterization: list[Parameterization]=Field(max_length=32)
     stages: list[Literal['proportions','connections','surfaces']]=Field(min_length=1,max_length=3)
+
+
+class WorkflowAction(StrictModel):
+    base_design_sha256: str=Field(pattern=r'^[a-f0-9]{64}$')
+    rationale: str=Field(min_length=1,max_length=1200)
+    edits: list[dict]=Field(min_length=0,max_length=32)
+    assembly: AssemblyRules | None=None
 
 
 def validate_plan(plan,design):
@@ -49,8 +63,12 @@ def validate_plan(plan,design):
         if part.route=='catalog':raise ValueError('Cannot parameterize purchased geometry')
         shapes={'wing':{'wing','parametric_wing'},'body':{'fuselage','smooth_fuselage','fuselage_section','fuselage_nose','fuselage_tail','car_body','smooth_car_body','section_body'}}
         if part.shape not in shapes[binding.kind]:raise ValueError('Parameterization kind incompatible with existing recipe')
+        if binding.parameters is not None and binding.parameters.kind != binding.kind:raise ValueError('Initial parameters must match binding kind')
         bound.add(binding.part)
     if len(set(plan.stages))!=len(plan.stages):raise ValueError('Workflow stages must be unique')
+    if plan.assembly is not None:
+        validate_rules(design,plan.assembly,plan.pairs)
+        if bound & {m.part for b in plan.assembly.bodies for m in b.members}:raise ValueError('Body group members are derived; do not also parameterize them independently')
     return plan
 
 
@@ -58,6 +76,7 @@ def compile_symmetry(design,plan,contract):
     value=design.model_dump();parts={p['id']:p for p in value['parts']};axis='xyz'.index(plan.axis)
     for pair in plan.pairs:
         source,target=parts[pair.source],parts[pair.target]
+        if source.get('reflection') not in (None,plan.axis):raise ValueError('Source reflection must match the declared mirror axis')
         if source['route']!='catalog':
             for key in ('shape','size','wall'):target[key]=copy.deepcopy(source[key])
             target.pop('parametric',None)
@@ -73,13 +92,71 @@ def compile_symmetry(design,plan,contract):
     return result
 
 
+def compile_assembly(design,plan,contract):
+    """Recompute parent/child and mirror drivers in dependency order."""
+    result=design.model_copy(deep=True);rules=result.assembly
+    if rules is None:return compile_symmetry(result,plan,contract)
+    validate_rules(result,rules,plan.pairs);compile_bodies(result,rules)
+    parts={p.id:p for p in result.parts}
+    for a in rules.alignments:apply_alignment(parts[a.part],a)
+    attachments={a.child:a for a in rules.attachments};pairs={p.target:p for p in plan.pairs}
+    for ident in dependency_order(parts,rules.attachments,plan.pairs):
+        if ident in attachments:
+            a=attachments[ident];child=parts[ident]
+            child.position=(anchor_world(parts[a.parent],a.parent_anchor)-matrix(child)@anchor_local(child,a.child_anchor)).tolist()
+            child.source='selected'
+        if ident in pairs:
+            # Reuse exactly the tested geometric mirror compiler for this edge.
+            one=plan.model_copy(update={'pairs':[pairs[ident]]})
+            mirrored=compile_symmetry(result,one,{'schema':'fk-constraints-v1','rules':[]})
+            target=next(p for p in mirrored.parts if p.id==ident)
+            result.parts=[target if p.id==ident else p for p in result.parts];parts[ident]=target
+    result=Design.model_validate(result.model_dump())
+    if not evaluate(result.model_dump(),contract)['accepted']:raise ValueError('Assembly violates frozen nominal constraints')
+    return result
+
+
+def activate_plan(design,plan,contract):
+    result=design.model_copy(deep=True);parts={p.id:p for p in result.parts}
+    # Replanning replaces the old rule set explicitly, including choosing none.
+    result.assembly=plan.assembly.model_copy(deep=True) if plan.assembly is not None else None
+    for binding in plan.parameterization:
+        p=parts[binding.part]
+        if binding.parameters is not None:
+            p.parametric=binding.parameters.model_copy(deep=True)
+            p.shape='parametric_wing' if binding.kind=='wing' else 'section_body';p.size=envelope(p.parametric)
+        if binding.position is not None:p.position=binding.position.copy()
+        if binding.rotation is not None:p.rotation=binding.rotation.copy()
+        if binding.reflection is not None:p.reflection=binding.reflection
+    return compile_assembly(Design.model_validate(result.model_dump()),plan,contract)
+
+
 def apply_workflow_action(design,action,contract,plan):
     from .perception import apply_action
+    action=WorkflowAction.model_validate(action).model_dump(exclude_none=True);base=design.model_copy(deep=True)
+    if 'assembly' in action:
+        rules=AssemblyRules.model_validate(action.pop('assembly'))
+        validate_rules(base,rules,plan.pairs);base.assembly=rules
+    # Keep the public stale-base commitment bound to the pre-action design.
+    from .perception import digest
+    if action.get('base_design_sha256')!=digest(design.model_dump()):raise ValueError('Stale visual action base')
     targets={p.target for p in plan.pairs}
     if any(e.get('part') in targets for e in action.get('edits',[]) if isinstance(e,dict)):
         raise ValueError('Symmetry targets are derived; edit their source occurrence only')
-    changed=apply_action(design,action,{'schema':'fk-constraints-v1','rules':[]},parameter_kinds={p.part:p.kind for p in plan.parameterization})
-    return compile_symmetry(changed,plan,contract)
+    if base.assembly:
+        members={m.part for b in base.assembly.bodies for m in b.members}
+        children={a.child for a in base.assembly.attachments};aligned={a.part for a in base.assembly.alignments}
+        for e in action.get('edits',[]):
+            if e['part'] in members and set(e['set'])-{'wall'}:raise ValueError('Body group geometry/pose is derived; edit assembly.bodies instead')
+            if e['part'] in children and 'position' in e['set']:raise ValueError('Attachment position is derived; edit anchors instead')
+            if e['part'] in aligned and 'rotation' in e['set']:raise ValueError('Axis rotation is derived; edit alignment instead')
+    action['base_design_sha256']=digest(base.model_dump())
+    if action.get('edits'):
+        changed=apply_action(base,action,{'schema':'fk-constraints-v1','rules':[]},parameter_kinds={p.part:p.kind for p in plan.parameterization})
+    else:changed=base
+    result=compile_assembly(changed,plan,contract)
+    if result==design:raise ValueError('Action has no effect')
+    return result
 
 
 def parameter_facts(design,previous=None):
@@ -88,7 +165,8 @@ def parameter_facts(design,previous=None):
         data=part.model_dump();fields=('size','position','rotation','shape','parametric','reflection')
         facts.append({'part':part.id,'current':{k:data[k] for k in fields if k in data},
             'changed':{k:{'before':old[part.id].get(k),'after':data.get(k)} for k in fields if part.id in old and old[part.id].get(k)!=data.get(k)}})
-    return {'units':'mm and degrees','authority':'Computed from current CAD recipes; numeric claims must agree with this table','parts':facts}
+    return {'units':'mm and degrees','authority':'Computed from current CAD recipes; numeric claims must agree with this table','parts':facts,
+        'assembly':design.assembly.model_dump() if design.assembly else None}
 
 
 def plan_schema(design):
@@ -96,4 +174,6 @@ def plan_schema(design):
     schema['properties']['exceptions']['items']={'type':'string','enum':ids}
     for key in ('source','target'):schema['$defs']['Pair']['properties'][key]['enum']=ids
     schema['$defs']['Parameterization']['properties']['part']['enum']=ids
+    for definition,keys in [('BodyMember',['part']),('Attachment',['parent','child']),('Alignment',['part'])]:
+        for key in keys:schema['$defs'][definition]['properties'][key]['enum']=ids
     return schema

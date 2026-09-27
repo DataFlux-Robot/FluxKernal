@@ -5,6 +5,7 @@ from typing import Literal
 from pydantic import BaseModel, ConfigDict, Field, field_validator, model_validator, model_serializer
 
 from .parametric import WingParameters, BodyParameters, envelope
+from .assembly import AssemblyRules
 
 class StrictModel(BaseModel):
     model_config = ConfigDict(extra='forbid', allow_inf_nan=False)
@@ -80,6 +81,14 @@ class Part(StrictModel):
 
 
 class Design(StrictModel):
+    assembly: AssemblyRules | None = None
+
+    @model_serializer(mode='wrap')
+    def compatible_dump(self, handler):
+        result = handler(self)
+        if result.get('assembly') is None: result.pop('assembly', None)
+        return result
+
     title: str = Field(min_length=1, max_length=120)
     family: Literal['phone', 'car', 'aircraft', 'other']
     summary: str = Field(min_length=1, max_length=1000)
@@ -104,5 +113,5 @@ class Request(StrictModel):
     equipment_depth: int = Field(default=1, ge=0, le=1)
     mode: Literal['live', 'reference', 'fixture', 'revision'] = 'live'
     reference: Literal['phone', 'car', 'aircraft'] | None = None
-    visual_rounds: int = Field(default=3, ge=0, le=4)
+    visual_rounds: int = Field(default=3, ge=0, le=8)
     parent: str | None = Field(default=None, pattern=r'^[a-f0-9]{16}$')

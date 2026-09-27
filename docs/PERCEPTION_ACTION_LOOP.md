@@ -1,4 +1,4 @@
-# GLM-only, rule-based perception–action workflow (v0.6)
+# GLM-only, rule-based perception–action workflow (v0.7)
 
 The live Studio path and `fk perceive` now run the same workflow: GLM-5.3-Flash
 judges symmetry, declares rules and parameterization, reviews actual CAD, proposes
@@ -15,7 +15,7 @@ These are real API calls. Configure the existing private model settings for
 first use GLM's existing occurrence planner; saved-parent refinement skips that step.
 Symmetry is judged before refinement edits, not before the saved parent existed.
 Fixture/reference/numeric revision modes remain model-free. Studio permits 0 rounds
-(disabled), 1 review round, or up to 4 review rounds. Three remains the default.
+(disabled), 1 review round, or up to 8 review rounds. Three remains the default.
 
 ## Skill and workflow
 
@@ -28,7 +28,8 @@ both resources; the run archives their exact bytes and implementation source has
 1. Render the untouched parent. GLM returns symmetry evidence/confidence,
    bilateral/partial/none/uncertain mode, plane, disjoint source/target IDs,
    exceptions, semantic parameter bindings and refinement stages.
-2. Validate and compile its declared mirrors. Unknown/uncertain symmetry leaves
+2. Validate and compile its declared whole-body partitions, initial semantic geometry,
+   axis alignments, attachment anchors and mirrors in dependency order. Unknown/uncertain symmetry leaves
    geometry unchanged. Only declared pairs are mirrored. Unpaired components remain
    editable. This compiled design is the first reviewed candidate; the untouched
    baseline has its own saved design/render and is not mislabelled as a GLM revision.
@@ -99,11 +100,13 @@ blocking/major findings and three model ratings at least 80. It is a model thres
 not calibrated image similarity, human approval or physical certification. Camera
 pose is still unestimated, hidden internals remain hypotheses and layout checks are
 not a general collision/attachment solver. The legacy aircraft body-envelope check
-covers the named fuselage recipes; the new general section_body recipe has no
-collision/attachment coverage. All other outcomes remain `needs-review`.
+covers the named fuselage recipes. v0.7 adds independent checks of declared body seams,
+axis directions, anchor residuals and actual B-rep distances for declared contacts,
+including section_body recipes. Undeclared connections, penetration and general
+collision coverage remain unassessed. All other outcomes remain `needs-review`.
 
 The v0.5 runner remains `run_legacy_loop` for historical regression tests only; live
-Studio/CLI use v0.6. Existing recorded cases keep their original workflow identity.
+Studio/CLI use v0.7. Existing recorded cases keep their original workflow identity.
 A website backend update does not automatically replace public recorded cases.
 
 ## Testing without intervening in a design
@@ -114,3 +117,31 @@ failure preservation and runtime skill delivery. Real GLM runs must be separatel
 identified. Freeze the implementation before running a live validation; do not inject
 hand-written geometry, patch a candidate, replace a failed response or override GLM's
 selection. Report failures and limitations alongside any improvements.
+
+## v0.7: whole-body and assembly drivers
+
+GLM can declare a common elliptical body profile with ordered manufacturing partitions
+into existing fabricated IDs. Shared cuts preserve boundary geometry when dimensions
+change; materials, routes and procurement references stay frozen. This is bounded
+restructuring of existing occurrences, not arbitrary insertion/deletion or a hollow
+production shell. The profile is piecewise ruled (C0, not guaranteed C1/C2).
+
+Declared anchors on semantic wings/bodies and primitive boxes/cylinders derive child
+translation. A dependency graph orders attachments and mirrors together and rejects
+cycles or conflicting pose drivers. Axis declarations derive rotations, including
+reflected sources. Actions may replace the entire assembly rule set; derived member
+fields cannot be edited directly. Every selected design retains its own rules.
+
+Each review archives assembly-checks.json independently of model scores: anchor and
+shared-seam errors, axis errors, and <=0.1mm actual B-rep contact gaps. A contact result
+can include overlapping solids; it is not a nonpenetration or strength certificate.
+Placement relationships do not claim contact. The model must acknowledge every current
+independent diagnostic as major/blocking, or receives its one normal correction call.
+
+Three review rounds still mean at most two action opportunities after planning. CLI
+and Studio now allow up to eight; a 900-second loop deadline and 6*rounds API ceiling
+remain in force. More rounds are an explicit budget, not a guarantee of convergence.
+
+Real quality testing must use a frozen implementation and unchanged parent, retain
+all failed runs, and separate model scores from measured geometric errors. Never edit
+a candidate or change the runtime while its GLM loop is in flight.

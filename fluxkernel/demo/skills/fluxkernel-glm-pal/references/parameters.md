@@ -26,6 +26,55 @@ ruled root/tip sections; it is a concept solid, not an aerodynamic analysis resu
 Switching from the old centered wing changes the origin convention: explicitly choose
 its position to attach the new root to the fuselage. Mirror the opposite side with
 rules instead of independently guessing rotations. Size is derived from the sections.
+Local +Y must point OUTBOARD after reflection and rotation. An unrotated source on
+the negative-Y side needs reflection=y (or an appropriate pose); merely translating
+it to negative Y leaves the wing pointing inward. Plan parameterization entries may
+initialize parameters, position, rotation and reflection; actions may edit reflection
+on fabricated sources. A source reflection must match the mirror normal.
+
+## Assembly rules: whole profile first, partitions second
+
+The plan has optional `assembly` with `bodies`, `attachments`, `alignments` lists.
+The resulting design stores these rules. An action can replace the COMPLETE assembly
+object (not a partial patch); `edits: []` is valid when changing assembly alone.
+Unchanged rules must be retained explicitly. These declarations are GLM decisions.
+
+`bodies`: each group has id, profile (a full BodyParameters object), world position,
+world XYZ rotation, and ordered members [{part,start,end},...]. Start/end are fractions
+of the overall profile, partitioning exactly [0,1] without gaps/overlaps, aft to forward.
+Members must be existing fabricated body-family parts, not mirror targets or separately
+parameterized parts. Shared cuts interpolate the same ellipse, so neighbors have an
+identical boundary; each member becomes a capped concept solid with its original ID,
+material and route. Change the group profile/pose/cuts instead of editing member
+size/position/rotation/shape. This repairs poor body segmentation without losing
+manufacturing identities. It does NOT ensure tangent continuity or hollow interiors.
+
+`attachments`: each has parent, child, parent_anchor, child_anchor, relation.
+The child's translation is derived so these two anchors coincide after both local
+reflection and rotation. The child's rotation remains editable unless axis-aligned.
+One parent per child; no cycles even through mirror edges. Body members and mirror
+targets cannot be attachment children. Choose a source attachment, then mirror its
+counterpart. Parameters changing the parent move the child automatically.
+relation=contact requests an independent actual B-rep distance check (gap <=0.1mm);
+relation=placement only checks anchors, appropriate for deliberately nested/offset
+components and NOT a claim of mechanical contact. Contact may include overlap; there
+is no general penetration solver. Unspecified relationships remain unassessed.
+
+Anchors use kind, u/v/w fractions (0..1), angle_deg; defaults u=v=w=.5, angle=0:
+- origin: the recipe's local origin, ignores fractions.
+- wing: requires semantic wing; u=0 root, u=1 tip; v=0 leading edge, v=1 trailing
+  edge. The anchor lies on the mean chord plane, interpolating twist and sweep.
+- body: requires section_body; u is local body station; v=0 centerline, v=1 ellipse
+  surface; angle 0 points +Y, 90 points +Z. On a partition, u refers to that member.
+- box: box/shell/frame local coordinates ((u-.5)*sizeX,(v-.5)*sizeY,(w-.5)*sizeZ).
+  For a frame/shell, some points are empty space: check actual contact evidence.
+- cylinder: cylinder/tube; u is axial fraction (-Z to +Z), v radial fraction;
+  angle 0 points +X, 90 points +Y. Axis points may be inside a tube's empty bore.
+
+`alignments`: each has part, local_axis (x/y/z), world_axis (x/y/z/-x/-y/-z),
+roll_deg. The tool derives rotation, including reflection. Choose correct semantic
+axis (tube/cylinder local Z), world direction and roll; do not also edit that part's
+rotation. Catalog size remains frozen. Groups derive member rotations themselves.
 
 ## Section body
 

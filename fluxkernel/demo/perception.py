@@ -55,6 +55,7 @@ def action_schema(design=None):
         'required':['part','set'],'properties':{'part':{'type':'string'},'set':{
             'type':'object','additionalProperties':False,'minProperties':1,'properties':{
                 'size':vector,'position':vector,'rotation':vector,'wall':{'type':'number'},
+                'reflection':{'type':['string','null'],'enum':['x','y','z',None]},
                 'shape':{'type':'string','enum':['smooth_fuselage','smooth_car_body','fuselage_section','fuselage_nose','fuselage_tail']}}}}}
     if design is not None:
         schema['properties']['edits']['items']['properties']['part']['enum']=[p.id for p in design.parts]
@@ -74,7 +75,7 @@ def apply_action(design, action, contract, *, parameter_kinds=None):
             errors.append(f'Unknown part: {ident!r}; use an existing ID');continue
         if ident in seen:errors.append(f'Repeated part: {ident}; combine its changes into one edit')
         seen.add(ident)
-        if not isinstance(patch,dict) or not patch or not patch.keys()<=({'size','position','rotation','wall','shape','parametric'} if ident in parameter_kinds else {'size','position','rotation','wall','shape'}):
+        if not isinstance(patch,dict) or not patch or not patch.keys()<=({'size','position','rotation','wall','shape','parametric','reflection'} if ident in parameter_kinds else {'size','position','rotation','wall','shape','reflection'}):
             errors.append(f'{ident}: Protected design field; cannot change requirements, routes, identities or catalog references');continue
         for field,value in patch.items():
             if field in ('size','position','rotation') and (not isinstance(value,list) or len(value)!=3 or not all(number(v) for v in value)):

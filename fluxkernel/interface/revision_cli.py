@@ -85,7 +85,7 @@ def cmd_perceive(args):
 def register(sub):
     from ..studio import TASKS
     p = sub.add_parser('perceive', help='run real image/render feedback on a saved parent (model API calls)')
-    p.add_argument('parent'); p.add_argument('--rounds',type=int,choices=range(1,5),default=3)
+    p.add_argument('parent'); p.add_argument('--rounds',type=int,choices=range(1,9),default=3)
     p.add_argument('--output'); p.add_argument('--json',action='store_true')
     p.add_argument('--require-proof',action='store_true'); p.set_defaults(fn=cmd_perceive)
     p = sub.add_parser('schema', help='print a versioned agent request schema')
