@@ -6,7 +6,7 @@ from pydantic import Field
 from .models import StrictModel,Design
 from .constraints import evaluate
 from .parametric import WingParameters, BodyParameters, envelope
-from .assembly import AssemblyRules, validate_rules, compile_bodies, apply_alignment, dependency_order, anchor_world, anchor_local, matrix
+from .assembly import AssemblyRules, validate_rules, validate_rule_transition, compile_bodies, apply_alignment, dependency_order, anchor_world, anchor_local, matrix
 
 class Pair(StrictModel):
     source: str
@@ -136,7 +136,7 @@ def apply_workflow_action(design,action,contract,plan):
     action=WorkflowAction.model_validate(action).model_dump(exclude_none=True);base=design.model_copy(deep=True)
     if 'assembly' in action:
         rules=AssemblyRules.model_validate(action.pop('assembly'))
-        validate_rules(base,rules,plan.pairs);base.assembly=rules
+        validate_rules(base,rules,plan.pairs);validate_rule_transition(base.assembly,rules);base.assembly=rules
     # Keep the public stale-base commitment bound to the pre-action design.
     from .perception import digest
     if action.get('base_design_sha256')!=digest(design.model_dump()):raise ValueError('Stale visual action base')
@@ -152,7 +152,10 @@ def apply_workflow_action(design,action,contract,plan):
             if e['part'] in aligned and 'rotation' in e['set']:raise ValueError('Axis rotation is derived; edit alignment instead')
     action['base_design_sha256']=digest(base.model_dump())
     if action.get('edits'):
-        changed=apply_action(base,action,{'schema':'fk-constraints-v1','rules':[]},parameter_kinds={p.part:p.kind for p in plan.parameterization})
+        try:changed=apply_action(base,action,{'schema':'fk-constraints-v1','rules':[]},parameter_kinds={p.part:p.kind for p in plan.parameterization})
+        except ValueError as exc:
+            if str(exc)!='Action has no effect' or base.assembly==design.assembly:raise
+            changed=base  # Valid unchanged part edits may accompany a real rule edit.
     else:changed=base
     result=compile_assembly(changed,plan,contract)
     if result==design:raise ValueError('Action has no effect')

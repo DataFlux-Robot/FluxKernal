@@ -145,6 +145,18 @@ def validate_rules(design, rules, pairs=()):
     return rules
 
 
+def validate_rule_transition(before, after):
+    """Keep declared verification obligations while allowing new parent topology."""
+    if before is None:return
+    contacts={a.child for a in after.attachments if a.relation=='contact'}
+    missing={a.child for a in before.attachments if a.relation=='contact'}-contacts
+    if missing:raise ValueError(f'Declared contacts cannot be dropped/downgraded to placement to clear checks; reparent or repair them: {sorted(missing)}')
+    missing={a.part for a in before.alignments}-{a.part for a in after.alignments}
+    if missing:raise ValueError(f'Keep axis verification obligations: {sorted(missing)}')
+    missing={m.part for b in before.bodies for m in b.members}-{m.part for b in after.bodies for m in b.members}
+    if missing:raise ValueError(f'Keep shared body profile coverage while changing partitions: {sorted(missing)}')
+
+
 def compile_bodies(design, rules):
     parts = {p.id: p for p in design.parts}
     for body in rules.bodies:
@@ -189,20 +201,26 @@ def assembly_checks(design, pairs=()):
             if p.id not in shapes: shapes[p.id] = build(p)
         distance = BRepExtrema_DistShapeShape(shapes[parent.id], shapes[child.id]); distance.Perform()
         if not distance.IsDone(): raise ValueError('B-rep contact distance failed')
-        return distance.Value()
+        p, q = distance.PointOnShape1(1), distance.PointOnShape2(1)
+        return {'surface_gap_mm':distance.Value(),
+            'closest_parent_point_mm':[p.X(),p.Y(),p.Z()],
+            'closest_child_point_mm':[q.X(),q.Y(),q.Z()],
+            'gap_vector_parent_to_child_mm':[q.X()-p.X(),q.Y()-p.Y(),q.Z()-p.Z()]}
     mirrors = {p.source: p.target for p in pairs}
     for a in rules.attachments:
         parent, child = parts[a.parent], parts[a.child]
         residual = float(np.linalg.norm(anchor_world(parent, a.parent_anchor)-anchor_world(child, a.child_anchor)))
         row = {'kind': a.relation, 'parent': a.parent, 'child': a.child, 'anchor_error_mm': residual}
         if residual > 1e-5: issue('ATTACHMENT_ANCHOR', [a.parent, a.child], f'Anchor error {residual:.6g} mm')
+        # Placement distances are informative, not claims of required contact.
+        row.update(gap_between(parent,child))
         if a.relation == 'contact':
-            gap = gap_between(parent, child); row['surface_gap_mm'] = gap
+            gap = row['surface_gap_mm']
             if gap > 0.1: issue('ATTACHMENT_GAP', [a.parent, a.child], f'Declared contact has surface gap {gap:.6g} mm (limit 0.1 mm)')
             if a.child in mirrors:
                 other_parent = parts[mirrors.get(a.parent, a.parent)]; other_child = parts[mirrors[a.child]]
-                other_gap = gap_between(other_parent, other_child)
-                measurements.append({'kind': 'mirrored_contact', 'parent': other_parent.id, 'child': other_child.id, 'surface_gap_mm': other_gap})
+                other = gap_between(other_parent, other_child); other_gap=other['surface_gap_mm']
+                measurements.append({'kind': 'mirrored_contact', 'parent': other_parent.id, 'child': other_child.id, **other})
                 if other_gap > .1: issue('MIRRORED_ATTACHMENT_GAP', [other_parent.id, other_child.id], f'Mirrored contact gap {other_gap:.6g} mm (limit 0.1 mm)')
         measurements.append(row)
     for a in rules.alignments:

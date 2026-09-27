@@ -91,6 +91,9 @@ def test_contact_checks_catch_zero_anchor_error_but_physical_gap():
     p=plan_for(d,r);result=activate_plan(d,p,EMPTY);checks=assembly_checks(result)
     assert checks['measurements'][0]['anchor_error_mm']==0
     assert checks['measurements'][0]['surface_gap_mm']>1
+    row=checks['measurements'][0]
+    assert np.allclose(np.array(row['closest_child_point_mm'])-row['closest_parent_point_mm'],row['gap_vector_parent_to_child_mm'])
+    assert math.isclose(np.linalg.norm(row['gap_vector_parent_to_child_mm']),row['surface_gap_mm'],abs_tol=1e-6)
     assert any(i['code']=='ATTACHMENT_GAP' for i in checks['issues'])
 
 
@@ -126,3 +129,32 @@ def test_assembly_plan_is_used_by_real_workflow_with_mock_provider(tmp_path,monk
     assert result==expected and summary['workflow']=='glm-assembly-parametric-v2'
     assert (tmp_path/'perception/round-00/assembly-checks.json').is_file()
     assert 'assembly.py' in summary['sources_sha256']
+
+
+@pytest.mark.parametrize('mode',['drop','downgrade'])
+def test_contact_obligation_cannot_disappear_to_clear_a_check(mode):
+    d,p=attached_wing();rules=d.assembly.model_dump()
+    if mode=='drop':rules['attachments']=[]
+    else:rules['attachments'][0]['relation']='placement'
+    action={'base_design_sha256':digest(d.model_dump()),'rationale':'Invalid weakening','edits':[],'assembly':rules}
+    with pytest.raises(ValueError,match='dropped/downgraded'):apply_workflow_action(d,action,EMPTY,p)
+
+
+def test_master_edit_with_unchanged_valid_part_edit_is_not_false_noop():
+    d=body_design();p=plan_for(d,body_rules());d=activate_plan(d,p,EMPTY)
+    rules=d.assembly.model_dump();rules['bodies'][0]['profile']['length']=300
+    action={'base_design_sha256':digest(d.model_dump()),'rationale':'Master update plus unchanged fixture','assembly':rules,
+        'edits':[{'part':'fixture','set':{'wall':d.parts[2].wall}}]}
+    result=apply_workflow_action(d,action,EMPTY,p)
+    assert result.parts[0].parametric.length==120
+
+
+def test_named_axis_claim_normalizes_only_notation_and_still_checks_value():
+    from test_pal_workflow import review
+    from fluxkernel.demo.pal_workflow import validate_review
+    d=body_design();raw=review(d);raw['numeric_claims']=[{'part':'fixture','field':'position.y','value':50}]
+    assert validate_review(raw,d).numeric_claims[0].field=='position.1'
+    raw['numeric_claims'][0]['value']=51
+    with pytest.raises(ValueError,match='Fact mismatch'):validate_review(raw,d)
+    raw['numeric_claims'][0].update(field='position',value='y=50 explanatory text')
+    with pytest.raises(ValueError,match='scalar field'):validate_review(raw,d)

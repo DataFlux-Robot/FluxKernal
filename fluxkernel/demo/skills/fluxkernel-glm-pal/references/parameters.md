@@ -38,6 +38,10 @@ The plan has optional `assembly` with `bodies`, `attachments`, `alignments` list
 The resulting design stores these rules. An action can replace the COMPLETE assembly
 object (not a partial patch); `edits: []` is valid when changing assembly alone.
 Unchanged rules must be retained explicitly. These declarations are GLM decisions.
+During a run, previously declared contact children cannot be dropped or downgraded to
+placement to bypass checks; they may be reparented. Axis-part and shared-body-member
+coverage must also be retained, though directions, profiles and partitions may change.
+If the initial declarations themselves are wrong, stop and explicitly replan in a new run.
 
 `bodies`: each group has id, profile (a full BodyParameters object), world position,
 world XYZ rotation, and ordered members [{part,start,end},...]. Start/end are fractions
@@ -59,6 +63,10 @@ relation=contact requests an independent actual B-rep distance check (gap <=0.1m
 relation=placement only checks anchors, appropriate for deliberately nested/offset
 components and NOT a claim of mechanical contact. Contact may include overlap; there
 is no general penetration solver. Unspecified relationships remain unassessed.
+Checks report actual nearest parent/child points and the parent-to-child gap vector
+in world coordinates, also for placement relations. Use this evidence to determine
+which anchor coordinate or component dimension matters; an axial change cannot
+necessarily fix a radial gap. Placement gap measurements are information, not errors.
 
 Anchors use kind, u/v/w fractions (0..1), angle_deg; defaults u=v=w=.5, angle=0:
 - origin: the recipe's local origin, ignores fractions.
@@ -97,6 +105,9 @@ parametric.root_chord. Values must match the provided current recipe, not a prev
 round. These checks catch structured factual contradictions but do not prove every
 sentence of free-text visual critique. Frame expansion is recorded and both candidates
 are re-rendered at the same scale; frame clipping is not a structural defect.
+Use scalar fields, not whole vectors or explanatory text as values. Named Cartesian
+aliases position.x/y/z, size.x/y/z and rotation.x/y/z are accepted and normalized to
+indices 0/1/2, with exactly the same value check. Other paths use numeric list indices.
 
 Official references used to design this vocabulary (not code copied or backend used):
 - https://openvsp.org/api_docs/latest/group___x_sec.html

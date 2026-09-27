@@ -43,10 +43,15 @@ def validate_review(raw,design):
     if any(not set(f.parts)<=parts.keys() for f in review.findings):raise ValueError('Review references unknown part IDs')
     for claim in review.numeric_claims:
         if claim.part not in parts:raise ValueError('Numeric claim references unknown part')
+        path=claim.field.split('.')
+        # A named Cartesian component is unambiguous; normalize notation, not value.
+        if len(path)==2 and path[0] in ('size','position','rotation') and path[1] in ('x','y','z'):
+            path[1]=str('xyz'.index(path[1]));claim.field='.'.join(path)
         try:
             value=parts[claim.part]
-            for key in claim.field.split('.'):value=value[int(key)] if isinstance(value,list) else value[key]
+            for key in path:value=value[int(key)] if isinstance(value,list) else value[key]
         except (KeyError,ValueError,IndexError,TypeError):raise ValueError(f'Unknown recipe fact {claim.part}.{claim.field}')
+        if isinstance(value,(list,dict)):raise ValueError(f'{claim.part}.{claim.field}: select a scalar field, e.g. position.0 or position.x, not an entire vector/object or explanatory text')
         if isinstance(value,(int,float)) and not isinstance(value,bool):
             correct=isinstance(claim.value,(int,float)) and math.isclose(value,claim.value,rel_tol=1e-6,abs_tol=1e-6)
         else:correct=isinstance(value,str) and value==claim.value
@@ -139,6 +144,7 @@ def run(design,image,brief,run,event,*,contract,rounds=3,deadline_s=900):
             assembly=assembly_checks(candidate,plan.pairs);pal.save(directory/'assembly-checks.json',assembly)
             checks={**checks,'passed':checks['passed'] and assembly['passed'],'issues':checks['issues']+assembly['issues'],
                 'assembly':assembly}
+            pal.save(directory/'layout-checks.json',checks)
             record['view']=f'perception/round-{index:02d}/views.png'
             record['render_frame']='union of baseline/current/retained; both comparison sheets share bounds'
             def check_review(raw):
