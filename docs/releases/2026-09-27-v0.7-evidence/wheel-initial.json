@@ -1,0 +1,9 @@
+{
+  "wheel": "fluxkernel-0.7.0-py3-none-any.whl",
+  "isolated_install": true,
+  "core_workflow": "passed",
+  "studio_and_independent_lean": "passed",
+  "mcp_stdio_workflow": "passed",
+  "commit": "01a57b6eee428d06629db4670d0241d72bca3dce",
+  "wheel_sha256": "3b879bbb70f8ce5394ca52ba915bb337b7620fa7336eaebe0697dc79b366a818"
+}

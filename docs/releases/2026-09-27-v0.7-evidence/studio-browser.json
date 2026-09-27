@@ -1,0 +1,66 @@
+[
+  {
+    "width": 1440,
+    "run": "3edc11bbf94844f4",
+    "round_cards": 1,
+    "chosen_cards": 0,
+    "visual_status": "外观质量：仍需改进",
+    "page_errors": []
+  },
+  {
+    "width": 1440,
+    "run": "566e62221aee41b6",
+    "round_cards": 6,
+    "chosen_cards": 1,
+    "visual_status": "外观质量：达到模型评审门槛，待人工确认",
+    "page_errors": []
+  },
+  {
+    "width": 1440,
+    "run": "0e14ac62392a42d5",
+    "round_cards": 2,
+    "chosen_cards": 1,
+    "visual_status": "外观质量：达到模型评审门槛，待人工确认",
+    "page_errors": []
+  },
+  {
+    "width": 1440,
+    "run": "a015d8e0fa0949db",
+    "round_cards": 0,
+    "chosen_cards": 0,
+    "visual_status": "外观质量：仍需改进",
+    "page_errors": []
+  },
+  {
+    "width": 390,
+    "run": "3edc11bbf94844f4",
+    "round_cards": 1,
+    "chosen_cards": 0,
+    "visual_status": "外观质量：仍需改进",
+    "page_errors": []
+  },
+  {
+    "width": 390,
+    "run": "566e62221aee41b6",
+    "round_cards": 6,
+    "chosen_cards": 1,
+    "visual_status": "外观质量：达到模型评审门槛，待人工确认",
+    "page_errors": []
+  },
+  {
+    "width": 390,
+    "run": "0e14ac62392a42d5",
+    "round_cards": 2,
+    "chosen_cards": 1,
+    "visual_status": "外观质量：达到模型评审门槛，待人工确认",
+    "page_errors": []
+  },
+  {
+    "width": 390,
+    "run": "a015d8e0fa0949db",
+    "round_cards": 0,
+    "chosen_cards": 0,
+    "visual_status": "外观质量：仍需改进",
+    "page_errors": []
+  }
+]

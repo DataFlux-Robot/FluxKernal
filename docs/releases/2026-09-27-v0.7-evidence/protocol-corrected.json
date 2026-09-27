@@ -1,0 +1,52 @@
+{
+  "schema": "fk-assembly-experiment-v1",
+  "runtime_commit": "23225277e64979f42403d4975e6bc71d78e9e558",
+  "parent": ".demo/runs/c59d5c0edad34a94",
+  "parent_manifest_sha256": "37f6e39791140230533d42796dbe5b656e0f9d4c030967d2dc0a302273a667ad",
+  "budgets": [
+    3,
+    6
+  ],
+  "model": "glm-5.3-flash",
+  "human_design_edits": false,
+  "replicates_per_budget": 1,
+  "fixed_surface_gap_pairs": [
+    [
+      "wing-l",
+      "winglet-l"
+    ],
+    [
+      "wing-r",
+      "winglet-r"
+    ],
+    [
+      "tail-cone",
+      "fuselage-aft"
+    ],
+    [
+      "fuselage-aft",
+      "fuselage-mid"
+    ],
+    [
+      "fuselage-mid",
+      "fuselage-front"
+    ],
+    [
+      "fuselage-front",
+      "radome"
+    ]
+  ],
+  "metrics": [
+    "legacy engine axis diagnostics",
+    "fixed pair actual B-rep surface gaps in mm",
+    "declared constraint residuals and coverage",
+    "model calls and elapsed time"
+  ],
+  "limits": [
+    "One stochastic run per budget; cannot establish causal model superiority",
+    "B-rep gap zero can mean overlap; it does not establish smoothness or mechanical validity",
+    "No camera alignment or reference silhouette IoU implemented"
+  ],
+  "prior_protocol": "assembly-v07-protocol.json",
+  "change_reason": "Scalar Cartesian claim aliases; closest-point gap vectors; retained verification obligations. No candidate edited."
+}

@@ -1,0 +1,3169 @@
+{
+  "schema": "fk-perception-loop-v2",
+  "workflow": "glm-assembly-parametric-v2",
+  "enabled": true,
+  "model": "glm-5.3-flash",
+  "decision_author": "glm-5.3-flash",
+  "human_design_edits": false,
+  "selection_policy": "GLM decision among reviewed current/retained candidates; host only validates",
+  "sources_sha256": {
+    "pal_workflow.py": "a316565bd8c7b84884caf003fe8f7f0533231fbd812736950430f6428a4c0173",
+    "pal_rules.py": "aa0aba1b91c6088614f88f91cef8cba4333b2e62e35448ac6c36427d25375e67",
+    "assembly.py": "00416827b787da08cfe9f500aee0cbfc7a1a1ea9eb25c7dd511458192eb27f1d",
+    "parametric.py": "09fa05f065770212e10886f31e7e42b62e743a469185fa1213efd769636a2b12",
+    "models.py": "8cdab0e6fb121be024bf28ab91c7e529ab763bb26f88cacf9f3608bfa3b7683c",
+    "geometry.py": "335bcbaf1f3f23a621954d8f50c2b4f80fd4e5942ff7f221e54404129687a9c9",
+    "perception.py": "cf3aebe76270a3fa67bf0f1a8e6b7fc32aceb15305725798d8a67561ef35f438",
+    "perception_render.py": "847e7bfe572a27a3520be6b736a432e0a362e126aae9d9d7db1c0e0f3a700528",
+    "skill.md": "20046791af3622e8233c3b17237ad2c7417d75d98da43776eae606213cdcf924"
+  },
+  "plan": {
+    "assembly": {
+      "bodies": [
+        {
+          "id": "fuselage-body",
+          "profile": {
+            "kind": "body",
+            "length": 35700.0,
+            "sections": [
+              {
+                "u": 0.0,
+                "width": 1200.0,
+                "height": 1200.0,
+                "offset_y": 0.0,
+                "offset_z": 0.0
+              },
+              {
+                "u": 0.05,
+                "width": 2600.0,
+                "height": 2600.0,
+                "offset_y": 0.0,
+                "offset_z": 0.0
+              },
+              {
+                "u": 0.12,
+                "width": 3500.0,
+                "height": 3500.0,
+                "offset_y": 0.0,
+                "offset_z": 0.0
+              },
+              {
+                "u": 0.3,
+                "width": 3900.0,
+                "height": 3900.0,
+                "offset_y": 0.0,
+                "offset_z": 0.0
+              },
+              {
+                "u": 0.5,
+                "width": 3950.0,
+                "height": 3950.0,
+                "offset_y": 0.0,
+                "offset_z": 0.0
+              },
+              {
+                "u": 0.72,
+                "width": 3950.0,
+                "height": 3950.0,
+                "offset_y": 0.0,
+                "offset_z": 0.0
+              },
+              {
+                "u": 0.86,
+                "width": 3700.0,
+                "height": 3700.0,
+                "offset_y": 0.0,
+                "offset_z": 0.0
+              },
+              {
+                "u": 0.95,
+                "width": 2400.0,
+                "height": 2400.0,
+                "offset_y": 0.0,
+                "offset_z": 0.0
+              },
+              {
+                "u": 1.0,
+                "width": 1400.0,
+                "height": 1400.0,
+                "offset_y": 0.0,
+                "offset_z": 0.0
+              }
+            ]
+          },
+          "position": [
+            8650.0,
+            0.0,
+            4000.0
+          ],
+          "rotation": [
+            0.0,
+            0.0,
+            0.0
+          ],
+          "members": [
+            {
+              "part": "tail-cone",
+              "start": 0.0,
+              "end": 0.0896
+            },
+            {
+              "part": "fuselage-aft",
+              "start": 0.0896,
+              "end": 0.3417
+            },
+            {
+              "part": "fuselage-mid",
+              "start": 0.3417,
+              "end": 0.6499
+            },
+            {
+              "part": "fuselage-front",
+              "start": 0.6499,
+              "end": 0.916
+            },
+            {
+              "part": "radome",
+              "start": 0.916,
+              "end": 1.0
+            }
+          ]
+        }
+      ],
+      "attachments": [
+        {
+          "parent": "fuselage-mid",
+          "child": "wing-l",
+          "parent_anchor": {
+            "kind": "body",
+            "u": 0.45,
+            "v": 1.0,
+            "w": 0.5,
+            "angle_deg": 0.0
+          },
+          "child_anchor": {
+            "kind": "wing",
+            "u": 0.0,
+            "v": 0.3,
+            "w": 0.5,
+            "angle_deg": 0
+          },
+          "relation": "contact"
+        },
+        {
+          "parent": "wing-l",
+          "child": "winglet-l",
+          "parent_anchor": {
+            "kind": "wing",
+            "u": 1.0,
+            "v": 0.5,
+            "w": 0.5,
+            "angle_deg": 0
+          },
+          "child_anchor": {
+            "kind": "wing",
+            "u": 0.0,
+            "v": 0.5,
+            "w": 0.5,
+            "angle_deg": 0
+          },
+          "relation": "contact"
+        },
+        {
+          "parent": "wing-l",
+          "child": "flap-l",
+          "parent_anchor": {
+            "kind": "wing",
+            "u": 0.55,
+            "v": 1.0,
+            "w": 0.5,
+            "angle_deg": 0
+          },
+          "child_anchor": {
+            "kind": "wing",
+            "u": 0.0,
+            "v": 0.3,
+            "w": 0.5,
+            "angle_deg": 0
+          },
+          "relation": "placement"
+        },
+        {
+          "parent": "wing-l",
+          "child": "pylon-l",
+          "parent_anchor": {
+            "kind": "wing",
+            "u": 0.28,
+            "v": 0.25,
+            "w": 0.5,
+            "angle_deg": 0
+          },
+          "child_anchor": {
+            "kind": "box",
+            "u": 0.5,
+            "v": 0.5,
+            "w": 1.0,
+            "angle_deg": 0
+          },
+          "relation": "contact"
+        },
+        {
+          "parent": "pylon-l",
+          "child": "engine-nacelle-l",
+          "parent_anchor": {
+            "kind": "box",
+            "u": 0.5,
+            "v": 0.5,
+            "w": 0.0,
+            "angle_deg": 0
+          },
+          "child_anchor": {
+            "kind": "cylinder",
+            "u": 0.6,
+            "v": 0.5,
+            "w": 0.5,
+            "angle_deg": 0
+          },
+          "relation": "contact"
+        },
+        {
+          "parent": "engine-nacelle-l",
+          "child": "engine-core-l",
+          "parent_anchor": {
+            "kind": "origin",
+            "u": 0.5,
+            "v": 0.5,
+            "w": 0.5,
+            "angle_deg": 0
+          },
+          "child_anchor": {
+            "kind": "origin",
+            "u": 0.5,
+            "v": 0.5,
+            "w": 0.5,
+            "angle_deg": 0
+          },
+          "relation": "placement"
+        },
+        {
+          "parent": "fuselage-aft",
+          "child": "vertical-fin",
+          "parent_anchor": {
+            "kind": "body",
+            "u": 0.35,
+            "v": 1.0,
+            "w": 0.5,
+            "angle_deg": 90.0
+          },
+          "child_anchor": {
+            "kind": "wing",
+            "u": 0.0,
+            "v": 0.5,
+            "w": 0.5,
+            "angle_deg": 0
+          },
+          "relation": "contact"
+        },
+        {
+          "parent": "fuselage-aft",
+          "child": "horizontal-stab-l",
+          "parent_anchor": {
+            "kind": "body",
+            "u": 0.25,
+            "v": 1.0,
+            "w": 0.5,
+            "angle_deg": 0.0
+          },
+          "child_anchor": {
+            "kind": "wing",
+            "u": 0.0,
+            "v": 0.3,
+            "w": 0.5,
+            "angle_deg": 0
+          },
+          "relation": "contact"
+        },
+        {
+          "parent": "fuselage-front",
+          "child": "nose-gear-strut",
+          "parent_anchor": {
+            "kind": "body",
+            "u": 0.6,
+            "v": 0.0,
+            "w": 0.5,
+            "angle_deg": 0
+          },
+          "child_anchor": {
+            "kind": "cylinder",
+            "u": 1.0,
+            "v": 0.5,
+            "w": 0.5,
+            "angle_deg": 0
+          },
+          "relation": "contact"
+        },
+        {
+          "parent": "nose-gear-strut",
+          "child": "nose-gear-wheels",
+          "parent_anchor": {
+            "kind": "cylinder",
+            "u": 0.0,
+            "v": 0.5,
+            "w": 0.5,
+            "angle_deg": 0
+          },
+          "child_anchor": {
+            "kind": "cylinder",
+            "u": 0.5,
+            "v": 0.5,
+            "w": 0.5,
+            "angle_deg": 0
+          },
+          "relation": "contact"
+        },
+        {
+          "parent": "fuselage-mid",
+          "child": "main-gear-strut-l",
+          "parent_anchor": {
+            "kind": "body",
+            "u": 0.42,
+            "v": 1.0,
+            "w": 0.5,
+            "angle_deg": 0.0
+          },
+          "child_anchor": {
+            "kind": "cylinder",
+            "u": 1.0,
+            "v": 0.5,
+            "w": 0.5,
+            "angle_deg": 0
+          },
+          "relation": "contact"
+        },
+        {
+          "parent": "main-gear-strut-l",
+          "child": "main-gear-wheels-l",
+          "parent_anchor": {
+            "kind": "cylinder",
+            "u": 0.0,
+            "v": 0.5,
+            "w": 0.5,
+            "angle_deg": 0
+          },
+          "child_anchor": {
+            "kind": "cylinder",
+            "u": 0.5,
+            "v": 0.5,
+            "w": 0.5,
+            "angle_deg": 0
+          },
+          "relation": "contact"
+        },
+        {
+          "parent": "fuselage-front",
+          "child": "cockpit-windows",
+          "parent_anchor": {
+            "kind": "body",
+            "u": 0.88,
+            "v": 1.0,
+            "w": 0.5,
+            "angle_deg": 90.0
+          },
+          "child_anchor": {
+            "kind": "origin",
+            "u": 0.5,
+            "v": 0.5,
+            "w": 0.5,
+            "angle_deg": 0
+          },
+          "relation": "placement"
+        }
+      ],
+      "alignments": [
+        {
+          "part": "engine-nacelle-l",
+          "local_axis": "z",
+          "world_axis": "x",
+          "roll_deg": 0
+        },
+        {
+          "part": "engine-core-l",
+          "local_axis": "z",
+          "world_axis": "x",
+          "roll_deg": 0
+        },
+        {
+          "part": "nose-gear-wheels",
+          "local_axis": "z",
+          "world_axis": "y",
+          "roll_deg": 0
+        },
+        {
+          "part": "main-gear-wheels-l",
+          "local_axis": "z",
+          "world_axis": "y",
+          "roll_deg": 0
+        },
+        {
+          "part": "nose-gear-strut",
+          "local_axis": "z",
+          "world_axis": "z",
+          "roll_deg": 0
+        },
+        {
+          "part": "main-gear-strut-l",
+          "local_axis": "z",
+          "world_axis": "z",
+          "roll_deg": 0
+        }
+      ]
+    },
+    "symmetry": "bilateral",
+    "axis": "y",
+    "plane_offset": 0.0,
+    "confidence": 0.93,
+    "rationale": "照片为单通道双发涡扇客机仰视视角，整机绕XZ平面（法向Y）近似镜像对称：机翼、翼梢小翼、发动机与吊架、水平尾翼、舷窗带、主起落架均为左右成对。垂尾位于对称面、前起落架位于机头中线、机头雷达罩、地板梁、中央翼盒、客舱座椅为中线单件，列为例外。基准渲染显示严重结构问题：右翼呈短小碎片、两侧翼梢小翼悬空脱离翼尖、发动机圆柱与短舱错位漂浮、垂尾姿态异常、平尾脱开机身——这些都需在首轮proportions阶段通过把机身段合并为共享椭圆剖面并按区间划分（保留各段ID、材料与工艺路线）、以参数化翼根前缘原点约定重新定位左右翼（左翼源件必须reflection=y使局部+Y指向翼尖外侧）、并用锚点附件连接机翼-吊架-短舱-支柱-轮组来修复。镜像声明为设计判断而非照片测量；垂尾安装角、发动机位置为假设。",
+    "visible_evidence": [
+      "机身细长圆柱形，单通道客机布局",
+      "机翼下吊挂两台涡扇发动机，左右各一",
+      "机翼后掠并带翼梢小翼",
+      "起落架放下，前起与主起多轮可见",
+      "高大垂直尾翼，水平尾翼位于机身后段两侧",
+      "基准渲染中右侧机翼缺失主体、翼梢小翼悬空、发动机错位漂浮"
+    ],
+    "exceptions": [
+      "fuselage-front",
+      "fuselage-mid",
+      "fuselage-aft",
+      "tail-cone",
+      "radome",
+      "floor-beam-main",
+      "wing-box-l",
+      "vertical-fin",
+      "nose-gear-strut",
+      "nose-gear-wheels",
+      "cockpit-windows",
+      "cabin-seats"
+    ],
+    "pairs": [
+      {
+        "source": "wing-l",
+        "target": "wing-r"
+      },
+      {
+        "source": "winglet-l",
+        "target": "winglet-r"
+      },
+      {
+        "source": "flap-l",
+        "target": "flap-r"
+      },
+      {
+        "source": "horizontal-stab-l",
+        "target": "horizontal-stab-r"
+      },
+      {
+        "source": "engine-nacelle-l",
+        "target": "engine-nacelle-r"
+      },
+      {
+        "source": "engine-core-l",
+        "target": "engine-core-r"
+      },
+      {
+        "source": "pylon-l",
+        "target": "pylon-r"
+      },
+      {
+        "source": "main-gear-strut-l",
+        "target": "main-gear-strut-r"
+      },
+      {
+        "source": "main-gear-wheels-l",
+        "target": "main-gear-wheels-r"
+      },
+      {
+        "source": "cabin-window-strip-l",
+        "target": "cabin-window-strip-r"
+      }
+    ],
+    "parameterization": [
+      {
+        "part": "wing-l",
+        "kind": "wing",
+        "parameters": {
+          "kind": "wing",
+          "span": 14900.0,
+          "root_chord": 6000.0,
+          "tip_chord": 1600.0,
+          "sweep_deg": 22.0,
+          "dihedral_deg": 5.0,
+          "twist_deg": 0.0,
+          "thickness_ratio": 0.11
+        },
+        "position": [
+          9500.0,
+          -2000.0,
+          3400.0
+        ],
+        "rotation": [
+          0.0,
+          0.0,
+          0.0
+        ],
+        "reflection": "y"
+      },
+      {
+        "part": "winglet-l",
+        "kind": "wing",
+        "parameters": {
+          "kind": "wing",
+          "span": 2200.0,
+          "root_chord": 1500.0,
+          "tip_chord": 600.0,
+          "sweep_deg": 10.0,
+          "dihedral_deg": 40.0,
+          "twist_deg": 0.0,
+          "thickness_ratio": 0.1
+        },
+        "position": [
+          15525.0,
+          -17000.0,
+          4500.0
+        ],
+        "rotation": [
+          75.0,
+          0.0,
+          -15.0
+        ],
+        "reflection": "y"
+      },
+      {
+        "part": "flap-l",
+        "kind": "wing",
+        "parameters": {
+          "kind": "wing",
+          "span": 5500.0,
+          "root_chord": 1800.0,
+          "tip_chord": 1200.0,
+          "sweep_deg": 10.0,
+          "dihedral_deg": 0.0,
+          "twist_deg": 0.0,
+          "thickness_ratio": 0.1
+        },
+        "position": [
+          5000.0,
+          -5500.0,
+          3150.0
+        ],
+        "rotation": [
+          0.0,
+          0.0,
+          -20.0
+        ],
+        "reflection": "y"
+      },
+      {
+        "part": "horizontal-stab-l",
+        "kind": "wing",
+        "parameters": {
+          "kind": "wing",
+          "span": 5800.0,
+          "root_chord": 2500.0,
+          "tip_chord": 1100.0,
+          "sweep_deg": 20.0,
+          "dihedral_deg": 5.0,
+          "twist_deg": 0.0,
+          "thickness_ratio": 0.1
+        },
+        "position": [
+          -6500.0,
+          -1200.0,
+          4700.0
+        ],
+        "rotation": [
+          0.0,
+          0.0,
+          -20.0
+        ],
+        "reflection": "y"
+      },
+      {
+        "part": "vertical-fin",
+        "kind": "wing",
+        "parameters": {
+          "kind": "wing",
+          "span": 6800.0,
+          "root_chord": 4200.0,
+          "tip_chord": 1600.0,
+          "sweep_deg": 30.0,
+          "dihedral_deg": 0.0,
+          "twist_deg": 0.0,
+          "thickness_ratio": 0.1
+        },
+        "position": [
+          -6500.0,
+          0.0,
+          6500.0
+        ],
+        "rotation": [
+          90.0,
+          0.0,
+          0.0
+        ],
+        "reflection": null
+      }
+    ],
+    "stages": [
+      "proportions",
+      "connections",
+      "surfaces"
+    ]
+  },
+  "max_rounds": 6,
+  "rounds": [
+    {
+      "round": 0,
+      "state": "reviewed",
+      "derived_from": null,
+      "stage": "proportions",
+      "design_sha256": "dca740b3810a273216e20aef9941f87c14bb082bf030594113a52f1dac12d221",
+      "view": "perception/round-00/views.png",
+      "render_frame": "union of baseline/current/retained; both comparison sheets share bounds",
+      "review": {
+        "silhouette": 72,
+        "proportions": 74,
+        "layout": 65,
+        "reference_limitations": "参考照片为仰视飞行姿态、透视强烈，无法精确测量整机长度、翼展与机身直径；发动机型号、垂尾安装角、机翼后掠角均为设计假设。当前渲染为正视投影，与照片透视差异不构成几何缺陷证据。",
+        "findings": [
+          {
+            "severity": "major",
+            "parts": [
+              "pylon-l",
+              "engine-nacelle-l",
+              "pylon-r",
+              "engine-nacelle-r"
+            ],
+            "observation": "装配检查报告吊架-短舱声明接触面间隙31.31mm（两侧镜像同样为31.31mm），锚点虽重合但短舱圆柱表面未触及吊架底面，属于声明contact未达标，不是贴图或视角问题。",
+            "suggested_change": "沿接触法向消除约31.3mm间隙：将短舱child_anchor的轴向分数u从0.6调整约31.3/4500≈0.007（如u=0.607），或将吊架box高度增加约32mm，使圆柱表面与吊架底面间隙≤0.1mm。"
+          },
+          {
+            "severity": "minor",
+            "parts": [
+              "flap-l",
+              "flap-r"
+            ],
+            "observation": "TOP与ISO视图中后缘襟翼呈现为与主翼分离的独立薄板，锚点虽在翼后缘但视觉上像漂浮附件；声明为placement所以检查不报错，但外观上与照片中贴合翼下的襟翼不符。",
+            "suggested_change": "在后续surfaces阶段调整flap-l的attachment child_anchor（如v=0.5）或其相对位置，使襟翼后缘贴附主翼下表面后缘区域。"
+          },
+          {
+            "severity": "minor",
+            "parts": [
+              "engine-nacelle-l",
+              "engine-nacelle-r"
+            ],
+            "observation": "照片中短舱明显吊挂在机翼下方并有垂直间距；当前短舱中心与翼面几乎同高，视觉上下挂特征不明显。",
+            "suggested_change": "保持吊架连接的同时可在后续阶段增大吊架高度或下移短舱锚点，使短舱重心低于翼面约一个短舱半径。"
+          }
+        ],
+        "numeric_claims": [
+          {
+            "part": "pylon-l",
+            "field": "size.2",
+            "value": 1800.0
+          },
+          {
+            "part": "pylon-l",
+            "field": "position.0",
+            "value": 6872.325585815728
+          },
+          {
+            "part": "engine-nacelle-l",
+            "field": "size.2",
+            "value": 4500.0
+          },
+          {
+            "part": "engine-nacelle-l",
+            "field": "position.2",
+            "value": 3190.0027042301554
+          },
+          {
+            "part": "wing-l",
+            "field": "parametric.span",
+            "value": 14900.0
+          },
+          {
+            "part": "wing-l",
+            "field": "parametric.root_chord",
+            "value": 6000.0
+          },
+          {
+            "part": "wing-l",
+            "field": "reflection",
+            "value": "y"
+          },
+          {
+            "part": "wing-r",
+            "field": "position.1",
+            "value": -1972.54875
+          },
+          {
+            "part": "vertical-fin",
+            "field": "parametric.span",
+            "value": 6800.0
+          },
+          {
+            "part": "vertical-fin",
+            "field": "rotation.0",
+            "value": 90.0
+          },
+          {
+            "part": "horizontal-stab-l",
+            "field": "parametric.sweep_deg",
+            "value": 20.0
+          },
+          {
+            "part": "winglet-l",
+            "field": "parametric.dihedral_deg",
+            "value": 40.0
+          },
+          {
+            "part": "flap-l",
+            "field": "rotation.2",
+            "value": -20.0
+          },
+          {
+            "part": "nose-gear-strut",
+            "field": "size.2",
+            "value": 2600.0
+          },
+          {
+            "part": "main-gear-strut-l",
+            "field": "position.1",
+            "value": 1971.393
+          },
+          {
+            "part": "main-gear-wheels-l",
+            "field": "position.2",
+            "value": 1200.0
+          },
+          {
+            "part": "fuselage-mid",
+            "field": "parametric.length",
+            "value": 11002.74
+          },
+          {
+            "part": "tail-cone",
+            "field": "parametric.length",
+            "value": 3198.72
+          },
+          {
+            "part": "radome",
+            "field": "position.0",
+            "value": 25000.6
+          },
+          {
+            "part": "cockpit-windows",
+            "field": "rotation.0",
+            "value": -15.0
+          }
+        ]
+      },
+      "layout": {
+        "schema": "fk-layout-checks-v1",
+        "passed": false,
+        "issues": [
+          {
+            "code": "ATTACHMENT_GAP",
+            "parts": [
+              "pylon-l",
+              "engine-nacelle-l"
+            ],
+            "detail": "Declared contact has surface gap 31.3067 mm (limit 0.1 mm)"
+          },
+          {
+            "code": "MIRRORED_ATTACHMENT_GAP",
+            "parts": [
+              "pylon-r",
+              "engine-nacelle-r"
+            ],
+            "detail": "Mirrored contact gap 31.3067 mm (limit 0.1 mm)"
+          }
+        ],
+        "scope": "Aircraft engine axes and unrotated fuselage interval overlaps only; not a complete assembly/collision check",
+        "assembly": {
+          "schema": "fk-assembly-checks-v1",
+          "passed": false,
+          "issues": [
+            {
+              "code": "ATTACHMENT_GAP",
+              "parts": [
+                "pylon-l",
+                "engine-nacelle-l"
+              ],
+              "detail": "Declared contact has surface gap 31.3067 mm (limit 0.1 mm)"
+            },
+            {
+              "code": "MIRRORED_ATTACHMENT_GAP",
+              "parts": [
+                "pylon-r",
+                "engine-nacelle-r"
+              ],
+              "detail": "Mirrored contact gap 31.3067 mm (limit 0.1 mm)"
+            }
+          ],
+          "measurements": [
+            {
+              "kind": "mirrored_contact",
+              "parent": "fuselage-mid",
+              "child": "wing-r",
+              "surface_gap_mm": 0.0
+            },
+            {
+              "kind": "contact",
+              "parent": "fuselage-mid",
+              "child": "wing-l",
+              "anchor_error_mm": 9.094947017729282e-13,
+              "surface_gap_mm": 0.0
+            },
+            {
+              "kind": "mirrored_contact",
+              "parent": "wing-r",
+              "child": "winglet-r",
+              "surface_gap_mm": 0.0
+            },
+            {
+              "kind": "contact",
+              "parent": "wing-l",
+              "child": "winglet-l",
+              "anchor_error_mm": 0.0,
+              "surface_gap_mm": 0.0
+            },
+            {
+              "kind": "placement",
+              "parent": "wing-l",
+              "child": "flap-l",
+              "anchor_error_mm": 0.0
+            },
+            {
+              "kind": "mirrored_contact",
+              "parent": "wing-r",
+              "child": "pylon-r",
+              "surface_gap_mm": 0.0
+            },
+            {
+              "kind": "contact",
+              "parent": "wing-l",
+              "child": "pylon-l",
+              "anchor_error_mm": 0.0,
+              "surface_gap_mm": 0.0
+            },
+            {
+              "kind": "mirrored_contact",
+              "parent": "pylon-r",
+              "child": "engine-nacelle-r",
+              "surface_gap_mm": 31.30671643650932
+            },
+            {
+              "kind": "contact",
+              "parent": "pylon-l",
+              "child": "engine-nacelle-l",
+              "anchor_error_mm": 0.0,
+              "surface_gap_mm": 31.30671643650932
+            },
+            {
+              "kind": "placement",
+              "parent": "engine-nacelle-l",
+              "child": "engine-core-l",
+              "anchor_error_mm": 0.0
+            },
+            {
+              "kind": "contact",
+              "parent": "fuselage-aft",
+              "child": "vertical-fin",
+              "anchor_error_mm": 0.0,
+              "surface_gap_mm": 0.0
+            },
+            {
+              "kind": "mirrored_contact",
+              "parent": "fuselage-aft",
+              "child": "horizontal-stab-r",
+              "surface_gap_mm": 0.0
+            },
+            {
+              "kind": "contact",
+              "parent": "fuselage-aft",
+              "child": "horizontal-stab-l",
+              "anchor_error_mm": 0.0,
+              "surface_gap_mm": 0.0
+            },
+            {
+              "kind": "contact",
+              "parent": "fuselage-front",
+              "child": "nose-gear-strut",
+              "anchor_error_mm": 0.0,
+              "surface_gap_mm": 0.0
+            },
+            {
+              "kind": "contact",
+              "parent": "nose-gear-strut",
+              "child": "nose-gear-wheels",
+              "anchor_error_mm": 0.0,
+              "surface_gap_mm": 0.0
+            },
+            {
+              "kind": "mirrored_contact",
+              "parent": "fuselage-mid",
+              "child": "main-gear-strut-r",
+              "surface_gap_mm": 0.0
+            },
+            {
+              "kind": "contact",
+              "parent": "fuselage-mid",
+              "child": "main-gear-strut-l",
+              "anchor_error_mm": 0.0,
+              "surface_gap_mm": 0.0
+            },
+            {
+              "kind": "mirrored_contact",
+              "parent": "main-gear-strut-r",
+              "child": "main-gear-wheels-r",
+              "surface_gap_mm": 0.0
+            },
+            {
+              "kind": "contact",
+              "parent": "main-gear-strut-l",
+              "child": "main-gear-wheels-l",
+              "anchor_error_mm": 0.0,
+              "surface_gap_mm": 0.0
+            },
+            {
+              "kind": "placement",
+              "parent": "fuselage-front",
+              "child": "cockpit-windows",
+              "anchor_error_mm": 0.0
+            },
+            {
+              "kind": "axis",
+              "part": "engine-nacelle-l",
+              "axis_error_deg": 0.0
+            },
+            {
+              "kind": "axis",
+              "part": "engine-core-l",
+              "axis_error_deg": 0.0
+            },
+            {
+              "kind": "axis",
+              "part": "nose-gear-wheels",
+              "axis_error_deg": 0.0
+            },
+            {
+              "kind": "axis",
+              "part": "main-gear-wheels-l",
+              "axis_error_deg": 0.0
+            },
+            {
+              "kind": "axis",
+              "part": "nose-gear-strut",
+              "axis_error_deg": 0.0
+            },
+            {
+              "kind": "axis",
+              "part": "main-gear-strut-l",
+              "axis_error_deg": 0.0
+            },
+            {
+              "kind": "body_seam",
+              "parent": "tail-cone",
+              "child": "fuselage-aft",
+              "seam_error_mm": 0.0
+            },
+            {
+              "kind": "body_seam",
+              "parent": "fuselage-aft",
+              "child": "fuselage-mid",
+              "seam_error_mm": 9.094947017729282e-13
+            },
+            {
+              "kind": "body_seam",
+              "parent": "fuselage-mid",
+              "child": "fuselage-front",
+              "seam_error_mm": 0.0
+            },
+            {
+              "kind": "body_seam",
+              "parent": "fuselage-front",
+              "child": "radome",
+              "seam_error_mm": 3.637978807091713e-12
+            }
+          ],
+          "declared_contacts": 10,
+          "scope": "Declared anchor, axis, body-seam and contact distances only. Contact can include overlap; no penetration, smoothness, strength or full assembly certification. Undeclared relationships are unassessed."
+        }
+      },
+      "rank": [
+        -2,
+        0,
+        -1,
+        70.5
+      ],
+      "decision": {
+        "selected_round": 0,
+        "next_step": "revise",
+        "stage": "connections",
+        "reason": "保留第0轮规则编译候选：整机对称布局、机身分段椭圆剖面拼接（body_seam误差≈0）、机翼/小翼/起落架锚点接触均已达标，作为基准保留。但装配检查确认唯一major缺陷：pylon-l→engine-nacelle-l声明contact表面间隙31.31mm，镜像侧同样31.31mm，短舱圆柱面未触及吊架底面（box w=0锚点与cylinder u=0.6锚点重合但法向有间隙）。应在connections阶段沿接触法向消除该间隙：将child_anchor的cylinder轴向分数从0.6微调约31.3/4500≈0.007（u≈0.607），或等价增大吊架高度，使两侧间隙≤0.1mm。襟翼视觉贴合与短舱下挂高度为minor，待接触修复后在surfaces阶段处理，不与本次编辑重复。"
+      },
+      "selected_when_reviewed": true,
+      "action_attempts": [
+        {
+          "attempt": 0,
+          "accepted": true
+        }
+      ],
+      "action_state": "accepted-for-evaluation"
+    },
+    {
+      "round": 1,
+      "state": "reviewed",
+      "derived_from": 0,
+      "stage": "connections",
+      "design_sha256": "4fa886e8ea42b3dd9de26d0d8f7179ade5d16c877088bbbe60a8d0c0e77a023f",
+      "view": "perception/round-01/views.png",
+      "render_frame": "union of baseline/current/retained; both comparison sheets share bounds",
+      "review": {
+        "silhouette": 74,
+        "proportions": 75,
+        "layout": 66,
+        "reference_limitations": "参考照片为仰视飞行姿态、透视强烈，整机长度、翼展、机身直径均无法精确测量，属设计假设；发动机型号、垂尾安装角、机翼后掠角亦为假设。当前渲染为正交投影，与照片透视差异不构成几何缺陷证据。保留候选与当前渲染逐视图一致，无新差异可比较。",
+        "findings": [
+          {
+            "severity": "major",
+            "parts": [
+              "pylon-l",
+              "engine-nacelle-l",
+              "pylon-r",
+              "engine-nacelle-r"
+            ],
+            "observation": "独立装配检查报告吊架-短舱声明接触面间隙31.31mm（两侧镜像相同，ATTACHMENT_GAP与MIRRORED_ATTACHMENT_GAP）。上一轮建议将短舱child_anchor轴向分数u从0.6改为0.607（约31.3/4500≈0.007），但当前facts表中workflow的attachment仍为u=0.6，修正未执行，声明contact仍未达标。",
+            "suggested_change": "本次动作中把pylon-l→engine-nacelle-l附件的child_anchor u设为0.607（或吊架高度增加约32mm），使圆柱表面与吊架底面间隙≤0.1mm，镜像侧由规则自动派生。"
+          },
+          {
+            "severity": "minor",
+            "parts": [
+              "engine-nacelle-l",
+              "engine-nacelle-r"
+            ],
+            "observation": "照片中短舱明显吊挂在翼下并留有垂直间距；当前渲染SIDE/FRONT视图中短舱几乎与翼面同高、下挂特征弱。注意TOP视图中翼根在内、翼尖在外，机翼朝向正确。",
+            "suggested_change": "在消除31.3mm接触间隙后，如仍有修订余量，可下移短舱锚点或加高吊架，使短舱低于翼面约一个短舱半径（约1250mm）。"
+          },
+          {
+            "severity": "minor",
+            "parts": [
+              "flap-l",
+              "flap-r"
+            ],
+            "observation": "TOP与ISO视图中后缘襟翼呈与主翼分离的独立薄板；声明为placement故不报错，但外观上与照片中贴合翼下的襟翼不符。",
+            "suggested_change": "后续surfaces阶段调整flap-l附件child_anchor（如v=0.5）使其贴附主翼下表面后缘区域。"
+          }
+        ],
+        "numeric_claims": [
+          {
+            "part": "pylon-l",
+            "field": "size.2",
+            "value": 1800.0
+          },
+          {
+            "part": "engine-nacelle-l",
+            "field": "size.2",
+            "value": 4500.0
+          },
+          {
+            "part": "engine-nacelle-l",
+            "field": "position.0",
+            "value": 6390.825585815728
+          },
+          {
+            "part": "wing-l",
+            "field": "parametric.span",
+            "value": 14900.0
+          },
+          {
+            "part": "wing-l",
+            "field": "reflection",
+            "value": "y"
+          },
+          {
+            "part": "wing-r",
+            "field": "position.1",
+            "value": -1972.54875
+          },
+          {
+            "part": "vertical-fin",
+            "field": "rotation.0",
+            "value": 90.0
+          },
+          {
+            "part": "horizontal-stab-l",
+            "field": "rotation.2",
+            "value": -20.0
+          },
+          {
+            "part": "flap-l",
+            "field": "parametric.span",
+            "value": 5500.0
+          },
+          {
+            "part": "winglet-l",
+            "field": "parametric.dihedral_deg",
+            "value": 40.0
+          },
+          {
+            "part": "nose-gear-strut",
+            "field": "size.2",
+            "value": 2600.0
+          },
+          {
+            "part": "main-gear-wheels-l",
+            "field": "position.2",
+            "value": 1200.0
+          },
+          {
+            "part": "fuselage-mid",
+            "field": "parametric.length",
+            "value": 11002.74
+          },
+          {
+            "part": "radome",
+            "field": "position.0",
+            "value": 25000.6
+          },
+          {
+            "part": "cockpit-windows",
+            "field": "rotation.0",
+            "value": -15.0
+          }
+        ]
+      },
+      "layout": {
+        "schema": "fk-layout-checks-v1",
+        "passed": false,
+        "issues": [
+          {
+            "code": "ATTACHMENT_GAP",
+            "parts": [
+              "pylon-l",
+              "engine-nacelle-l"
+            ],
+            "detail": "Declared contact has surface gap 31.3067 mm (limit 0.1 mm)"
+          },
+          {
+            "code": "MIRRORED_ATTACHMENT_GAP",
+            "parts": [
+              "pylon-r",
+              "engine-nacelle-r"
+            ],
+            "detail": "Mirrored contact gap 31.3067 mm (limit 0.1 mm)"
+          }
+        ],
+        "scope": "Aircraft engine axes and unrotated fuselage interval overlaps only; not a complete assembly/collision check",
+        "assembly": {
+          "schema": "fk-assembly-checks-v1",
+          "passed": false,
+          "issues": [
+            {
+              "code": "ATTACHMENT_GAP",
+              "parts": [
+                "pylon-l",
+                "engine-nacelle-l"
+              ],
+              "detail": "Declared contact has surface gap 31.3067 mm (limit 0.1 mm)"
+            },
+            {
+              "code": "MIRRORED_ATTACHMENT_GAP",
+              "parts": [
+                "pylon-r",
+                "engine-nacelle-r"
+              ],
+              "detail": "Mirrored contact gap 31.3067 mm (limit 0.1 mm)"
+            }
+          ],
+          "measurements": [
+            {
+              "kind": "mirrored_contact",
+              "parent": "fuselage-mid",
+              "child": "wing-r",
+              "surface_gap_mm": 0.0
+            },
+            {
+              "kind": "contact",
+              "parent": "fuselage-mid",
+              "child": "wing-l",
+              "anchor_error_mm": 9.094947017729282e-13,
+              "surface_gap_mm": 0.0
+            },
+            {
+              "kind": "mirrored_contact",
+              "parent": "wing-r",
+              "child": "winglet-r",
+              "surface_gap_mm": 0.0
+            },
+            {
+              "kind": "contact",
+              "parent": "wing-l",
+              "child": "winglet-l",
+              "anchor_error_mm": 0.0,
+              "surface_gap_mm": 0.0
+            },
+            {
+              "kind": "placement",
+              "parent": "wing-l",
+              "child": "flap-l",
+              "anchor_error_mm": 0.0
+            },
+            {
+              "kind": "mirrored_contact",
+              "parent": "wing-r",
+              "child": "pylon-r",
+              "surface_gap_mm": 0.0
+            },
+            {
+              "kind": "contact",
+              "parent": "wing-l",
+              "child": "pylon-l",
+              "anchor_error_mm": 0.0,
+              "surface_gap_mm": 0.0
+            },
+            {
+              "kind": "mirrored_contact",
+              "parent": "pylon-r",
+              "child": "engine-nacelle-r",
+              "surface_gap_mm": 31.30671643650932
+            },
+            {
+              "kind": "contact",
+              "parent": "pylon-l",
+              "child": "engine-nacelle-l",
+              "anchor_error_mm": 0.0,
+              "surface_gap_mm": 31.30671643650932
+            },
+            {
+              "kind": "placement",
+              "parent": "engine-nacelle-l",
+              "child": "engine-core-l",
+              "anchor_error_mm": 0.0
+            },
+            {
+              "kind": "contact",
+              "parent": "fuselage-aft",
+              "child": "vertical-fin",
+              "anchor_error_mm": 0.0,
+              "surface_gap_mm": 0.0
+            },
+            {
+              "kind": "mirrored_contact",
+              "parent": "fuselage-aft",
+              "child": "horizontal-stab-r",
+              "surface_gap_mm": 0.0
+            },
+            {
+              "kind": "contact",
+              "parent": "fuselage-aft",
+              "child": "horizontal-stab-l",
+              "anchor_error_mm": 0.0,
+              "surface_gap_mm": 0.0
+            },
+            {
+              "kind": "contact",
+              "parent": "fuselage-front",
+              "child": "nose-gear-strut",
+              "anchor_error_mm": 0.0,
+              "surface_gap_mm": 0.0
+            },
+            {
+              "kind": "contact",
+              "parent": "nose-gear-strut",
+              "child": "nose-gear-wheels",
+              "anchor_error_mm": 0.0,
+              "surface_gap_mm": 0.0
+            },
+            {
+              "kind": "mirrored_contact",
+              "parent": "fuselage-mid",
+              "child": "main-gear-strut-r",
+              "surface_gap_mm": 0.0
+            },
+            {
+              "kind": "contact",
+              "parent": "fuselage-mid",
+              "child": "main-gear-strut-l",
+              "anchor_error_mm": 0.0,
+              "surface_gap_mm": 0.0
+            },
+            {
+              "kind": "mirrored_contact",
+              "parent": "main-gear-strut-r",
+              "child": "main-gear-wheels-r",
+              "surface_gap_mm": 0.0
+            },
+            {
+              "kind": "contact",
+              "parent": "main-gear-strut-l",
+              "child": "main-gear-wheels-l",
+              "anchor_error_mm": 0.0,
+              "surface_gap_mm": 0.0
+            },
+            {
+              "kind": "placement",
+              "parent": "fuselage-front",
+              "child": "cockpit-windows",
+              "anchor_error_mm": 0.0
+            },
+            {
+              "kind": "axis",
+              "part": "engine-nacelle-l",
+              "axis_error_deg": 0.0
+            },
+            {
+              "kind": "axis",
+              "part": "engine-core-l",
+              "axis_error_deg": 0.0
+            },
+            {
+              "kind": "axis",
+              "part": "nose-gear-wheels",
+              "axis_error_deg": 0.0
+            },
+            {
+              "kind": "axis",
+              "part": "main-gear-wheels-l",
+              "axis_error_deg": 0.0
+            },
+            {
+              "kind": "axis",
+              "part": "nose-gear-strut",
+              "axis_error_deg": 0.0
+            },
+            {
+              "kind": "axis",
+              "part": "main-gear-strut-l",
+              "axis_error_deg": 0.0
+            },
+            {
+              "kind": "body_seam",
+              "parent": "tail-cone",
+              "child": "fuselage-aft",
+              "seam_error_mm": 0.0
+            },
+            {
+              "kind": "body_seam",
+              "parent": "fuselage-aft",
+              "child": "fuselage-mid",
+              "seam_error_mm": 9.094947017729282e-13
+            },
+            {
+              "kind": "body_seam",
+              "parent": "fuselage-mid",
+              "child": "fuselage-front",
+              "seam_error_mm": 0.0
+            },
+            {
+              "kind": "body_seam",
+              "parent": "fuselage-front",
+              "child": "radome",
+              "seam_error_mm": 3.637978807091713e-12
+            }
+          ],
+          "declared_contacts": 10,
+          "scope": "Declared anchor, axis, body-seam and contact distances only. Contact can include overlap; no penetration, smoothness, strength or full assembly certification. Undeclared relationships are unassessed."
+        }
+      },
+      "rank": [
+        -2,
+        0,
+        -1,
+        71.9
+      ],
+      "decision": {
+        "selected_round": 1,
+        "next_step": "revise",
+        "stage": "connections",
+        "reason": "保留第1轮候选：两者渲染逐视图一致，但第1轮评分更高且差异表已确认短舱位置向接触方向修正过一次，是更好的基线。必须继续修订：装配检查仍报告pylon-l→engine-nacelle-l声明接触面间隙31.31mm（镜像侧相同），这是唯一的主要缺陷，且上一轮建议的child_anchor u=0.607并未写入当前workflow（仍为0.6）。下一步在connections阶段以完整assembly对象重申全部现有规则，仅把该附件的child_anchor u改为0.607（约31.3/4500≈0.007），镜像侧由规则自动派生，目标是间隙≤0.1mm。次要项（短舱下挂间距、襟翼贴附）留待修订余量允许时处理，不与本轮主要修复混叠。"
+      },
+      "selected_when_reviewed": true,
+      "action_attempts": [
+        {
+          "attempt": 0,
+          "accepted": false,
+          "error": "Action has no effect"
+        },
+        {
+          "attempt": 1,
+          "accepted": true
+        }
+      ],
+      "action_state": "accepted-for-evaluation"
+    },
+    {
+      "round": 2,
+      "state": "reviewed",
+      "derived_from": 1,
+      "stage": "connections",
+      "design_sha256": "39dc617317399ff37e8e75d6798707ac4034f3d42c144682b86f7759aa3ccd76",
+      "view": "perception/round-02/views.png",
+      "render_frame": "union of baseline/current/retained; both comparison sheets share bounds",
+      "review": {
+        "silhouette": 78,
+        "proportions": 78,
+        "layout": 72,
+        "reference_limitations": "参考照片为仰视飞行姿态、透视强烈，整机长度、翼展、机身直径均无法测量，属设计假设；发动机型号、垂尾安装角、机翼后掠角为假设。正交渲染与照片透视差异不构成几何缺陷证据。保留候选与当前渲染逐视图一致。整体轮廓已达单通道双发客机形态：翼根在内、翼尖在外，垂尾竖立，起落架接触良好。",
+        "findings": [
+          {
+            "severity": "major",
+            "parts": [
+              "pylon-l",
+              "engine-nacelle-l",
+              "pylon-r",
+              "engine-nacelle-r"
+            ],
+            "observation": "装配检查仍报ATTACHMENT_GAP：吊架-短舱声明contact间隙0.276156mm（超0.1mm限，两侧镜像相同）。对比上一轮31.31mm，说明child_anchor u=0.607已执行（facts中pylon size.2=1832、短舱Z已下移32mm），但修正量不足约0.28mm，声明仍未达标。",
+            "suggested_change": "本轮将pylon-l→engine-nacelle-l的child_anchor u从0.607提高到0.6071（0.276/4500≈0.0000614），或把pylon-l的size.2由1832加到1833；镜像侧由规则自动派生，勿重复编辑derived pose。"
+          },
+          {
+            "severity": "minor",
+            "parts": [
+              "engine-nacelle-l",
+              "engine-nacelle-r",
+              "pylon-l",
+              "pylon-r"
+            ],
+            "observation": "SIDE/FRONT视图中短舱仍几乎与翼面同高，照片中短舱明显吊挂于翼下且留有约一个短舱半径的垂直间距；翼下吊挂特征偏弱。",
+            "suggested_change": "接触间隙消除后，如仍有修订余量，可降低pylon-l→engine-nacelle-l的child锚点高度或加高吊架约600-1200mm，使短舱低于翼面。"
+          },
+          {
+            "severity": "minor",
+            "parts": [
+              "flap-l",
+              "flap-r"
+            ],
+            "observation": "TOP/ISO视图中后缘襟翼仍是与主翼分离的独立薄板；声明为placement故检查不报错，但与照片中贴合翼下的襟翼观感不符。",
+            "suggested_change": "surfaces阶段调整wing-l→flap-l附件的child_anchor（如v=0.5、u≈0.1）使其贴附主翼下表面后缘。"
+          }
+        ],
+        "numeric_claims": [
+          {
+            "part": "pylon-l",
+            "field": "size.2",
+            "value": 1832.0
+          },
+          {
+            "part": "engine-nacelle-l",
+            "field": "size.2",
+            "value": 4500.0
+          },
+          {
+            "part": "engine-nacelle-l",
+            "field": "position.2",
+            "value": 3158.0027042301554
+          },
+          {
+            "part": "wing-l",
+            "field": "parametric.span",
+            "value": 14900.0
+          },
+          {
+            "part": "wing-l",
+            "field": "reflection",
+            "value": "y"
+          },
+          {
+            "part": "wing-r",
+            "field": "position.1",
+            "value": -1972.54875
+          },
+          {
+            "part": "vertical-fin",
+            "field": "rotation.0",
+            "value": 90.0
+          },
+          {
+            "part": "horizontal-stab-l",
+            "field": "rotation.2",
+            "value": -20.0
+          },
+          {
+            "part": "flap-l",
+            "field": "parametric.span",
+            "value": 5500.0
+          },
+          {
+            "part": "winglet-l",
+            "field": "parametric.dihedral_deg",
+            "value": 40.0
+          },
+          {
+            "part": "nose-gear-strut",
+            "field": "size.2",
+            "value": 2600.0
+          },
+          {
+            "part": "main-gear-wheels-l",
+            "field": "position.2",
+            "value": 1200.0
+          },
+          {
+            "part": "fuselage-mid",
+            "field": "parametric.length",
+            "value": 11002.74
+          },
+          {
+            "part": "radome",
+            "field": "position.0",
+            "value": 25000.6
+          },
+          {
+            "part": "cockpit-windows",
+            "field": "rotation.0",
+            "value": -15.0
+          }
+        ]
+      },
+      "layout": {
+        "schema": "fk-layout-checks-v1",
+        "passed": false,
+        "issues": [
+          {
+            "code": "ATTACHMENT_GAP",
+            "parts": [
+              "pylon-l",
+              "engine-nacelle-l"
+            ],
+            "detail": "Declared contact has surface gap 0.276156 mm (limit 0.1 mm)"
+          },
+          {
+            "code": "MIRRORED_ATTACHMENT_GAP",
+            "parts": [
+              "pylon-r",
+              "engine-nacelle-r"
+            ],
+            "detail": "Mirrored contact gap 0.276156 mm (limit 0.1 mm)"
+          }
+        ],
+        "scope": "Aircraft engine axes and unrotated fuselage interval overlaps only; not a complete assembly/collision check",
+        "assembly": {
+          "schema": "fk-assembly-checks-v1",
+          "passed": false,
+          "issues": [
+            {
+              "code": "ATTACHMENT_GAP",
+              "parts": [
+                "pylon-l",
+                "engine-nacelle-l"
+              ],
+              "detail": "Declared contact has surface gap 0.276156 mm (limit 0.1 mm)"
+            },
+            {
+              "code": "MIRRORED_ATTACHMENT_GAP",
+              "parts": [
+                "pylon-r",
+                "engine-nacelle-r"
+              ],
+              "detail": "Mirrored contact gap 0.276156 mm (limit 0.1 mm)"
+            }
+          ],
+          "measurements": [
+            {
+              "kind": "mirrored_contact",
+              "parent": "fuselage-mid",
+              "child": "wing-r",
+              "surface_gap_mm": 0.0
+            },
+            {
+              "kind": "contact",
+              "parent": "fuselage-mid",
+              "child": "wing-l",
+              "anchor_error_mm": 9.094947017729282e-13,
+              "surface_gap_mm": 0.0
+            },
+            {
+              "kind": "mirrored_contact",
+              "parent": "wing-r",
+              "child": "winglet-r",
+              "surface_gap_mm": 0.0
+            },
+            {
+              "kind": "contact",
+              "parent": "wing-l",
+              "child": "winglet-l",
+              "anchor_error_mm": 0.0,
+              "surface_gap_mm": 0.0
+            },
+            {
+              "kind": "placement",
+              "parent": "wing-l",
+              "child": "flap-l",
+              "anchor_error_mm": 0.0
+            },
+            {
+              "kind": "mirrored_contact",
+              "parent": "wing-r",
+              "child": "pylon-r",
+              "surface_gap_mm": 0.0
+            },
+            {
+              "kind": "contact",
+              "parent": "wing-l",
+              "child": "pylon-l",
+              "anchor_error_mm": 0.0,
+              "surface_gap_mm": 0.0
+            },
+            {
+              "kind": "mirrored_contact",
+              "parent": "pylon-r",
+              "child": "engine-nacelle-r",
+              "surface_gap_mm": 0.27615605392491627
+            },
+            {
+              "kind": "contact",
+              "parent": "pylon-l",
+              "child": "engine-nacelle-l",
+              "anchor_error_mm": 0.0,
+              "surface_gap_mm": 0.27615605392491627
+            },
+            {
+              "kind": "placement",
+              "parent": "engine-nacelle-l",
+              "child": "engine-core-l",
+              "anchor_error_mm": 0.0
+            },
+            {
+              "kind": "contact",
+              "parent": "fuselage-aft",
+              "child": "vertical-fin",
+              "anchor_error_mm": 0.0,
+              "surface_gap_mm": 0.0
+            },
+            {
+              "kind": "mirrored_contact",
+              "parent": "fuselage-aft",
+              "child": "horizontal-stab-r",
+              "surface_gap_mm": 0.0
+            },
+            {
+              "kind": "contact",
+              "parent": "fuselage-aft",
+              "child": "horizontal-stab-l",
+              "anchor_error_mm": 0.0,
+              "surface_gap_mm": 0.0
+            },
+            {
+              "kind": "contact",
+              "parent": "fuselage-front",
+              "child": "nose-gear-strut",
+              "anchor_error_mm": 0.0,
+              "surface_gap_mm": 0.0
+            },
+            {
+              "kind": "contact",
+              "parent": "nose-gear-strut",
+              "child": "nose-gear-wheels",
+              "anchor_error_mm": 0.0,
+              "surface_gap_mm": 0.0
+            },
+            {
+              "kind": "mirrored_contact",
+              "parent": "fuselage-mid",
+              "child": "main-gear-strut-r",
+              "surface_gap_mm": 0.0
+            },
+            {
+              "kind": "contact",
+              "parent": "fuselage-mid",
+              "child": "main-gear-strut-l",
+              "anchor_error_mm": 0.0,
+              "surface_gap_mm": 0.0
+            },
+            {
+              "kind": "mirrored_contact",
+              "parent": "main-gear-strut-r",
+              "child": "main-gear-wheels-r",
+              "surface_gap_mm": 0.0
+            },
+            {
+              "kind": "contact",
+              "parent": "main-gear-strut-l",
+              "child": "main-gear-wheels-l",
+              "anchor_error_mm": 0.0,
+              "surface_gap_mm": 0.0
+            },
+            {
+              "kind": "placement",
+              "parent": "fuselage-front",
+              "child": "cockpit-windows",
+              "anchor_error_mm": 0.0
+            },
+            {
+              "kind": "axis",
+              "part": "engine-nacelle-l",
+              "axis_error_deg": 0.0
+            },
+            {
+              "kind": "axis",
+              "part": "engine-core-l",
+              "axis_error_deg": 0.0
+            },
+            {
+              "kind": "axis",
+              "part": "nose-gear-wheels",
+              "axis_error_deg": 0.0
+            },
+            {
+              "kind": "axis",
+              "part": "main-gear-wheels-l",
+              "axis_error_deg": 0.0
+            },
+            {
+              "kind": "axis",
+              "part": "nose-gear-strut",
+              "axis_error_deg": 0.0
+            },
+            {
+              "kind": "axis",
+              "part": "main-gear-strut-l",
+              "axis_error_deg": 0.0
+            },
+            {
+              "kind": "body_seam",
+              "parent": "tail-cone",
+              "child": "fuselage-aft",
+              "seam_error_mm": 0.0
+            },
+            {
+              "kind": "body_seam",
+              "parent": "fuselage-aft",
+              "child": "fuselage-mid",
+              "seam_error_mm": 9.094947017729282e-13
+            },
+            {
+              "kind": "body_seam",
+              "parent": "fuselage-mid",
+              "child": "fuselage-front",
+              "seam_error_mm": 0.0
+            },
+            {
+              "kind": "body_seam",
+              "parent": "fuselage-front",
+              "child": "radome",
+              "seam_error_mm": 3.637978807091713e-12
+            }
+          ],
+          "declared_contacts": 10,
+          "scope": "Declared anchor, axis, body-seam and contact distances only. Contact can include overlap; no penetration, smoothness, strength or full assembly certification. Undeclared relationships are unassessed."
+        }
+      },
+      "rank": [
+        -2,
+        0,
+        -1,
+        76.2
+      ],
+      "decision": {
+        "selected_round": 2,
+        "next_step": "revise",
+        "stage": "connections",
+        "reason": "选择第2轮候选：整体轮廓更完整，吊架-短舱间隙已从31.31mm降至0.276mm，所有其他声明接触、轴向对准与机身接缝均为0，翼根在内、翼尖在外，垂尾竖立，明显优于第1轮。仍有3次修订机会。保留唯一major问题为ATTACHMENT_GAP 0.276mm（限0.1mm），可精确修正：将pylon-l→engine-nacelle-l附件的child_anchor u从0.607提高约0.0000614（约0.6071），或把pylon size.2由1832加到1833，镜像侧由规则自动派生。修好后再用剩余余量处理minor项：加高吊架使短舱低于翼面约一个短舱半径，并将flap-l附件child_anchor调至贴附主翼下表面后缘（如v=0.5、u≈0.1）。参考照片为仰视强透视，长度/翼展/机身直径均无法测量，属设计假设；正交渲染与照片透视差异不构成几何缺陷证据。"
+      },
+      "selected_when_reviewed": true,
+      "action_attempts": [
+        {
+          "attempt": 0,
+          "accepted": true
+        }
+      ],
+      "action_state": "accepted-for-evaluation"
+    },
+    {
+      "round": 3,
+      "state": "reviewed",
+      "derived_from": 2,
+      "stage": "connections",
+      "design_sha256": "a8cb864498e1823a1a9b932bc0eda7089e2508aa90bb199e1eb38b2122e164b5",
+      "view": "perception/round-03/views.png",
+      "render_frame": "union of baseline/current/retained; both comparison sheets share bounds",
+      "review": {
+        "silhouette": 80,
+        "proportions": 80,
+        "layout": 76,
+        "reference_limitations": "参考照片为仰视飞行姿态、透视强烈，整机长度、翼展、机身直径均无法测量，属设计假设；发动机型号、垂尾安装角、机翼后掠角为假设。正交渲染与照片透视差异不构成几何缺陷证据。本轮装配检查全部通过：吊架-短舱contact间隙已从0.276mm降为0.0mm（short舱u=0.6075与pylon size.2=2400的编辑已生效），所有body接缝误差≤4e-12mm，翼根在内、翼尖在外，垂尾竖立，左右镜像派生一致。保留候选与当前渲染逐视图一致。整体已达单通道双发客机形态，主要残余为翼下吊挂高度观感与襟翼贴合度等次要问题。",
+        "findings": [
+          {
+            "severity": "minor",
+            "parts": [
+              "pylon-l",
+              "engine-nacelle-l",
+              "pylon-r",
+              "engine-nacelle-r"
+            ],
+            "observation": "SIDE/FRONT视图中短舱顶几乎与翼面同高，照片中发动机明显吊挂于翼下并留有约一个短舱半径的垂直间距，翼下吊挂特征偏弱。contact已达标（surface_gap=0.0），此为观感问题而非结构缺陷。",
+            "suggested_change": "surfaces阶段可加高pylon-l（size.2从2400约至3300-3600）或调低其→短舱的child锚点，使短舱下沉600-1200mm；镜像侧由规则派生，勿直接编辑derived pose。"
+          },
+          {
+            "severity": "minor",
+            "parts": [
+              "flap-l",
+              "flap-r"
+            ],
+            "observation": "TOP/ISO视图中后缘襟翼仍是与主翼分离的独立薄板，照片中襟翼贴合于翼下后缘。附件为placement故检查不报错，属观感问题。",
+            "suggested_change": "surfaces阶段调整wing-l→flap-l附件child_anchor（如u≈0.1、v=0.5）并可能下调flap位置，使其贴附主翼下表面后缘。"
+          },
+          {
+            "severity": "minor",
+            "parts": [
+              "winglet-l",
+              "winglet-r"
+            ],
+            "observation": "FRONT视图中翼梢小翼外倾角偏大且上翘过渡生硬，照片中小翼更贴近主翼平面延伸后上折；ISO视图中左小翼有轻微脱离翼尖观感（检查surface_gap=0.0，为视觉透视）。",
+            "suggested_change": "surfaces阶段可将winglet的dihedral_deg从40降至约25-30，使其过渡更接近照片观感；无需改动其位置派生。"
+          }
+        ],
+        "numeric_claims": [
+          {
+            "part": "pylon-l",
+            "field": "size.2",
+            "value": 2400.0
+          },
+          {
+            "part": "engine-nacelle-l",
+            "field": "size.2",
+            "value": 4500.0
+          },
+          {
+            "part": "engine-nacelle-l",
+            "field": "position.2",
+            "value": 2590.0027042301554
+          },
+          {
+            "part": "wing-l",
+            "field": "parametric.span",
+            "value": 14900.0
+          },
+          {
+            "part": "wing-l",
+            "field": "reflection",
+            "value": "y"
+          },
+          {
+            "part": "wing-r",
+            "field": "position.1",
+            "value": -1972.54875
+          },
+          {
+            "part": "vertical-fin",
+            "field": "rotation.0",
+            "value": 90.0
+          },
+          {
+            "part": "horizontal-stab-l",
+            "field": "rotation.2",
+            "value": -20.0
+          },
+          {
+            "part": "flap-l",
+            "field": "parametric.span",
+            "value": 5500.0
+          },
+          {
+            "part": "winglet-l",
+            "field": "parametric.dihedral_deg",
+            "value": 40.0
+          },
+          {
+            "part": "nose-gear-strut",
+            "field": "size.2",
+            "value": 2600.0
+          },
+          {
+            "part": "main-gear-wheels-l",
+            "field": "position.2",
+            "value": 1200.0
+          },
+          {
+            "part": "fuselage-mid",
+            "field": "parametric.length",
+            "value": 11002.74
+          },
+          {
+            "part": "radome",
+            "field": "position.0",
+            "value": 25000.6
+          },
+          {
+            "part": "cockpit-windows",
+            "field": "rotation.0",
+            "value": -15.0
+          }
+        ]
+      },
+      "layout": {
+        "schema": "fk-layout-checks-v1",
+        "passed": true,
+        "issues": [],
+        "scope": "Aircraft engine axes and unrotated fuselage interval overlaps only; not a complete assembly/collision check",
+        "assembly": {
+          "schema": "fk-assembly-checks-v1",
+          "passed": true,
+          "issues": [],
+          "measurements": [
+            {
+              "kind": "mirrored_contact",
+              "parent": "fuselage-mid",
+              "child": "wing-r",
+              "surface_gap_mm": 0.0
+            },
+            {
+              "kind": "contact",
+              "parent": "fuselage-mid",
+              "child": "wing-l",
+              "anchor_error_mm": 9.094947017729282e-13,
+              "surface_gap_mm": 0.0
+            },
+            {
+              "kind": "mirrored_contact",
+              "parent": "wing-r",
+              "child": "winglet-r",
+              "surface_gap_mm": 0.0
+            },
+            {
+              "kind": "contact",
+              "parent": "wing-l",
+              "child": "winglet-l",
+              "anchor_error_mm": 0.0,
+              "surface_gap_mm": 0.0
+            },
+            {
+              "kind": "placement",
+              "parent": "wing-l",
+              "child": "flap-l",
+              "anchor_error_mm": 0.0
+            },
+            {
+              "kind": "mirrored_contact",
+              "parent": "wing-r",
+              "child": "pylon-r",
+              "surface_gap_mm": 0.0
+            },
+            {
+              "kind": "contact",
+              "parent": "wing-l",
+              "child": "pylon-l",
+              "anchor_error_mm": 0.0,
+              "surface_gap_mm": 0.0
+            },
+            {
+              "kind": "mirrored_contact",
+              "parent": "pylon-r",
+              "child": "engine-nacelle-r",
+              "surface_gap_mm": 0.0
+            },
+            {
+              "kind": "contact",
+              "parent": "pylon-l",
+              "child": "engine-nacelle-l",
+              "anchor_error_mm": 0.0,
+              "surface_gap_mm": 0.0
+            },
+            {
+              "kind": "placement",
+              "parent": "engine-nacelle-l",
+              "child": "engine-core-l",
+              "anchor_error_mm": 0.0
+            },
+            {
+              "kind": "contact",
+              "parent": "fuselage-aft",
+              "child": "vertical-fin",
+              "anchor_error_mm": 0.0,
+              "surface_gap_mm": 0.0
+            },
+            {
+              "kind": "mirrored_contact",
+              "parent": "fuselage-aft",
+              "child": "horizontal-stab-r",
+              "surface_gap_mm": 0.0
+            },
+            {
+              "kind": "contact",
+              "parent": "fuselage-aft",
+              "child": "horizontal-stab-l",
+              "anchor_error_mm": 0.0,
+              "surface_gap_mm": 0.0
+            },
+            {
+              "kind": "contact",
+              "parent": "fuselage-front",
+              "child": "nose-gear-strut",
+              "anchor_error_mm": 0.0,
+              "surface_gap_mm": 0.0
+            },
+            {
+              "kind": "contact",
+              "parent": "nose-gear-strut",
+              "child": "nose-gear-wheels",
+              "anchor_error_mm": 0.0,
+              "surface_gap_mm": 0.0
+            },
+            {
+              "kind": "mirrored_contact",
+              "parent": "fuselage-mid",
+              "child": "main-gear-strut-r",
+              "surface_gap_mm": 0.0
+            },
+            {
+              "kind": "contact",
+              "parent": "fuselage-mid",
+              "child": "main-gear-strut-l",
+              "anchor_error_mm": 0.0,
+              "surface_gap_mm": 0.0
+            },
+            {
+              "kind": "mirrored_contact",
+              "parent": "main-gear-strut-r",
+              "child": "main-gear-wheels-r",
+              "surface_gap_mm": 0.0
+            },
+            {
+              "kind": "contact",
+              "parent": "main-gear-strut-l",
+              "child": "main-gear-wheels-l",
+              "anchor_error_mm": 0.0,
+              "surface_gap_mm": 0.0
+            },
+            {
+              "kind": "placement",
+              "parent": "fuselage-front",
+              "child": "cockpit-windows",
+              "anchor_error_mm": 0.0
+            },
+            {
+              "kind": "axis",
+              "part": "engine-nacelle-l",
+              "axis_error_deg": 0.0
+            },
+            {
+              "kind": "axis",
+              "part": "engine-core-l",
+              "axis_error_deg": 0.0
+            },
+            {
+              "kind": "axis",
+              "part": "nose-gear-wheels",
+              "axis_error_deg": 0.0
+            },
+            {
+              "kind": "axis",
+              "part": "main-gear-wheels-l",
+              "axis_error_deg": 0.0
+            },
+            {
+              "kind": "axis",
+              "part": "nose-gear-strut",
+              "axis_error_deg": 0.0
+            },
+            {
+              "kind": "axis",
+              "part": "main-gear-strut-l",
+              "axis_error_deg": 0.0
+            },
+            {
+              "kind": "body_seam",
+              "parent": "tail-cone",
+              "child": "fuselage-aft",
+              "seam_error_mm": 0.0
+            },
+            {
+              "kind": "body_seam",
+              "parent": "fuselage-aft",
+              "child": "fuselage-mid",
+              "seam_error_mm": 9.094947017729282e-13
+            },
+            {
+              "kind": "body_seam",
+              "parent": "fuselage-mid",
+              "child": "fuselage-front",
+              "seam_error_mm": 0.0
+            },
+            {
+              "kind": "body_seam",
+              "parent": "fuselage-front",
+              "child": "radome",
+              "seam_error_mm": 3.637978807091713e-12
+            }
+          ],
+          "declared_contacts": 10,
+          "scope": "Declared anchor, axis, body-seam and contact distances only. Contact can include overlap; no penetration, smoothness, strength or full assembly certification. Undeclared relationships are unassessed."
+        }
+      },
+      "rank": [
+        0,
+        0,
+        0,
+        78.8
+      ],
+      "decision": {
+        "selected_round": 3,
+        "next_step": "revise",
+        "stage": "surfaces",
+        "reason": "选择第3轮候选：其装配检查全部通过（吊架-短舱contact间隙由0.276mm降为0.0mm，body接缝误差≤4e-12mm），轮廓/比例/布局评分均高于第2轮保留候选（80/80/76 vs 78/78/72），且第2轮唯一的major问题（ATTACHMENT_GAP）已修复，第3轮明显优于第2轮。参考照片为仰视飞行姿态、透视强烈，长度/翼展/机身直径不可测量，正交渲染与照片差异不作为几何缺陷证据。当前无major问题，但仍有可用修订（剩余2次），minor观感问题值得在surfaces阶段修一次：(1) 翼下吊挂高度偏弱——对照照片，发动机明显吊于翼下并留有约一个短舱半径的垂直间距，本轮SIDE/FRONT中短舱顶几乎与翼面同高；建议加高pylon-l的size.2（2400→约3300-3600），镜像侧由规则派生；(2) 襟翼仍是与主翼分离的独立薄板（placement附件故检查不报错），可调wing-l→flap-l的child_anchor使其贴附翼下后缘；(3) 翼梢小翼外倾角偏大，可将winglet dihedral_deg从40降至25-30使过渡更接近照片。这些都是观感级改进，不改动任何已通过的接触/镜像/接缝声明。"
+      },
+      "selected_when_reviewed": true,
+      "action_attempts": [
+        {
+          "attempt": 0,
+          "accepted": true
+        }
+      ],
+      "action_state": "accepted-for-evaluation"
+    },
+    {
+      "round": 4,
+      "state": "reviewed",
+      "derived_from": 3,
+      "stage": "surfaces",
+      "design_sha256": "d52655c40996f4f5c19b87bcfd40ef7c96dbac8621dfc70e837dc89433cc343e",
+      "view": "perception/round-04/views.png",
+      "render_frame": "union of baseline/current/retained; both comparison sheets share bounds",
+      "review": {
+        "silhouette": 84,
+        "proportions": 84,
+        "layout": 82,
+        "reference_limitations": "参考照片为仰视飞行姿态、透视强烈，整机长度、翼展、机身直径均无法直接测量，均为设计假设；发动机型号、后掠角、垂尾安装角为假设。正交渲染与照片透视差异不构成几何缺陷证据。本轮装配检查全部通过：机身分段body接缝误差≤4e-12mm，翼根在内翼尖在外（TOP/FRONT确认），垂尾竖立，吊架-短舱contact间隙0.0mm，轮组轴线沿Y、支柱沿Z，左右镜像派生一致。上一轮编辑已生效：pylon-l size.2现为3400、engine-nacelle-l position.2降至1590.0、winglet dihedral_deg降至27、flap位置已更新。保留候选与当前渲染四视图一致。整体已具备单通道双发涡扇客机形态，残余为襟翼与主翼仍呈分离观感及发动机下沉量仍略小于照片等次要项。",
+        "findings": [
+          {
+            "severity": "minor",
+            "parts": [
+              "flap-l",
+              "flap-r"
+            ],
+            "observation": "TOP/ISO视图中后缘襟翼仍为与主翼分离的独立薄板，照片中襟翼收贴于翼下后缘；附件为placement故检查不报错，属观感问题。",
+            "suggested_change": "surfaces阶段可将wing-l→flap-l附件child_anchor调至u≈0.1、v=0.5并使flap根前缘贴近主翼后缘下表面；镜像侧由规则派生，勿直接编辑derived pose。"
+          },
+          {
+            "severity": "minor",
+            "parts": [
+              "pylon-l",
+              "engine-nacelle-l",
+              "pylon-r",
+              "engine-nacelle-r"
+            ],
+            "observation": "SIDE/FRONT视图中短舱已下沉但顶面仍接近翼面高度，照片中发动机吊挂于翼下并留有明显垂直间距；contact已达标（surface_gap=0.0），为观感问题。",
+            "suggested_change": "可再加高pylon-l（size.2约3400→4000）或下调其→短舱child锚点使短舱再下沉约300-500mm；如几何收益有限可接受现状并停止。"
+          },
+          {
+            "severity": "minor",
+            "parts": [
+              "cockpit-windows"
+            ],
+            "observation": "SIDE/ISO视图中驾驶舱风挡框位置略靠后且偏上，照片中风挡紧贴机头正面转折处；placement关系不涉及结构。",
+            "suggested_change": "可将cockpit-windows父锚点body u从0.88微调至约0.90，使其更靠近雷达罩过渡面。"
+          }
+        ],
+        "numeric_claims": [
+          {
+            "part": "pylon-l",
+            "field": "size.2",
+            "value": 3400.0
+          },
+          {
+            "part": "engine-nacelle-l",
+            "field": "position.2",
+            "value": 1590.0027042301554
+          },
+          {
+            "part": "engine-nacelle-l",
+            "field": "size.2",
+            "value": 4500.0
+          },
+          {
+            "part": "wing-l",
+            "field": "parametric.span",
+            "value": 14900.0
+          },
+          {
+            "part": "wing-l",
+            "field": "reflection",
+            "value": "y"
+          },
+          {
+            "part": "wing-r",
+            "field": "position.1",
+            "value": -1972.54875
+          },
+          {
+            "part": "winglet-l",
+            "field": "parametric.dihedral_deg",
+            "value": 27.0
+          },
+          {
+            "part": "flap-l",
+            "field": "position.0",
+            "value": 4206.941309301324
+          },
+          {
+            "part": "flap-l",
+            "field": "parametric.span",
+            "value": 5500.0
+          },
+          {
+            "part": "vertical-fin",
+            "field": "rotation.0",
+            "value": 90.0
+          },
+          {
+            "part": "horizontal-stab-l",
+            "field": "rotation.2",
+            "value": -20.0
+          },
+          {
+            "part": "fuselage-mid",
+            "field": "parametric.length",
+            "value": 11002.74
+          },
+          {
+            "part": "radome",
+            "field": "position.0",
+            "value": 25000.6
+          },
+          {
+            "part": "nose-gear-strut",
+            "field": "size.2",
+            "value": 2600.0
+          },
+          {
+            "part": "main-gear-wheels-l",
+            "field": "position.2",
+            "value": 1200.0
+          },
+          {
+            "part": "cockpit-windows",
+            "field": "rotation.0",
+            "value": -15.0
+          }
+        ]
+      },
+      "layout": {
+        "schema": "fk-layout-checks-v1",
+        "passed": true,
+        "issues": [],
+        "scope": "Aircraft engine axes and unrotated fuselage interval overlaps only; not a complete assembly/collision check",
+        "assembly": {
+          "schema": "fk-assembly-checks-v1",
+          "passed": true,
+          "issues": [],
+          "measurements": [
+            {
+              "kind": "mirrored_contact",
+              "parent": "fuselage-mid",
+              "child": "wing-r",
+              "surface_gap_mm": 0.0
+            },
+            {
+              "kind": "contact",
+              "parent": "fuselage-mid",
+              "child": "wing-l",
+              "anchor_error_mm": 9.094947017729282e-13,
+              "surface_gap_mm": 0.0
+            },
+            {
+              "kind": "mirrored_contact",
+              "parent": "wing-r",
+              "child": "winglet-r",
+              "surface_gap_mm": 0.0
+            },
+            {
+              "kind": "contact",
+              "parent": "wing-l",
+              "child": "winglet-l",
+              "anchor_error_mm": 0.0,
+              "surface_gap_mm": 0.0
+            },
+            {
+              "kind": "placement",
+              "parent": "wing-l",
+              "child": "flap-l",
+              "anchor_error_mm": 0.0
+            },
+            {
+              "kind": "mirrored_contact",
+              "parent": "wing-r",
+              "child": "pylon-r",
+              "surface_gap_mm": 0.0
+            },
+            {
+              "kind": "contact",
+              "parent": "wing-l",
+              "child": "pylon-l",
+              "anchor_error_mm": 0.0,
+              "surface_gap_mm": 0.0
+            },
+            {
+              "kind": "mirrored_contact",
+              "parent": "pylon-r",
+              "child": "engine-nacelle-r",
+              "surface_gap_mm": 0.0
+            },
+            {
+              "kind": "contact",
+              "parent": "pylon-l",
+              "child": "engine-nacelle-l",
+              "anchor_error_mm": 1.1368683772161603e-13,
+              "surface_gap_mm": 0.0
+            },
+            {
+              "kind": "placement",
+              "parent": "engine-nacelle-l",
+              "child": "engine-core-l",
+              "anchor_error_mm": 0.0
+            },
+            {
+              "kind": "contact",
+              "parent": "fuselage-aft",
+              "child": "vertical-fin",
+              "anchor_error_mm": 0.0,
+              "surface_gap_mm": 0.0
+            },
+            {
+              "kind": "mirrored_contact",
+              "parent": "fuselage-aft",
+              "child": "horizontal-stab-r",
+              "surface_gap_mm": 0.0
+            },
+            {
+              "kind": "contact",
+              "parent": "fuselage-aft",
+              "child": "horizontal-stab-l",
+              "anchor_error_mm": 0.0,
+              "surface_gap_mm": 0.0
+            },
+            {
+              "kind": "contact",
+              "parent": "fuselage-front",
+              "child": "nose-gear-strut",
+              "anchor_error_mm": 0.0,
+              "surface_gap_mm": 0.0
+            },
+            {
+              "kind": "contact",
+              "parent": "nose-gear-strut",
+              "child": "nose-gear-wheels",
+              "anchor_error_mm": 0.0,
+              "surface_gap_mm": 0.0
+            },
+            {
+              "kind": "mirrored_contact",
+              "parent": "fuselage-mid",
+              "child": "main-gear-strut-r",
+              "surface_gap_mm": 0.0
+            },
+            {
+              "kind": "contact",
+              "parent": "fuselage-mid",
+              "child": "main-gear-strut-l",
+              "anchor_error_mm": 0.0,
+              "surface_gap_mm": 0.0
+            },
+            {
+              "kind": "mirrored_contact",
+              "parent": "main-gear-strut-r",
+              "child": "main-gear-wheels-r",
+              "surface_gap_mm": 0.0
+            },
+            {
+              "kind": "contact",
+              "parent": "main-gear-strut-l",
+              "child": "main-gear-wheels-l",
+              "anchor_error_mm": 0.0,
+              "surface_gap_mm": 0.0
+            },
+            {
+              "kind": "placement",
+              "parent": "fuselage-front",
+              "child": "cockpit-windows",
+              "anchor_error_mm": 0.0
+            },
+            {
+              "kind": "axis",
+              "part": "engine-nacelle-l",
+              "axis_error_deg": 0.0
+            },
+            {
+              "kind": "axis",
+              "part": "engine-core-l",
+              "axis_error_deg": 0.0
+            },
+            {
+              "kind": "axis",
+              "part": "nose-gear-wheels",
+              "axis_error_deg": 0.0
+            },
+            {
+              "kind": "axis",
+              "part": "main-gear-wheels-l",
+              "axis_error_deg": 0.0
+            },
+            {
+              "kind": "axis",
+              "part": "nose-gear-strut",
+              "axis_error_deg": 0.0
+            },
+            {
+              "kind": "axis",
+              "part": "main-gear-strut-l",
+              "axis_error_deg": 0.0
+            },
+            {
+              "kind": "body_seam",
+              "parent": "tail-cone",
+              "child": "fuselage-aft",
+              "seam_error_mm": 0.0
+            },
+            {
+              "kind": "body_seam",
+              "parent": "fuselage-aft",
+              "child": "fuselage-mid",
+              "seam_error_mm": 9.094947017729282e-13
+            },
+            {
+              "kind": "body_seam",
+              "parent": "fuselage-mid",
+              "child": "fuselage-front",
+              "seam_error_mm": 0.0
+            },
+            {
+              "kind": "body_seam",
+              "parent": "fuselage-front",
+              "child": "radome",
+              "seam_error_mm": 3.637978807091713e-12
+            }
+          ],
+          "declared_contacts": 10,
+          "scope": "Declared anchor, axis, body-seam and contact distances only. Contact can include overlap; no penetration, smoothness, strength or full assembly certification. Undeclared relationships are unassessed."
+        }
+      },
+      "rank": [
+        0,
+        0,
+        0,
+        83.4
+      ],
+      "decision": {
+        "selected_round": 4,
+        "next_step": "revise",
+        "stage": "surfaces",
+        "reason": "第4轮候选明显优于第3轮：三轮编辑均已在参数表确认生效（pylon-l size.2=3400、engine-nacelle-l position.2降至1590.0、winglet dihedral_deg 40→27），装配检查全部通过（10项contact间隙0.0、body接缝≤4e-12mm、翼根在内翼尖在外、垂尾竖立、各轴对齐0度），四视图与参考图的单通道双发涡扇布局一致，故保留第4轮。剩余均为minor观感项，且尚有1次修订机会，应在surfaces阶段集中修复：1) wing-l→flap-l附件child_anchor改为u≈0.1、v=0.5，使襟翼贴附主翼后缘下表面（镜像侧由规则派生）；2) 可将pylon-l→短舱child锚点再下调，使短舱继续下沉约300-500mm，更接近照片中翼下吊挂的垂直间距；3) cockpit-windows父锚点body u由0.88微调至0.90贴近机头转折。若修订后收益有限则接受现状并停止；不再重复已生效的编辑。"
+      },
+      "selected_when_reviewed": true,
+      "action_attempts": [
+        {
+          "attempt": 0,
+          "accepted": true
+        }
+      ],
+      "action_state": "accepted-for-evaluation"
+    },
+    {
+      "round": 5,
+      "state": "reviewed",
+      "derived_from": 4,
+      "stage": "surfaces",
+      "design_sha256": "5b38f4a6e800b1840e354e11042739d49cd743825641bfc45f96d8562311f4fd",
+      "view": "perception/round-05/views.png",
+      "render_frame": "union of baseline/current/retained; both comparison sheets share bounds",
+      "review": {
+        "silhouette": 86,
+        "proportions": 85,
+        "layout": 84,
+        "reference_limitations": "参考照片为仰视飞行姿态且透视强烈，整机长度、翼展、机身直径均无法直接测量，全部尺寸为设计假设；发动机型号、后掠角、垂尾安装角、发动机下沉量为假设。正交渲染与照片透视差异不构成几何缺陷证据。本轮装配与布局检查全部通过：机身分段接缝误差≤4e-12mm，翼根在内、翼尖在外（TOP/FRONT确认），垂尾竖立（rotation.0=90），所有declared contact表面间隙0.0mm，轮组轴线沿Y、支柱沿Z。当前渲染与保留候选四视图一致，上一轮编辑（襟翼位置、短舱下沉、翼梢小翼上反角、风挡位置）均已生效。整体已呈单通道双发涡扇客机形态，无独立报告的几何失效；残余均为观感类次要项。",
+        "findings": [
+          {
+            "severity": "minor",
+            "parts": [
+              "flap-l",
+              "flap-r"
+            ],
+            "observation": "TOP/ISO视图中后缘襟翼仍为与主翼分离的独立薄板，照片中襟翼收贴于主翼后缘下方；附件为placement故检查不报错，属观感问题。",
+            "suggested_change": "可在action中将wing-l→flap-l附件child_anchor的v调至约0.3、使襟翼根前缘贴靠主翼后缘下表面；镜像侧由规则派生，勿直接编辑derived pose。若收益有限可接受现状。"
+          },
+          {
+            "severity": "minor",
+            "parts": [
+              "pylon-l",
+              "engine-nacelle-l",
+              "pylon-r",
+              "engine-nacelle-r"
+            ],
+            "observation": "SIDE/FRONT视图中短舱已下沉（position.2≈1590）且contact达标，但照片中发动机相对机翼的垂直间距仍略大，短舱顶面与翼面间距观感偏小，为观感问题。",
+            "suggested_change": "可再加高pylon-l size.2（3400→约4000）使短舱继续下沉300-500mm；如几何收益有限则接受现状并停止。"
+          },
+          {
+            "severity": "minor",
+            "parts": [
+              "cockpit-windows"
+            ],
+            "observation": "SIDE/ISO视图中风挡框已前移但相对机头正面转折处仍略偏后偏上；placement关系不涉及结构。",
+            "suggested_change": "可将cockpit-windows父锚点body u从0.88微调至约0.90，使其更贴近雷达罩过渡面。"
+          }
+        ],
+        "numeric_claims": [
+          {
+            "part": "pylon-l",
+            "field": "size.2",
+            "value": 3400.0
+          },
+          {
+            "part": "engine-nacelle-l",
+            "field": "position.2",
+            "value": 1590.0027042301554
+          },
+          {
+            "part": "engine-nacelle-l",
+            "field": "size.2",
+            "value": 4500.0
+          },
+          {
+            "part": "wing-l",
+            "field": "parametric.span",
+            "value": 14900.0
+          },
+          {
+            "part": "wing-l",
+            "field": "reflection",
+            "value": "y"
+          },
+          {
+            "part": "wing-r",
+            "field": "position.1",
+            "value": -1972.54875
+          },
+          {
+            "part": "winglet-l",
+            "field": "parametric.dihedral_deg",
+            "value": 27.0
+          },
+          {
+            "part": "flap-l",
+            "field": "position.0",
+            "value": 4242.1029776332125
+          },
+          {
+            "part": "flap-l",
+            "field": "parametric.span",
+            "value": 5500.0
+          },
+          {
+            "part": "vertical-fin",
+            "field": "rotation.0",
+            "value": 90.0
+          },
+          {
+            "part": "horizontal-stab-l",
+            "field": "rotation.2",
+            "value": -20.0
+          },
+          {
+            "part": "fuselage-mid",
+            "field": "parametric.length",
+            "value": 11002.740000000002
+          },
+          {
+            "part": "radome",
+            "field": "position.0",
+            "value": 25000.6
+          },
+          {
+            "part": "nose-gear-strut",
+            "field": "size.2",
+            "value": 2600.0
+          },
+          {
+            "part": "main-gear-wheels-l",
+            "field": "position.2",
+            "value": 1200.0
+          },
+          {
+            "part": "cockpit-windows",
+            "field": "rotation.0",
+            "value": -15.0
+          }
+        ]
+      },
+      "layout": {
+        "schema": "fk-layout-checks-v1",
+        "passed": true,
+        "issues": [],
+        "scope": "Aircraft engine axes and unrotated fuselage interval overlaps only; not a complete assembly/collision check",
+        "assembly": {
+          "schema": "fk-assembly-checks-v1",
+          "passed": true,
+          "issues": [],
+          "measurements": [
+            {
+              "kind": "mirrored_contact",
+              "parent": "fuselage-mid",
+              "child": "wing-r",
+              "surface_gap_mm": 0.0
+            },
+            {
+              "kind": "contact",
+              "parent": "fuselage-mid",
+              "child": "wing-l",
+              "anchor_error_mm": 9.094947017729282e-13,
+              "surface_gap_mm": 0.0
+            },
+            {
+              "kind": "mirrored_contact",
+              "parent": "wing-r",
+              "child": "winglet-r",
+              "surface_gap_mm": 0.0
+            },
+            {
+              "kind": "contact",
+              "parent": "wing-l",
+              "child": "winglet-l",
+              "anchor_error_mm": 0.0,
+              "surface_gap_mm": 0.0
+            },
+            {
+              "kind": "placement",
+              "parent": "wing-l",
+              "child": "flap-l",
+              "anchor_error_mm": 4.547473508864641e-13
+            },
+            {
+              "kind": "mirrored_contact",
+              "parent": "wing-r",
+              "child": "pylon-r",
+              "surface_gap_mm": 0.0
+            },
+            {
+              "kind": "contact",
+              "parent": "wing-l",
+              "child": "pylon-l",
+              "anchor_error_mm": 0.0,
+              "surface_gap_mm": 0.0
+            },
+            {
+              "kind": "mirrored_contact",
+              "parent": "pylon-r",
+              "child": "engine-nacelle-r",
+              "surface_gap_mm": 0.0
+            },
+            {
+              "kind": "contact",
+              "parent": "pylon-l",
+              "child": "engine-nacelle-l",
+              "anchor_error_mm": 0.0,
+              "surface_gap_mm": 0.0
+            },
+            {
+              "kind": "placement",
+              "parent": "engine-nacelle-l",
+              "child": "engine-core-l",
+              "anchor_error_mm": 0.0
+            },
+            {
+              "kind": "contact",
+              "parent": "fuselage-aft",
+              "child": "vertical-fin",
+              "anchor_error_mm": 0.0,
+              "surface_gap_mm": 0.0
+            },
+            {
+              "kind": "mirrored_contact",
+              "parent": "fuselage-aft",
+              "child": "horizontal-stab-r",
+              "surface_gap_mm": 0.0
+            },
+            {
+              "kind": "contact",
+              "parent": "fuselage-aft",
+              "child": "horizontal-stab-l",
+              "anchor_error_mm": 0.0,
+              "surface_gap_mm": 0.0
+            },
+            {
+              "kind": "contact",
+              "parent": "fuselage-front",
+              "child": "nose-gear-strut",
+              "anchor_error_mm": 0.0,
+              "surface_gap_mm": 0.0
+            },
+            {
+              "kind": "contact",
+              "parent": "nose-gear-strut",
+              "child": "nose-gear-wheels",
+              "anchor_error_mm": 0.0,
+              "surface_gap_mm": 0.0
+            },
+            {
+              "kind": "mirrored_contact",
+              "parent": "fuselage-mid",
+              "child": "main-gear-strut-r",
+              "surface_gap_mm": 0.0
+            },
+            {
+              "kind": "contact",
+              "parent": "fuselage-mid",
+              "child": "main-gear-strut-l",
+              "anchor_error_mm": 0.0,
+              "surface_gap_mm": 0.0
+            },
+            {
+              "kind": "mirrored_contact",
+              "parent": "main-gear-strut-r",
+              "child": "main-gear-wheels-r",
+              "surface_gap_mm": 0.0
+            },
+            {
+              "kind": "contact",
+              "parent": "main-gear-strut-l",
+              "child": "main-gear-wheels-l",
+              "anchor_error_mm": 0.0,
+              "surface_gap_mm": 0.0
+            },
+            {
+              "kind": "placement",
+              "parent": "fuselage-front",
+              "child": "cockpit-windows",
+              "anchor_error_mm": 0.0
+            },
+            {
+              "kind": "axis",
+              "part": "engine-nacelle-l",
+              "axis_error_deg": 0.0
+            },
+            {
+              "kind": "axis",
+              "part": "engine-core-l",
+              "axis_error_deg": 0.0
+            },
+            {
+              "kind": "axis",
+              "part": "nose-gear-wheels",
+              "axis_error_deg": 0.0
+            },
+            {
+              "kind": "axis",
+              "part": "main-gear-wheels-l",
+              "axis_error_deg": 0.0
+            },
+            {
+              "kind": "axis",
+              "part": "nose-gear-strut",
+              "axis_error_deg": 0.0
+            },
+            {
+              "kind": "axis",
+              "part": "main-gear-strut-l",
+              "axis_error_deg": 0.0
+            },
+            {
+              "kind": "body_seam",
+              "parent": "tail-cone",
+              "child": "fuselage-aft",
+              "seam_error_mm": 0.0
+            },
+            {
+              "kind": "body_seam",
+              "parent": "fuselage-aft",
+              "child": "fuselage-mid",
+              "seam_error_mm": 9.094947017729282e-13
+            },
+            {
+              "kind": "body_seam",
+              "parent": "fuselage-mid",
+              "child": "fuselage-front",
+              "seam_error_mm": 0.0
+            },
+            {
+              "kind": "body_seam",
+              "parent": "fuselage-front",
+              "child": "radome",
+              "seam_error_mm": 3.637978807091713e-12
+            }
+          ],
+          "declared_contacts": 10,
+          "scope": "Declared anchor, axis, body-seam and contact distances only. Contact can include overlap; no penetration, smoothness, strength or full assembly certification. Undeclared relationships are unassessed."
+        }
+      },
+      "rank": [
+        0,
+        0,
+        0,
+        85.1
+      ],
+      "decision": {
+        "selected_round": 5,
+        "next_step": "stop",
+        "stage": "surfaces",
+        "reason": "第5轮候选在轮廓、比例、布局上均优于或等于第4轮（86/85/84对84/84/82），且本轮编辑（襟翼位置、短舱下沉、翼梢小翼上反角、风挡位置）已通过参数差表确认生效，四视图与保留候选一致。装配与布局检查全部通过：机身分段接缝误差≤4e-12mm，翼根在内翼尖在外，垂尾竖立，全部10个declared contact间隙为0.0mm，吊架-短舱-支柱-轮组轴线和风向正确。对照参考照片，整体已呈现单通道双发后掠翼涡扇客机形态，无major或blocking问题；残余三项均为观感类minor（襟翼与主翼分离观感、发动机垂直间距、风挡位置微调）。剩余候选修订次数为0，无法再执行修改动作，且这些minor项即便调整收益有限。因此选择第5轮候选作为最终结果并停止。"
+      },
+      "selected_when_reviewed": true
+    }
+  ],
+  "selected_round": 5,
+  "selected_design_sha256": "5b38f4a6e800b1840e354e11042739d49cd743825641bfc45f96d8562311f4fd",
+  "stop_reason": "model-stop",
+  "error": null,
+  "quality_status": "model-threshold-met",
+  "reviewed": true,
+  "score_source": "model-judgment; not a calibrated similarity metric",
+  "reference_camera_aligned": false,
+  "physical_status": "unverified",
+  "calls": [
+    {
+      "kind": "plan",
+      "model": "glm-5.3-flash",
+      "state": "received",
+      "elapsed_s": 78.27,
+      "usage": {
+        "input_tokens": 15272,
+        "output_tokens": 4473,
+        "cache_read_input_tokens": 0,
+        "server_tool_use": {
+          "web_search_requests": 0
+        },
+        "service_tier": "standard"
+      },
+      "reported_model": "glm-5.3-flash",
+      "response_sha256": "ca2c20c5392403a8fc01e1fbd343bfb8c440e0aaa47cc574ae35cf002715dae8",
+      "response_file": "perception/planning/plan-response.json"
+    },
+    {
+      "kind": "review",
+      "model": "glm-5.3-flash",
+      "state": "received",
+      "elapsed_s": 35.25,
+      "usage": {
+        "input_tokens": 31157,
+        "output_tokens": 1617,
+        "cache_read_input_tokens": 0,
+        "server_tool_use": {
+          "web_search_requests": 0
+        },
+        "service_tier": "standard"
+      },
+      "reported_model": "glm-5.3-flash",
+      "response_sha256": "8d313ce5f394fe18a237c843b48dffe63091a350b5ce7c7a5af403a2f1c7ad5f",
+      "response_file": "perception/round-00/review-response.json"
+    },
+    {
+      "kind": "select",
+      "model": "glm-5.3-flash",
+      "state": "received",
+      "elapsed_s": 8.82,
+      "usage": {
+        "input_tokens": 21693,
+        "output_tokens": 253,
+        "cache_read_input_tokens": 0,
+        "server_tool_use": {
+          "web_search_requests": 0
+        },
+        "service_tier": "standard"
+      },
+      "reported_model": "glm-5.3-flash",
+      "response_sha256": "d802b33db653cc0ed082b3a9f5705cd6b7b0912115f9f1b8fc9bade154e3197c",
+      "response_file": "perception/round-00/select-response.json"
+    },
+    {
+      "kind": "action",
+      "model": "glm-5.3-flash",
+      "state": "received",
+      "elapsed_s": 24.32,
+      "usage": {
+        "input_tokens": 32443,
+        "output_tokens": 2051,
+        "cache_read_input_tokens": 0,
+        "server_tool_use": {
+          "web_search_requests": 0
+        },
+        "service_tier": "standard"
+      },
+      "reported_model": "glm-5.3-flash",
+      "response_sha256": "cd361e57aa1e6dffc23049e708246d4d53af14999c313504a9178fa3ab1dc907",
+      "response_file": "perception/round-00/action/action-response.json"
+    },
+    {
+      "kind": "review",
+      "model": "glm-5.3-flash",
+      "state": "received",
+      "elapsed_s": 19.21,
+      "usage": {
+        "input_tokens": 30162,
+        "output_tokens": 1087,
+        "cache_read_input_tokens": 0,
+        "server_tool_use": {
+          "web_search_requests": 0
+        },
+        "service_tier": "standard"
+      },
+      "reported_model": "glm-5.3-flash",
+      "response_sha256": "1d4b9fa4aeccd4420e886e32621c8e522c222293d259e908a8a76dfc72298907",
+      "response_file": "perception/round-01/review-response.json"
+    },
+    {
+      "kind": "select",
+      "model": "glm-5.3-flash",
+      "state": "received",
+      "elapsed_s": 7.93,
+      "usage": {
+        "input_tokens": 22101,
+        "output_tokens": 236,
+        "cache_read_input_tokens": 0,
+        "server_tool_use": {
+          "web_search_requests": 0
+        },
+        "service_tier": "standard"
+      },
+      "reported_model": "glm-5.3-flash",
+      "response_sha256": "33e398e61ef68244ae1be2eb409c90d71458c5bdf38c76a4494e79c232cdd270",
+      "response_file": "perception/round-01/select-response.json"
+    },
+    {
+      "kind": "action",
+      "model": "glm-5.3-flash",
+      "state": "received",
+      "elapsed_s": 20.7,
+      "usage": {
+        "input_tokens": 32244,
+        "output_tokens": 1906,
+        "cache_read_input_tokens": 0,
+        "server_tool_use": {
+          "web_search_requests": 0
+        },
+        "service_tier": "standard"
+      },
+      "reported_model": "glm-5.3-flash",
+      "response_sha256": "c46ee5c1fbc5a83eef9959a161d0bbaba4d772113d7de19d2a94766bcb05a95e",
+      "response_file": "perception/round-01/action/action-response.json"
+    },
+    {
+      "kind": "action-repair",
+      "model": "glm-5.3-flash",
+      "state": "received",
+      "elapsed_s": 31.05,
+      "usage": {
+        "input_tokens": 32083,
+        "output_tokens": 1251,
+        "cache_read_input_tokens": 2624,
+        "server_tool_use": {
+          "web_search_requests": 0
+        },
+        "service_tier": "standard"
+      },
+      "reported_model": "glm-5.3-flash",
+      "response_sha256": "99db87aedbb677395a9eeee4240844accd16ab48941ca66e2e9c606a3f18dab6",
+      "response_file": "perception/round-01/action/action-repair-response.json"
+    },
+    {
+      "kind": "review",
+      "model": "glm-5.3-flash",
+      "state": "received",
+      "elapsed_s": 53.72,
+      "usage": {
+        "input_tokens": 30315,
+        "output_tokens": 1085,
+        "cache_read_input_tokens": 0,
+        "server_tool_use": {
+          "web_search_requests": 0
+        },
+        "service_tier": "standard"
+      },
+      "reported_model": "glm-5.3-flash",
+      "response_sha256": "411b1a80229c43d00c9c1d7cc20d2961ca6685327171974357cf270a7e2fcd92",
+      "response_file": "perception/round-02/review-response.json"
+    },
+    {
+      "kind": "select",
+      "model": "glm-5.3-flash",
+      "state": "received",
+      "elapsed_s": 8.42,
+      "usage": {
+        "input_tokens": 22297,
+        "output_tokens": 277,
+        "cache_read_input_tokens": 0,
+        "server_tool_use": {
+          "web_search_requests": 0
+        },
+        "service_tier": "standard"
+      },
+      "reported_model": "glm-5.3-flash",
+      "response_sha256": "d800642965e2fb1c271195ff72060a92ac9ed7a46c3b5add1da6032d96cef18a",
+      "response_file": "perception/round-02/select-response.json"
+    },
+    {
+      "kind": "action",
+      "model": "glm-5.3-flash",
+      "state": "received",
+      "elapsed_s": 40.71,
+      "usage": {
+        "input_tokens": 29820,
+        "output_tokens": 3165,
+        "cache_read_input_tokens": 2624,
+        "server_tool_use": {
+          "web_search_requests": 0
+        },
+        "service_tier": "standard"
+      },
+      "reported_model": "glm-5.3-flash",
+      "response_sha256": "a86432c750c510c89f07312e45fdafb683124dcf92356e374cd29f642ee0dde6",
+      "response_file": "perception/round-02/action/action-response.json"
+    },
+    {
+      "kind": "review",
+      "model": "glm-5.3-flash",
+      "state": "received",
+      "elapsed_s": 19.98,
+      "usage": {
+        "input_tokens": 27584,
+        "output_tokens": 1079,
+        "cache_read_input_tokens": 2752,
+        "server_tool_use": {
+          "web_search_requests": 0
+        },
+        "service_tier": "standard"
+      },
+      "reported_model": "glm-5.3-flash",
+      "response_sha256": "2203d93d4f3fde5d89d9bff3a41887a1015d2b35fd8e91446df98fbe2ff91000",
+      "response_file": "perception/round-03/review-response.json"
+    },
+    {
+      "kind": "select",
+      "model": "glm-5.3-flash",
+      "state": "received",
+      "elapsed_s": 29.97,
+      "usage": {
+        "input_tokens": 19734,
+        "output_tokens": 381,
+        "cache_read_input_tokens": 2624,
+        "server_tool_use": {
+          "web_search_requests": 0
+        },
+        "service_tier": "standard"
+      },
+      "reported_model": "glm-5.3-flash",
+      "response_sha256": "87e5c96ff938eec762074faef6889d5451efb423fe0e4ad3deb5a6cd0a3e93dd",
+      "response_file": "perception/round-03/select-response.json"
+    },
+    {
+      "kind": "action",
+      "model": "glm-5.3-flash",
+      "state": "received",
+      "elapsed_s": 44.77,
+      "usage": {
+        "input_tokens": 29850,
+        "output_tokens": 3376,
+        "cache_read_input_tokens": 2624,
+        "server_tool_use": {
+          "web_search_requests": 0
+        },
+        "service_tier": "standard"
+      },
+      "reported_model": "glm-5.3-flash",
+      "response_sha256": "2eec7adcff03c63bd9b01ef43ed36dfd692213882a0ed49b6aaf2d26ffaaa17c",
+      "response_file": "perception/round-03/action/action-response.json"
+    },
+    {
+      "kind": "review",
+      "model": "glm-5.3-flash",
+      "state": "received",
+      "elapsed_s": 19.43,
+      "usage": {
+        "input_tokens": 28050,
+        "output_tokens": 1017,
+        "cache_read_input_tokens": 2752,
+        "server_tool_use": {
+          "web_search_requests": 0
+        },
+        "service_tier": "standard"
+      },
+      "reported_model": "glm-5.3-flash",
+      "response_sha256": "19c87fc8a5406d99fa43b24703fd23d8ecf8b43397744ff9c1c70f6e665e56ba",
+      "response_file": "perception/round-04/review-response.json"
+    },
+    {
+      "kind": "select",
+      "model": "glm-5.3-flash",
+      "state": "received",
+      "elapsed_s": 21.14,
+      "usage": {
+        "input_tokens": 20009,
+        "output_tokens": 338,
+        "cache_read_input_tokens": 2624,
+        "server_tool_use": {
+          "web_search_requests": 0
+        },
+        "service_tier": "standard"
+      },
+      "reported_model": "glm-5.3-flash",
+      "response_sha256": "e626ee10eb7c37c912818505cd82c833c19a554f3c857ee3cf3ad277dba30ebe",
+      "response_file": "perception/round-04/select-response.json"
+    },
+    {
+      "kind": "action",
+      "model": "glm-5.3-flash",
+      "state": "received",
+      "elapsed_s": 33.78,
+      "usage": {
+        "input_tokens": 29747,
+        "output_tokens": 2894,
+        "cache_read_input_tokens": 2624,
+        "server_tool_use": {
+          "web_search_requests": 0
+        },
+        "service_tier": "standard"
+      },
+      "reported_model": "glm-5.3-flash",
+      "response_sha256": "1151c480049320cfc5d7b5d22497267d80269f5a18e83e9aba945822f07ae3ea",
+      "response_file": "perception/round-04/action/action-response.json"
+    },
+    {
+      "kind": "review",
+      "model": "glm-5.3-flash",
+      "state": "received",
+      "elapsed_s": 17.77,
+      "usage": {
+        "input_tokens": 26627,
+        "output_tokens": 1113,
+        "cache_read_input_tokens": 3584,
+        "server_tool_use": {
+          "web_search_requests": 0
+        },
+        "service_tier": "standard"
+      },
+      "reported_model": "glm-5.3-flash",
+      "response_sha256": "25623e5bd638a78db37b33e5f37f1f9c81de20f0d37d87320071436197be5f4d",
+      "response_file": "perception/round-05/review-response.json"
+    },
+    {
+      "kind": "select",
+      "model": "glm-5.3-flash",
+      "state": "received",
+      "elapsed_s": 8.48,
+      "usage": {
+        "input_tokens": 22032,
+        "output_tokens": 244,
+        "cache_read_input_tokens": 0,
+        "server_tool_use": {
+          "web_search_requests": 0
+        },
+        "service_tier": "standard"
+      },
+      "reported_model": "glm-5.3-flash",
+      "response_sha256": "81ac20efcec87b05e8d81322b107370997cfd8cc49584134bb21f5e9574cce91",
+      "response_file": "perception/round-05/select-response.json"
+    }
+  ],
+  "model_calls": 19,
+  "elapsed_s": 619.15,
+  "action_retries_per_round": 1
+}

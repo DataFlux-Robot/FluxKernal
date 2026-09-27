@@ -1,0 +1,513 @@
+{
+  "assembly": {
+    "bodies": [
+      {
+        "id": "fuselage-body",
+        "profile": {
+          "kind": "body",
+          "length": 35700.0,
+          "sections": [
+            {
+              "u": 0.0,
+              "width": 1800.0,
+              "height": 1800.0,
+              "offset_y": 0.0,
+              "offset_z": 0.0
+            },
+            {
+              "u": 0.09,
+              "width": 3600.0,
+              "height": 3600.0,
+              "offset_y": 0.0,
+              "offset_z": 0.0
+            },
+            {
+              "u": 0.35,
+              "width": 3950.0,
+              "height": 3950.0,
+              "offset_y": 0.0,
+              "offset_z": 0.0
+            },
+            {
+              "u": 0.5,
+              "width": 3950.0,
+              "height": 3950.0,
+              "offset_y": 0.0,
+              "offset_z": 0.0
+            },
+            {
+              "u": 0.65,
+              "width": 3950.0,
+              "height": 3950.0,
+              "offset_y": 0.0,
+              "offset_z": 0.0
+            },
+            {
+              "u": 0.9,
+              "width": 3950.0,
+              "height": 3950.0,
+              "offset_y": 0.0,
+              "offset_z": 0.0
+            },
+            {
+              "u": 1.0,
+              "width": 1900.0,
+              "height": 1900.0,
+              "offset_y": 0.0,
+              "offset_z": 0.0
+            }
+          ]
+        },
+        "position": [
+          8650.0,
+          0.0,
+          4200.0
+        ],
+        "rotation": [
+          0.0,
+          0.0,
+          0.0
+        ],
+        "members": [
+          {
+            "part": "tail-cone",
+            "start": 0.0,
+            "end": 0.0896
+          },
+          {
+            "part": "fuselage-aft",
+            "start": 0.0896,
+            "end": 0.3417
+          },
+          {
+            "part": "fuselage-mid",
+            "start": 0.3417,
+            "end": 0.6499
+          },
+          {
+            "part": "fuselage-front",
+            "start": 0.6499,
+            "end": 0.916
+          },
+          {
+            "part": "radome",
+            "start": 0.916,
+            "end": 1.0
+          }
+        ]
+      }
+    ],
+    "attachments": [
+      {
+        "parent": "fuselage-mid",
+        "child": "wing-l",
+        "parent_anchor": {
+          "kind": "body",
+          "u": 0.5,
+          "v": 1.0,
+          "w": 0.5,
+          "angle_deg": 180.0
+        },
+        "child_anchor": {
+          "kind": "wing",
+          "u": 0.0,
+          "v": 0.5,
+          "w": 0.5,
+          "angle_deg": 0
+        },
+        "relation": "contact"
+      },
+      {
+        "parent": "wing-l",
+        "child": "pylon-l",
+        "parent_anchor": {
+          "kind": "wing",
+          "u": 0.35,
+          "v": 0.5,
+          "w": 0.5,
+          "angle_deg": 0
+        },
+        "child_anchor": {
+          "kind": "box",
+          "u": 0.5,
+          "v": 0.5,
+          "w": 1.0,
+          "angle_deg": 0
+        },
+        "relation": "contact"
+      },
+      {
+        "parent": "pylon-l",
+        "child": "engine-nacelle-l",
+        "parent_anchor": {
+          "kind": "box",
+          "u": 0.5,
+          "v": 0.5,
+          "w": 0.0,
+          "angle_deg": 0
+        },
+        "child_anchor": {
+          "kind": "cylinder",
+          "u": 0.5,
+          "v": 1.0,
+          "w": 0.5,
+          "angle_deg": 270.0
+        },
+        "relation": "contact"
+      },
+      {
+        "parent": "engine-nacelle-l",
+        "child": "engine-core-l",
+        "parent_anchor": {
+          "kind": "cylinder",
+          "u": 0.5,
+          "v": 1.0,
+          "w": 0.5,
+          "angle_deg": 0
+        },
+        "child_anchor": {
+          "kind": "cylinder",
+          "u": 0.5,
+          "v": 1.0,
+          "w": 0.5,
+          "angle_deg": 270.0
+        },
+        "relation": "placement"
+      },
+      {
+        "parent": "wing-l",
+        "child": "winglet-l",
+        "parent_anchor": {
+          "kind": "wing",
+          "u": 1.0,
+          "v": 0.5,
+          "w": 0.5,
+          "angle_deg": 0
+        },
+        "child_anchor": {
+          "kind": "wing",
+          "u": 0.0,
+          "v": 0.5,
+          "w": 0.5,
+          "angle_deg": 0
+        },
+        "relation": "placement"
+      },
+      {
+        "parent": "wing-l",
+        "child": "flap-l",
+        "parent_anchor": {
+          "kind": "wing",
+          "u": 0.4,
+          "v": 1.0,
+          "w": 0.5,
+          "angle_deg": 0
+        },
+        "child_anchor": {
+          "kind": "wing",
+          "u": 0.0,
+          "v": 0.5,
+          "w": 0.5,
+          "angle_deg": 0
+        },
+        "relation": "placement"
+      },
+      {
+        "parent": "fuselage-aft",
+        "child": "horizontal-stab-l",
+        "parent_anchor": {
+          "kind": "body",
+          "u": 0.25,
+          "v": 1.0,
+          "w": 0.5,
+          "angle_deg": 180.0
+        },
+        "child_anchor": {
+          "kind": "wing",
+          "u": 0.0,
+          "v": 0.5,
+          "w": 0.5,
+          "angle_deg": 0
+        },
+        "relation": "contact"
+      },
+      {
+        "parent": "fuselage-aft",
+        "child": "vertical-fin",
+        "parent_anchor": {
+          "kind": "body",
+          "u": 0.5,
+          "v": 1.0,
+          "w": 0.5,
+          "angle_deg": 90.0
+        },
+        "child_anchor": {
+          "kind": "wing",
+          "u": 0.0,
+          "v": 0.5,
+          "w": 0.5,
+          "angle_deg": 0
+        },
+        "relation": "contact"
+      },
+      {
+        "parent": "fuselage-front",
+        "child": "nose-gear-strut",
+        "parent_anchor": {
+          "kind": "body",
+          "u": 0.5,
+          "v": 1.0,
+          "w": 0.5,
+          "angle_deg": 270.0
+        },
+        "child_anchor": {
+          "kind": "cylinder",
+          "u": 1.0,
+          "v": 0.5,
+          "w": 0.5,
+          "angle_deg": 0
+        },
+        "relation": "contact"
+      },
+      {
+        "parent": "nose-gear-strut",
+        "child": "nose-gear-wheels",
+        "parent_anchor": {
+          "kind": "cylinder",
+          "u": 0.0,
+          "v": 0.5,
+          "w": 0.5,
+          "angle_deg": 0
+        },
+        "child_anchor": {
+          "kind": "cylinder",
+          "u": 0.5,
+          "v": 1.0,
+          "w": 0.5,
+          "angle_deg": 270.0
+        },
+        "relation": "contact"
+      },
+      {
+        "parent": "fuselage-mid",
+        "child": "main-gear-strut-l",
+        "parent_anchor": {
+          "kind": "body",
+          "u": 0.15,
+          "v": 1.0,
+          "w": 0.5,
+          "angle_deg": 270.0
+        },
+        "child_anchor": {
+          "kind": "cylinder",
+          "u": 1.0,
+          "v": 0.5,
+          "w": 0.5,
+          "angle_deg": 0
+        },
+        "relation": "contact"
+      },
+      {
+        "parent": "main-gear-strut-l",
+        "child": "main-gear-wheels-l",
+        "parent_anchor": {
+          "kind": "cylinder",
+          "u": 0.0,
+          "v": 0.5,
+          "w": 0.5,
+          "angle_deg": 0
+        },
+        "child_anchor": {
+          "kind": "cylinder",
+          "u": 0.5,
+          "v": 1.0,
+          "w": 0.5,
+          "angle_deg": 270.0
+        },
+        "relation": "contact"
+      },
+      {
+        "parent": "fuselage-front",
+        "child": "cockpit-windows",
+        "parent_anchor": {
+          "kind": "body",
+          "u": 0.85,
+          "v": 0.5,
+          "w": 0.5,
+          "angle_deg": 0
+        },
+        "child_anchor": {
+          "kind": "box",
+          "u": 0.5,
+          "v": 0.5,
+          "w": 0.5,
+          "angle_deg": 0
+        },
+        "relation": "placement"
+      },
+      {
+        "parent": "fuselage-mid",
+        "child": "floor-beam-main",
+        "parent_anchor": {
+          "kind": "body",
+          "u": 0.5,
+          "v": 0.5,
+          "w": 0.5,
+          "angle_deg": 0
+        },
+        "child_anchor": {
+          "kind": "box",
+          "u": 0.5,
+          "v": 0.5,
+          "w": 0.5,
+          "angle_deg": 0
+        },
+        "relation": "placement"
+      },
+      {
+        "parent": "floor-beam-main",
+        "child": "cabin-seats",
+        "parent_anchor": {
+          "kind": "box",
+          "u": 0.5,
+          "v": 0.5,
+          "w": 1.0,
+          "angle_deg": 0
+        },
+        "child_anchor": {
+          "kind": "box",
+          "u": 0.5,
+          "v": 0.5,
+          "w": 0.0,
+          "angle_deg": 0
+        },
+        "relation": "placement"
+      }
+    ],
+    "alignments": [
+      {
+        "part": "wing-l",
+        "local_axis": "y",
+        "world_axis": "-y",
+        "roll_deg": 0
+      },
+      {
+        "part": "vertical-fin",
+        "local_axis": "y",
+        "world_axis": "z",
+        "roll_deg": 0
+      },
+      {
+        "part": "engine-nacelle-l",
+        "local_axis": "z",
+        "world_axis": "x",
+        "roll_deg": 0
+      },
+      {
+        "part": "engine-core-l",
+        "local_axis": "z",
+        "world_axis": "x",
+        "roll_deg": 0
+      },
+      {
+        "part": "nose-gear-strut",
+        "local_axis": "z",
+        "world_axis": "z",
+        "roll_deg": 0
+      },
+      {
+        "part": "main-gear-strut-l",
+        "local_axis": "z",
+        "world_axis": "z",
+        "roll_deg": 0
+      },
+      {
+        "part": "nose-gear-wheels",
+        "local_axis": "z",
+        "world_axis": "y",
+        "roll_deg": 0
+      },
+      {
+        "part": "main-gear-wheels-l",
+        "local_axis": "z",
+        "world_axis": "y",
+        "roll_deg": 0
+      }
+    ]
+  },
+  "symmetry": "bilateral",
+  "axis": "y",
+  "plane_offset": 0.0,
+  "confidence": 0.92,
+  "rationale": "照片为仰视飞行中的单通道双发客机，整机关于机身纵向竖直对称面（XZ平面，法向Y、偏移0）呈双侧对称：左右机翼、翼梢小翼、发动机短舱与吊架、水平尾翼、主起落架均为镜像对应。可见的例外均为位于对称面上的中央部件（机身各段、雷达罩、垂尾、前起落架、客舱地板等），或非对称观感细节。风挡框、翼上涂装等表面细节按观感件处理，不强制纳入镜像。以装配规则先用整体机身剖面（body group）统一四段+尾锥+雷达罩的外轮廓，再用锚点把机翼、尾翼、发动机与起落架挂接到机身，避免局部拼接错位。所有尺寸均为设计假设（机身长约35.7m、翼展约36m级），非照片测量。",
+  "visible_evidence": [
+    "机身细长圆柱形，机头圆润，单通道客机布局",
+    "左右机翼下各吊挂一台涡扇发动机，短舱左右对称",
+    "机翼后掠并带翼梢小翼",
+    "起落架放下，前起落架居中，左右主起落架各为多轮结构",
+    "垂直尾翼高大居中，水平尾翼左右对称",
+    "涂装左右基本一致，无明显不对称外观细节"
+  ],
+  "exceptions": [
+    "fuselage-front",
+    "fuselage-mid",
+    "fuselage-aft",
+    "tail-cone",
+    "radome",
+    "floor-beam-main",
+    "wing-box-l",
+    "vertical-fin",
+    "nose-gear-strut",
+    "nose-gear-wheels",
+    "cockpit-windows",
+    "cabin-seats"
+  ],
+  "pairs": [
+    {
+      "source": "cabin-window-strip-l",
+      "target": "cabin-window-strip-r"
+    },
+    {
+      "source": "wing-l",
+      "target": "wing-r"
+    },
+    {
+      "source": "winglet-l",
+      "target": "winglet-r"
+    },
+    {
+      "source": "flap-l",
+      "target": "flap-r"
+    },
+    {
+      "source": "engine-nacelle-l",
+      "target": "engine-nacelle-r"
+    },
+    {
+      "source": "engine-core-l",
+      "target": "engine-core-r"
+    },
+    {
+      "source": "pylon-l",
+      "target": "pylon-r"
+    },
+    {
+      "source": "horizontal-stab-l",
+      "target": "horizontal-stab-r"
+    },
+    {
+      "source": "main-gear-strut-l",
+      "target": "main-gear-strut-r"
+    },
+    {
+      "source": "main-gear-wheels-l",
+      "target": "main-gear-wheels-r"
+    }
+  ],
+  "parameterization": [],
+  "stages": [
+    "proportions",
+    "connections",
+    "surfaces"
+  ]
+}

@@ -1,0 +1,61 @@
+{
+  "run": "566e62221aee41b6",
+  "design_sha256": "ccf7a4514f7e364aa235de8c6faafe3349ded60161480244f55a5e7f0bae680a",
+  "protocol_sha256": "12b9221fc60622c493ea37566084a212b73ac1bda672f371117cac35656d0443",
+  "surface_gaps": [
+    {
+      "parts": [
+        "wing-l",
+        "winglet-l"
+      ],
+      "state": "measured",
+      "gap_mm": 0.0
+    },
+    {
+      "parts": [
+        "wing-r",
+        "winglet-r"
+      ],
+      "state": "measured",
+      "gap_mm": 0.0
+    },
+    {
+      "parts": [
+        "tail-cone",
+        "fuselage-aft"
+      ],
+      "state": "measured",
+      "gap_mm": 0.0
+    },
+    {
+      "parts": [
+        "fuselage-aft",
+        "fuselage-mid"
+      ],
+      "state": "measured",
+      "gap_mm": 9.094947017729282e-13
+    },
+    {
+      "parts": [
+        "fuselage-mid",
+        "fuselage-front"
+      ],
+      "state": "measured",
+      "gap_mm": 0.0
+    },
+    {
+      "parts": [
+        "fuselage-front",
+        "radome"
+      ],
+      "state": "measured",
+      "gap_mm": 3.637978807091713e-12
+    }
+  ],
+  "engine_axis_issues": [],
+  "selected_round": 5,
+  "quality_status": "model-threshold-met",
+  "model_calls": 19,
+  "elapsed_s": 619.15,
+  "scope": "Fixed ID pairs chosen before candidate outcomes; zero gap can include overlap. No silhouette, tangent continuity or physical certificate."
+}

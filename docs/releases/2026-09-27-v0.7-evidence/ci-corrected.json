@@ -1,0 +1,56 @@
+{
+  "run": 36328048102,
+  "commit": "23225277e64979f42403d4975e6bc71d78e9e558",
+  "jobs": [
+    {
+      "name": "CAD + real Lean + installed wheel",
+      "status": "completed",
+      "conclusion": "success"
+    },
+    {
+      "name": "Core / windows-latest / Python 3.12",
+      "status": "completed",
+      "conclusion": "success"
+    },
+    {
+      "name": "MCP / macos-latest / Python 3.12",
+      "status": "completed",
+      "conclusion": "success"
+    },
+    {
+      "name": "Core / ubuntu-latest / Python 3.12",
+      "status": "completed",
+      "conclusion": "success"
+    },
+    {
+      "name": "Core / ubuntu-latest / Python 3.13",
+      "status": "completed",
+      "conclusion": "success"
+    },
+    {
+      "name": "MCP / ubuntu-latest / Python 3.12",
+      "status": "completed",
+      "conclusion": "success"
+    },
+    {
+      "name": "Core / windows-latest / Python 3.13",
+      "status": "completed",
+      "conclusion": "success"
+    },
+    {
+      "name": "MCP / windows-latest / Python 3.12",
+      "status": "completed",
+      "conclusion": "success"
+    },
+    {
+      "name": "Core / macos-latest / Python 3.12",
+      "status": "completed",
+      "conclusion": "success"
+    },
+    {
+      "name": "Core / macos-latest / Python 3.13",
+      "status": "completed",
+      "conclusion": "success"
+    }
+  ]
+}

@@ -1,0 +1,2007 @@
+{
+  "schema": "fk-perception-loop-v2",
+  "workflow": "glm-assembly-parametric-v2",
+  "enabled": true,
+  "model": "glm-5.3-flash",
+  "decision_author": "glm-5.3-flash",
+  "human_design_edits": false,
+  "selection_policy": "GLM decision among reviewed current/retained candidates; host only validates",
+  "sources_sha256": {
+    "pal_workflow.py": "b2b4e72b31551c5ee37bf55f0d77d3c74ea9cfcda5e8013851c096d04ffc4fb7",
+    "pal_rules.py": "ecf83357ea22cc84c668e9a803d95f2339b3e7007001c7c0a18c7d12902d76ea",
+    "assembly.py": "256cc223b428b723748698321e24a031f0218c91e41b0405d3d02d1305b1296e",
+    "parametric.py": "09fa05f065770212e10886f31e7e42b62e743a469185fa1213efd769636a2b12",
+    "models.py": "8cdab0e6fb121be024bf28ab91c7e529ab763bb26f88cacf9f3608bfa3b7683c",
+    "geometry.py": "335bcbaf1f3f23a621954d8f50c2b4f80fd4e5942ff7f221e54404129687a9c9",
+    "perception.py": "cf3aebe76270a3fa67bf0f1a8e6b7fc32aceb15305725798d8a67561ef35f438",
+    "perception_render.py": "847e7bfe572a27a3520be6b736a432e0a362e126aae9d9d7db1c0e0f3a700528",
+    "skill.md": "3f49546cf36a421a83ca9408b328a51574d00adce46d687880b409260f7b2a03"
+  },
+  "plan": {
+    "assembly": {
+      "bodies": [
+        {
+          "id": "fuselage-main",
+          "profile": {
+            "kind": "body",
+            "length": 35700.0,
+            "sections": [
+              {
+                "u": 0.0,
+                "width": 700.0,
+                "height": 700.0,
+                "offset_y": 0.0,
+                "offset_z": 0.0
+              },
+              {
+                "u": 0.09,
+                "width": 1800.0,
+                "height": 1800.0,
+                "offset_y": 0.0,
+                "offset_z": 0.0
+              },
+              {
+                "u": 0.2,
+                "width": 3400.0,
+                "height": 3600.0,
+                "offset_y": 0.0,
+                "offset_z": 100.0
+              },
+              {
+                "u": 0.35,
+                "width": 3950.0,
+                "height": 3950.0,
+                "offset_y": 0.0,
+                "offset_z": 100.0
+              },
+              {
+                "u": 0.5,
+                "width": 3950.0,
+                "height": 3950.0,
+                "offset_y": 0.0,
+                "offset_z": 100.0
+              },
+              {
+                "u": 0.65,
+                "width": 3950.0,
+                "height": 3950.0,
+                "offset_y": 0.0,
+                "offset_z": 100.0
+              },
+              {
+                "u": 0.8,
+                "width": 3700.0,
+                "height": 3700.0,
+                "offset_y": 0.0,
+                "offset_z": 100.0
+              },
+              {
+                "u": 0.92,
+                "width": 2400.0,
+                "height": 2600.0,
+                "offset_y": 0.0,
+                "offset_z": 100.0
+              },
+              {
+                "u": 1.0,
+                "width": 900.0,
+                "height": 900.0,
+                "offset_y": 0.0,
+                "offset_z": 100.0
+              }
+            ]
+          },
+          "position": [
+            8650.0,
+            0.0,
+            4000.0
+          ],
+          "rotation": [
+            0.0,
+            0.0,
+            0.0
+          ],
+          "members": [
+            {
+              "part": "tail-cone",
+              "start": 0.0,
+              "end": 0.0896
+            },
+            {
+              "part": "fuselage-aft",
+              "start": 0.0896,
+              "end": 0.3417
+            },
+            {
+              "part": "fuselage-mid",
+              "start": 0.3417,
+              "end": 0.6499
+            },
+            {
+              "part": "fuselage-front",
+              "start": 0.6499,
+              "end": 0.916
+            },
+            {
+              "part": "radome",
+              "start": 0.916,
+              "end": 1.0
+            }
+          ]
+        }
+      ],
+      "attachments": [
+        {
+          "parent": "fuselage-mid",
+          "child": "wing-l",
+          "parent_anchor": {
+            "kind": "body",
+            "u": 0.59,
+            "v": 1.0,
+            "w": 0.5,
+            "angle_deg": 180.0
+          },
+          "child_anchor": {
+            "kind": "wing",
+            "u": 0.0,
+            "v": 0.5,
+            "w": 0.5,
+            "angle_deg": 0
+          },
+          "relation": "contact"
+        },
+        {
+          "parent": "wing-l",
+          "child": "winglet-l",
+          "parent_anchor": {
+            "kind": "wing",
+            "u": 1.0,
+            "v": 0.0,
+            "w": 0.5,
+            "angle_deg": 0
+          },
+          "child_anchor": {
+            "kind": "wing",
+            "u": 0.0,
+            "v": 0.0,
+            "w": 0.5,
+            "angle_deg": 0
+          },
+          "relation": "contact"
+        },
+        {
+          "parent": "wing-l",
+          "child": "flap-l",
+          "parent_anchor": {
+            "kind": "wing",
+            "u": 0.4,
+            "v": 1.0,
+            "w": 0.5,
+            "angle_deg": 0
+          },
+          "child_anchor": {
+            "kind": "wing",
+            "u": 0.3,
+            "v": 0.0,
+            "w": 0.5,
+            "angle_deg": 0
+          },
+          "relation": "placement"
+        },
+        {
+          "parent": "wing-l",
+          "child": "pylon-l",
+          "parent_anchor": {
+            "kind": "wing",
+            "u": 0.25,
+            "v": 0.5,
+            "w": 0.5,
+            "angle_deg": 0
+          },
+          "child_anchor": {
+            "kind": "box",
+            "u": 0.5,
+            "v": 1.0,
+            "w": 1.0,
+            "angle_deg": 0
+          },
+          "relation": "placement"
+        },
+        {
+          "parent": "pylon-l",
+          "child": "engine-nacelle-l",
+          "parent_anchor": {
+            "kind": "box",
+            "u": 0.5,
+            "v": 1.0,
+            "w": 0.0,
+            "angle_deg": 0
+          },
+          "child_anchor": {
+            "kind": "cylinder",
+            "u": 0.5,
+            "v": 1.0,
+            "w": 0.5,
+            "angle_deg": 90.0
+          },
+          "relation": "placement"
+        },
+        {
+          "parent": "engine-nacelle-l",
+          "child": "engine-core-l",
+          "parent_anchor": {
+            "kind": "cylinder",
+            "u": 0.5,
+            "v": 0.0,
+            "w": 0.5,
+            "angle_deg": 0
+          },
+          "child_anchor": {
+            "kind": "cylinder",
+            "u": 0.5,
+            "v": 0.0,
+            "w": 0.5,
+            "angle_deg": 0
+          },
+          "relation": "placement"
+        },
+        {
+          "parent": "fuselage-aft",
+          "child": "vertical-fin",
+          "parent_anchor": {
+            "kind": "body",
+            "u": 0.11,
+            "v": 1.0,
+            "w": 0.5,
+            "angle_deg": 90.0
+          },
+          "child_anchor": {
+            "kind": "wing",
+            "u": 0.0,
+            "v": 0.5,
+            "w": 0.5,
+            "angle_deg": 0
+          },
+          "relation": "contact"
+        },
+        {
+          "parent": "fuselage-aft",
+          "child": "horizontal-stab-l",
+          "parent_anchor": {
+            "kind": "body",
+            "u": 0.11,
+            "v": 1.0,
+            "w": 0.5,
+            "angle_deg": 180.0
+          },
+          "child_anchor": {
+            "kind": "wing",
+            "u": 0.0,
+            "v": 0.5,
+            "w": 0.5,
+            "angle_deg": 0
+          },
+          "relation": "contact"
+        },
+        {
+          "parent": "fuselage-front",
+          "child": "nose-gear-strut",
+          "parent_anchor": {
+            "kind": "body",
+            "u": 0.21,
+            "v": 1.0,
+            "w": 0.5,
+            "angle_deg": 270.0
+          },
+          "child_anchor": {
+            "kind": "cylinder",
+            "u": 1.0,
+            "v": 0.5,
+            "w": 0.5,
+            "angle_deg": 0
+          },
+          "relation": "placement"
+        },
+        {
+          "parent": "nose-gear-strut",
+          "child": "nose-gear-wheels",
+          "parent_anchor": {
+            "kind": "cylinder",
+            "u": 0.0,
+            "v": 0.5,
+            "w": 0.5,
+            "angle_deg": 0
+          },
+          "child_anchor": {
+            "kind": "cylinder",
+            "u": 0.5,
+            "v": 0.0,
+            "w": 0.5,
+            "angle_deg": 0
+          },
+          "relation": "placement"
+        },
+        {
+          "parent": "fuselage-mid",
+          "child": "main-gear-strut-l",
+          "parent_anchor": {
+            "kind": "body",
+            "u": 0.47,
+            "v": 1.0,
+            "w": 0.5,
+            "angle_deg": 270.0
+          },
+          "child_anchor": {
+            "kind": "cylinder",
+            "u": 1.0,
+            "v": 0.5,
+            "w": 0.5,
+            "angle_deg": 0
+          },
+          "relation": "placement"
+        },
+        {
+          "parent": "main-gear-strut-l",
+          "child": "main-gear-wheels-l",
+          "parent_anchor": {
+            "kind": "cylinder",
+            "u": 0.0,
+            "v": 0.5,
+            "w": 0.5,
+            "angle_deg": 0
+          },
+          "child_anchor": {
+            "kind": "cylinder",
+            "u": 0.5,
+            "v": 0.0,
+            "w": 0.5,
+            "angle_deg": 0
+          },
+          "relation": "placement"
+        },
+        {
+          "parent": "fuselage-front",
+          "child": "cockpit-windows",
+          "parent_anchor": {
+            "kind": "body",
+            "u": 0.49,
+            "v": 1.0,
+            "w": 0.5,
+            "angle_deg": 90.0
+          },
+          "child_anchor": {
+            "kind": "box",
+            "u": 0.5,
+            "v": 0.5,
+            "w": 0.0,
+            "angle_deg": 0
+          },
+          "relation": "placement"
+        },
+        {
+          "parent": "fuselage-mid",
+          "child": "cabin-window-strip-l",
+          "parent_anchor": {
+            "kind": "body",
+            "u": 0.5,
+            "v": 1.0,
+            "w": 0.5,
+            "angle_deg": 180.0
+          },
+          "child_anchor": {
+            "kind": "box",
+            "u": 0.5,
+            "v": 1.0,
+            "w": 0.5,
+            "angle_deg": 0
+          },
+          "relation": "placement"
+        }
+      ],
+      "alignments": [
+        {
+          "part": "vertical-fin",
+          "local_axis": "y",
+          "world_axis": "z",
+          "roll_deg": 0.0
+        },
+        {
+          "part": "engine-nacelle-l",
+          "local_axis": "z",
+          "world_axis": "x",
+          "roll_deg": 0.0
+        },
+        {
+          "part": "engine-core-l",
+          "local_axis": "z",
+          "world_axis": "x",
+          "roll_deg": 0.0
+        },
+        {
+          "part": "nose-gear-strut",
+          "local_axis": "z",
+          "world_axis": "-z",
+          "roll_deg": 0.0
+        },
+        {
+          "part": "main-gear-strut-l",
+          "local_axis": "z",
+          "world_axis": "-z",
+          "roll_deg": 0.0
+        }
+      ]
+    },
+    "symmetry": "bilateral",
+    "axis": "y",
+    "plane_offset": 0.0,
+    "confidence": 0.95,
+    "rationale": "照片为单通道双发涡扇客机（起落架放下、爬升中），左右机翼、发动机、吊架、主起落架、舷窗带、平尾均关于机身纵向竖直对称面（XZ平面，axis=y、offset=0）镜像。垂尾、前起落架、风挡等位于对称面上，作为例外不参与配对。整体方案先声明全机连续外形：将尾锥、前/中/后机身、雷达罩五个已存在的机身族件合并为一个共享截面体（bodies分区），段间共享同一椭圆插值边界，再声明机翼、发动机、起落架的锚点连接。所有尺寸均为设计假设：全长约38m、翼展约36m、机身直径3.95m，照片为仰视姿态无法直接测量。修正上轮错误：右侧舷窗带为镜像目标，不能作为附件子件，其连接关系由左侧镜像自动派生，本轮已移除该附件；其余连接全部使用源件作为子件。垂尾通过alignment使展向局部+y指向世界上方；左翼、平尾等源件reflection=y保证局部+y反射后指向外侧。襟翼与吊架为placement（翼下悬挂/刻意偏置），机翼-机身、垂尾-机身、小翼-翼尖为contact验证真实贴合。",
+    "visible_evidence": [
+      "左右机翼均为后掠带翼梢小翼，形态一致",
+      "机翼下左右各吊挂一台涡扇发动机短舱",
+      "左右主起落架各为多轮结构且已放下",
+      "垂尾位于机身对称面且高大并带涂装",
+      "左右平尾位于机身后段两侧",
+      "机身细长圆柱形，机头圆润，客舱舷窗沿两侧对称分布"
+    ],
+    "exceptions": [
+      "vertical-fin",
+      "nose-gear-strut",
+      "nose-gear-wheels",
+      "cockpit-windows",
+      "floor-beam-main",
+      "wing-box-l",
+      "cabin-seats"
+    ],
+    "pairs": [
+      {
+        "source": "wing-l",
+        "target": "wing-r"
+      },
+      {
+        "source": "winglet-l",
+        "target": "winglet-r"
+      },
+      {
+        "source": "flap-l",
+        "target": "flap-r"
+      },
+      {
+        "source": "engine-nacelle-l",
+        "target": "engine-nacelle-r"
+      },
+      {
+        "source": "engine-core-l",
+        "target": "engine-core-r"
+      },
+      {
+        "source": "pylon-l",
+        "target": "pylon-r"
+      },
+      {
+        "source": "horizontal-stab-l",
+        "target": "horizontal-stab-r"
+      },
+      {
+        "source": "main-gear-strut-l",
+        "target": "main-gear-strut-r"
+      },
+      {
+        "source": "main-gear-wheels-l",
+        "target": "main-gear-wheels-r"
+      },
+      {
+        "source": "cabin-window-strip-l",
+        "target": "cabin-window-strip-r"
+      }
+    ],
+    "parameterization": [
+      {
+        "part": "wing-l",
+        "kind": "wing",
+        "parameters": {
+          "kind": "wing",
+          "span": 14900.0,
+          "root_chord": 6000.0,
+          "tip_chord": 1600.0,
+          "sweep_deg": 22.0,
+          "dihedral_deg": 5.0,
+          "twist_deg": 0.0,
+          "thickness_ratio": 0.11
+        },
+        "position": [
+          9500.0,
+          -2000.0,
+          3400.0
+        ],
+        "rotation": [
+          0.0,
+          0.0,
+          0.0
+        ],
+        "reflection": "y"
+      },
+      {
+        "part": "winglet-l",
+        "kind": "wing",
+        "parameters": {
+          "kind": "wing",
+          "span": 2200.0,
+          "root_chord": 1500.0,
+          "tip_chord": 600.0,
+          "sweep_deg": 10.0,
+          "dihedral_deg": 40.0,
+          "twist_deg": 0.0,
+          "thickness_ratio": 0.1
+        },
+        "position": [
+          15500.0,
+          -16900.0,
+          4600.0
+        ],
+        "rotation": [
+          -40.0,
+          0.0,
+          0.0
+        ],
+        "reflection": "y"
+      },
+      {
+        "part": "flap-l",
+        "kind": "wing",
+        "parameters": {
+          "kind": "wing",
+          "span": 5500.0,
+          "root_chord": 1800.0,
+          "tip_chord": 1200.0,
+          "sweep_deg": 10.0,
+          "dihedral_deg": 0.0,
+          "twist_deg": 0.0,
+          "thickness_ratio": 0.1
+        },
+        "position": [
+          4500.0,
+          -5500.0,
+          3100.0
+        ],
+        "rotation": [
+          0.0,
+          0.0,
+          -20.0
+        ],
+        "reflection": "y"
+      },
+      {
+        "part": "horizontal-stab-l",
+        "kind": "wing",
+        "parameters": {
+          "kind": "wing",
+          "span": 5800.0,
+          "root_chord": 2500.0,
+          "tip_chord": 1100.0,
+          "sweep_deg": 20.0,
+          "dihedral_deg": 5.0,
+          "twist_deg": 0.0,
+          "thickness_ratio": 0.1
+        },
+        "position": [
+          -5000.0,
+          -1200.0,
+          4700.0
+        ],
+        "rotation": [
+          0.0,
+          0.0,
+          -20.0
+        ],
+        "reflection": "y"
+      },
+      {
+        "part": "vertical-fin",
+        "kind": "wing",
+        "parameters": {
+          "kind": "wing",
+          "span": 6800.0,
+          "root_chord": 4200.0,
+          "tip_chord": 1600.0,
+          "sweep_deg": 30.0,
+          "dihedral_deg": 0.0,
+          "twist_deg": 0.0,
+          "thickness_ratio": 0.1
+        },
+        "position": [
+          -5000.0,
+          0.0,
+          5900.0
+        ],
+        "rotation": [
+          90.0,
+          0.0,
+          0.0
+        ],
+        "reflection": null
+      }
+    ],
+    "stages": [
+      "proportions",
+      "connections",
+      "surfaces"
+    ]
+  },
+  "max_rounds": 3,
+  "rounds": [
+    {
+      "round": 0,
+      "state": "reviewed",
+      "derived_from": null,
+      "stage": "proportions",
+      "design_sha256": "a23df91619a119bd85bac8ab89d41e566cb2997444f1b186f065cec160760afc",
+      "view": "perception/round-00/views.png",
+      "render_frame": "union of baseline/current/retained; both comparison sheets share bounds",
+      "review": {
+        "silhouette": 82,
+        "proportions": 80,
+        "layout": 84,
+        "reference_limitations": "参考照片为地面仰视、大迎角爬升姿态，存在强透视缩短：真实机长、翼展、机身直径与发动机尺寸无法测量，均为设计假设。涂装细节、舱门位置、起落架细节被压缩不可辨。当前候选渲染为正交四视图，与照片视角不同，比例对比只能到轮廓层级，不能精确对齐。",
+        "findings": [
+          {
+            "severity": "minor",
+            "parts": [
+              "engine-nacelle-l",
+              "engine-core-l"
+            ],
+            "observation": "placement检查显示发动机核心机与短舱内壁表面间隙约94mm（gap_vector_parent_to_child_mm=[0,0,94]），核心机相对短舱同心但沿Z向下偏置，核心机下缘伸出短舱下缘。该关系为placement，不构成接触失效，但外观上发动机内芯与短舱未对齐。",
+            "suggested_change": "在下一动作轮调整pylon-l与短舱的连接锚点或短舱u向位置，使engine-core-l与短舱同心（消除94mm Z向偏置），或将relation说明为刻意偏置。"
+          },
+          {
+            "severity": "minor",
+            "parts": [
+              "cockpit-windows"
+            ],
+            "observation": "风挡框当前position.y=116.47（非零横向偏置），position.z=6401位于机身上表面附近，渲染中呈现为机背上一个深色方块，而不是照片中机头两侧的风挡外观。锚点误差接近0，几何上贴合机身，但观感位置偏高偏侧。",
+            "suggested_change": "下一动作轮将cockpit-windows的锚点角度调整为朝向机头前方侧面（约45度），或降低w使其贴近机身侧面，呈现风挡带而非背部方块。"
+          },
+          {
+            "severity": "minor",
+            "parts": [
+              "flap-l",
+              "flap-r"
+            ],
+            "observation": "襟翼anchor在机翼后缘v=1.0处与襟翼前缘v=0.0对齐，placement间距为0，渲染中襟翼与主翼后缘衔接自然。仅提示襟翼厚度(179.97mm)与主翼局部厚度差异使其看起来像贴片，属观感层面。",
+            "suggested_change": "可选：将flap-l的thickness_ratio从0.1降至约0.06，使其更贴近后缘补翼观感；非必须。"
+          }
+        ],
+        "numeric_claims": [
+          {
+            "part": "wing-l",
+            "field": "parametric.span",
+            "value": 14900.0
+          },
+          {
+            "part": "wing-l",
+            "field": "parametric.root_chord",
+            "value": 6000.0
+          },
+          {
+            "part": "wing-l",
+            "field": "parametric.sweep_deg",
+            "value": 22.0
+          },
+          {
+            "part": "wing-l",
+            "field": "parametric.dihedral_deg",
+            "value": 5.0
+          },
+          {
+            "part": "winglet-l",
+            "field": "parametric.span",
+            "value": 2200.0
+          },
+          {
+            "part": "vertical-fin",
+            "field": "parametric.span",
+            "value": 6800.0
+          },
+          {
+            "part": "vertical-fin",
+            "field": "parametric.sweep_deg",
+            "value": 30.0
+          },
+          {
+            "part": "horizontal-stab-l",
+            "field": "parametric.span",
+            "value": 5800.0
+          },
+          {
+            "part": "fuselage-mid",
+            "field": "size.0",
+            "value": 11002.74
+          },
+          {
+            "part": "fuselage-front",
+            "field": "size.0",
+            "value": 9499.77
+          },
+          {
+            "part": "fuselage-aft",
+            "field": "size.0",
+            "value": 8999.97
+          },
+          {
+            "part": "tail-cone",
+            "field": "size.0",
+            "value": 3198.72
+          },
+          {
+            "part": "radome",
+            "field": "size.0",
+            "value": 2998.8
+          },
+          {
+            "part": "engine-nacelle-l",
+            "field": "size.2",
+            "value": 4500.0
+          },
+          {
+            "part": "engine-core-l",
+            "field": "size.0",
+            "value": 2300.0
+          },
+          {
+            "part": "pylon-l",
+            "field": "position.2",
+            "value": 3525.8952716340673
+          },
+          {
+            "part": "engine-core-l",
+            "field": "position.2",
+            "value": 2625.8952716340673
+          },
+          {
+            "part": "cockpit-windows",
+            "field": "position.1",
+            "value": 116.46857029613444
+          },
+          {
+            "part": "cockpit-windows",
+            "field": "position.2",
+            "value": 6401.092455163414
+          },
+          {
+            "part": "nose-gear-strut",
+            "field": "size.2",
+            "value": 2600.0
+          },
+          {
+            "part": "main-gear-strut-l",
+            "field": "size.2",
+            "value": 2800.0
+          },
+          {
+            "part": "main-gear-wheels-l",
+            "field": "size.0",
+            "value": 1140.0
+          },
+          {
+            "part": "flap-l",
+            "field": "parametric.span",
+            "value": 5500.0
+          },
+          {
+            "part": "wing-l",
+            "field": "position.1",
+            "value": -1975.0
+          }
+        ]
+      },
+      "layout": {
+        "schema": "fk-layout-checks-v1",
+        "passed": true,
+        "issues": [],
+        "scope": "Aircraft engine axes and unrotated fuselage interval overlaps only; not a complete assembly/collision check",
+        "assembly": {
+          "schema": "fk-assembly-checks-v1",
+          "passed": true,
+          "issues": [],
+          "measurements": [
+            {
+              "kind": "mirrored_contact",
+              "parent": "fuselage-mid",
+              "child": "wing-r",
+              "surface_gap_mm": 0.0,
+              "closest_parent_point_mm": [
+                6490.306600000002,
+                1974.9999999999998,
+                4099.999999999999
+              ],
+              "closest_child_point_mm": [
+                6490.306600000002,
+                1975.0,
+                4100.0
+              ],
+              "gap_vector_parent_to_child_mm": [
+                0.0,
+                2.2737367544323206e-13,
+                9.094947017729282e-13
+              ]
+            },
+            {
+              "kind": "contact",
+              "parent": "fuselage-mid",
+              "child": "wing-l",
+              "anchor_error_mm": 0.0,
+              "surface_gap_mm": 2.3874235921539366e-10,
+              "closest_parent_point_mm": [
+                6490.306600000002,
+                -1975.0000000250966,
+                4100.0
+              ],
+              "closest_child_point_mm": [
+                6490.306600000002,
+                -1975.0,
+                4100.0
+              ],
+              "gap_vector_parent_to_child_mm": [
+                0.0,
+                2.5096596800722182e-08,
+                0.0
+              ]
+            },
+            {
+              "kind": "mirrored_contact",
+              "parent": "wing-r",
+              "child": "winglet-r",
+              "surface_gap_mm": 0.0,
+              "closest_parent_point_mm": [
+                6463.899481086523,
+                16865.901596515476,
+                5414.4241415758215
+              ],
+              "closest_child_point_mm": [
+                6463.899481086523,
+                16865.901596515476,
+                5414.4241415758215
+              ],
+              "gap_vector_parent_to_child_mm": [
+                0.0,
+                0.0,
+                0.0
+              ]
+            },
+            {
+              "kind": "contact",
+              "parent": "wing-l",
+              "child": "winglet-l",
+              "anchor_error_mm": 0.0,
+              "surface_gap_mm": 0.0,
+              "closest_parent_point_mm": [
+                6463.899481086523,
+                -16865.901596515476,
+                5414.4241415758215
+              ],
+              "closest_child_point_mm": [
+                6463.899481086523,
+                -16865.901596515476,
+                5414.4241415758215
+              ],
+              "gap_vector_parent_to_child_mm": [
+                0.0,
+                0.0,
+                0.0
+              ]
+            },
+            {
+              "kind": "placement",
+              "parent": "wing-l",
+              "child": "flap-l",
+              "anchor_error_mm": 0.0,
+              "surface_gap_mm": 0.0,
+              "closest_parent_point_mm": [
+                6505.271341713662,
+                -6420.404763252276,
+                4550.364071768968
+              ],
+              "closest_child_point_mm": [
+                6505.271341713662,
+                -6420.404763252276,
+                4550.364071768968
+              ],
+              "gap_vector_parent_to_child_mm": [
+                0.0,
+                0.0,
+                0.0
+              ]
+            },
+            {
+              "kind": "placement",
+              "parent": "wing-l",
+              "child": "pylon-l",
+              "anchor_error_mm": 0.0,
+              "surface_gap_mm": 0.0,
+              "closest_parent_point_mm": [
+                6535.308908764044,
+                -6300.0,
+                4425.895271634067
+              ],
+              "closest_child_point_mm": [
+                6535.308908764044,
+                -6300.0,
+                4425.895271634067
+              ],
+              "gap_vector_parent_to_child_mm": [
+                0.0,
+                0.0,
+                0.0
+              ]
+            },
+            {
+              "kind": "placement",
+              "parent": "pylon-l",
+              "child": "engine-nacelle-l",
+              "anchor_error_mm": 0.0,
+              "surface_gap_mm": 0.0,
+              "closest_parent_point_mm": [
+                6535.308908764044,
+                -5700.0,
+                2625.8952716340673
+              ],
+              "closest_child_point_mm": [
+                6535.308908764044,
+                -5700.0,
+                2625.8952716340673
+              ],
+              "gap_vector_parent_to_child_mm": [
+                0.0,
+                0.0,
+                0.0
+              ]
+            },
+            {
+              "kind": "placement",
+              "parent": "engine-nacelle-l",
+              "child": "engine-core-l",
+              "anchor_error_mm": 0.0,
+              "surface_gap_mm": 93.99999999999955,
+              "closest_parent_point_mm": [
+                6735.308908764044,
+                -6950.0,
+                1381.895271634067
+              ],
+              "closest_child_point_mm": [
+                6735.308908764044,
+                -6950.0,
+                1475.895271634067
+              ],
+              "gap_vector_parent_to_child_mm": [
+                0.0,
+                0.0,
+                94.0
+              ]
+            },
+            {
+              "kind": "contact",
+              "parent": "fuselage-aft",
+              "child": "vertical-fin",
+              "anchor_error_mm": 0.0,
+              "surface_gap_mm": 0.0,
+              "closest_parent_point_mm": [
+                -2911.2833,
+                6.728031384072046e-14,
+                5148.463636363636
+              ],
+              "closest_child_point_mm": [
+                -2911.2833,
+                6.728031384072046e-14,
+                5148.463636363636
+              ],
+              "gap_vector_parent_to_child_mm": [
+                0.0,
+                0.0,
+                0.0
+              ]
+            },
+            {
+              "kind": "mirrored_contact",
+              "parent": "fuselage-aft",
+              "child": "horizontal-stab-r",
+              "surface_gap_mm": 0.0,
+              "closest_parent_point_mm": [
+                -5164.601424560582,
+                1042.9676753773392,
+                4125.378422862711
+              ],
+              "closest_child_point_mm": [
+                -5164.601424560582,
+                1042.9676753773392,
+                4125.378422862711
+              ],
+              "gap_vector_parent_to_child_mm": [
+                0.0,
+                0.0,
+                0.0
+              ]
+            },
+            {
+              "kind": "contact",
+              "parent": "fuselage-aft",
+              "child": "horizontal-stab-l",
+              "anchor_error_mm": 0.0,
+              "surface_gap_mm": 0.0,
+              "closest_parent_point_mm": [
+                -5164.601424560582,
+                -1042.9676753773392,
+                4125.378422862711
+              ],
+              "closest_child_point_mm": [
+                -5164.601424560582,
+                -1042.9676753773392,
+                4125.378422862711
+              ],
+              "gap_vector_parent_to_child_mm": [
+                0.0,
+                0.0,
+                0.0
+              ]
+            },
+            {
+              "kind": "placement",
+              "parent": "fuselage-front",
+              "child": "nose-gear-strut",
+              "anchor_error_mm": 0.0,
+              "surface_gap_mm": 0.0,
+              "closest_parent_point_mm": [
+                16066.381700000002,
+                -1.564333205060837e-15,
+                4771.484166666667
+              ],
+              "closest_child_point_mm": [
+                16066.381700000002,
+                -1.564333205060837e-15,
+                4771.484166666667
+              ],
+              "gap_vector_parent_to_child_mm": [
+                0.0,
+                0.0,
+                0.0
+              ]
+            },
+            {
+              "kind": "placement",
+              "parent": "nose-gear-strut",
+              "child": "nose-gear-wheels",
+              "anchor_error_mm": 0.0,
+              "surface_gap_mm": 0.0,
+              "closest_parent_point_mm": [
+                16066.381700000002,
+                -1.564333205060837e-15,
+                4771.484166666667
+              ],
+              "closest_child_point_mm": [
+                16066.381700000002,
+                -1.564333205060837e-15,
+                4771.484166666667
+              ],
+              "gap_vector_parent_to_child_mm": [
+                0.0,
+                0.0,
+                0.0
+              ]
+            },
+            {
+              "kind": "placement",
+              "parent": "fuselage-mid",
+              "child": "main-gear-strut-l",
+              "anchor_error_mm": 0.0,
+              "surface_gap_mm": 0.0,
+              "closest_parent_point_mm": [
+                8259.9778,
+                2.418677428316028e-14,
+                4925.0
+              ],
+              "closest_child_point_mm": [
+                8259.9778,
+                2.418677428316028e-14,
+                4925.0
+              ],
+              "gap_vector_parent_to_child_mm": [
+                0.0,
+                0.0,
+                0.0
+              ]
+            },
+            {
+              "kind": "placement",
+              "parent": "main-gear-strut-l",
+              "child": "main-gear-wheels-l",
+              "anchor_error_mm": 0.0,
+              "surface_gap_mm": 0.0,
+              "closest_parent_point_mm": [
+                8259.9778,
+                2.418677428316028e-14,
+                4925.0
+              ],
+              "closest_child_point_mm": [
+                8259.9778,
+                2.418677428316028e-14,
+                4925.0
+              ],
+              "gap_vector_parent_to_child_mm": [
+                0.0,
+                0.0,
+                0.0
+              ]
+            },
+            {
+              "kind": "placement",
+              "parent": "fuselage-front",
+              "child": "cockpit-windows",
+              "anchor_error_mm": 5.987834102638787e-16,
+              "surface_gap_mm": 1.0392673672157329e-13,
+              "closest_parent_point_mm": [
+                17906.317300000002,
+                -1.0392673672157329e-13,
+                5983.932836134454
+              ],
+              "closest_child_point_mm": [
+                17906.317300000002,
+                0.0,
+                5983.932836134454
+              ],
+              "gap_vector_parent_to_child_mm": [
+                0.0,
+                1.0392673672157329e-13,
+                0.0
+              ]
+            },
+            {
+              "kind": "placement",
+              "parent": "fuselage-mid",
+              "child": "cabin-window-strip-l",
+              "anchor_error_mm": 0.0,
+              "surface_gap_mm": 3.3423475542804226e-08,
+              "closest_parent_point_mm": [
+                3294.999999999999,
+                -1974.9999999665765,
+                4100.011490090597
+              ],
+              "closest_child_point_mm": [
+                3294.999999999999,
+                -1975.0,
+                4100.011490090597
+              ],
+              "gap_vector_parent_to_child_mm": [
+                0.0,
+                -3.3423475542804226e-08,
+                0.0
+              ]
+            },
+            {
+              "kind": "axis",
+              "part": "vertical-fin",
+              "axis_error_deg": 0.0
+            },
+            {
+              "kind": "axis",
+              "part": "engine-nacelle-l",
+              "axis_error_deg": 0.0
+            },
+            {
+              "kind": "axis",
+              "part": "engine-core-l",
+              "axis_error_deg": 0.0
+            },
+            {
+              "kind": "axis",
+              "part": "nose-gear-strut",
+              "axis_error_deg": 0.0
+            },
+            {
+              "kind": "axis",
+              "part": "main-gear-strut-l",
+              "axis_error_deg": 0.0
+            },
+            {
+              "kind": "body_seam",
+              "parent": "tail-cone",
+              "child": "fuselage-aft",
+              "seam_error_mm": 0.0
+            },
+            {
+              "kind": "body_seam",
+              "parent": "fuselage-aft",
+              "child": "fuselage-mid",
+              "seam_error_mm": 9.094947017729282e-13
+            },
+            {
+              "kind": "body_seam",
+              "parent": "fuselage-mid",
+              "child": "fuselage-front",
+              "seam_error_mm": 0.0
+            },
+            {
+              "kind": "body_seam",
+              "parent": "fuselage-front",
+              "child": "radome",
+              "seam_error_mm": 3.637978807091713e-12
+            }
+          ],
+          "declared_contacts": 4,
+          "scope": "Declared anchor, axis, body-seam and contact distances only. Contact can include overlap; no penetration, smoothness, strength or full assembly certification. Undeclared relationships are unassessed."
+        }
+      },
+      "rank": [
+        0,
+        0,
+        0,
+        82.0
+      ],
+      "decision": {
+        "selected_round": 0,
+        "next_step": "revise",
+        "stage": "connections",
+        "reason": "保留第0轮候选：整体轮廓（机身分区、机翼/小翼/垂尾/平尾连接）已成型，layout与assembly检查全部通过，接触与接缝间隙近似为零。但连接细节仍有可修的观感问题：engine-core-l相对短舱沿Z向偏置94mm（gap_vector=[0,0,94]），核心机下缘伸出短舱，应调整锚点使二者同心；cockpit-windows呈现为机背深色方块而非机头侧面风挡，应调整body锚点角度使其朝向机头前方侧面；另可将flap-l厚度比降至约0.06改善后缘观感。均属connections阶段可完成的修改，尚有2次修订机会，优先处理发动机同心与风挡位置。"
+      },
+      "selected_when_reviewed": true,
+      "action_attempts": [
+        {
+          "attempt": 0,
+          "accepted": true
+        }
+      ],
+      "action_state": "accepted-for-evaluation"
+    },
+    {
+      "round": 1,
+      "state": "reviewed",
+      "derived_from": 0,
+      "stage": "connections",
+      "design_sha256": "0212949aef64a3cef971a5624bfb0616870a61c92c0f0fde057592e95f4f16d0",
+      "view": "perception/round-01/views.png",
+      "render_frame": "union of baseline/current/retained; both comparison sheets share bounds",
+      "review": {
+        "silhouette": 84,
+        "proportions": 82,
+        "layout": 85,
+        "reference_limitations": "参考照片为地面仰视、大迎角爬升姿态，存在强透视缩短：真实机长、翼展、机身直径与发动机尺寸均无法测量，全部为设计假设；涂装细节、舱门与起落架细节被压缩不可辨。当前候选为正交四视图渲染，与照片视角不同，比例对比只能到轮廓层级，不能逐像素对齐。上轮建议的襟翼减薄已执行（flap-l/r的thickness_ratio由0.1改为0.06），风挡框位置也已调整，但观感仍不完全到位。",
+        "findings": [
+          {
+            "severity": "minor",
+            "parts": [
+              "cockpit-windows"
+            ],
+            "observation": "风挡框已从机背位置移至机头侧面（position由[18656.3,116.5,6401.1]变为[18656.3,1436.2,5854.4]，即y向外移1319.8mm、z下降546.7mm），SIDE视图中呈现为机头附近的深色块，位置比上轮合理。但与照片中紧贴机头锥面、位于机身上侧前缘的风挡带相比仍偏低偏外，且frame盒体感较强。锚点误差为0，几何贴合无失效。",
+            "suggested_change": "若还有动作轮，可将cockpit-windows附件的parent_anchor角度从45度调至约60度并降低w，使框体贴近机头上侧锥面；否则可作为已接受的外观近似。"
+          },
+          {
+            "severity": "minor",
+            "parts": [
+              "engine-nacelle-l",
+              "engine-core-l"
+            ],
+            "observation": "placement检查仍显示engine-core-l与短舱沿Z向偏置约94mm（gap_vector_parent_to_child_mm=[0,0,94]，closest点z差1475.9-1381.9），核心机下缘相对短舱下移。该关系为placement而非contact，不构成连接失效，发动机在四视图中仍正确悬挂于翼下，但内芯与短舱同心度欠佳。",
+            "suggested_change": "下一动作轮可修改pylon-l至engine-nacelle-l附件的child_anchor（如cylinder u/v调整）或engine-core-l的锚点，消除94mm Z向偏置；如保留偏置需在说明中明确为刻意设计。"
+          },
+          {
+            "severity": "minor",
+            "parts": [
+              "flap-l",
+              "flap-r"
+            ],
+            "observation": "上轮建议已执行：flap-l/r的parametric.thickness_ratio由0.1降为0.06，size.2由179.97mm减至107.98mm，后缘补翼观感改善。襟翼与主翼后缘placement间距为0，衔接自然，无进一步问题。",
+            "suggested_change": "无需进一步修改，确认接受。"
+          }
+        ],
+        "numeric_claims": [
+          {
+            "part": "wing-l",
+            "field": "parametric.span",
+            "value": 14900.0
+          },
+          {
+            "part": "wing-l",
+            "field": "parametric.root_chord",
+            "value": 6000.0
+          },
+          {
+            "part": "wing-l",
+            "field": "parametric.sweep_deg",
+            "value": 22.0
+          },
+          {
+            "part": "wing-l",
+            "field": "parametric.dihedral_deg",
+            "value": 5.0
+          },
+          {
+            "part": "winglet-l",
+            "field": "parametric.span",
+            "value": 2200.0
+          },
+          {
+            "part": "vertical-fin",
+            "field": "parametric.span",
+            "value": 6800.0
+          },
+          {
+            "part": "vertical-fin",
+            "field": "parametric.sweep_deg",
+            "value": 30.0
+          },
+          {
+            "part": "horizontal-stab-l",
+            "field": "parametric.span",
+            "value": 5800.0
+          },
+          {
+            "part": "fuselage-mid",
+            "field": "size.0",
+            "value": 11002.74
+          },
+          {
+            "part": "fuselage-front",
+            "field": "size.0",
+            "value": 9499.77
+          },
+          {
+            "part": "fuselage-aft",
+            "field": "size.0",
+            "value": 8999.97
+          },
+          {
+            "part": "tail-cone",
+            "field": "size.0",
+            "value": 3198.72
+          },
+          {
+            "part": "radome",
+            "field": "size.0",
+            "value": 2998.8
+          },
+          {
+            "part": "engine-nacelle-l",
+            "field": "size.2",
+            "value": 4500.0
+          },
+          {
+            "part": "engine-core-l",
+            "field": "size.0",
+            "value": 2300.0
+          },
+          {
+            "part": "flap-l",
+            "field": "parametric.thickness_ratio",
+            "value": 0.06
+          },
+          {
+            "part": "flap-l",
+            "field": "size.2",
+            "value": 107.9791802662824
+          },
+          {
+            "part": "cockpit-windows",
+            "field": "position.1",
+            "value": 1436.2309336278875
+          },
+          {
+            "part": "cockpit-windows",
+            "field": "position.2",
+            "value": 5854.428985161833
+          },
+          {
+            "part": "nose-gear-strut",
+            "field": "size.2",
+            "value": 2600.0
+          },
+          {
+            "part": "main-gear-strut-l",
+            "field": "size.2",
+            "value": 2800.0
+          },
+          {
+            "part": "main-gear-wheels-l",
+            "field": "size.0",
+            "value": 1140.0
+          },
+          {
+            "part": "wing-l",
+            "field": "position.1",
+            "value": -1975.0
+          },
+          {
+            "part": "engine-core-l",
+            "field": "position.2",
+            "value": 2625.8952716340673
+          }
+        ]
+      },
+      "layout": {
+        "schema": "fk-layout-checks-v1",
+        "passed": true,
+        "issues": [],
+        "scope": "Aircraft engine axes and unrotated fuselage interval overlaps only; not a complete assembly/collision check",
+        "assembly": {
+          "schema": "fk-assembly-checks-v1",
+          "passed": true,
+          "issues": [],
+          "measurements": [
+            {
+              "kind": "mirrored_contact",
+              "parent": "fuselage-mid",
+              "child": "wing-r",
+              "surface_gap_mm": 0.0,
+              "closest_parent_point_mm": [
+                6490.306600000002,
+                1974.9999999999998,
+                4099.999999999999
+              ],
+              "closest_child_point_mm": [
+                6490.306600000002,
+                1975.0,
+                4100.0
+              ],
+              "gap_vector_parent_to_child_mm": [
+                0.0,
+                2.2737367544323206e-13,
+                9.094947017729282e-13
+              ]
+            },
+            {
+              "kind": "contact",
+              "parent": "fuselage-mid",
+              "child": "wing-l",
+              "anchor_error_mm": 0.0,
+              "surface_gap_mm": 2.3874235921539366e-10,
+              "closest_parent_point_mm": [
+                6490.306600000002,
+                -1975.0000000250966,
+                4100.0
+              ],
+              "closest_child_point_mm": [
+                6490.306600000002,
+                -1975.0,
+                4100.0
+              ],
+              "gap_vector_parent_to_child_mm": [
+                0.0,
+                2.5096596800722182e-08,
+                0.0
+              ]
+            },
+            {
+              "kind": "mirrored_contact",
+              "parent": "wing-r",
+              "child": "winglet-r",
+              "surface_gap_mm": 0.0,
+              "closest_parent_point_mm": [
+                6463.899481086523,
+                16865.901596515476,
+                5414.4241415758215
+              ],
+              "closest_child_point_mm": [
+                6463.899481086523,
+                16865.901596515476,
+                5414.4241415758215
+              ],
+              "gap_vector_parent_to_child_mm": [
+                0.0,
+                0.0,
+                0.0
+              ]
+            },
+            {
+              "kind": "contact",
+              "parent": "wing-l",
+              "child": "winglet-l",
+              "anchor_error_mm": 0.0,
+              "surface_gap_mm": 0.0,
+              "closest_parent_point_mm": [
+                6463.899481086523,
+                -16865.901596515476,
+                5414.4241415758215
+              ],
+              "closest_child_point_mm": [
+                6463.899481086523,
+                -16865.901596515476,
+                5414.4241415758215
+              ],
+              "gap_vector_parent_to_child_mm": [
+                0.0,
+                0.0,
+                0.0
+              ]
+            },
+            {
+              "kind": "placement",
+              "parent": "wing-l",
+              "child": "flap-l",
+              "anchor_error_mm": 0.0,
+              "surface_gap_mm": 0.0,
+              "closest_parent_point_mm": [
+                5842.310294022467,
+                -7935.0,
+                4621.432434614507
+              ],
+              "closest_child_point_mm": [
+                5842.310294022467,
+                -7935.0,
+                4621.432434614507
+              ],
+              "gap_vector_parent_to_child_mm": [
+                0.0,
+                0.0,
+                0.0
+              ]
+            },
+            {
+              "kind": "placement",
+              "parent": "wing-l",
+              "child": "pylon-l",
+              "anchor_error_mm": 0.0,
+              "surface_gap_mm": 0.0,
+              "closest_parent_point_mm": [
+                6535.308908764044,
+                -6300.0,
+                4425.895271634067
+              ],
+              "closest_child_point_mm": [
+                6535.308908764044,
+                -6300.0,
+                4425.895271634067
+              ],
+              "gap_vector_parent_to_child_mm": [
+                0.0,
+                0.0,
+                0.0
+              ]
+            },
+            {
+              "kind": "placement",
+              "parent": "pylon-l",
+              "child": "engine-nacelle-l",
+              "anchor_error_mm": 0.0,
+              "surface_gap_mm": 0.0,
+              "closest_parent_point_mm": [
+                6535.308908764044,
+                -5700.0,
+                2625.8952716340673
+              ],
+              "closest_child_point_mm": [
+                6535.308908764044,
+                -5700.0,
+                2625.8952716340673
+              ],
+              "gap_vector_parent_to_child_mm": [
+                0.0,
+                0.0,
+                0.0
+              ]
+            },
+            {
+              "kind": "placement",
+              "parent": "engine-nacelle-l",
+              "child": "engine-core-l",
+              "anchor_error_mm": 0.0,
+              "surface_gap_mm": 93.99999999999955,
+              "closest_parent_point_mm": [
+                6735.308908764044,
+                -6950.0,
+                1381.895271634067
+              ],
+              "closest_child_point_mm": [
+                6735.308908764044,
+                -6950.0,
+                1475.895271634067
+              ],
+              "gap_vector_parent_to_child_mm": [
+                0.0,
+                0.0,
+                94.0
+              ]
+            },
+            {
+              "kind": "contact",
+              "parent": "fuselage-aft",
+              "child": "vertical-fin",
+              "anchor_error_mm": 0.0,
+              "surface_gap_mm": 0.0,
+              "closest_parent_point_mm": [
+                -2911.2833,
+                6.728031384072046e-14,
+                5148.463636363636
+              ],
+              "closest_child_point_mm": [
+                -2911.2833,
+                6.728031384072046e-14,
+                5148.463636363636
+              ],
+              "gap_vector_parent_to_child_mm": [
+                0.0,
+                0.0,
+                0.0
+              ]
+            },
+            {
+              "kind": "mirrored_contact",
+              "parent": "fuselage-aft",
+              "child": "horizontal-stab-r",
+              "surface_gap_mm": 0.0,
+              "closest_parent_point_mm": [
+                -5164.601424560582,
+                1042.9676753773392,
+                4125.378422862711
+              ],
+              "closest_child_point_mm": [
+                -5164.601424560582,
+                1042.9676753773392,
+                4125.378422862711
+              ],
+              "gap_vector_parent_to_child_mm": [
+                0.0,
+                0.0,
+                0.0
+              ]
+            },
+            {
+              "kind": "contact",
+              "parent": "fuselage-aft",
+              "child": "horizontal-stab-l",
+              "anchor_error_mm": 0.0,
+              "surface_gap_mm": 0.0,
+              "closest_parent_point_mm": [
+                -5164.601424560582,
+                -1042.9676753773392,
+                4125.378422862711
+              ],
+              "closest_child_point_mm": [
+                -5164.601424560582,
+                -1042.9676753773392,
+                4125.378422862711
+              ],
+              "gap_vector_parent_to_child_mm": [
+                0.0,
+                0.0,
+                0.0
+              ]
+            },
+            {
+              "kind": "placement",
+              "parent": "fuselage-front",
+              "child": "nose-gear-strut",
+              "anchor_error_mm": 0.0,
+              "surface_gap_mm": 0.0,
+              "closest_parent_point_mm": [
+                16066.381700000002,
+                -1.564333205060837e-15,
+                4771.484166666667
+              ],
+              "closest_child_point_mm": [
+                16066.381700000002,
+                -1.564333205060837e-15,
+                4771.484166666667
+              ],
+              "gap_vector_parent_to_child_mm": [
+                0.0,
+                0.0,
+                0.0
+              ]
+            },
+            {
+              "kind": "placement",
+              "parent": "nose-gear-strut",
+              "child": "nose-gear-wheels",
+              "anchor_error_mm": 0.0,
+              "surface_gap_mm": 0.0,
+              "closest_parent_point_mm": [
+                16066.381700000002,
+                -1.564333205060837e-15,
+                4771.484166666667
+              ],
+              "closest_child_point_mm": [
+                16066.381700000002,
+                -1.564333205060837e-15,
+                4771.484166666667
+              ],
+              "gap_vector_parent_to_child_mm": [
+                0.0,
+                0.0,
+                0.0
+              ]
+            },
+            {
+              "kind": "placement",
+              "parent": "fuselage-mid",
+              "child": "main-gear-strut-l",
+              "anchor_error_mm": 0.0,
+              "surface_gap_mm": 0.0,
+              "closest_parent_point_mm": [
+                8259.9778,
+                2.418677428316028e-14,
+                4925.0
+              ],
+              "closest_child_point_mm": [
+                8259.9778,
+                2.418677428316028e-14,
+                4925.0
+              ],
+              "gap_vector_parent_to_child_mm": [
+                0.0,
+                0.0,
+                0.0
+              ]
+            },
+            {
+              "kind": "placement",
+              "parent": "main-gear-strut-l",
+              "child": "main-gear-wheels-l",
+              "anchor_error_mm": 0.0,
+              "surface_gap_mm": 0.0,
+              "closest_parent_point_mm": [
+                8259.9778,
+                2.418677428316028e-14,
+                4925.0
+              ],
+              "closest_child_point_mm": [
+                8259.9778,
+                2.418677428316028e-14,
+                4925.0
+              ],
+              "gap_vector_parent_to_child_mm": [
+                0.0,
+                0.0,
+                0.0
+              ]
+            },
+            {
+              "kind": "placement",
+              "parent": "fuselage-front",
+              "child": "cockpit-windows",
+              "anchor_error_mm": 0.0,
+              "surface_gap_mm": 0.0,
+              "closest_parent_point_mm": [
+                17906.317300000002,
+                64.05878915596418,
+                5756.227121965029
+              ],
+              "closest_child_point_mm": [
+                17906.317300000002,
+                64.05878915596418,
+                5756.227121965029
+              ],
+              "gap_vector_parent_to_child_mm": [
+                0.0,
+                0.0,
+                0.0
+              ]
+            },
+            {
+              "kind": "placement",
+              "parent": "fuselage-mid",
+              "child": "cabin-window-strip-l",
+              "anchor_error_mm": 0.0,
+              "surface_gap_mm": 3.3423475542804226e-08,
+              "closest_parent_point_mm": [
+                3294.999999999999,
+                -1974.9999999665765,
+                4100.011490090597
+              ],
+              "closest_child_point_mm": [
+                3294.999999999999,
+                -1975.0,
+                4100.011490090597
+              ],
+              "gap_vector_parent_to_child_mm": [
+                0.0,
+                -3.3423475542804226e-08,
+                0.0
+              ]
+            },
+            {
+              "kind": "axis",
+              "part": "vertical-fin",
+              "axis_error_deg": 0.0
+            },
+            {
+              "kind": "axis",
+              "part": "engine-nacelle-l",
+              "axis_error_deg": 0.0
+            },
+            {
+              "kind": "axis",
+              "part": "engine-core-l",
+              "axis_error_deg": 0.0
+            },
+            {
+              "kind": "axis",
+              "part": "nose-gear-strut",
+              "axis_error_deg": 0.0
+            },
+            {
+              "kind": "axis",
+              "part": "main-gear-strut-l",
+              "axis_error_deg": 0.0
+            },
+            {
+              "kind": "body_seam",
+              "parent": "tail-cone",
+              "child": "fuselage-aft",
+              "seam_error_mm": 0.0
+            },
+            {
+              "kind": "body_seam",
+              "parent": "fuselage-aft",
+              "child": "fuselage-mid",
+              "seam_error_mm": 9.094947017729282e-13
+            },
+            {
+              "kind": "body_seam",
+              "parent": "fuselage-mid",
+              "child": "fuselage-front",
+              "seam_error_mm": 0.0
+            },
+            {
+              "kind": "body_seam",
+              "parent": "fuselage-front",
+              "child": "radome",
+              "seam_error_mm": 3.637978807091713e-12
+            }
+          ],
+          "declared_contacts": 4,
+          "scope": "Declared anchor, axis, body-seam and contact distances only. Contact can include overlap; no penetration, smoothness, strength or full assembly certification. Undeclared relationships are unassessed."
+        }
+      },
+      "rank": [
+        0,
+        0,
+        0,
+        83.7
+      ],
+      "decision": {
+        "selected_round": 1,
+        "next_step": "stop",
+        "stage": "connections",
+        "reason": "选择第1轮候选：三项评分（84/82/85）均高于第0轮，襟翼减薄与风挡移位均已按上轮建议实际执行并反映在差异表中。对比参考照片，四视图轮廓层级契合良好：后掠翼+翼梢小翼、翼下双发、机尾布局与仰视照片一致，无主要几何失效（所有声明接触surface_gap≈0，body_seam闭合，机轴对齐无误差）。剩余问题均为minor：engine-core-l相对短舱94mm的Z向placement偏置可解释为核心机刻意下沉，cockpit-windows框体观感与照片仍有差距但锚点贴合无失效。鉴于剩余候选修正仅剩1次、且无重大可修复问题，继续修正的收益低于回归风险，且参考照片透视限制使外观细节无法精确验证，故停止。"
+      },
+      "selected_when_reviewed": true
+    }
+  ],
+  "selected_round": 1,
+  "selected_design_sha256": "0212949aef64a3cef971a5624bfb0616870a61c92c0f0fde057592e95f4f16d0",
+  "stop_reason": "model-stop",
+  "error": null,
+  "quality_status": "model-threshold-met",
+  "reviewed": true,
+  "score_source": "model-judgment; not a calibrated similarity metric",
+  "reference_camera_aligned": false,
+  "physical_status": "unverified",
+  "calls": [
+    {
+      "kind": "plan",
+      "model": "glm-5.3-flash",
+      "state": "received",
+      "elapsed_s": 109.74,
+      "usage": {
+        "input_tokens": 15459,
+        "output_tokens": 6577,
+        "cache_read_input_tokens": 0,
+        "server_tool_use": {
+          "web_search_requests": 0
+        },
+        "service_tier": "standard"
+      },
+      "reported_model": "glm-5.3-flash",
+      "response_sha256": "43622d8ccbeb207fba7175405c977011500406434ef2b68e401a09cc12809228",
+      "response_file": "perception/planning/plan-response.json"
+    },
+    {
+      "kind": "plan-repair",
+      "model": "glm-5.3-flash",
+      "state": "received",
+      "elapsed_s": 39.44,
+      "usage": {
+        "input_tokens": 9563,
+        "output_tokens": 3672,
+        "cache_read_input_tokens": 9344,
+        "server_tool_use": {
+          "web_search_requests": 0
+        },
+        "service_tier": "standard"
+      },
+      "reported_model": "glm-5.3-flash",
+      "response_sha256": "686087928ee1b68bf80b32c94318e0d2fcbdec14e7378a5c386ec0ba1490754d",
+      "response_file": "perception/planning/plan-repair-response.json"
+    },
+    {
+      "kind": "review",
+      "model": "glm-5.3-flash",
+      "state": "received",
+      "elapsed_s": 33.76,
+      "usage": {
+        "input_tokens": 33808,
+        "output_tokens": 1492,
+        "cache_read_input_tokens": 0,
+        "server_tool_use": {
+          "web_search_requests": 0
+        },
+        "service_tier": "standard"
+      },
+      "reported_model": "glm-5.3-flash",
+      "response_sha256": "d5ebaa84a17c0d94ee91ccdbdb7e0ccd1f31680c6b3485cc0d1e7c409c346496",
+      "response_file": "perception/round-00/review-response.json"
+    },
+    {
+      "kind": "select",
+      "model": "glm-5.3-flash",
+      "state": "received",
+      "elapsed_s": 10.73,
+      "usage": {
+        "input_tokens": 24306,
+        "output_tokens": 221,
+        "cache_read_input_tokens": 0,
+        "server_tool_use": {
+          "web_search_requests": 0
+        },
+        "service_tier": "standard"
+      },
+      "reported_model": "glm-5.3-flash",
+      "response_sha256": "7d344549eacfe9e286a4e92a8dad187f5db663a2747e017094817033b18e9936",
+      "response_file": "perception/round-00/select-response.json"
+    },
+    {
+      "kind": "action",
+      "model": "glm-5.3-flash",
+      "state": "received",
+      "elapsed_s": 45.4,
+      "usage": {
+        "input_tokens": 35056,
+        "output_tokens": 3229,
+        "cache_read_input_tokens": 0,
+        "server_tool_use": {
+          "web_search_requests": 0
+        },
+        "service_tier": "standard"
+      },
+      "reported_model": "glm-5.3-flash",
+      "response_sha256": "733a83dc6eb7be8f4aeeaa0d2bc9e2e48cb17a0df8d8f45fc119f43a961331f1",
+      "response_file": "perception/round-00/action/action-response.json"
+    },
+    {
+      "kind": "review",
+      "model": "glm-5.3-flash",
+      "state": "received",
+      "elapsed_s": 26.83,
+      "usage": {
+        "input_tokens": 32853,
+        "output_tokens": 1206,
+        "cache_read_input_tokens": 0,
+        "server_tool_use": {
+          "web_search_requests": 0
+        },
+        "service_tier": "standard"
+      },
+      "reported_model": "glm-5.3-flash",
+      "response_sha256": "6c5bac891d0102f898449745906b5d422968ee2c9a2cbe49bbc9df31c2912485",
+      "response_file": "perception/round-01/review-response.json"
+    },
+    {
+      "kind": "select",
+      "model": "glm-5.3-flash",
+      "state": "received",
+      "elapsed_s": 13.44,
+      "usage": {
+        "input_tokens": 26553,
+        "output_tokens": 323,
+        "cache_read_input_tokens": 0,
+        "server_tool_use": {
+          "web_search_requests": 0
+        },
+        "service_tier": "standard"
+      },
+      "reported_model": "glm-5.3-flash",
+      "response_sha256": "97535566bb00d34a160a325eb87966f60b1b99f29283a56d0a30c3c51537e5f1",
+      "response_file": "perception/round-01/select-response.json"
+    }
+  ],
+  "model_calls": 7,
+  "elapsed_s": 340.98,
+  "action_retries_per_round": 1
+}

@@ -1,0 +1,90 @@
+{
+  "run": "c59d5c0edad34a94",
+  "design_sha256": "51e94e2af078245a5b20b9a3ba9a5e00d79bd37627dcff0e04e0a5bc197147fc",
+  "protocol_sha256": "12b9221fc60622c493ea37566084a212b73ac1bda672f371117cac35656d0443",
+  "surface_gaps": [
+    {
+      "parts": [
+        "wing-l",
+        "winglet-l"
+      ],
+      "state": "measured",
+      "gap_mm": 15351.047477622227
+    },
+    {
+      "parts": [
+        "wing-r",
+        "winglet-r"
+      ],
+      "state": "measured",
+      "gap_mm": 15351.047477622227
+    },
+    {
+      "parts": [
+        "tail-cone",
+        "fuselage-aft"
+      ],
+      "state": "measured",
+      "gap_mm": 0.0
+    },
+    {
+      "parts": [
+        "fuselage-aft",
+        "fuselage-mid"
+      ],
+      "state": "measured",
+      "gap_mm": 0.0
+    },
+    {
+      "parts": [
+        "fuselage-mid",
+        "fuselage-front"
+      ],
+      "state": "measured",
+      "gap_mm": 0.0
+    },
+    {
+      "parts": [
+        "fuselage-front",
+        "radome"
+      ],
+      "state": "measured",
+      "gap_mm": 0.0
+    }
+  ],
+  "engine_axis_issues": [
+    {
+      "code": "AIRCRAFT_ENGINE_AXIS",
+      "parts": [
+        "engine-nacelle-l"
+      ],
+      "detail": "Engine axis is not aligned with longitudinal X"
+    },
+    {
+      "code": "AIRCRAFT_ENGINE_AXIS",
+      "parts": [
+        "engine-nacelle-r"
+      ],
+      "detail": "Engine axis is not aligned with longitudinal X"
+    },
+    {
+      "code": "AIRCRAFT_ENGINE_AXIS",
+      "parts": [
+        "engine-core-l"
+      ],
+      "detail": "Engine axis is not aligned with longitudinal X"
+    },
+    {
+      "code": "AIRCRAFT_ENGINE_AXIS",
+      "parts": [
+        "engine-core-r"
+      ],
+      "detail": "Engine axis is not aligned with longitudinal X"
+    }
+  ],
+  "selected_round": 2,
+  "quality_status": "needs-review",
+  "model_calls": 11,
+  "elapsed_s": 313.75,
+  "scope": "Fixed ID pairs chosen before candidate outcomes; zero gap can include overlap. No silhouette, tangent continuity or physical certificate."
+}

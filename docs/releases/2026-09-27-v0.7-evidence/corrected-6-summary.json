@@ -1,0 +1,73 @@
+{
+  "schema": "fk-perception-loop-v2",
+  "workflow": "glm-assembly-parametric-v2",
+  "enabled": true,
+  "model": "glm-5.3-flash",
+  "decision_author": "glm-5.3-flash",
+  "human_design_edits": false,
+  "selection_policy": "GLM decision among reviewed current/retained candidates; host only validates",
+  "sources_sha256": {
+    "pal_workflow.py": "b2b4e72b31551c5ee37bf55f0d77d3c74ea9cfcda5e8013851c096d04ffc4fb7",
+    "pal_rules.py": "ecf83357ea22cc84c668e9a803d95f2339b3e7007001c7c0a18c7d12902d76ea",
+    "assembly.py": "256cc223b428b723748698321e24a031f0218c91e41b0405d3d02d1305b1296e",
+    "parametric.py": "09fa05f065770212e10886f31e7e42b62e743a469185fa1213efd769636a2b12",
+    "models.py": "8cdab0e6fb121be024bf28ab91c7e529ab763bb26f88cacf9f3608bfa3b7683c",
+    "geometry.py": "335bcbaf1f3f23a621954d8f50c2b4f80fd4e5942ff7f221e54404129687a9c9",
+    "perception.py": "cf3aebe76270a3fa67bf0f1a8e6b7fc32aceb15305725798d8a67561ef35f438",
+    "perception_render.py": "847e7bfe572a27a3520be6b736a432e0a362e126aae9d9d7db1c0e0f3a700528",
+    "skill.md": "3f49546cf36a421a83ca9408b328a51574d00adce46d687880b409260f7b2a03"
+  },
+  "plan": null,
+  "max_rounds": 6,
+  "rounds": [],
+  "selected_round": null,
+  "selected_design_sha256": "2806edf86727a5c465ac921c9f00c2ea265ad4d01fd94e3bc4dec6ab1c29d455",
+  "stop_reason": "workflow-failed",
+  "error": "Attachment child must have one driver, not a mirror target or body-group member",
+  "quality_status": "needs-review",
+  "reviewed": false,
+  "score_source": "model-judgment; not a calibrated similarity metric",
+  "reference_camera_aligned": false,
+  "physical_status": "unverified",
+  "calls": [
+    {
+      "kind": "plan",
+      "model": "glm-5.3-flash",
+      "state": "received",
+      "elapsed_s": 46.04,
+      "usage": {
+        "input_tokens": 15459,
+        "output_tokens": 4224,
+        "cache_read_input_tokens": 0,
+        "server_tool_use": {
+          "web_search_requests": 0
+        },
+        "service_tier": "standard"
+      },
+      "reported_model": "glm-5.3-flash",
+      "response_sha256": "8aa91d98e1aaafbd85fd8aa91b83e14bb8538eba78767a5c6d17b27f2345d1ec",
+      "response_file": "perception/planning/plan-response.json"
+    },
+    {
+      "kind": "plan-repair",
+      "model": "glm-5.3-flash",
+      "state": "received",
+      "elapsed_s": 39.8,
+      "usage": {
+        "input_tokens": 19416,
+        "output_tokens": 3798,
+        "cache_read_input_tokens": 0,
+        "server_tool_use": {
+          "web_search_requests": 0
+        },
+        "service_tier": "standard"
+      },
+      "reported_model": "glm-5.3-flash",
+      "response_sha256": "bb764c5dee48c0056907ef4b2af5bb5fed52df4798cf1ad6cb9ab15db4721ffd",
+      "response_file": "perception/planning/plan-repair-response.json"
+    }
+  ],
+  "model_calls": 2,
+  "elapsed_s": 92.93,
+  "action_retries_per_round": 1
+}
