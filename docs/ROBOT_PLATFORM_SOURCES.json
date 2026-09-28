@@ -1,0 +1,70 @@
+{
+  "date": "2026-09-28",
+  "scope": "Read-only source and documentation review. No upstream programs executed; no robot connected; no training or deployment performed.",
+  "repositories": [
+    {
+      "repository": "pollen-robotics/microduck",
+      "commit": "a9ec4b2079ef8ee7904014089c885bb07d57d63c",
+      "private": false,
+      "reported_spdx": "Apache-2.0",
+      "repository_license_paths": [
+        "LICENSE"
+      ]
+    },
+    {
+      "repository": "LuwuDynamics/xgoduck_hardware",
+      "commit": "a8f3356dd416c9a9bd47f5de68fb7a67eab829b6",
+      "private": false,
+      "reported_spdx": null,
+      "repository_license_paths": []
+    },
+    {
+      "repository": "LuwuDynamics/xgoduck_runtime_mosaico",
+      "commit": "e2fc679cbc9cb217ad0be7119e21763790434ff6",
+      "private": false,
+      "reported_spdx": null,
+      "repository_license_paths": []
+    },
+    {
+      "repository": "LuwuDynamics/xgoduck_rl",
+      "commit": "326d77a1122870bdefa2c36403937502c958e69c",
+      "private": false,
+      "reported_spdx": "Apache-2.0",
+      "repository_license_paths": [
+        "LICENSE"
+      ]
+    },
+    {
+      "repository": "LuwuDynamics/xgoduck_runtime_arduino",
+      "commit": "a6dc9f98eae6f8cc8f2bac81a97dde5a7a8bd0d2",
+      "private": false,
+      "reported_spdx": null,
+      "repository_license_paths": []
+    },
+    {
+      "repository": "g-ch/anything2robot",
+      "commit": "38ef55a6a7ed965b2e3b6958ba82fd9a67e77aa5",
+      "private": false,
+      "reported_spdx": "NOASSERTION",
+      "repository_license_paths": [
+        "LICENSE"
+      ]
+    },
+    {
+      "repository": "ExuberantWitness/FLUXworkbenchDEV",
+      "commit": "f57fe0fc1a516b572771e824a3ce67df867b8dac",
+      "private": true,
+      "reported_spdx": "NOASSERTION",
+      "repository_license_paths": [
+        "LICENSE"
+      ]
+    }
+  ],
+  "source_overlap": {
+    "workbench_path": "brain/flux_brain/robotgen/core/urdf_generator.py",
+    "anything2robot_path": "auto_design/modules/urdf_generator.py",
+    "byte_identical": true,
+    "sha256": "8f1cc0523e4472729784017092fe6c28feced8c5a2fe551a738a7035b86a8e9a",
+    "interpretation": "Provenance finding only; no conclusion about whether separate commercial permission has already been obtained."
+  }
+}
