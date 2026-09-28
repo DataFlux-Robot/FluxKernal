@@ -114,7 +114,10 @@ def seal(root):
     files = {
         str(p.relative_to(root)): hashlib.sha256(p.read_bytes()).hexdigest()
         for p in root.rglob("*")
-        if p.is_file() and ".lake" not in p.parts and p.name != "manifest.json"
+        if p.is_file()
+        and ".lake" not in p.parts
+        and "__pycache__" not in p.parts
+        and p.name != "manifest.json"
     }
     write(root / "manifest.json", files)
 

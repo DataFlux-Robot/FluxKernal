@@ -209,3 +209,20 @@ def test_urdf_mesh_paths_load_in_fresh_process(tmp_path):
         timeout=30,
     )
     assert p.returncode == 0, p.stderr
+
+
+def test_generated_bytecode_is_not_a_sealed_design_artifact(bundle, tmp_path):
+    from fluxkernel.robotics.bundle import seal
+
+    root = tmp_path / "copy"
+    shutil.copytree(bundle, root)
+    cache = root / "__pycache__"
+    cache.mkdir(exist_ok=True)
+    bytecode = cache / "gen_urdf.pyc"
+    bytecode.write_bytes(b"old cache")
+    seal(root)
+    bytecode.write_bytes(b"rebuilt interpreter cache")
+    assert verify(root)["accepted"]
+    assert not any(
+        "__pycache__" in p for p in json.loads((root / "manifest.json").read_text())
+    )
