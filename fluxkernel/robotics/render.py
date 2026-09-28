@@ -78,6 +78,12 @@ def render_step(path, output):
         lines += ["f " + " ".join(str(i + 1) for i in f) for f in faces]
         (root / "part.obj").write_text("\n".join(lines) + "\n")
         xml = ET.Element("mujoco")
+        # MuJoCo's default world extent dwarfs a millimetre-scale single part.
+        # Set the framing from the independently imported STEP bounds.
+        bounds = shape.bounding_box()
+        center = [(float(a) + float(b)) / 2000 for a, b in zip(bounds.min, bounds.max)]
+        extent = max(float(x) for x in bounds.size) / 1000
+        ET.SubElement(xml, "statistic", center=" ".join(map(str, center)), extent=str(max(extent, 0.001)))
         asset = ET.SubElement(xml, "asset")
         ET.SubElement(asset, "mesh", name="part", file="part.obj")
         world = ET.SubElement(xml, "worldbody")

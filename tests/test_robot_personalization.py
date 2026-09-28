@@ -242,7 +242,10 @@ def test_transport_decoder_keeps_values_exact():
 def test_trimmed_curved_step_roundtrip_uses_adaptive_mass_properties(tmp_path, monkeypatch):
     from fluxkernel.robotics import render as rendering
     # Exercise independent primary STEP read without depending on an OpenGL driver.
-    monkeypatch.setattr(rendering, "render", lambda *a, **k: None)
+    def check_camera(root, *args, **kwargs):
+        model = mj.MjModel.from_xml_path(str(root / "robot.xml"))
+        assert 0.01 < model.stat.extent < 0.05
+    monkeypatch.setattr(rendering, "render", check_camera)
     r = recipe({"zone_sha256": "0" * 64})
     r["features"][0].update(size_mm=[9., 7., 12.], center_mm=[0., 0., 7.], rotation_deg=[0., 17., 0.])
     p = export(r, tmp_path)
