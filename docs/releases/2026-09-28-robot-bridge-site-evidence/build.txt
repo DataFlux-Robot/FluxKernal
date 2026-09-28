@@ -1,0 +1,59 @@
+$ vinext build
+
+  vinext build  (Vite 8.1.5)
+
+[1/5] analyze client references...
+[2Ktransforming...✓ 256 modules transformed.
+rendering chunks...
+✓ built in 339ms
+[2/5] analyze server references...
+[2Ktransforming...✓ 74 modules transformed.
+rendering chunks...
+✓ built in 48ms
+[3/5] build rsc environment...
+[2Ktransforming...✓ 251 modules transformed.
+rendering chunks...
+computing gzip size...
+✓ built in 454ms
+[4/5] build client environment...
+[2Ktransforming...✓ 121 modules transformed.
+rendering chunks...
+computing gzip size...
+✓ built in 231ms
+[5/5] build ssr environment...
+[2Ktransforming...✓ 75 modules transformed.
+rendering chunks...
+computing gzip size...
+✓ built in 68ms
+[0m
+  Route (app)
+  ┌ ? /                                                
+  ├ ? /company                                         
+  ├ ? /contact                                         
+  ├ ? /devready                                        
+  ├ ? /en                                              
+  ├ ? /evidence                                        
+  ├ ? /fluxnode                                        
+  ├ ? /fluxworkbench                                   
+  ├ ? /platform                                        
+  ├ ? /products                                        
+  ├ ? /research                                        
+  ├ ? /research/machines-that-accelerate-machine-making
+  ├ ? /research/mechanogenesisbench                    
+  ├ ? /talk                                            
+  ├ ? /technology                                      
+  ├ ? /technology/edge-model                           
+  ├ ? /technology/fluxkernel                           
+  ├ ? /technology/fluxprsi                             
+  ├ ? /technology/mechanogenesis                       
+  └ ? /waitlist                                        
+
+  ? Unknown
+
+  ? Some routes could not be classified. vinext currently uses static analysis
+    and cannot detect dynamic API usage (headers(), cookies(), etc.) at build time.
+    Automatic classification will be improved in a future release.
+
+  Build complete. Run `vinext start` to start the production server.
+
+$ node scripts/prepare-hosting-dist.mjs

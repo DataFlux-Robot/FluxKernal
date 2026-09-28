@@ -1,0 +1,236 @@
+{
+  "base": "https://www.datafluxdynamics.ltd",
+  "routes": [
+    {
+      "path": "company/index.html",
+      "status": 200
+    },
+    {
+      "path": "contact/index.html",
+      "status": 200
+    },
+    {
+      "path": "devready/index.html",
+      "status": 200
+    },
+    {
+      "path": "en/index.html",
+      "status": 200
+    },
+    {
+      "path": "evidence/index.html",
+      "status": 200
+    },
+    {
+      "path": "fluxnode/index.html",
+      "status": 200
+    },
+    {
+      "path": "fluxworkbench/index.html",
+      "status": 200
+    },
+    {
+      "path": "index.html",
+      "status": 200
+    },
+    {
+      "path": "platform/index.html",
+      "status": 200
+    },
+    {
+      "path": "products/index.html",
+      "status": 200
+    },
+    {
+      "path": "research/index.html",
+      "status": 200
+    },
+    {
+      "path": "research/machines-that-accelerate-machine-making/index.html",
+      "status": 200
+    },
+    {
+      "path": "talk/index.html",
+      "status": 200
+    },
+    {
+      "path": "technology/edge-model/index.html",
+      "status": 200
+    },
+    {
+      "path": "technology/fluxkernel/index.html",
+      "status": 200
+    },
+    {
+      "path": "technology/fluxprsi/index.html",
+      "status": 200
+    },
+    {
+      "path": "technology/index.html",
+      "status": 200
+    },
+    {
+      "path": "technology/mechanogenesis/index.html",
+      "status": 200
+    },
+    {
+      "path": "waitlist/index.html",
+      "status": 200
+    }
+  ],
+  "viewports": [
+    {
+      "width": 1440,
+      "route": "technology/index.html",
+      "scroll": 1440,
+      "clipped": []
+    },
+    {
+      "width": 1440,
+      "route": "technology/fluxkernel/index.html",
+      "scroll": 1440,
+      "clipped": []
+    },
+    {
+      "width": 768,
+      "route": "technology/index.html",
+      "scroll": 768,
+      "clipped": []
+    },
+    {
+      "width": 768,
+      "route": "technology/fluxkernel/index.html",
+      "scroll": 768,
+      "clipped": []
+    },
+    {
+      "width": 390,
+      "route": "technology/index.html",
+      "scroll": 390,
+      "clipped": []
+    },
+    {
+      "width": 390,
+      "route": "technology/fluxkernel/index.html",
+      "scroll": 390,
+      "clipped": []
+    },
+    {
+      "width": 320,
+      "route": "technology/index.html",
+      "scroll": 320,
+      "clipped": []
+    },
+    {
+      "width": 320,
+      "route": "technology/fluxkernel/index.html",
+      "scroll": 320,
+      "clipped": []
+    }
+  ],
+  "interactions": [
+    {
+      "width": 1440,
+      "case": "car",
+      "product": 29,
+      "equipment": 20,
+      "partsSelection": true,
+      "explode": true
+    },
+    {
+      "width": 1440,
+      "case": "aircraft",
+      "product": 32,
+      "equipment": 20,
+      "partsSelection": true,
+      "explode": true
+    },
+    {
+      "width": 1440,
+      "case": "phone",
+      "product": 20,
+      "equipment": 20,
+      "partsSelection": true,
+      "explode": true
+    },
+    {
+      "width": 768,
+      "case": "car",
+      "product": 29,
+      "equipment": 20,
+      "partsSelection": true,
+      "explode": true
+    },
+    {
+      "width": 768,
+      "case": "aircraft",
+      "product": 32,
+      "equipment": 20,
+      "partsSelection": true,
+      "explode": true
+    },
+    {
+      "width": 768,
+      "case": "phone",
+      "product": 20,
+      "equipment": 20,
+      "partsSelection": true,
+      "explode": true
+    },
+    {
+      "width": 390,
+      "case": "car",
+      "product": 29,
+      "equipment": 20,
+      "partsSelection": true,
+      "explode": true
+    },
+    {
+      "width": 390,
+      "case": "aircraft",
+      "product": 32,
+      "equipment": 20,
+      "partsSelection": true,
+      "explode": true
+    },
+    {
+      "width": 390,
+      "case": "phone",
+      "product": 20,
+      "equipment": 20,
+      "partsSelection": true,
+      "explode": true
+    },
+    {
+      "width": 320,
+      "case": "car",
+      "product": 29,
+      "equipment": 20,
+      "partsSelection": true,
+      "explode": true
+    },
+    {
+      "width": 320,
+      "case": "aircraft",
+      "product": 32,
+      "equipment": 20,
+      "partsSelection": true,
+      "explode": true
+    },
+    {
+      "width": 320,
+      "case": "phone",
+      "product": 20,
+      "equipment": 20,
+      "partsSelection": true,
+      "explode": true
+    }
+  ],
+  "errors": [],
+  "video": {
+    "duration": 47.12,
+    "currentTime": 0.504565,
+    "paused": false
+  },
+  "versioned_asset_requests": 20
+}

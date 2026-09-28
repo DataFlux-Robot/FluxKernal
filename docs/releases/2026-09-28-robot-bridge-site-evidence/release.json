@@ -1,0 +1,28 @@
+{
+  "deployment": "4e6feb6e4fdd15b30a485e9f9d30580ffc900a02",
+  "previous_deployment": "b0df39a89d06b3eaae1b58be6698c89a6506a77f",
+  "site_source_commit": "30307790583c21d433a6c7dd4f5faf9d9f7a3eb6",
+  "scope": [
+    "technology/index.html",
+    "technology/fluxkernel/index.html",
+    "fluxkernel/native-robots/evidence.json",
+    "fluxkernel/native-robots/manifest.json",
+    "fluxkernel/native-robots/microduck-LICENSE.txt",
+    "fluxkernel/native-robots/microduck-head.png",
+    "fluxkernel/native-robots/sources.json",
+    "fluxkernel/native-robots/xgoduck-LICENSE.txt",
+    "fluxkernel/native-robots/xgoduck-head.png"
+  ],
+  "hashes": {
+    "technology/index.html": "c7c4030a2dcca378de40a09ba64d717a324372266c59ed8282c33a23b8ea2b72",
+    "technology/fluxkernel/index.html": "23049dfe1db9961a15a1c99c21c7786fb9e5e83bc3aa6f7c5ecc7ebac09978ec",
+    "fluxkernel/native-robots/evidence.json": "83a8809522a79b6e424fa0d0926c2f85b3b31ab3dbf3a4bc8fe9b5afc1605b5d",
+    "fluxkernel/native-robots/manifest.json": "ccff49902787c48e05532ed3285512492fb6610706f346f7c2b2dd79a3fa872a",
+    "fluxkernel/native-robots/microduck-LICENSE.txt": "2d3fd9ffffa70a4307498ec630b14a6b4731e010f8ddda92686eaf65733c2dfe",
+    "fluxkernel/native-robots/microduck-head.png": "beebe8d963147a815d0b4c794df1d2940fad4e97f403443b90c10c4eda7d5df4",
+    "fluxkernel/native-robots/sources.json": "f2b1ba98681f56d7dbc5ef0c525ef2fca001c0905e7d97a7e0e15613c4b077d8",
+    "fluxkernel/native-robots/xgoduck-LICENSE.txt": "2d3fd9ffffa70a4307498ec630b14a6b4731e010f8ddda92686eaf65733c2dfe",
+    "fluxkernel/native-robots/xgoduck-head.png": "4248185afed617e162f51ba70df61c71c4e87c8adf6cbfafc2ea35ab1ef025b8"
+  },
+  "source_worktree": "Unrelated pre-existing edits retained; deployed payload is the current Pages baseline plus two rebuilt pages and seven new evidence assets."
+}
