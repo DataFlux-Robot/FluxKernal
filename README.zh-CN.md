@@ -109,7 +109,7 @@ fk doctor --profile agent
 fk-mcp --workspace /absolute/path/to/design-runs
 ```
 
-在 MCP 客户端中配置上述启动命令。八个工具支持任务发现、CAD 生成、父版本检查、
+在 MCP 客户端中配置上述启动命令。十三个工具支持任务发现、CAD 生成、跨产品资产复用、父版本检查、
 修改预览、局部修订和证据读取；`--read-only` 可仅开放检查与预览。
 服务通过本地 stdio 通信，不调用模型。接入方式见 [MCP 文档](docs/MCP.md)。
 
@@ -139,3 +139,15 @@ fk perceive ./runs/<id> --rounds 3 --output ./visual-runs --require-proof --json
 ### v0.6：GLM 独立执行的规则闭环
 
 GLM-5.3-Flash 先判断对称性，声明配对、例外与参数化方式，再进行评审、修改和候选选择。执行器提供真实镜像、机翼语义参数、机身截面和约束校验；不注入人工设计修正。每阶段实际加载打包的 skill，失败与模型选择均留档。[流程与边界](docs/PERCEPTION_ACTION_LOOP.md)。
+
+## 跨产品资产复用（v0.8）
+
+通过内容寻址资产库，在汽车、卡车、飞机、人形机器人之间复用组件、参数化模块和完整加工设备配方。
+匹配功能类别、接口和带单位的能力范围；变更参数会使原有能力声明失效，目标产品重新生成 CAD 与制造计划证据。
+
+```bash
+fk asset benchmark --output ./asset-evaluation --json
+```
+
+测试使用明确编写的子系统样例，不代表自动重建整车、整机或取得物理适用认证。
+详见[跨产品资产接口与边界](docs/CROSS_PRODUCT_ASSETS.md)。

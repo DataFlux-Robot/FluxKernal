@@ -1,0 +1,226 @@
+{
+  "$defs": {
+    "Binding": {
+      "additionalProperties": false,
+      "properties": {
+        "part": {
+          "title": "Part",
+          "type": "string"
+        },
+        "field": {
+          "pattern": "^(size|position)\\.[012]$|^wall$",
+          "title": "Field",
+          "type": "string"
+        },
+        "factor": {
+          "default": 1,
+          "title": "Factor",
+          "type": "number"
+        },
+        "offset": {
+          "default": 0,
+          "title": "Offset",
+          "type": "number"
+        }
+      },
+      "required": [
+        "part",
+        "field"
+      ],
+      "title": "Binding",
+      "type": "object"
+    },
+    "Interval": {
+      "additionalProperties": false,
+      "properties": {
+        "unit": {
+          "maxLength": 16,
+          "minLength": 1,
+          "title": "Unit",
+          "type": "string"
+        },
+        "min": {
+          "title": "Min",
+          "type": "number"
+        },
+        "max": {
+          "title": "Max",
+          "type": "number"
+        }
+      },
+      "required": [
+        "unit",
+        "min",
+        "max"
+      ],
+      "title": "Interval",
+      "type": "object"
+    },
+    "Measure": {
+      "additionalProperties": false,
+      "properties": {
+        "part": {
+          "title": "Part",
+          "type": "string"
+        },
+        "field": {
+          "pattern": "^(size|position)\\.[012]$|^wall$",
+          "title": "Field",
+          "type": "string"
+        },
+        "unit": {
+          "const": "mm",
+          "default": "mm",
+          "title": "Unit",
+          "type": "string"
+        }
+      },
+      "required": [
+        "part",
+        "field"
+      ],
+      "title": "Measure",
+      "type": "object"
+    },
+    "Parameter": {
+      "additionalProperties": false,
+      "properties": {
+        "default": {
+          "type": "number",
+          "title": "Default"
+        },
+        "min": {
+          "title": "Min",
+          "type": "number"
+        },
+        "max": {
+          "title": "Max",
+          "type": "number"
+        },
+        "bindings": {
+          "items": {
+            "$ref": "#/$defs/Binding"
+          },
+          "maxItems": 32,
+          "minItems": 1,
+          "title": "Bindings",
+          "type": "array"
+        }
+      },
+      "required": [
+        "default",
+        "min",
+        "max",
+        "bindings"
+      ],
+      "title": "Parameter",
+      "type": "object"
+    }
+  },
+  "additionalProperties": false,
+  "properties": {
+    "schema_version": {
+      "const": "fk-asset-publish-v1",
+      "default": "fk-asset-publish-v1",
+      "title": "Schema Version",
+      "type": "string"
+    },
+    "base_manifest_sha256": {
+      "pattern": "^[a-f0-9]{64}$",
+      "title": "Base Manifest Sha256",
+      "type": "string"
+    },
+    "name": {
+      "pattern": "^[a-z][a-z0-9_-]{0,63}$",
+      "title": "Name",
+      "type": "string"
+    },
+    "version": {
+      "pattern": "^\\d+\\.\\d+\\.\\d+$",
+      "title": "Version",
+      "type": "string"
+    },
+    "category": {
+      "maxLength": 80,
+      "minLength": 1,
+      "title": "Category",
+      "type": "string"
+    },
+    "kind": {
+      "default": "module",
+      "enum": [
+        "component",
+        "module",
+        "equipment"
+      ],
+      "title": "Kind",
+      "type": "string"
+    },
+    "description": {
+      "maxLength": 1500,
+      "minLength": 1,
+      "title": "Description",
+      "type": "string"
+    },
+    "parts": {
+      "items": {
+        "type": "string"
+      },
+      "maxItems": 64,
+      "minItems": 1,
+      "title": "Parts",
+      "type": "array"
+    },
+    "capabilities": {
+      "additionalProperties": {
+        "$ref": "#/$defs/Interval"
+      },
+      "maxProperties": 64,
+      "title": "Capabilities",
+      "type": "object"
+    },
+    "interfaces": {
+      "additionalProperties": {
+        "type": "string"
+      },
+      "maxProperties": 32,
+      "title": "Interfaces",
+      "type": "object"
+    },
+    "measures": {
+      "additionalProperties": {
+        "$ref": "#/$defs/Measure"
+      },
+      "maxProperties": 32,
+      "title": "Measures",
+      "type": "object"
+    },
+    "parameters": {
+      "additionalProperties": {
+        "$ref": "#/$defs/Parameter"
+      },
+      "maxProperties": 16,
+      "title": "Parameters",
+      "type": "object"
+    },
+    "origin": {
+      "items": {
+        "type": "number"
+      },
+      "maxItems": 3,
+      "minItems": 3,
+      "title": "Origin",
+      "type": "array"
+    }
+  },
+  "required": [
+    "base_manifest_sha256",
+    "name",
+    "version",
+    "category",
+    "description",
+    "parts"
+  ],
+  "title": "Publish",
+  "type": "object"
+}

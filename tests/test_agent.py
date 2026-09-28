@@ -23,7 +23,7 @@ def test_protocol_errors_and_readonly_mode(tmp_path):
     async def run():
         server = create_server(AgentWorkspace(tmp_path, read_only=True))
         async with Client(server) as client:
-            assert len((await client.list_tools()).tools) == 6
+            assert len((await client.list_tools()).tools) == 9
             for name, args, code in [
                 ('create_task', {'task':'enclosure'}, 'MCP_UNKNOWN_TOOL'),
                 ('inspect_run', {'run_id':'../outside'}, 'MCP_INVALID_ARGUMENT'),
@@ -45,7 +45,7 @@ def test_legacy_stdio_client_discovery(tmp_path):
         params = StdioServerParameters(command=sys.executable,
             args=['-m','fluxkernel.agent_server','--workspace',str(tmp_path),'--read-only'])
         async with Client(params, mode='legacy') as client:
-            assert len((await client.list_tools()).tools) == 6
+            assert len((await client.list_tools()).tools) == 9
             result = await client.call_tool('list_tasks')
             assert not result.is_error and len(result.structured_content['tasks']) == 3
     anyio.run(run)

@@ -15,6 +15,21 @@ FIELDS = {'dimension': {'part', 'measure', 'min', 'max'},
           'axis-distance': {'first', 'second', 'axis', 'min', 'max'}}
 
 
+def rotation_matrix(angles):
+    x,y,z=map(math.radians,angles);cx,sx=math.cos(x),math.sin(x);cy,sy=math.cos(y),math.sin(y);cz,sz=math.cos(z),math.sin(z)
+    return [[cz*cy,cz*sy*sx-sz*cx,cz*sy*cx+sz*sx],[sz*cy,sz*sy*sx+cz*cx,sz*sy*cx-cz*sx],[-sy,cy*sx,cy*cx]]
+
+
+def in_frame(part,position,rotation):
+    import copy
+    p=copy.deepcopy(part);r=rotation_matrix(rotation);q=rotation_matrix(p['rotation'])
+    p['position']=[sum(r[j][i]*(p['position'][j]-position[j]) for j in range(3)) for i in range(3)]
+    m=[[sum(r[k][i]*q[k][j] for k in range(3)) for j in range(3)] for i in range(3)]
+    cy=math.hypot(m[0][0],m[1][0]);y=math.atan2(-m[2][0],cy)
+    x,z=(math.atan2(m[2][1],m[2][2]),math.atan2(m[1][0],m[0][0])) if cy>1e-12 else (math.atan2(-m[1][2],m[1][1]),0)
+    p['rotation']=list(map(math.degrees,(x,y,z)));return p
+
+
 def number(value):
     return type(value) in (int, float) and math.isfinite(value)
 
@@ -27,6 +42,14 @@ def validate_contract(contract):
         raise ValueError('Expected at most 128 constraint rules')
     ids = set()
     for rule in rules:
+        if isinstance(rule,dict) and rule.get('kind')=='asset-frame':
+            if set(rule)!={'id','kind','position','rotation','parts','rules'}:raise ValueError('Malformed asset frame constraint')
+            if not isinstance(rule['id'],str) or not 1<=len(rule['id'])<=80 or rule['id'] in ids:raise ValueError('Invalid frame constraint ID')
+            ids.add(rule['id'])
+            if any(not isinstance(rule[k],list) or len(rule[k])!=3 or not all(number(x) for x in rule[k]) for k in ('position','rotation')):raise ValueError('Invalid frame pose')
+            if not isinstance(rule['parts'],list) or not 1<=len(rule['parts'])<=64 or not all(isinstance(i,str) for i in rule['parts']) or len(set(rule['parts']))!=len(rule['parts']):raise ValueError('Invalid frame part references')
+            if not isinstance(rule['rules'],list) or any(not isinstance(r,dict) or r.get('kind')=='asset-frame' for r in rule['rules']):raise ValueError('Nested frames are not supported')
+            validate_contract({'schema':SCHEMA,'rules':rule['rules']});continue
         if not isinstance(rule, dict) or rule.get('kind') not in FIELDS:
             raise ValueError('Unknown constraint kind')
         if set(rule) != {'id', 'kind'} | FIELDS[rule['kind']]:
@@ -65,6 +88,14 @@ def evaluate(design, contract):
     parts = {p['id']: p for p in design['parts']}
     checks = []
     for rule in contract['rules']:
+        if rule['kind']=='asset-frame':
+            try:
+                local={'parts':[in_frame(parts[i],rule['position'],rule['rotation']) for i in rule['parts']]}
+                result=evaluate(local,{'schema':SCHEMA,'rules':rule['rules']})
+                checks.append({'id':rule['id'],'kind':'asset-frame','passed':result['accepted'],'checks':result['checks'],'detail':'Nominal asset contract in its recorded instance frame'})
+            except (KeyError,ValueError,TypeError) as exc:
+                checks.append({'id':rule['id'],'kind':'asset-frame','passed':False,'checks':[],'detail':str(exc)})
+            continue
         value = None
         detail = ''
         try:

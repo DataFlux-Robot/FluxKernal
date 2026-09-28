@@ -1,0 +1,69 @@
+{
+  "$defs": {
+    "Requirement": {
+      "additionalProperties": false,
+      "properties": {
+        "unit": {
+          "maxLength": 16,
+          "minLength": 1,
+          "title": "Unit",
+          "type": "string"
+        },
+        "min": {
+          "title": "Min",
+          "type": "number"
+        },
+        "max": {
+          "title": "Max",
+          "type": "number"
+        },
+        "relation": {
+          "default": "covers",
+          "enum": [
+            "covers",
+            "within"
+          ],
+          "title": "Relation",
+          "type": "string"
+        }
+      },
+      "required": [
+        "unit",
+        "min",
+        "max"
+      ],
+      "title": "Requirement",
+      "type": "object"
+    }
+  },
+  "additionalProperties": false,
+  "properties": {
+    "category": {
+      "maxLength": 80,
+      "minLength": 1,
+      "title": "Category",
+      "type": "string"
+    },
+    "requirements": {
+      "additionalProperties": {
+        "$ref": "#/$defs/Requirement"
+      },
+      "maxProperties": 64,
+      "title": "Requirements",
+      "type": "object"
+    },
+    "interfaces": {
+      "additionalProperties": {
+        "type": "string"
+      },
+      "maxProperties": 32,
+      "title": "Interfaces",
+      "type": "object"
+    }
+  },
+  "required": [
+    "category"
+  ],
+  "title": "Query",
+  "type": "object"
+}

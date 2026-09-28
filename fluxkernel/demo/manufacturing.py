@@ -55,7 +55,7 @@ def make_plan(design, equipment, checks, depth, image_hash, brief_hash):
             # A depth=0 plan with machining remains explicitly invalid; never
             # silently procure a whole machine or rewrite a machined part to print.
             leaf=add(p.id,p.name,'machine',[blank]+([cell] if cell else []),0,
-                {'operation':'drill/mill mating features','machine':cell,'fixture':'cell-fixture',
+                {'operation':'drill/mill mating features','machine':cell,'fixture':next((e.id for e in equipment if e.id.endswith('cell-fixture')),None),
                  'toolpath':'pending','metrology':'pending'},p)
         leaves.append(leaf)
     groups=[]

@@ -1,0 +1,150 @@
+{
+  "$defs": {
+    "Query": {
+      "additionalProperties": false,
+      "properties": {
+        "category": {
+          "maxLength": 80,
+          "minLength": 1,
+          "title": "Category",
+          "type": "string"
+        },
+        "requirements": {
+          "additionalProperties": {
+            "$ref": "#/$defs/Requirement"
+          },
+          "maxProperties": 64,
+          "title": "Requirements",
+          "type": "object"
+        },
+        "interfaces": {
+          "additionalProperties": {
+            "type": "string"
+          },
+          "maxProperties": 32,
+          "title": "Interfaces",
+          "type": "object"
+        }
+      },
+      "required": [
+        "category"
+      ],
+      "title": "Query",
+      "type": "object"
+    },
+    "Requirement": {
+      "additionalProperties": false,
+      "properties": {
+        "unit": {
+          "maxLength": 16,
+          "minLength": 1,
+          "title": "Unit",
+          "type": "string"
+        },
+        "min": {
+          "title": "Min",
+          "type": "number"
+        },
+        "max": {
+          "title": "Max",
+          "type": "number"
+        },
+        "relation": {
+          "default": "covers",
+          "enum": [
+            "covers",
+            "within"
+          ],
+          "title": "Relation",
+          "type": "string"
+        }
+      },
+      "required": [
+        "unit",
+        "min",
+        "max"
+      ],
+      "title": "Requirement",
+      "type": "object"
+    }
+  },
+  "additionalProperties": false,
+  "properties": {
+    "schema_version": {
+      "const": "fk-asset-instance-v1",
+      "default": "fk-asset-instance-v1",
+      "title": "Schema Version",
+      "type": "string"
+    },
+    "base_manifest_sha256": {
+      "pattern": "^[a-f0-9]{64}$",
+      "title": "Base Manifest Sha256",
+      "type": "string"
+    },
+    "asset_sha256": {
+      "pattern": "^[a-f0-9]{64}$",
+      "title": "Asset Sha256",
+      "type": "string"
+    },
+    "prefix": {
+      "pattern": "^[a-z][a-z0-9_-]{0,15}$",
+      "title": "Prefix",
+      "type": "string"
+    },
+    "query": {
+      "$ref": "#/$defs/Query"
+    },
+    "parameters": {
+      "additionalProperties": {
+        "type": "number"
+      },
+      "maxProperties": 16,
+      "title": "Parameters",
+      "type": "object"
+    },
+    "position": {
+      "items": {
+        "type": "number"
+      },
+      "maxItems": 3,
+      "minItems": 3,
+      "title": "Position",
+      "type": "array"
+    },
+    "rotation": {
+      "items": {
+        "type": "number"
+      },
+      "maxItems": 3,
+      "minItems": 3,
+      "title": "Rotation",
+      "type": "array"
+    },
+    "destination": {
+      "default": "product",
+      "enum": [
+        "product",
+        "equipment"
+      ],
+      "title": "Destination",
+      "type": "string"
+    },
+    "replace": {
+      "additionalProperties": {
+        "type": "string"
+      },
+      "description": "Optional source part ID to existing target part ID mapping; remaining parts are inserted with prefix",
+      "maxProperties": 64,
+      "title": "Replace",
+      "type": "object"
+    }
+  },
+  "required": [
+    "base_manifest_sha256",
+    "asset_sha256",
+    "prefix",
+    "query"
+  ],
+  "title": "Instance",
+  "type": "object"
+}

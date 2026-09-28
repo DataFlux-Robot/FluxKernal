@@ -50,6 +50,9 @@ def main():
         assert report['ok']
         schema = json.loads(run([fk, 'schema', 'revision']))
         assert schema['properties']['schema']['const'] == 'fk-revision-v1'
+        for name in ('publish','query','instance'):
+            asset_schema = json.loads(run([fk, 'schema', 'asset-'+name, '--json']))
+            assert asset_schema['type'] == 'object'
         if not args.studio:
             run([python, '-c', "import importlib.util; assert importlib.util.find_spec('OCP') is None; assert importlib.util.find_spec('numpy') is None"])
         for command in [('example',), ('init',), ('run', 'hello.fcad'), ('verify',)]:

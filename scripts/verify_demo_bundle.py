@@ -25,6 +25,15 @@ if digest(input_record)!=p['request_sha256']:raise SystemExit('Frozen request bi
 if input_record['image_sha256']!=p['image_sha256']:raise SystemExit('Source image commitment mismatch')
 if sha((root/'image.png').read_bytes())!=input_record['normalized_image_sha256']:
     raise SystemExit('Actual model image differs from the frozen input')
+if 'asset_reuse_sha256' in input_record:
+    reuse=json.loads((root/'asset-reuse.json').read_text());asset=json.loads((root/'asset-source.json').read_text())
+    if digest(reuse)!=input_record['asset_reuse_sha256'] or digest(asset)!=input_record['asset_sha256']:
+        raise SystemExit('Asset source/reuse commitment mismatch')
+    if not reuse['accepted'] or reuse['asset_sha256']!=input_record['asset_sha256'] or reuse['proof_reused'] is not False:
+        raise SystemExit('Invalid cross-product reuse claim')
+    actual={p['id']:p for p in json.loads((root/'design.json').read_text())['parts']+json.loads((root/'equipment.json').read_text())}
+    if set(reuse['instance_recipes'])!=set(reuse['mapping'].values()) or any(actual.get(k)!=v for k,v in reuse['instance_recipes'].items()):
+        raise SystemExit('Imported asset recipes differ from destination occurrences')
 if 'constraints_sha256' in input_record:
     import importlib.util
     contract=json.loads((root/'constraints.json').read_text())

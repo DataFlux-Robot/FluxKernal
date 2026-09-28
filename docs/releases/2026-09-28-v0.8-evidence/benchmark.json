@@ -1,0 +1,1013 @@
+{
+  "schema": "fk-asset-benchmark-v1",
+  "accepted": true,
+  "model_calls": 0,
+  "elapsed_s": 40.18,
+  "scope": "Four authored subsystem contexts, not whole-product designs. Declared compatibility, geometry and fresh plan proofs; no physical qualification.",
+  "assets": {
+    "controller": "8965de4a1b1701319b52750dc2410551f885a22f71176d21e341ce4ba102b9b6",
+    "shaft": "f83b0c4cf0a5a22cb468349e3fad90452c3e3c0b8f4bec81721da31e7cd4cd22",
+    "mount_module": "12d19ae29b4f1aa77e1f70d6376e799094d882f274cce75e57f534d8d74e633c",
+    "equipment": "8c00ed6ae9e07535889470b7df524929736085207f0e5ccb244064091de58ff7"
+  },
+  "cases": [
+    {
+      "label": "control-to-truck",
+      "target_family": "truck",
+      "accepted": true,
+      "checks": {
+        "expected_preview": true,
+        "expected_execution": true,
+        "parent_unchanged": true,
+        "target_family_retained": true,
+        "requirements_retained": true,
+        "new_lean_proof": true,
+        "independent_verifier": true
+      },
+      "preview": {
+        "schema": "fk-asset-preview-v1",
+        "accepted": true,
+        "asset_sha256": "8965de4a1b1701319b52750dc2410551f885a22f71176d21e341ce4ba102b9b6",
+        "base_manifest_sha256": "6c938ca63476f50fba4671086b86c78f15a1b4fa892e1cb8e7777e987b21a51c",
+        "status": "compatible",
+        "reuse_mode": "direct-recipe",
+        "issues": [],
+        "properties": {
+          "voltage": {
+            "unit": "V",
+            "min": 18.0,
+            "max": 30.0
+          }
+        },
+        "invalidated_evidence": [
+          "source-application-proof",
+          "source-visual-acceptance"
+        ],
+        "integration_obligations": [],
+        "physical_status": "unverified",
+        "target_checks": {
+          "schema": "fk-constraint-report-v1",
+          "accepted": true,
+          "coverage": "declared-nominal-constraints",
+          "checks": [
+            {
+              "id": "blank-thickness",
+              "kind": "dimension",
+              "passed": true,
+              "value_mm": 6.0,
+              "min_mm": 4,
+              "max_mm": 10,
+              "detail": ""
+            },
+            {
+              "id": "shaft-diameter",
+              "kind": "dimension",
+              "passed": true,
+              "value_mm": 10.0,
+              "min_mm": 8,
+              "max_mm": 20,
+              "detail": ""
+            },
+            {
+              "id": "mount-separation",
+              "kind": "axis-distance",
+              "passed": true,
+              "value_mm": 50.0,
+              "min_mm": 50,
+              "max_mm": 50,
+              "detail": "Center-to-center separation on the declared world axis only"
+            }
+          ],
+          "physical_validation": "not-performed"
+        },
+        "asset_checks": {
+          "schema": "fk-constraint-report-v1",
+          "accepted": true,
+          "coverage": "declared-nominal-constraints",
+          "checks": [
+            {
+              "id": "shared-asset-contract",
+              "kind": "asset-frame",
+              "passed": true,
+              "checks": [],
+              "detail": "Nominal asset contract in its recorded instance frame"
+            }
+          ],
+          "physical_validation": "not-performed"
+        },
+        "mapping": {
+          "control": "control"
+        },
+        "new_occurrences": 1,
+        "source_family": "car",
+        "target_family": "truck",
+        "proof_reused": false,
+        "cad_policy": "Rebuild imported CAD in destination coordinates; retain exact unchanged target CAD only"
+      },
+      "run_id": "34119dfe17a94e53",
+      "run_state": "complete"
+    },
+    {
+      "label": "control-to-aircraft",
+      "target_family": "aircraft",
+      "accepted": true,
+      "checks": {
+        "expected_preview": true,
+        "expected_execution": true,
+        "parent_unchanged": true,
+        "target_family_retained": true,
+        "requirements_retained": true,
+        "new_lean_proof": true,
+        "independent_verifier": true
+      },
+      "preview": {
+        "schema": "fk-asset-preview-v1",
+        "accepted": true,
+        "asset_sha256": "8965de4a1b1701319b52750dc2410551f885a22f71176d21e341ce4ba102b9b6",
+        "base_manifest_sha256": "ae1979fd536d19bea6c3e2c4e1fc913872e726e7de8014fb4f0ce3a3d13f061c",
+        "status": "compatible",
+        "reuse_mode": "direct-recipe",
+        "issues": [],
+        "properties": {
+          "voltage": {
+            "unit": "V",
+            "min": 18.0,
+            "max": 30.0
+          }
+        },
+        "invalidated_evidence": [
+          "source-application-proof",
+          "source-visual-acceptance"
+        ],
+        "integration_obligations": [],
+        "physical_status": "unverified",
+        "target_checks": {
+          "schema": "fk-constraint-report-v1",
+          "accepted": true,
+          "coverage": "declared-nominal-constraints",
+          "checks": [
+            {
+              "id": "blank-thickness",
+              "kind": "dimension",
+              "passed": true,
+              "value_mm": 6.0,
+              "min_mm": 4,
+              "max_mm": 10,
+              "detail": ""
+            },
+            {
+              "id": "shaft-diameter",
+              "kind": "dimension",
+              "passed": true,
+              "value_mm": 10.0,
+              "min_mm": 8,
+              "max_mm": 20,
+              "detail": ""
+            },
+            {
+              "id": "mount-separation",
+              "kind": "axis-distance",
+              "passed": true,
+              "value_mm": 50.0,
+              "min_mm": 50,
+              "max_mm": 50,
+              "detail": "Center-to-center separation on the declared world axis only"
+            }
+          ],
+          "physical_validation": "not-performed"
+        },
+        "asset_checks": {
+          "schema": "fk-constraint-report-v1",
+          "accepted": true,
+          "coverage": "declared-nominal-constraints",
+          "checks": [
+            {
+              "id": "shared-asset-contract",
+              "kind": "asset-frame",
+              "passed": true,
+              "checks": [],
+              "detail": "Nominal asset contract in its recorded instance frame"
+            }
+          ],
+          "physical_validation": "not-performed"
+        },
+        "mapping": {
+          "control": "control"
+        },
+        "new_occurrences": 1,
+        "source_family": "car",
+        "target_family": "aircraft",
+        "proof_reused": false,
+        "cad_policy": "Rebuild imported CAD in destination coordinates; retain exact unchanged target CAD only"
+      },
+      "run_id": "a51e5c4d9427459f",
+      "run_state": "complete"
+    },
+    {
+      "label": "control-to-humanoid",
+      "target_family": "humanoid",
+      "accepted": true,
+      "checks": {
+        "expected_preview": true,
+        "expected_execution": true,
+        "parent_unchanged": true,
+        "target_family_retained": true,
+        "requirements_retained": true,
+        "new_lean_proof": true,
+        "independent_verifier": true
+      },
+      "preview": {
+        "schema": "fk-asset-preview-v1",
+        "accepted": true,
+        "asset_sha256": "8965de4a1b1701319b52750dc2410551f885a22f71176d21e341ce4ba102b9b6",
+        "base_manifest_sha256": "d44c494bd077d83e2d8beeeca67e6c8bc2dae1528d1ac4ab33ffe810a40e5f8a",
+        "status": "compatible",
+        "reuse_mode": "direct-recipe",
+        "issues": [],
+        "properties": {
+          "voltage": {
+            "unit": "V",
+            "min": 18.0,
+            "max": 30.0
+          }
+        },
+        "invalidated_evidence": [
+          "source-application-proof",
+          "source-visual-acceptance"
+        ],
+        "integration_obligations": [],
+        "physical_status": "unverified",
+        "target_checks": {
+          "schema": "fk-constraint-report-v1",
+          "accepted": true,
+          "coverage": "declared-nominal-constraints",
+          "checks": [
+            {
+              "id": "blank-thickness",
+              "kind": "dimension",
+              "passed": true,
+              "value_mm": 6.0,
+              "min_mm": 4,
+              "max_mm": 10,
+              "detail": ""
+            },
+            {
+              "id": "shaft-diameter",
+              "kind": "dimension",
+              "passed": true,
+              "value_mm": 10.0,
+              "min_mm": 8,
+              "max_mm": 20,
+              "detail": ""
+            },
+            {
+              "id": "mount-separation",
+              "kind": "axis-distance",
+              "passed": true,
+              "value_mm": 50.0,
+              "min_mm": 50,
+              "max_mm": 50,
+              "detail": "Center-to-center separation on the declared world axis only"
+            }
+          ],
+          "physical_validation": "not-performed"
+        },
+        "asset_checks": {
+          "schema": "fk-constraint-report-v1",
+          "accepted": true,
+          "coverage": "declared-nominal-constraints",
+          "checks": [
+            {
+              "id": "shared-asset-contract",
+              "kind": "asset-frame",
+              "passed": true,
+              "checks": [],
+              "detail": "Nominal asset contract in its recorded instance frame"
+            }
+          ],
+          "physical_validation": "not-performed"
+        },
+        "mapping": {
+          "control": "control"
+        },
+        "new_occurrences": 1,
+        "source_family": "car",
+        "target_family": "humanoid",
+        "proof_reused": false,
+        "cad_policy": "Rebuild imported CAD in destination coordinates; retain exact unchanged target CAD only"
+      },
+      "run_id": "5bcac5413b864046",
+      "run_state": "complete"
+    },
+    {
+      "label": "adapt-shaft-to-humanoid",
+      "target_family": "humanoid",
+      "accepted": true,
+      "checks": {
+        "expected_preview": true,
+        "expected_execution": true,
+        "parent_unchanged": true,
+        "target_family_retained": true,
+        "requirements_retained": true,
+        "new_lean_proof": true,
+        "independent_verifier": true
+      },
+      "preview": {
+        "schema": "fk-asset-preview-v1",
+        "accepted": true,
+        "asset_sha256": "f83b0c4cf0a5a22cb468349e3fad90452c3e3c0b8f4bec81721da31e7cd4cd22",
+        "base_manifest_sha256": "d44c494bd077d83e2d8beeeca67e6c8bc2dae1528d1ac4ab33ffe810a40e5f8a",
+        "status": "compatible",
+        "reuse_mode": "adapted-recipe",
+        "issues": [],
+        "properties": {
+          "diameter": {
+            "unit": "mm",
+            "min": 16.0,
+            "max": 16.0
+          }
+        },
+        "invalidated_evidence": [
+          "declared-capabilities",
+          "declared-interfaces",
+          "source-application-proof",
+          "source-visual-acceptance"
+        ],
+        "integration_obligations": [
+          {
+            "kind": "nominal-constraint",
+            "rule": {
+              "axis": "x",
+              "first": "bracket",
+              "id": "mount-separation",
+              "kind": "axis-distance",
+              "max": 50,
+              "min": 50,
+              "second": "shaft"
+            }
+          }
+        ],
+        "physical_status": "unverified",
+        "target_checks": {
+          "schema": "fk-constraint-report-v1",
+          "accepted": true,
+          "coverage": "declared-nominal-constraints",
+          "checks": [
+            {
+              "id": "blank-thickness",
+              "kind": "dimension",
+              "passed": true,
+              "value_mm": 6.0,
+              "min_mm": 4,
+              "max_mm": 10,
+              "detail": ""
+            },
+            {
+              "id": "shaft-diameter",
+              "kind": "dimension",
+              "passed": true,
+              "value_mm": 16.0,
+              "min_mm": 8,
+              "max_mm": 20,
+              "detail": ""
+            },
+            {
+              "id": "mount-separation",
+              "kind": "axis-distance",
+              "passed": true,
+              "value_mm": 50.0,
+              "min_mm": 50,
+              "max_mm": 50,
+              "detail": "Center-to-center separation on the declared world axis only"
+            },
+            {
+              "id": "shared-asset-contract",
+              "kind": "asset-frame",
+              "passed": true,
+              "checks": [
+                {
+                  "id": "shared-shaft-diameter",
+                  "kind": "dimension",
+                  "passed": true,
+                  "value_mm": 16.0,
+                  "min_mm": 8,
+                  "max_mm": 20,
+                  "detail": ""
+                }
+              ],
+              "detail": "Nominal asset contract in its recorded instance frame"
+            }
+          ],
+          "physical_validation": "not-performed"
+        },
+        "asset_checks": {
+          "schema": "fk-constraint-report-v1",
+          "accepted": true,
+          "coverage": "declared-nominal-constraints",
+          "checks": [
+            {
+              "id": "shared-asset-contract",
+              "kind": "asset-frame",
+              "passed": true,
+              "checks": [
+                {
+                  "id": "shared-shaft-diameter",
+                  "kind": "dimension",
+                  "passed": true,
+                  "value_mm": 16.0,
+                  "min_mm": 8,
+                  "max_mm": 20,
+                  "detail": ""
+                }
+              ],
+              "detail": "Nominal asset contract in its recorded instance frame"
+            }
+          ],
+          "physical_validation": "not-performed"
+        },
+        "mapping": {
+          "shaft": "shaft"
+        },
+        "new_occurrences": 1,
+        "source_family": "car",
+        "target_family": "humanoid",
+        "proof_reused": false,
+        "cad_policy": "Rebuild imported CAD in destination coordinates; retain exact unchanged target CAD only"
+      },
+      "run_id": "4bd9fbeb97034405",
+      "run_state": "complete"
+    },
+    {
+      "label": "rotated-module-to-aircraft",
+      "target_family": "aircraft",
+      "accepted": true,
+      "checks": {
+        "expected_preview": true,
+        "expected_execution": true,
+        "parent_unchanged": true,
+        "target_family_retained": true,
+        "requirements_retained": true,
+        "new_lean_proof": true,
+        "independent_verifier": true
+      },
+      "preview": {
+        "schema": "fk-asset-preview-v1",
+        "accepted": true,
+        "asset_sha256": "12d19ae29b4f1aa77e1f70d6376e799094d882f274cce75e57f534d8d74e633c",
+        "base_manifest_sha256": "ae1979fd536d19bea6c3e2c4e1fc913872e726e7de8014fb4f0ce3a3d13f061c",
+        "status": "compatible",
+        "reuse_mode": "direct-recipe",
+        "issues": [],
+        "properties": {},
+        "invalidated_evidence": [
+          "source-application-proof",
+          "source-visual-acceptance"
+        ],
+        "integration_obligations": [],
+        "physical_status": "unverified",
+        "target_checks": {
+          "schema": "fk-constraint-report-v1",
+          "accepted": true,
+          "coverage": "declared-nominal-constraints",
+          "checks": [
+            {
+              "id": "blank-thickness",
+              "kind": "dimension",
+              "passed": true,
+              "value_mm": 6.0,
+              "min_mm": 4,
+              "max_mm": 10,
+              "detail": ""
+            },
+            {
+              "id": "shaft-diameter",
+              "kind": "dimension",
+              "passed": true,
+              "value_mm": 10.0,
+              "min_mm": 8,
+              "max_mm": 20,
+              "detail": ""
+            },
+            {
+              "id": "mount-separation",
+              "kind": "axis-distance",
+              "passed": true,
+              "value_mm": 50.0,
+              "min_mm": 50,
+              "max_mm": 50,
+              "detail": "Center-to-center separation on the declared world axis only"
+            },
+            {
+              "id": "shared-asset-contract",
+              "kind": "asset-frame",
+              "passed": true,
+              "checks": [
+                {
+                  "id": "shared-blank-thickness",
+                  "kind": "dimension",
+                  "passed": true,
+                  "value_mm": 6.0,
+                  "min_mm": 4,
+                  "max_mm": 10,
+                  "detail": ""
+                },
+                {
+                  "id": "shared-shaft-diameter",
+                  "kind": "dimension",
+                  "passed": true,
+                  "value_mm": 10.0,
+                  "min_mm": 8,
+                  "max_mm": 20,
+                  "detail": ""
+                },
+                {
+                  "id": "shared-mount-separation",
+                  "kind": "axis-distance",
+                  "passed": true,
+                  "value_mm": 50.0,
+                  "min_mm": 50,
+                  "max_mm": 50,
+                  "detail": "Center-to-center separation on the declared world axis only"
+                }
+              ],
+              "detail": "Nominal asset contract in its recorded instance frame"
+            }
+          ],
+          "physical_validation": "not-performed"
+        },
+        "asset_checks": {
+          "schema": "fk-constraint-report-v1",
+          "accepted": true,
+          "coverage": "declared-nominal-constraints",
+          "checks": [
+            {
+              "id": "shared-asset-contract",
+              "kind": "asset-frame",
+              "passed": true,
+              "checks": [
+                {
+                  "id": "shared-blank-thickness",
+                  "kind": "dimension",
+                  "passed": true,
+                  "value_mm": 6.0,
+                  "min_mm": 4,
+                  "max_mm": 10,
+                  "detail": ""
+                },
+                {
+                  "id": "shared-shaft-diameter",
+                  "kind": "dimension",
+                  "passed": true,
+                  "value_mm": 10.0,
+                  "min_mm": 8,
+                  "max_mm": 20,
+                  "detail": ""
+                },
+                {
+                  "id": "shared-mount-separation",
+                  "kind": "axis-distance",
+                  "passed": true,
+                  "value_mm": 50.0,
+                  "min_mm": 50,
+                  "max_mm": 50,
+                  "detail": "Center-to-center separation on the declared world axis only"
+                }
+              ],
+              "detail": "Nominal asset contract in its recorded instance frame"
+            }
+          ],
+          "physical_validation": "not-performed"
+        },
+        "mapping": {
+          "bracket": "shared-bracket",
+          "shaft": "shared-shaft"
+        },
+        "new_occurrences": 2,
+        "source_family": "car",
+        "target_family": "aircraft",
+        "proof_reused": false,
+        "cad_policy": "Rebuild imported CAD in destination coordinates; retain exact unchanged target CAD only"
+      },
+      "run_id": "e2d22d6c2f364e99",
+      "run_state": "complete"
+    },
+    {
+      "label": "equipment-to-humanoid",
+      "target_family": "humanoid",
+      "accepted": true,
+      "checks": {
+        "expected_preview": true,
+        "expected_execution": true,
+        "parent_unchanged": true,
+        "target_family_retained": true,
+        "requirements_retained": true,
+        "new_lean_proof": true,
+        "independent_verifier": true
+      },
+      "preview": {
+        "schema": "fk-asset-preview-v1",
+        "accepted": true,
+        "asset_sha256": "8c00ed6ae9e07535889470b7df524929736085207f0e5ccb244064091de58ff7",
+        "base_manifest_sha256": "d44c494bd077d83e2d8beeeca67e6c8bc2dae1528d1ac4ab33ffe810a40e5f8a",
+        "status": "compatible",
+        "reuse_mode": "direct-recipe",
+        "issues": [],
+        "properties": {
+          "work_x": {
+            "unit": "mm",
+            "min": 0.0,
+            "max": 40.0
+          },
+          "work_y": {
+            "unit": "mm",
+            "min": 0.0,
+            "max": 24.0
+          },
+          "work_z": {
+            "unit": "mm",
+            "min": 0.0,
+            "max": 6.0
+          }
+        },
+        "invalidated_evidence": [
+          "source-application-proof",
+          "source-visual-acceptance"
+        ],
+        "integration_obligations": [],
+        "physical_status": "unverified",
+        "equipment_capacity": {
+          "status": "compatible",
+          "reuse_mode": "direct-recipe",
+          "issues": [],
+          "properties": {
+            "work_x": {
+              "unit": "mm",
+              "min": 0.0,
+              "max": 40.0
+            },
+            "work_y": {
+              "unit": "mm",
+              "min": 0.0,
+              "max": 24.0
+            },
+            "work_z": {
+              "unit": "mm",
+              "min": 0.0,
+              "max": 6.0
+            }
+          },
+          "invalidated_evidence": [
+            "source-application-proof",
+            "source-visual-acceptance"
+          ],
+          "integration_obligations": [],
+          "physical_status": "unverified"
+        },
+        "target_checks": {
+          "schema": "fk-constraint-report-v1",
+          "accepted": true,
+          "coverage": "declared-nominal-constraints",
+          "checks": [
+            {
+              "id": "blank-thickness",
+              "kind": "dimension",
+              "passed": true,
+              "value_mm": 6.0,
+              "min_mm": 4,
+              "max_mm": 10,
+              "detail": ""
+            },
+            {
+              "id": "shaft-diameter",
+              "kind": "dimension",
+              "passed": true,
+              "value_mm": 10.0,
+              "min_mm": 8,
+              "max_mm": 20,
+              "detail": ""
+            },
+            {
+              "id": "mount-separation",
+              "kind": "axis-distance",
+              "passed": true,
+              "value_mm": 50.0,
+              "min_mm": 50,
+              "max_mm": 50,
+              "detail": "Center-to-center separation on the declared world axis only"
+            }
+          ],
+          "physical_validation": "not-performed"
+        },
+        "asset_checks": {
+          "schema": "fk-constraint-report-v1",
+          "accepted": true,
+          "coverage": "no-numeric-constraints-declared",
+          "checks": [],
+          "physical_validation": "not-performed"
+        },
+        "mapping": {
+          "cell-bed": "shared-cell-bed",
+          "cell-bridge": "shared-cell-bridge",
+          "cell-carriage": "shared-cell-carriage",
+          "cell-fixture": "shared-cell-fixture",
+          "cell-xrail": "shared-cell-xrail",
+          "cell-zrail": "shared-cell-zrail",
+          "cell-spindle": "shared-cell-spindle",
+          "cell-controller": "shared-cell-controller",
+          "cell-drivers": "shared-cell-drivers",
+          "cell-fasteners": "shared-cell-fasteners",
+          "cell-column-left": "shared-cell-column-left",
+          "cell-yrail-left": "shared-cell-yrail-left",
+          "cell-yrack-left": "shared-cell-yrack-left",
+          "cell-column-right": "shared-cell-column-right",
+          "cell-yrail-right": "shared-cell-yrail-right",
+          "cell-yrack-right": "shared-cell-yrack-right",
+          "cell-motor-x": "shared-cell-motor-x",
+          "cell-motor-y": "shared-cell-motor-y",
+          "cell-motor-z": "shared-cell-motor-z",
+          "cell-xz-drive": "shared-cell-xz-drive"
+        },
+        "new_occurrences": 20,
+        "source_family": "car",
+        "target_family": "humanoid",
+        "proof_reused": false,
+        "cad_policy": "Rebuild imported CAD in destination coordinates; retain exact unchanged target CAD only"
+      },
+      "run_id": "a6014ea38f4e4a36",
+      "run_state": "complete"
+    },
+    {
+      "label": "reject-undersized-cell",
+      "target_family": "truck",
+      "accepted": true,
+      "checks": {
+        "expected_preview": true,
+        "expected_execution": true,
+        "parent_unchanged": true,
+        "no_rejected_cad": true
+      },
+      "preview": {
+        "schema": "fk-asset-preview-v1",
+        "accepted": false,
+        "asset_sha256": "8c00ed6ae9e07535889470b7df524929736085207f0e5ccb244064091de58ff7",
+        "base_manifest_sha256": "6c938ca63476f50fba4671086b86c78f15a1b4fa892e1cb8e7777e987b21a51c",
+        "status": "incompatible",
+        "reuse_mode": "direct-recipe",
+        "issues": [
+          {
+            "code": "range-not-contained",
+            "property": "work_x",
+            "status": "incompatible",
+            "actual": {
+              "unit": "mm",
+              "min": 0.0,
+              "max": 40.0
+            },
+            "required": {
+              "unit": "mm",
+              "min": 0.0,
+              "max": 100.0,
+              "relation": "covers"
+            }
+          }
+        ],
+        "properties": {
+          "work_x": {
+            "unit": "mm",
+            "min": 0.0,
+            "max": 40.0
+          },
+          "work_y": {
+            "unit": "mm",
+            "min": 0.0,
+            "max": 24.0
+          },
+          "work_z": {
+            "unit": "mm",
+            "min": 0.0,
+            "max": 6.0
+          }
+        },
+        "invalidated_evidence": [
+          "source-application-proof",
+          "source-visual-acceptance"
+        ],
+        "integration_obligations": [],
+        "physical_status": "unverified",
+        "equipment_capacity": {
+          "status": "incompatible",
+          "reuse_mode": "direct-recipe",
+          "issues": [
+            {
+              "code": "range-not-contained",
+              "property": "work_x",
+              "status": "incompatible",
+              "actual": {
+                "unit": "mm",
+                "min": 0.0,
+                "max": 40.0
+              },
+              "required": {
+                "unit": "mm",
+                "min": 0.0,
+                "max": 100.0,
+                "relation": "covers"
+              }
+            }
+          ],
+          "properties": {
+            "work_x": {
+              "unit": "mm",
+              "min": 0.0,
+              "max": 40.0
+            },
+            "work_y": {
+              "unit": "mm",
+              "min": 0.0,
+              "max": 24.0
+            },
+            "work_z": {
+              "unit": "mm",
+              "min": 0.0,
+              "max": 6.0
+            }
+          },
+          "invalidated_evidence": [
+            "source-application-proof",
+            "source-visual-acceptance"
+          ],
+          "integration_obligations": [],
+          "physical_status": "unverified"
+        }
+      },
+      "run_id": "daaa0defbb524547",
+      "run_state": "rejected"
+    },
+    {
+      "label": "reject-high-voltage",
+      "target_family": "truck",
+      "accepted": true,
+      "checks": {
+        "expected_preview": true,
+        "expected_execution": true,
+        "parent_unchanged": true,
+        "no_rejected_cad": true
+      },
+      "preview": {
+        "schema": "fk-asset-preview-v1",
+        "accepted": false,
+        "asset_sha256": "8965de4a1b1701319b52750dc2410551f885a22f71176d21e341ce4ba102b9b6",
+        "base_manifest_sha256": "6c938ca63476f50fba4671086b86c78f15a1b4fa892e1cb8e7777e987b21a51c",
+        "status": "incompatible",
+        "reuse_mode": "direct-recipe",
+        "issues": [
+          {
+            "code": "range-not-contained",
+            "property": "voltage",
+            "status": "incompatible",
+            "actual": {
+              "unit": "V",
+              "min": 18.0,
+              "max": 30.0
+            },
+            "required": {
+              "unit": "V",
+              "min": 400.0,
+              "max": 800.0,
+              "relation": "covers"
+            }
+          }
+        ],
+        "properties": {
+          "voltage": {
+            "unit": "V",
+            "min": 18.0,
+            "max": 30.0
+          }
+        },
+        "invalidated_evidence": [
+          "source-application-proof",
+          "source-visual-acceptance"
+        ],
+        "integration_obligations": [],
+        "physical_status": "unverified"
+      },
+      "run_id": "f23b08a0d7fc4cc7",
+      "run_state": "rejected"
+    },
+    {
+      "label": "reject-stale-torque",
+      "target_family": "humanoid",
+      "accepted": true,
+      "checks": {
+        "expected_preview": true,
+        "expected_execution": true,
+        "parent_unchanged": true,
+        "no_rejected_cad": true
+      },
+      "preview": {
+        "schema": "fk-asset-preview-v1",
+        "accepted": false,
+        "asset_sha256": "f83b0c4cf0a5a22cb468349e3fad90452c3e3c0b8f4bec81721da31e7cd4cd22",
+        "base_manifest_sha256": "d44c494bd077d83e2d8beeeca67e6c8bc2dae1528d1ac4ab33ffe810a40e5f8a",
+        "status": "needs-evidence",
+        "reuse_mode": "adapted-recipe",
+        "issues": [
+          {
+            "code": "missing-or-invalidated-property",
+            "property": "torque",
+            "status": "needs-evidence"
+          }
+        ],
+        "properties": {
+          "diameter": {
+            "unit": "mm",
+            "min": 16.0,
+            "max": 16.0
+          }
+        },
+        "invalidated_evidence": [
+          "declared-capabilities",
+          "declared-interfaces",
+          "source-application-proof",
+          "source-visual-acceptance"
+        ],
+        "integration_obligations": [
+          {
+            "kind": "nominal-constraint",
+            "rule": {
+              "axis": "x",
+              "first": "bracket",
+              "id": "mount-separation",
+              "kind": "axis-distance",
+              "max": 50,
+              "min": 50,
+              "second": "shaft"
+            }
+          }
+        ],
+        "physical_status": "unverified"
+      },
+      "run_id": "75ccac7635b94b42",
+      "run_state": "rejected"
+    }
+  ],
+  "baselines": {
+    "car": {
+      "id": "29eaf2cccf9540c7",
+      "mode": "fixture",
+      "proof_accepted": true,
+      "physical_status": "unverified",
+      "counts": {
+        "parts": 3,
+        "equipment_parts": 20,
+        "catalog": 15,
+        "print": 7,
+        "machine": 1,
+        "steps": 29
+      }
+    },
+    "truck": {
+      "id": "97ee678224544cfc",
+      "mode": "fixture",
+      "proof_accepted": true,
+      "physical_status": "unverified",
+      "counts": {
+        "parts": 3,
+        "equipment_parts": 20,
+        "catalog": 15,
+        "print": 7,
+        "machine": 1,
+        "steps": 29
+      }
+    },
+    "aircraft": {
+      "id": "82c03e6fa071492a",
+      "mode": "fixture",
+      "proof_accepted": true,
+      "physical_status": "unverified",
+      "counts": {
+        "parts": 3,
+        "equipment_parts": 20,
+        "catalog": 15,
+        "print": 7,
+        "machine": 1,
+        "steps": 29
+      }
+    },
+    "humanoid": {
+      "id": "d9c1e3e2c3054ef8",
+      "mode": "fixture",
+      "proof_accepted": true,
+      "physical_status": "unverified",
+      "counts": {
+        "parts": 3,
+        "equipment_parts": 20,
+        "catalog": 15,
+        "print": 7,
+        "machine": 1,
+        "steps": 29
+      }
+    }
+  }
+}

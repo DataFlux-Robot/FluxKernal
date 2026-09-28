@@ -1,0 +1,7 @@
+ℹ [2/4] Replayed FluxKernel.Closure
+info: formal/FluxKernel/Closure.lean:140:0: 'FluxKernel.check_sound' depends on axioms: [propext]
+info: formal/FluxKernel/Closure.lean:141:0: 'FluxKernel.no_self_bootstrap' does not depend on any axioms
+info: formal/FluxKernel/Closure.lean:142:0: 'FluxKernel.depth_bounded' does not depend on any axioms
+Build completed successfully (4 jobs).
+'manufacturingClosed' depends on axioms: [propext]
+PASS: manifest, declared nominal constraints (when present), occurrence receipts, JSON-to-Lean binding and Lean plan closure. Physical capability remains unverified.

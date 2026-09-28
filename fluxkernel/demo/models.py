@@ -90,7 +90,7 @@ class Design(StrictModel):
         return result
 
     title: str = Field(min_length=1, max_length=120)
-    family: Literal['phone', 'car', 'aircraft', 'other']
+    family: Literal['phone', 'car', 'truck', 'aircraft', 'humanoid', 'other']
     summary: str = Field(min_length=1, max_length=1000)
     observations: list[Observation] = Field(min_length=1, max_length=30)
     assumptions: list[str] = Field(min_length=1, max_length=25)

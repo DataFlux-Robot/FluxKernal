@@ -62,5 +62,12 @@ jobs:
       - run: python -m pytest -q
         env:
           PYTEST_DISABLE_PLUGIN_AUTOLOAD: '1'
+      - name: Cross-product CAD and Lean regression
+        run: fk asset benchmark --output ./asset-evaluation --json > asset-benchmark.json
+      - uses: actions/upload-artifact@v4
+        if: always()
+        with:
+          name: cross-product-assets
+          path: asset-benchmark.json
       - run: python -m build
       - run: python scripts/smoke_distribution.py --studio --agent

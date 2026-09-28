@@ -1,6 +1,6 @@
 # Connect an agent through MCP
 
-FluxKernel exposes eight tools over local standard input/output using the
+FluxKernel exposes thirteen tools over local standard input/output using the
 [official MCP Python SDK](https://github.com/modelcontextprotocol/python-sdk).
 An MCP host can discover tasks, build a fixture, inspect its parts, preview a pinned
 patch and apply it. The host supplies the reasoning; the server executes bounded
@@ -44,7 +44,7 @@ process; running `fk-mcp` manually waits for protocol messages and does not open
 browser. No HTTP listener or public service is started.
 
 `--workspace` is mandatory and selects exactly one run directory. Existing Studio
-runs can be exposed by pointing to their directory. `--read-only` hides both write
+runs can be exposed by pointing to their directory. `--read-only` hides all four write
 tools and requires an existing workspace. `--timeout 300` sets each generation
 worker's time limit; accepted values are 1–900 seconds.
 
@@ -68,6 +68,11 @@ Give the connected agent a concrete instruction:
 | `apply_revision` | New child or archived rejection; parent stays intact |
 | `read_report` | Allowlisted JSON report after verifying all committed artifacts |
 | `list_artifacts` | Verified filenames, byte sizes, SHA-256 commitments and local directory |
+| `search_assets` | Category, unit-aware capability and exact-interface matching |
+| `inspect_asset` | Immutable recipe, parameter limits, provenance and obligations |
+| `preview_asset` | Pinned-target nominal preflight; no CAD build |
+| `publish_asset` | Publish a source-verified component/module/equipment recipe |
+| `instantiate_asset` | New target run with imported geometry and fresh plan evidence |
 
 All tools have explicit input schemas and read/write annotations. Both revision
 tools embed the canonical [revision schema](AGENT_API.md), including allowed patch
@@ -81,7 +86,7 @@ Two resources expose machine-readable context:
 - `fluxkernel://schemas/revision`: versioned local patch schema.
 
 The report allowlist includes design, constraints, nominal checks, manufacturing,
-proof, reuse and geometry checks. Binary CAD remains on disk; `list_artifacts`
+proof, reuse, geometry checks and asset source/instance records. Binary CAD remains on disk; `list_artifacts`
 provides verified commitments. Arbitrary file reads, worker logs and configuration
 files are not exposed as MCP reports.
 
@@ -96,8 +101,8 @@ python -m fluxkernel.agent_smoke --workspace ./agent-smoke-runs --require-proof
 It discovers tools/resources, generates an enclosure, changes 2 mm to 3 mm,
 compares all 23 reused STEP/STL entities byte-for-byte, rejects a 5 mm wall, rejects
 a stale parent and a protected route edit, checks history, rejects altered CAD,
-and independently rechecks the child bundle with Lean. It prints JSON checks and
-keeps the three run directories. It makes zero model calls; it tests integration,
+publishes and instantiates a shared asset, and independently rechecks the revision
+bundle with Lean. It prints JSON checks and keeps all run directories. It makes zero model calls; it tests integration,
 not an LLM's ability to plan edits. Each invocation creates new runs.
 
 To view those results in Studio, use the same directory:
@@ -107,6 +112,9 @@ To view those results in Studio, use the same directory:
 export FK_DEMO_DATA="$PWD/agent-smoke-runs"
 fk-studio
 ```
+
+See [cross-product assets](CROSS_PRODUCT_ASSETS.md) for parameter adaptation,
+capability invalidation, equipment matching and the packaged agent skill.
 
 ## Errors and execution semantics
 
@@ -119,7 +127,8 @@ fk-studio
   logs; do not interpret an absent result as acceptance.
 - `REV_*`: inherited revision diagnostics, described in [Agent API](AGENT_API.md).
 
-Writes create fresh runs and are **not idempotent**. After a client timeout or
+Generation writes create fresh runs and are **not idempotent**. Asset publication
+is content-addressed and retains an existing identical entry. After a client timeout or
 cancellation, a worker may still complete; the client must inspect history before
 retrying. The server serializes writes within one process, not across multiple
 independent processes. Use one writer process per workspace. Host cancellation is

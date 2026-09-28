@@ -15,7 +15,7 @@ from .studio import TASKS, apply_revision, generate_task, load_task
 
 RUN_PATTERN = r'^[a-f0-9]{16}$'
 REPORTS = ('design.json', 'constraints.json', 'constraint-checks.json',
-           'manufacturing.json', 'proof.json', 'reuse.json', 'geometry-checks.json')
+           'manufacturing.json', 'proof.json', 'reuse.json', 'geometry-checks.json','asset-reuse.json','asset-source.json')
 MAX_REPORT_BYTES = 1024 * 1024
 
 
@@ -51,7 +51,7 @@ class AgentWorkspace:
                 'read_only': self.read_only, 'worker_timeout_s': self.timeout,
                 'model_calls': False, 'physical_validation': False,
                 'revision_schema': revision_schema(), 'report_names': list(REPORTS),
-                'scope': 'Authored tasks and bounded local revisions; no image inference',
+                'scope': 'Authored tasks, bounded revisions and cross-product recipe assets; no image inference',
                 'write_behavior': 'Each call creates a new run; writes are not idempotent',
                 'proof_scope': 'Lean checks the manufacturing plan; nominal constraints use Python'}
 
@@ -111,6 +111,28 @@ class AgentWorkspace:
     def apply(self, run_id, request):
         parent = self.run_path(run_id)
         return self._write(lambda: apply_revision(parent, request, output_dir=self.root, timeout=self.timeout))
+
+    def search_assets(self,query,limit=20):
+        from .assets import AssetLibrary
+        return AssetLibrary(self.root/'.assets').search(query,limit)
+
+    def inspect_asset(self,asset_sha256):
+        from .assets import AssetLibrary
+        return AssetLibrary(self.root/'.assets').read(asset_sha256)
+
+    def publish_asset(self,run_id,request):
+        from .assets import AssetLibrary,publish
+        parent=self.run_path(run_id)
+        return self._write(lambda:publish(AssetLibrary(self.root/'.assets'),parent,request))
+
+    def preview_asset(self,run_id,request):
+        from .assets import AssetLibrary,prepare_instance
+        return prepare_instance(AssetLibrary(self.root/'.assets'),self.run_path(run_id),request)[0]
+
+    def instantiate_asset(self,run_id,request):
+        from .studio import apply_asset
+        parent=self.run_path(run_id)
+        return self._write(lambda:apply_asset(parent,self.root/'.assets',request,output_dir=self.root,timeout=self.timeout))
 
     def read_report(self, run_id, report):
         if report not in REPORTS:

@@ -117,6 +117,22 @@ revision tasks. See the [versioned agent API](docs/AGENT_API.md) for JSON schema
 CLI commands, diagnostics and the exact distinction between nominal checks and
 formal plan closure.
 
+## Reuse assets across products
+
+Publish a verified component, module or complete machining-cell recipe into a
+content-addressed library. Match functional requirements, units and interfaces;
+instantiate it in another product with a rigid pose or bounded parameter adaptation.
+Source application proofs expire, and the destination gets fresh CAD and plan evidence.
+
+```bash
+fk asset benchmark --output ./asset-evaluation --json
+```
+
+This model-free regression covers car → truck / aircraft / humanoid subsystem reuse,
+parameter adaptation, rotated module constraints and equipment capacity rejection.
+It uses authored subsystem fixtures, not whole-product designs. See
+[cross-product assets](docs/CROSS_PRODUCT_ASSETS.md) for Python, CLI and agent workflows.
+
 ## Connect your agent over MCP
 
 ```bash
@@ -126,8 +142,8 @@ fk doctor --profile agent
 fk-mcp --workspace /absolute/path/to/design-runs
 ```
 
-Eight discoverable tools cover authored tasks, verified inspection, constraint
-preflight, local revisions and evidence reports. A read-only mode is available.
+Thirteen discoverable tools cover authored tasks, verified inspection, constraint
+preflight, local revisions, cross-product assets and evidence reports. A read-only mode is available.
 The server uses stdio, makes no model calls, and preserves the existing revision
 contract. See [MCP setup and reproducible client workflow](docs/MCP.md).
 

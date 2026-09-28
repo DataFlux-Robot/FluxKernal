@@ -10,7 +10,8 @@ def emit(value, as_json):
 
 def cmd_schema(args):
     from ..revision import revision_schema
-    emit(revision_schema(), True)
+    from ..asset_api import asset_schema
+    emit(revision_schema() if args.name=='revision' else asset_schema(args.name.removeprefix('asset-')), True)
     return 0
 
 
@@ -83,13 +84,15 @@ def cmd_perceive(args):
 
 
 def register(sub):
+    from .asset_cli import register as register_assets
+    register_assets(sub)
     from ..studio import TASKS
     p = sub.add_parser('perceive', help='run real image/render feedback on a saved parent (model API calls)')
     p.add_argument('parent'); p.add_argument('--rounds',type=int,choices=range(1,9),default=3)
     p.add_argument('--output'); p.add_argument('--json',action='store_true')
     p.add_argument('--require-proof',action='store_true'); p.set_defaults(fn=cmd_perceive)
     p = sub.add_parser('schema', help='print a versioned agent request schema')
-    p.add_argument('name', choices=('revision',)); p.set_defaults(fn=cmd_schema)
+    p.add_argument('name', choices=('revision','asset-publish','asset-query','asset-instance')); p.add_argument('--json',action='store_true'); p.set_defaults(fn=cmd_schema)
     p = sub.add_parser('inspect', help='verify and inspect a completed Studio run')
     p.add_argument('parent'); p.add_argument('--json', action='store_true'); p.set_defaults(fn=cmd_inspect)
     p = sub.add_parser('task', help='build a frozen engineering fixture without a model')

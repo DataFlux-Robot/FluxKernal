@@ -44,7 +44,7 @@ def reusable_parent(run, request):
 
 def execute(run: Path, request: Request, image: bytes, previous=None, *,
             design_override=None, constraint_contract=None, parent_cache_override=None,
-            revision_record=None):
+            revision_record=None, asset_reuse_record=None, equipment_override=None):
     start=time.monotonic(); events=[]
     def event(stage,message):
         events.append({'stage':stage,'message':message,'elapsed_s':round(time.monotonic()-start,1)})
@@ -56,9 +56,10 @@ def execute(run: Path, request: Request, image: bytes, previous=None, *,
                 raise ValueError('Parent design changed before revision execution')
             previous=parent_cache['design']
             inherited=parent_cache['constraints']
-            if constraint_contract is not None and constraint_contract != inherited:
+            extended=asset_reuse_record is not None and constraint_contract is not None and constraint_contract['rules'][:len(inherited['rules'])]==inherited['rules']
+            if constraint_contract is not None and constraint_contract != inherited and not extended:
                 raise ValueError('A revision cannot replace the parent constraint contract')
-            constraint_contract=inherited
+            if not extended:constraint_contract=inherited
         event('input','锁定参考图片、需求与一轮设备展开预算')
         normalized=normalize_image(image);(run/'image.png').write_bytes(normalized)
         image_hash=hashlib.sha256(image).hexdigest()
@@ -77,6 +78,9 @@ def execute(run: Path, request: Request, image: bytes, previous=None, *,
         input_record['constraint_checker_sha256']=hashlib.sha256(constraint_checker_source).hexdigest()
         if revision_record is not None:
             input_record['revision']=revision_record
+        if asset_reuse_record is not None:
+            input_record['asset_reuse_sha256']=manufacturing.digest(asset_reuse_record)
+            input_record['asset_sha256']=asset_reuse_record['asset_sha256']
         if request.mode in ('fixture','revision'):
             input_record['interpretation']='explicit parametric design; no image inference or model call'
         write_json(run/'input.json',input_record)
@@ -130,6 +134,9 @@ def execute(run: Path, request: Request, image: bytes, previous=None, *,
             'evaluation':'construction and plan checks; user acceptance and physical validation pending'})
         event('decompose',f'候选产品架构：{len(design.parts)} 个具名零件 / {len(set(p.group for p in design.parts))} 个子系统')
         equipment=equipment_parts([p for p in design.parts if p.route=='machine']) if any(p.route=='machine' for p in design.parts) and request.equipment_depth else []
+        if equipment_override is not None:
+            from .models import Part
+            equipment=[Part.model_validate(p) for p in equipment_override]
         write_json(run/'equipment.json',[p.model_dump() for p in equipment])
         event('equipment',f'设备展开：{len(equipment)} 个标准与打印部件' if equipment else '本轮没有展开加工设备')
         store=Store(run/'.fk');artifact_dir=run/'cad';artifact_dir.mkdir(exist_ok=True)
@@ -150,7 +157,8 @@ def execute(run: Path, request: Request, image: bytes, previous=None, *,
             checks[p.id]=check;blobs[p.id]=refs
         write_json(run/'geometry-checks.json',checks)
         write_json(run/'reuse.json',{'parent':request.parent,'reused':reused,
-            'rebuilt':[p.id for p in design.parts+equipment if p.id not in reused]})
+            'rebuilt':[p.id for p in design.parts+equipment if p.id not in reused],
+            **({'asset':asset_reuse_record} if asset_reuse_record is not None else {})})
         write_json(run/'scene.json',{'product':scene,'equipment':cell_scene})
         plan=manufacturing.make_plan(design,equipment,checks,request.equipment_depth,image_hash,manufacturing.digest(input_record))
         write_json(run/'manufacturing.json',plan)

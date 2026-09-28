@@ -23,7 +23,7 @@ async def exercise(workspace, *, require_proof=False):
     checks = {}
     async with Client(params, read_timeout_seconds=360) as client:
         tools = (await client.list_tools()).tools
-        checks['eight_tools_discovered'] = len(tools) == 8
+        checks['thirteen_tools_discovered'] = len(tools) == 13
         specs = {t.name: t for t in tools}
         checks['write_annotations'] = not specs['apply_revision'].annotations.read_only_hint
         resources = await client.list_resources()
@@ -63,6 +63,19 @@ async def exercise(workspace, *, require_proof=False):
         protected = await call('apply_revision', {'run_id': base['id'], 'request': {
             **patch, 'edits': [{'part': 'housing', 'set': {'route': 'catalog'}}]}}, error=True)
         checks['protected_field_rejected'] = protected['code'] == 'MCP_INVALID_ARGUMENT'
+        published = await call('publish_asset', {'run_id':base['id'], 'request': {
+            'base_manifest_sha256':state['manifest_sha256'], 'name':'enclosure-payload',
+            'version':'1.0.0','category':'payload','kind':'component',
+            'description':'Authored smoke-test payload envelope','parts':['payload']}})
+        matches = await call('search_assets', {'query':{'category':'payload'}})
+        checks['asset_discovered'] = matches['matches'][0]['asset_sha256'] == published['asset_sha256']
+        instance = {'base_manifest_sha256':state['manifest_sha256'],
+                    'asset_sha256':published['asset_sha256'],'prefix':'smoke',
+                    'query':{'category':'payload'},'position':[100,0,0]}
+        preflight = await call('preview_asset', {'run_id':base['id'],'request':instance})
+        imported = await call('instantiate_asset', {'run_id':base['id'],'request':instance})
+        checks['asset_instantiated'] = preflight['accepted'] and imported['ok']
+        checks['asset_proof_not_inherited'] = imported['asset']['proof_reused'] is False
         after = await call('inspect_run', {'run_id': base['id']})
         checks['parent_unchanged'] = state['manifest_sha256'] == after['manifest_sha256']
         history = await call('list_runs', {'limit': 100})

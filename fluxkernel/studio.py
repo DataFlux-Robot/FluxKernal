@@ -127,6 +127,18 @@ def refine_visual(parent, *, output_dir=None, rounds=3, timeout=1200):
     return _result(run)
 
 
+def apply_asset(parent,library,request,*,output_dir=None,timeout=300):
+    parent=Path(parent).expanduser().resolve();run=_new_run(output_dir if output_dir is not None else parent.parent,timeout)
+    (run/'asset-request.json').write_text(json.dumps({'library':str(Path(library).expanduser().absolute()),'request':request},ensure_ascii=False,allow_nan=False))
+    _worker(run,['--asset-target',str(parent)],timeout)
+    status=json.loads((run/'status.json').read_text()) if (run/'status.json').exists() else {'state':'failed'}
+    result={'ok':status['state']=='complete','id':run.name,'directory':str(run),'state':status['state']}
+    if (run/'asset-reuse.json').exists():result['asset']=json.loads((run/'asset-reuse.json').read_text())
+    if result['ok']:result['run']=_result(run).to_dict()
+    else:result['diagnostics']=status.get('diagnostics',[])
+    return result
+
+
 def _main() -> int:
     import argparse
     parser = argparse.ArgumentParser(description='Internal isolated Studio worker')
@@ -136,11 +148,37 @@ def _main() -> int:
     mode.add_argument('--task', choices=TASKS)
     mode.add_argument('--revision-parent', type=Path)
     mode.add_argument('--perception-parent', type=Path)
+    mode.add_argument('--asset-target', type=Path)
+    mode.add_argument('--asset-fixture', choices=('car','truck','aircraft','humanoid'))
     parser.add_argument('--equipment-depth', type=int, choices=(0, 1), default=1)
     args = parser.parse_args()
     from .demo.models import Request
     from .demo.pipeline import execute, write_json
-    if args.revision_parent or args.perception_parent:
+    if args.asset_target:
+        from .assets import AssetLibrary,prepare_instance
+        from .revision import read_json
+        packet=json.loads((args.run/'asset-request.json').read_text());library=AssetLibrary(packet['library'])
+        try:
+            report,snap,candidate,contract,equipment_override=prepare_instance(library,args.asset_target,packet['request'])
+        except (ValueError,OSError,KeyError) as exc:
+            report={'accepted':False,'issues':[{'code':'ASSET_REJECTED','message':str(exc)}]}
+        if not report['accepted']:
+            write_json(args.run/'asset-reuse.json',report)
+            write_json(args.run/'status.json',{'id':args.run.name,'state':'rejected','stage':'preflight','events':[],'diagnostics':report['issues']})
+            return 2
+        source=library.read(report['asset_sha256'])
+        original=read_json(snap,'design.json');old_equipment=read_json(snap,'equipment.json');scene=read_json(snap,'scene.json')
+        report['instance_request']=packet['request']
+        imported=candidate['parts'] if packet['request'].get('destination','product')=='product' else equipment_override
+        report['instance_recipes']={p['id']:p for p in imported if p['id'] in report['mapping'].values()}
+        write_json(args.run/'asset-reuse.json',report);write_json(args.run/'asset-source.json',source)
+        cache={'read':lambda name:snap['files'][name],'design':original,'constraints':read_json(snap,'constraints.json'),
+               'parts':{p['id']:p for p in original['parts']+old_equipment},'meshes':{p['id']:p for p in scene['product']+scene['equipment']},'checks':read_json(snap,'geometry-checks.json')}
+        before=read_json(snap,'input.json');depth=read_json(snap,'manufacturing.json')['policy']['equipment_depth']
+        execute(args.run,Request(mode='revision',visual_rounds=0,parent=read_json(snap,'result.json')['id'],equipment_depth=depth,brief=before['request']['brief']),snap['files']['image.png'],original,
+                design_override=candidate,constraint_contract=contract,parent_cache_override=cache,equipment_override=equipment_override,asset_reuse_record=report,
+                revision_record={'schema':'fk-asset-parent-v1','base_manifest_sha256':snap['identity'],'asset_sha256':report['asset_sha256']})
+    elif args.revision_parent or args.perception_parent:
         from .revision import prepare_revision, read_json, snapshot
         if args.revision_parent:
             request = json.loads((args.run/'revision-request.json').read_text(encoding='utf-8'))
@@ -171,12 +209,15 @@ def _main() -> int:
                 parent_cache_override=cache,
                 revision_record={'schema':'fk-revision-v1','base_manifest_sha256':snap['identity'],
                                  'edits':request['edits']} if args.revision_parent else {'schema':'fk-perception-parent-v1','base_manifest_sha256':snap['identity']})
-    elif args.task:
+    elif args.asset_fixture or args.task:
         import io
         from PIL import Image
-        task = load_task(args.task)
+        if args.asset_fixture:
+            from .asset_benchmark import fixture
+            task=fixture(args.asset_fixture)
+        else:task = load_task(args.task)
         image = io.BytesIO(); Image.new('RGB',(32,32),'#dce4eb').save(image,'PNG')
-        write_json(args.run/'task.json', {'id':args.task,'schema':'fk-task-v1','input':'authored parametric fixture'})
+        write_json(args.run/'task.json', {'id':args.asset_fixture or args.task,'schema':'fk-task-v1','input':'authored parametric subsystem fixture'})
         execute(args.run, Request(mode='fixture', brief=task['design']['title']), image.getvalue(),
                 design_override=task['design'], constraint_contract=task['constraints'])
     else:
