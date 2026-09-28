@@ -124,6 +124,17 @@ converted=import_urdf(root/'robot.urdf',Path('urdf-imported'))
 assert converted['proof_accepted'] and converted['exchange_proof_accepted'] and converted['projection_accepted']
 assert verify(converted['directory'],True)['exchange']['accepted']
 assert check_projection(converted['directory'])['accepted']
+from fluxkernel.robotics.lean_document import to_lean,from_lean,tree
+to_lean(root,Path('complete-lean'))
+assert from_lean(Path('complete-lean'),Path('restored-native'))['native_bundle_restored']
+assert verify(Path('restored-native'),True)['proof_accepted']
+assert (root/'robot.json').read_bytes()==Path('restored-native/robot.json').read_bytes()
+to_lean(Path('restored-native'),Path('complete-lean-again'))
+assert Path('complete-lean/Robot.lean').read_bytes()==Path('complete-lean-again/Robot.lean').read_bytes()
+to_lean(root/'robot.urdf',Path('standalone-lean'))
+Path('standalone-lean/source.urdf').unlink()
+assert from_lean(Path('standalone-lean'),Path('lean-generated'))['lean_executed']
+assert tree(Path('lean-generated/robot.urdf').read_bytes())==tree((root/'robot.urdf').read_bytes())
 """])
 
         if args.agent:

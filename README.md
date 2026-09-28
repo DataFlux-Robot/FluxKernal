@@ -137,7 +137,13 @@ It uses authored subsystem fixtures, not whole-product designs. See
 
 ## Native robot designs
 
-**v0.11: supported URDF → native robot → checked URDF/MJCF round trips.**
+**v0.12: complete Lean ↔ URDF packages for Microduck/XGO cases.**
+A data-only Lean document now preserves the full XML information tree and exact
+numeric strings. Lean itself renders the URDF; bound resources preserve asset bytes
+and optional native controller/manufacturing records. [Lossless case commands and
+acceptance criteria](docs/LOSSLESS_ROBOTS.md).
+
+The v0.11 URDF → native robot → checked URDF/MJCF path remains available.
 URDF tree import now preserves supported joints, declared limits, separate visual /
 collision geometry and inertials. New bundles receive both Lean 4 native-structure
 checks and a translation certificate for selected mechanism fields in the actual
@@ -153,8 +159,8 @@ flowchart LR
   D --> E[Numerical consistency checks]
 ```
 
-This is a bounded exchange bridge, not lossless conversion between arbitrary Lean
-and URDF. A Lean instance alone cannot reconstruct the full model. Coordinate
+The finite proof certificate is distinct from the complete Lean document. This
+does not accept arbitrary Lean programs as robot models. Coordinate
 transforms, mesh geometry, dynamics and physical performance are outside the finite
 Lean certificate. Native controller/manufacturing evidence absent from an input URDF
 is not reconstructed. [Import, proof scope and limitations](docs/URDF_BRIDGE.md).

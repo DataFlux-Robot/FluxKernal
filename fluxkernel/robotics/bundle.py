@@ -274,6 +274,17 @@ def verify(root, rerun_proof=False):
     if rerun_proof:
         import subprocess
 
+        # Portable sealed bundles omit the machine-local .lake build cache.
+        # All project sources above have already been checked against installation.
+        built = subprocess.run(
+            ["lake", "build", "FluxKernel"],
+            cwd=root / "proof",
+            capture_output=True,
+            text=True,
+            timeout=120,
+        )
+        if built.returncode:
+            raise ValueError("Lean recheck build failed")
         p = subprocess.run(
             ["lake", "env", "lean", "RobotInstance.lean"],
             cwd=root / "proof",

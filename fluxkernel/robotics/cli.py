@@ -9,7 +9,13 @@ def command(args):
         from .bundle import import_robot, verify, revise
         from .native import read, digest
 
-        if args.operation == "import-urdf":
+        if args.operation in ("to-lean", "from-lean"):
+            from .lean_document import to_lean, from_lean
+
+            result = (to_lean if args.operation == "to-lean" else from_lean)(
+                args.bundle, args.output
+            )
+        elif args.operation == "import-urdf":
             from .urdf_import import import_urdf
 
             packages = {}
@@ -107,6 +113,8 @@ def register(sub):
         "zone",
         "attach",
         "personalize",
+        "to-lean",
+        "from-lean",
     ]:
         p = modes.add_parser(name)
         p.set_defaults(fn=command)
@@ -127,7 +135,15 @@ def register(sub):
             )
         else:
             p.add_argument("bundle")
-        if name in ("import", "import-urdf", "revise", "attach", "personalize"):
+        if name in (
+            "import",
+            "import-urdf",
+            "revise",
+            "attach",
+            "personalize",
+            "to-lean",
+            "from-lean",
+        ):
             p.add_argument("--output", required=True)
         if name in (
             "import",

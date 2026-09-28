@@ -1,5 +1,9 @@
 # URDF import and Lean translation validation (v0.11)
 
+For the complete lossless Microduck/XGO document packages introduced in v0.12,
+see [LOSSLESS_ROBOTS.md](LOSSLESS_ROBOTS.md). The finite proof instances described
+below are distinct from those complete Lean documents.
+
 The supported round trip is **URDF → native robot → checked URDF/MJCF**.
 Lean checks the native structure and selected mechanism fields extracted from the
 actual URDF output. `robot.json` remains the design authority. A `.lean` instance

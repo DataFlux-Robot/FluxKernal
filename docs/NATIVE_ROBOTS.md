@@ -36,9 +36,13 @@ parsed from the actual exported URDF. Imported and revised bundles receive nativ
 structure checks, export-field translation checks and independent numerical consumer
 comparisons. [Importer commands, supported subset and proof boundary](URDF_BRIDGE.md).
 
-This is not bidirectional lossless Lean/URDF conversion. The generated `.lean` files
-do not contain all geometry and frame information needed to reconstruct a robot.
-Coordinate-transform and inertia equivalence are checked numerically, not proved.
+v0.12 adds a separate **complete Lean document** for lossless Microduck/XGO case
+conversion. Its XML tree preserves all URDF fields and numeric lexemes; bound mesh
+assets and an optional native sidecar preserve the rest of the model. Actual Lean
+execution regenerates URDF without an original XML file. See the
+[lossless case workflow](LOSSLESS_ROBOTS.md). The older proof instances are still
+partial certificates, not the full document. Coordinate-transform and inertia
+equivalence are checked numerically, not proved.
 
 [Microduck recheck](releases/2026-09-28-v0.10-evidence/microduck/independent.json) ·
 [XGO recheck](releases/2026-09-28-v0.10-evidence/xgoduck/independent.json) ·
