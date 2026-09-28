@@ -1,0 +1,67 @@
+{
+  "runtime_commit": "8c50cba7d2acd5f599528532f7e3efc9e992e08e",
+  "run_id": 36387184320,
+  "url": "https://github.com/ExuberantWitness/fluxkernel/actions/runs/36387184320",
+  "jobs": [
+    {
+      "name": "CAD + real Lean + installed wheel",
+      "conclusion": "success",
+      "started_at": "2026-09-28T06:34:59Z",
+      "completed_at": "2026-09-28T06:41:40Z"
+    },
+    {
+      "name": "MCP / macos-latest / Python 3.12",
+      "conclusion": "success",
+      "started_at": "2026-09-28T06:35:02Z",
+      "completed_at": "2026-09-28T06:35:17Z"
+    },
+    {
+      "name": "Core / windows-latest / Python 3.12",
+      "conclusion": "success",
+      "started_at": "2026-09-28T06:35:01Z",
+      "completed_at": "2026-09-28T06:35:42Z"
+    },
+    {
+      "name": "Core / ubuntu-latest / Python 3.12",
+      "conclusion": "success",
+      "started_at": "2026-09-28T06:34:58Z",
+      "completed_at": "2026-09-28T06:35:21Z"
+    },
+    {
+      "name": "MCP / ubuntu-latest / Python 3.12",
+      "conclusion": "success",
+      "started_at": "2026-09-28T06:34:59Z",
+      "completed_at": "2026-09-28T06:35:16Z"
+    },
+    {
+      "name": "Core / ubuntu-latest / Python 3.13",
+      "conclusion": "success",
+      "started_at": "2026-09-28T06:34:59Z",
+      "completed_at": "2026-09-28T06:35:26Z"
+    },
+    {
+      "name": "MCP / windows-latest / Python 3.12",
+      "conclusion": "success",
+      "started_at": "2026-09-28T06:34:59Z",
+      "completed_at": "2026-09-28T06:35:47Z"
+    },
+    {
+      "name": "Core / macos-latest / Python 3.13",
+      "conclusion": "success",
+      "started_at": "2026-09-28T06:35:04Z",
+      "completed_at": "2026-09-28T06:35:24Z"
+    },
+    {
+      "name": "Core / windows-latest / Python 3.13",
+      "conclusion": "success",
+      "started_at": "2026-09-28T06:34:59Z",
+      "completed_at": "2026-09-28T06:35:50Z"
+    },
+    {
+      "name": "Core / macos-latest / Python 3.12",
+      "conclusion": "success",
+      "started_at": "2026-09-28T06:35:04Z",
+      "completed_at": "2026-09-28T06:35:22Z"
+    }
+  ]
+}
