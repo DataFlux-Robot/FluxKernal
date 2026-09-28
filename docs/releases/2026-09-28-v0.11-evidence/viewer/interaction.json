@@ -1,0 +1,9 @@
+{
+  "case": "xgoduck",
+  "joint": "left_hip_yaw",
+  "before": "0",
+  "after_arrow_right": "1",
+  "after_reset": "0",
+  "passed": true,
+  "test_note": "Waits for asynchronous reset render; an initial immediate attribute read raced the UI update."
+}

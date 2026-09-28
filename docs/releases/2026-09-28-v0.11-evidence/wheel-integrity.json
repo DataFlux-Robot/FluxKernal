@@ -1,0 +1,15 @@
+{
+  "wheel": "dist/fluxkernel-0.11.0-py3-none-any.whl",
+  "sha256": "4d9af2c97f110754ac587e22154fe00d5248194e1e6ad063f6ea6a95c0005659",
+  "runtime_files_match": [
+    "fluxkernel/robotics/urdf_import.py",
+    "fluxkernel/robotics/exchange_proof.py",
+    "fluxkernel/robotics/projection.py",
+    "fluxkernel/robotics/native.py",
+    "fluxkernel/robotics/bundle.py",
+    "fluxkernel/robotics/validation.py",
+    "fluxkernel/robotics/cli.py"
+  ],
+  "lean_checker_match": true,
+  "source_commit": "2fb62177e405ce23a34d5924cbda13099d6a2302"
+}

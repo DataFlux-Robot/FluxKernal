@@ -1,0 +1,26 @@
+[
+  {
+    "name": "microduck",
+    "max_frame_error": 0.0,
+    "max_mesh_moment_error_m": 0.0,
+    "accepted": true
+  },
+  {
+    "name": "xgoduck",
+    "max_frame_error": 0.0,
+    "max_mesh_moment_error_m": 0.0,
+    "accepted": true
+  },
+  {
+    "name": "microduck-personalized",
+    "max_frame_error": 0.0,
+    "max_mesh_moment_error_m": 1.942890293094024e-16,
+    "accepted": true
+  },
+  {
+    "name": "xgoduck-personalized",
+    "max_frame_error": 0.0,
+    "max_mesh_moment_error_m": 6.938893903907228e-18,
+    "accepted": true
+  }
+]

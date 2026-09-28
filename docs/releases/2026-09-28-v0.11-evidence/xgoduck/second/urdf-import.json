@@ -1,0 +1,223 @@
+{
+  "schema": "fk-urdf-import-v1",
+  "source": {
+    "name": "xgoduck",
+    "format": "urdf",
+    "directory": ".",
+    "entry": "consumer.urdf",
+    "input_sha256": "d0a0032a432265ba41b0a3176bdb667e5ea4cd9f9da4fc7df204bfc19287b177",
+    "assets": [
+      {
+        "uri": "meshes/mesh-0.obj",
+        "file": "assets/0.obj",
+        "sha256": "08e4c2e96289d06cd9cdf1450b62d76d62142f9c55b0289ad9d8550df730e51a",
+        "scale": [
+          1.0,
+          1.0,
+          1.0
+        ]
+      },
+      {
+        "uri": "meshes/mesh-0.obj",
+        "file": "assets/1.obj",
+        "sha256": "08e4c2e96289d06cd9cdf1450b62d76d62142f9c55b0289ad9d8550df730e51a",
+        "scale": [
+          1.0,
+          1.0,
+          1.0
+        ]
+      },
+      {
+        "uri": "meshes/mesh-1.obj",
+        "file": "assets/2.obj",
+        "sha256": "544c761f84ecdf71f292aa3b6fed2b3a77deba6bbf4b824946f89a34d473e6ba",
+        "scale": [
+          1.0,
+          1.0,
+          1.0
+        ]
+      },
+      {
+        "uri": "meshes/mesh-2.obj",
+        "file": "assets/3.obj",
+        "sha256": "fb8333b8fe39667a2d01827ca1fc703df8bb6bdcbcc5f3753db9c524b691fac9",
+        "scale": [
+          1.0,
+          1.0,
+          1.0
+        ]
+      },
+      {
+        "uri": "meshes/mesh-3.obj",
+        "file": "assets/4.obj",
+        "sha256": "8fea06dde4ea1c4d88ff1e2e6ecfc4439e3e62ff0a2ee7d1973754a73f9a7114",
+        "scale": [
+          1.0,
+          1.0,
+          1.0
+        ]
+      },
+      {
+        "uri": "meshes/mesh-4.obj",
+        "file": "assets/5.obj",
+        "sha256": "bfc39d2e3691e8257cd8121d32a5612c2370e5463dd470cde44646b031dcfca1",
+        "scale": [
+          1.0,
+          1.0,
+          1.0
+        ]
+      },
+      {
+        "uri": "meshes/mesh-5.obj",
+        "file": "assets/6.obj",
+        "sha256": "1157132732d3c18dd9c8596efc12137266bada6763f7100e1791b87a0a2de26b",
+        "scale": [
+          1.0,
+          1.0,
+          1.0
+        ]
+      },
+      {
+        "uri": "meshes/mesh-6.obj",
+        "file": "assets/7.obj",
+        "sha256": "7b90928cacba1088cca87942f489f40c436597111eff2a366a62702489b80b2f",
+        "scale": [
+          1.0,
+          1.0,
+          1.0
+        ]
+      },
+      {
+        "uri": "meshes/mesh-7.obj",
+        "file": "assets/8.obj",
+        "sha256": "227ed511a5f27264058fbf60c424c35ee93dbc633c7ea14203230cc662b1be6c",
+        "scale": [
+          1.0,
+          1.0,
+          1.0
+        ]
+      },
+      {
+        "uri": "meshes/mesh-8.obj",
+        "file": "assets/9.obj",
+        "sha256": "60172d77d59fe7dbb2c493abb76bcc9f8b129b62c40dd1e6df7a7ae86e7a1d85",
+        "scale": [
+          1.0,
+          1.0,
+          1.0
+        ]
+      },
+      {
+        "uri": "meshes/mesh-9.obj",
+        "file": "assets/10.obj",
+        "sha256": "79af670ff7cad7bcee27c545fbc3971664cc6051927950466b82d14be7cfcf66",
+        "scale": [
+          1.0,
+          1.0,
+          1.0
+        ]
+      },
+      {
+        "uri": "meshes/mesh-10.obj",
+        "file": "assets/11.obj",
+        "sha256": "a774b9fb4749be47f2059d5b8d691f2a14e608995ef3b4fdccb624f61f3f77fb",
+        "scale": [
+          1.0,
+          1.0,
+          1.0
+        ]
+      },
+      {
+        "uri": "meshes/mesh-10.obj",
+        "file": "assets/12.obj",
+        "sha256": "a774b9fb4749be47f2059d5b8d691f2a14e608995ef3b4fdccb624f61f3f77fb",
+        "scale": [
+          1.0,
+          1.0,
+          1.0
+        ]
+      },
+      {
+        "uri": "meshes/mesh-11.obj",
+        "file": "assets/13.obj",
+        "sha256": "b1d6d2070caf313b4e5f49b0539447b21966f821d8ccbb0b868575c6a3bcc37d",
+        "scale": [
+          1.0,
+          1.0,
+          1.0
+        ]
+      },
+      {
+        "uri": "meshes/mesh-12.obj",
+        "file": "assets/14.obj",
+        "sha256": "a68b4b3c8b9e136ca089e8c33e2f7f93c6a9b246173f52af9eb55ccd3f905199",
+        "scale": [
+          1.0,
+          1.0,
+          1.0
+        ]
+      },
+      {
+        "uri": "meshes/mesh-12.obj",
+        "file": "assets/15.obj",
+        "sha256": "a68b4b3c8b9e136ca089e8c33e2f7f93c6a9b246173f52af9eb55ccd3f905199",
+        "scale": [
+          1.0,
+          1.0,
+          1.0
+        ]
+      },
+      {
+        "uri": "meshes/mesh-13.obj",
+        "file": "assets/16.obj",
+        "sha256": "d44a24afde5f16f960a2fc63e5fdd6cb6e35c5c80cf5a297f4f2e71115b43243",
+        "scale": [
+          1.0,
+          1.0,
+          1.0
+        ]
+      },
+      {
+        "uri": "meshes/mesh-13.obj",
+        "file": "assets/17.obj",
+        "sha256": "d44a24afde5f16f960a2fc63e5fdd6cb6e35c5c80cf5a297f4f2e71115b43243",
+        "scale": [
+          1.0,
+          1.0,
+          1.0
+        ]
+      },
+      {
+        "uri": "meshes/mesh-14.obj",
+        "file": "assets/18.obj",
+        "sha256": "2b0bf7397a49ad63f9747ea9afd3c39509dd2970e7152162fd0e74b39d29bb1b",
+        "scale": [
+          1.0,
+          1.0,
+          1.0
+        ]
+      },
+      {
+        "uri": "meshes/mesh-14.obj",
+        "file": "assets/19.obj",
+        "sha256": "2b0bf7397a49ad63f9747ea9afd3c39509dd2970e7152162fd0e74b39d29bb1b",
+        "scale": [
+          1.0,
+          1.0,
+          1.0
+        ]
+      }
+    ]
+  },
+  "scope": "fixed/revolute/continuous/prismatic trees, explicit inertials, separate geometry, declared limits",
+  "assumptions": [
+    "SI units follow URDF",
+    "Simulation defaults .002 s, gravity [0,0,-9.81]; not specified by URDF",
+    "Collision friction defaults are placeholders; no actuator law inferred"
+  ],
+  "losses": [
+    "XML ordering/formatting, geometry/material occurrence names",
+    "OBJ normals/UV and STL normals; triangle geometry retained"
+  ],
+  "physical_status": "unverified"
+}

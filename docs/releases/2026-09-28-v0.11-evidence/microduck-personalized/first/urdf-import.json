@@ -1,0 +1,793 @@
+{
+  "schema": "fk-urdf-import-v1",
+  "source": {
+    "name": "microduck",
+    "format": "urdf",
+    "directory": ".",
+    "entry": "consumer.urdf",
+    "input_sha256": "d1ed21a41514e905a747cdea25619824b6bfe32a31d002a3a7a47ebd49e6365f",
+    "assets": [
+      {
+        "uri": "meshes/mesh-35.obj",
+        "file": "assets/0.obj",
+        "sha256": "bd898c7cdfe628332f0139c6407f4581f1f01c09342ff934714b8b43c777b3d8",
+        "scale": [
+          1.0,
+          1.0,
+          1.0
+        ]
+      },
+      {
+        "uri": "meshes/mesh-34.obj",
+        "file": "assets/1.obj",
+        "sha256": "39eb6c84041b49c1fdb1e23f71ff0a550f1b65687a5f7163c5612a8a38c587a8",
+        "scale": [
+          1.0,
+          1.0,
+          1.0
+        ]
+      },
+      {
+        "uri": "meshes/mesh-36.obj",
+        "file": "assets/2.obj",
+        "sha256": "a62508e85415b521833c329ce4ce3a55b8b9d41d73f7f1fda77f48c7ff16f9b3",
+        "scale": [
+          1.0,
+          1.0,
+          1.0
+        ]
+      },
+      {
+        "uri": "meshes/mesh-1.obj",
+        "file": "assets/3.obj",
+        "sha256": "ae7f31dcec84f6269e5860ea8ea664379f73499cf29a44307567f319d6c82271",
+        "scale": [
+          1.0,
+          1.0,
+          1.0
+        ]
+      },
+      {
+        "uri": "meshes/mesh-0.obj",
+        "file": "assets/4.obj",
+        "sha256": "ac787a40569be6131d88c53a8d4dfe3e2319f4d5fa5ae101230e5c4eac16b053",
+        "scale": [
+          1.0,
+          1.0,
+          1.0
+        ]
+      },
+      {
+        "uri": "meshes/mesh-3.obj",
+        "file": "assets/5.obj",
+        "sha256": "7deb6e07db089fed6bfd553b77b0003b1a7691b853638bc59449f6363257a15f",
+        "scale": [
+          1.0,
+          1.0,
+          1.0
+        ]
+      },
+      {
+        "uri": "meshes/mesh-14.obj",
+        "file": "assets/6.obj",
+        "sha256": "366059eb3dc657004cc8d4359b1cf5b687e89a15042a6e542e1ce749aeca6edd",
+        "scale": [
+          1.0,
+          1.0,
+          1.0
+        ]
+      },
+      {
+        "uri": "meshes/mesh-0.obj",
+        "file": "assets/7.obj",
+        "sha256": "ac787a40569be6131d88c53a8d4dfe3e2319f4d5fa5ae101230e5c4eac16b053",
+        "scale": [
+          1.0,
+          1.0,
+          1.0
+        ]
+      },
+      {
+        "uri": "meshes/mesh-24.obj",
+        "file": "assets/8.obj",
+        "sha256": "9dfa5f0bfa45e6e4a87e2f56cf1c9da5de7f7807aa069f66e5200dd70c1b1cb8",
+        "scale": [
+          1.0,
+          1.0,
+          1.0
+        ]
+      },
+      {
+        "uri": "meshes/mesh-35.obj",
+        "file": "assets/9.obj",
+        "sha256": "bd898c7cdfe628332f0139c6407f4581f1f01c09342ff934714b8b43c777b3d8",
+        "scale": [
+          1.0,
+          1.0,
+          1.0
+        ]
+      },
+      {
+        "uri": "meshes/mesh-3.obj",
+        "file": "assets/10.obj",
+        "sha256": "7deb6e07db089fed6bfd553b77b0003b1a7691b853638bc59449f6363257a15f",
+        "scale": [
+          1.0,
+          1.0,
+          1.0
+        ]
+      },
+      {
+        "uri": "meshes/mesh-8.obj",
+        "file": "assets/11.obj",
+        "sha256": "85ce9a5532b100a32bbd7b3a978e957009be69e5b2c8bf7733631bcb5c5408d0",
+        "scale": [
+          1.0,
+          1.0,
+          1.0
+        ]
+      },
+      {
+        "uri": "meshes/mesh-0.obj",
+        "file": "assets/12.obj",
+        "sha256": "ac787a40569be6131d88c53a8d4dfe3e2319f4d5fa5ae101230e5c4eac16b053",
+        "scale": [
+          1.0,
+          1.0,
+          1.0
+        ]
+      },
+      {
+        "uri": "meshes/mesh-35.obj",
+        "file": "assets/13.obj",
+        "sha256": "bd898c7cdfe628332f0139c6407f4581f1f01c09342ff934714b8b43c777b3d8",
+        "scale": [
+          1.0,
+          1.0,
+          1.0
+        ]
+      },
+      {
+        "uri": "meshes/mesh-27.obj",
+        "file": "assets/14.obj",
+        "sha256": "eb797e392d11fbf9ea583d067792d9002806d7483db7ee8145fa2323bda73c8b",
+        "scale": [
+          1.0,
+          1.0,
+          1.0
+        ]
+      },
+      {
+        "uri": "meshes/mesh-16.obj",
+        "file": "assets/15.obj",
+        "sha256": "ffb38bca5cb4b74235d81c0487f766d3e9027533c31df553706ade2302b9d53d",
+        "scale": [
+          1.0,
+          1.0,
+          1.0
+        ]
+      },
+      {
+        "uri": "meshes/mesh-0.obj",
+        "file": "assets/16.obj",
+        "sha256": "ac787a40569be6131d88c53a8d4dfe3e2319f4d5fa5ae101230e5c4eac16b053",
+        "scale": [
+          1.0,
+          1.0,
+          1.0
+        ]
+      },
+      {
+        "uri": "meshes/mesh-0.obj",
+        "file": "assets/17.obj",
+        "sha256": "ac787a40569be6131d88c53a8d4dfe3e2319f4d5fa5ae101230e5c4eac16b053",
+        "scale": [
+          1.0,
+          1.0,
+          1.0
+        ]
+      },
+      {
+        "uri": "meshes/mesh-16.obj",
+        "file": "assets/18.obj",
+        "sha256": "ffb38bca5cb4b74235d81c0487f766d3e9027533c31df553706ade2302b9d53d",
+        "scale": [
+          1.0,
+          1.0,
+          1.0
+        ]
+      },
+      {
+        "uri": "meshes/mesh-8.obj",
+        "file": "assets/19.obj",
+        "sha256": "85ce9a5532b100a32bbd7b3a978e957009be69e5b2c8bf7733631bcb5c5408d0",
+        "scale": [
+          1.0,
+          1.0,
+          1.0
+        ]
+      },
+      {
+        "uri": "meshes/mesh-0.obj",
+        "file": "assets/20.obj",
+        "sha256": "ac787a40569be6131d88c53a8d4dfe3e2319f4d5fa5ae101230e5c4eac16b053",
+        "scale": [
+          1.0,
+          1.0,
+          1.0
+        ]
+      },
+      {
+        "uri": "meshes/mesh-27.obj",
+        "file": "assets/21.obj",
+        "sha256": "eb797e392d11fbf9ea583d067792d9002806d7483db7ee8145fa2323bda73c8b",
+        "scale": [
+          1.0,
+          1.0,
+          1.0
+        ]
+      },
+      {
+        "uri": "meshes/mesh-35.obj",
+        "file": "assets/22.obj",
+        "sha256": "bd898c7cdfe628332f0139c6407f4581f1f01c09342ff934714b8b43c777b3d8",
+        "scale": [
+          1.0,
+          1.0,
+          1.0
+        ]
+      },
+      {
+        "uri": "meshes/mesh-35.obj",
+        "file": "assets/23.obj",
+        "sha256": "bd898c7cdfe628332f0139c6407f4581f1f01c09342ff934714b8b43c777b3d8",
+        "scale": [
+          1.0,
+          1.0,
+          1.0
+        ]
+      },
+      {
+        "uri": "meshes/mesh-26.obj",
+        "file": "assets/24.obj",
+        "sha256": "92010edbd96825fbae817a2d637a101a83a84248851eb84d23163d93bdde7859",
+        "scale": [
+          1.0,
+          1.0,
+          1.0
+        ]
+      },
+      {
+        "uri": "meshes/mesh-22.obj",
+        "file": "assets/25.obj",
+        "sha256": "9adb9428fecb2d586ad73cbc5b46303a7b1c2e4bddde4b00614161a901b036b8",
+        "scale": [
+          1.0,
+          1.0,
+          1.0
+        ]
+      },
+      {
+        "uri": "meshes/mesh-35.obj",
+        "file": "assets/26.obj",
+        "sha256": "bd898c7cdfe628332f0139c6407f4581f1f01c09342ff934714b8b43c777b3d8",
+        "scale": [
+          1.0,
+          1.0,
+          1.0
+        ]
+      },
+      {
+        "uri": "meshes/mesh-26.obj",
+        "file": "assets/27.obj",
+        "sha256": "92010edbd96825fbae817a2d637a101a83a84248851eb84d23163d93bdde7859",
+        "scale": [
+          1.0,
+          1.0,
+          1.0
+        ]
+      },
+      {
+        "uri": "meshes/mesh-35.obj",
+        "file": "assets/28.obj",
+        "sha256": "bd898c7cdfe628332f0139c6407f4581f1f01c09342ff934714b8b43c777b3d8",
+        "scale": [
+          1.0,
+          1.0,
+          1.0
+        ]
+      },
+      {
+        "uri": "meshes/mesh-9.obj",
+        "file": "assets/29.obj",
+        "sha256": "a078ac82c5febf71051c53b2140816ad0f88597b72bdbc0083ed20fb6bb77f7d",
+        "scale": [
+          1.0,
+          1.0,
+          1.0
+        ]
+      },
+      {
+        "uri": "meshes/mesh-0.obj",
+        "file": "assets/30.obj",
+        "sha256": "ac787a40569be6131d88c53a8d4dfe3e2319f4d5fa5ae101230e5c4eac16b053",
+        "scale": [
+          1.0,
+          1.0,
+          1.0
+        ]
+      },
+      {
+        "uri": "meshes/mesh-10.obj",
+        "file": "assets/31.obj",
+        "sha256": "b158eb656a9ff96e6dcbd35395fe88ae8114a21880696f2f56cf84d7584950c6",
+        "scale": [
+          1.0,
+          1.0,
+          1.0
+        ]
+      },
+      {
+        "uri": "meshes/mesh-35.obj",
+        "file": "assets/32.obj",
+        "sha256": "bd898c7cdfe628332f0139c6407f4581f1f01c09342ff934714b8b43c777b3d8",
+        "scale": [
+          1.0,
+          1.0,
+          1.0
+        ]
+      },
+      {
+        "uri": "meshes/mesh-0.obj",
+        "file": "assets/33.obj",
+        "sha256": "ac787a40569be6131d88c53a8d4dfe3e2319f4d5fa5ae101230e5c4eac16b053",
+        "scale": [
+          1.0,
+          1.0,
+          1.0
+        ]
+      },
+      {
+        "uri": "meshes/mesh-13.obj",
+        "file": "assets/34.obj",
+        "sha256": "ae75d1a1c7bf256a8b99fc1144ccd691f08c4cd1e5da14d2faf36bf170e5787a",
+        "scale": [
+          1.0,
+          1.0,
+          1.0
+        ]
+      },
+      {
+        "uri": "meshes/mesh-0.obj",
+        "file": "assets/35.obj",
+        "sha256": "ac787a40569be6131d88c53a8d4dfe3e2319f4d5fa5ae101230e5c4eac16b053",
+        "scale": [
+          1.0,
+          1.0,
+          1.0
+        ]
+      },
+      {
+        "uri": "meshes/mesh-35.obj",
+        "file": "assets/36.obj",
+        "sha256": "bd898c7cdfe628332f0139c6407f4581f1f01c09342ff934714b8b43c777b3d8",
+        "scale": [
+          1.0,
+          1.0,
+          1.0
+        ]
+      },
+      {
+        "uri": "meshes/mesh-35.obj",
+        "file": "assets/37.obj",
+        "sha256": "bd898c7cdfe628332f0139c6407f4581f1f01c09342ff934714b8b43c777b3d8",
+        "scale": [
+          1.0,
+          1.0,
+          1.0
+        ]
+      },
+      {
+        "uri": "meshes/mesh-0.obj",
+        "file": "assets/38.obj",
+        "sha256": "ac787a40569be6131d88c53a8d4dfe3e2319f4d5fa5ae101230e5c4eac16b053",
+        "scale": [
+          1.0,
+          1.0,
+          1.0
+        ]
+      },
+      {
+        "uri": "meshes/mesh-35.obj",
+        "file": "assets/39.obj",
+        "sha256": "bd898c7cdfe628332f0139c6407f4581f1f01c09342ff934714b8b43c777b3d8",
+        "scale": [
+          1.0,
+          1.0,
+          1.0
+        ]
+      },
+      {
+        "uri": "meshes/mesh-10.obj",
+        "file": "assets/40.obj",
+        "sha256": "b158eb656a9ff96e6dcbd35395fe88ae8114a21880696f2f56cf84d7584950c6",
+        "scale": [
+          1.0,
+          1.0,
+          1.0
+        ]
+      },
+      {
+        "uri": "meshes/mesh-29.obj",
+        "file": "assets/41.obj",
+        "sha256": "668574257b06b382c1264f3fabc40f5465d93e2ec14743a8edfcb10ca7f246ba",
+        "scale": [
+          1.0,
+          1.0,
+          1.0
+        ]
+      },
+      {
+        "uri": "meshes/mesh-0.obj",
+        "file": "assets/42.obj",
+        "sha256": "ac787a40569be6131d88c53a8d4dfe3e2319f4d5fa5ae101230e5c4eac16b053",
+        "scale": [
+          1.0,
+          1.0,
+          1.0
+        ]
+      },
+      {
+        "uri": "meshes/mesh-20.obj",
+        "file": "assets/43.obj",
+        "sha256": "17e53b0102f49511e239e4a215ff53aae7e31d296782a596fca9eff69621147c",
+        "scale": [
+          1.0,
+          1.0,
+          1.0
+        ]
+      },
+      {
+        "uri": "meshes/mesh-0.obj",
+        "file": "assets/44.obj",
+        "sha256": "ac787a40569be6131d88c53a8d4dfe3e2319f4d5fa5ae101230e5c4eac16b053",
+        "scale": [
+          1.0,
+          1.0,
+          1.0
+        ]
+      },
+      {
+        "uri": "meshes/mesh-20.obj",
+        "file": "assets/45.obj",
+        "sha256": "17e53b0102f49511e239e4a215ff53aae7e31d296782a596fca9eff69621147c",
+        "scale": [
+          1.0,
+          1.0,
+          1.0
+        ]
+      },
+      {
+        "uri": "meshes/mesh-17.obj",
+        "file": "assets/46.obj",
+        "sha256": "041f0c94c8b3869444f48b1e246f00e64a7b3cd0371dfd0e81ab7b20a5bd246e",
+        "scale": [
+          1.0,
+          1.0,
+          1.0
+        ]
+      },
+      {
+        "uri": "meshes/mesh-30.obj",
+        "file": "assets/47.obj",
+        "sha256": "a5bce1ee8418a5ff5ea159d26d89c8389a4982b73ab47a716f4b5be97c21bc4e",
+        "scale": [
+          1.0,
+          1.0,
+          1.0
+        ]
+      },
+      {
+        "uri": "meshes/mesh-0.obj",
+        "file": "assets/48.obj",
+        "sha256": "ac787a40569be6131d88c53a8d4dfe3e2319f4d5fa5ae101230e5c4eac16b053",
+        "scale": [
+          1.0,
+          1.0,
+          1.0
+        ]
+      },
+      {
+        "uri": "meshes/mesh-33.obj",
+        "file": "assets/49.obj",
+        "sha256": "58d1b7b1ce923b15d3223732cb4900fb2e25752eb2bd99c39ce426b90965933a",
+        "scale": [
+          1.0,
+          1.0,
+          1.0
+        ]
+      },
+      {
+        "uri": "meshes/mesh-28.obj",
+        "file": "assets/50.obj",
+        "sha256": "45e2ef3ef24c346bd693639f6232add7faa0cd2e6481ccd1ace6e5888c2b74da",
+        "scale": [
+          1.0,
+          1.0,
+          1.0
+        ]
+      },
+      {
+        "uri": "meshes/mesh-7.obj",
+        "file": "assets/51.obj",
+        "sha256": "9c8df92830a983db5632796b89f551c7cf8b2f9d8da7613da603356e0cfb6f0c",
+        "scale": [
+          1.0,
+          1.0,
+          1.0
+        ]
+      },
+      {
+        "uri": "meshes/mesh-0.obj",
+        "file": "assets/52.obj",
+        "sha256": "ac787a40569be6131d88c53a8d4dfe3e2319f4d5fa5ae101230e5c4eac16b053",
+        "scale": [
+          1.0,
+          1.0,
+          1.0
+        ]
+      },
+      {
+        "uri": "meshes/mesh-11.obj",
+        "file": "assets/53.obj",
+        "sha256": "6dd714c64af49591061a4a138527947e26bcc08ff5c71e305d0c74aceb2e0989",
+        "scale": [
+          1.0,
+          1.0,
+          1.0
+        ]
+      },
+      {
+        "uri": "meshes/mesh-12.obj",
+        "file": "assets/54.obj",
+        "sha256": "f14132c3ac868556d4f30d5f37b8cedf5877308c0f8d9830addb743305afc864",
+        "scale": [
+          1.0,
+          1.0,
+          1.0
+        ]
+      },
+      {
+        "uri": "meshes/mesh-25.obj",
+        "file": "assets/55.obj",
+        "sha256": "a8021e5768f55ad145408342b0cb206269dd4d9fcadef43f04869ecd139fe237",
+        "scale": [
+          1.0,
+          1.0,
+          1.0
+        ]
+      },
+      {
+        "uri": "meshes/mesh-31.obj",
+        "file": "assets/56.obj",
+        "sha256": "b32ecf9096bb0515224740bf45cc5e53226b52d2ba2c25727b037724ffc779fd",
+        "scale": [
+          1.0,
+          1.0,
+          1.0
+        ]
+      },
+      {
+        "uri": "meshes/mesh-32.obj",
+        "file": "assets/57.obj",
+        "sha256": "907b3431350422d66d2c7b89a2092ce9916de1fb09bd55da673df5240d346539",
+        "scale": [
+          1.0,
+          1.0,
+          1.0
+        ]
+      },
+      {
+        "uri": "meshes/mesh-4.obj",
+        "file": "assets/58.obj",
+        "sha256": "f65c515e72a3f84c7ef0b5ec60f22d914f45bd37493ed00c79d6eee66c699051",
+        "scale": [
+          1.0,
+          1.0,
+          1.0
+        ]
+      },
+      {
+        "uri": "meshes/mesh-19.obj",
+        "file": "assets/59.obj",
+        "sha256": "0bc8889315e632d8c7797632fa67c5ab9a6ee589445ecb415169ed13d9fee446",
+        "scale": [
+          1.0,
+          1.0,
+          1.0
+        ]
+      },
+      {
+        "uri": "meshes/mesh-23.obj",
+        "file": "assets/60.obj",
+        "sha256": "6af3564304893604d29c393c5b481483d8e388b9d375992156ea13bb5e73ca36",
+        "scale": [
+          1.0,
+          1.0,
+          1.0
+        ]
+      },
+      {
+        "uri": "meshes/mesh-21.obj",
+        "file": "assets/61.obj",
+        "sha256": "42ec3b00affd4f0d5b8ab8228970354286e0baba58a5cbbe2b38a8c7e15a0c63",
+        "scale": [
+          1.0,
+          1.0,
+          1.0
+        ]
+      },
+      {
+        "uri": "meshes/mesh-0.obj",
+        "file": "assets/62.obj",
+        "sha256": "ac787a40569be6131d88c53a8d4dfe3e2319f4d5fa5ae101230e5c4eac16b053",
+        "scale": [
+          1.0,
+          1.0,
+          1.0
+        ]
+      },
+      {
+        "uri": "meshes/mesh-20.obj",
+        "file": "assets/63.obj",
+        "sha256": "17e53b0102f49511e239e4a215ff53aae7e31d296782a596fca9eff69621147c",
+        "scale": [
+          1.0,
+          1.0,
+          1.0
+        ]
+      },
+      {
+        "uri": "meshes/mesh-20.obj",
+        "file": "assets/64.obj",
+        "sha256": "17e53b0102f49511e239e4a215ff53aae7e31d296782a596fca9eff69621147c",
+        "scale": [
+          1.0,
+          1.0,
+          1.0
+        ]
+      },
+      {
+        "uri": "meshes/mesh-18.obj",
+        "file": "assets/65.obj",
+        "sha256": "4b4ffb4f018ccef789acb1e011e1a5747a9b6f2d209e7d863334e7ab29f012e8",
+        "scale": [
+          1.0,
+          1.0,
+          1.0
+        ]
+      },
+      {
+        "uri": "meshes/mesh-6.obj",
+        "file": "assets/66.obj",
+        "sha256": "2fc5417b974b66047763e9b1fe6e89fd1c2e0be17cc63fe259281fa6fa320d7c",
+        "scale": [
+          1.0,
+          1.0,
+          1.0
+        ]
+      },
+      {
+        "uri": "meshes/mesh-11.obj",
+        "file": "assets/67.obj",
+        "sha256": "6dd714c64af49591061a4a138527947e26bcc08ff5c71e305d0c74aceb2e0989",
+        "scale": [
+          1.0,
+          1.0,
+          1.0
+        ]
+      },
+      {
+        "uri": "meshes/mesh-15.obj",
+        "file": "assets/68.obj",
+        "sha256": "c859e64acbeeacef7221b5f0c91891d85ea4c01801f6939c14230905b2574bfc",
+        "scale": [
+          1.0,
+          1.0,
+          1.0
+        ]
+      },
+      {
+        "uri": "meshes/mesh-18.obj",
+        "file": "assets/69.obj",
+        "sha256": "4b4ffb4f018ccef789acb1e011e1a5747a9b6f2d209e7d863334e7ab29f012e8",
+        "scale": [
+          1.0,
+          1.0,
+          1.0
+        ]
+      },
+      {
+        "uri": "meshes/custom_duckling_tuft_crest.obj",
+        "file": "assets/70.obj",
+        "sha256": "3b19676b15687aef0c5628f741f9df8ecb252bc69b47af5d9519752c46b565a2",
+        "scale": [
+          1.0,
+          1.0,
+          1.0
+        ]
+      },
+      {
+        "uri": "meshes/custom_duckling_tuft_crest.obj",
+        "file": "assets/71.obj",
+        "sha256": "3b19676b15687aef0c5628f741f9df8ecb252bc69b47af5d9519752c46b565a2",
+        "scale": [
+          1.0,
+          1.0,
+          1.0
+        ]
+      },
+      {
+        "uri": "meshes/mesh-37.obj",
+        "file": "assets/72.obj",
+        "sha256": "ce4d6cddbbc15bafffa3e04b421ac083f0e517b884e014bbaa4e3db19a666ca3",
+        "scale": [
+          1.0,
+          1.0,
+          1.0
+        ]
+      },
+      {
+        "uri": "meshes/mesh-2.obj",
+        "file": "assets/73.obj",
+        "sha256": "77170a0acad61dfc5341923746b525a97e819fe98006e7ec60e20727343be4b7",
+        "scale": [
+          1.0,
+          1.0,
+          1.0
+        ]
+      },
+      {
+        "uri": "meshes/mesh-11.obj",
+        "file": "assets/74.obj",
+        "sha256": "6dd714c64af49591061a4a138527947e26bcc08ff5c71e305d0c74aceb2e0989",
+        "scale": [
+          1.0,
+          1.0,
+          1.0
+        ]
+      },
+      {
+        "uri": "meshes/mesh-5.obj",
+        "file": "assets/75.obj",
+        "sha256": "25fb2e30371079e47e32e88dec8fe909736b88d144ba0cde3a99396f01cfe1f6",
+        "scale": [
+          1.0,
+          1.0,
+          1.0
+        ]
+      },
+      {
+        "uri": "meshes/mesh-2.obj",
+        "file": "assets/76.obj",
+        "sha256": "77170a0acad61dfc5341923746b525a97e819fe98006e7ec60e20727343be4b7",
+        "scale": [
+          1.0,
+          1.0,
+          1.0
+        ]
+      }
+    ]
+  },
+  "scope": "fixed/revolute/continuous/prismatic trees, explicit inertials, separate geometry, declared limits",
+  "assumptions": [
+    "SI units follow URDF",
+    "Simulation defaults .002 s, gravity [0,0,-9.81]; not specified by URDF",
+    "Collision friction defaults are placeholders; no actuator law inferred"
+  ],
+  "losses": [
+    "XML ordering/formatting, geometry/material occurrence names",
+    "OBJ normals/UV and STL normals; triangle geometry retained"
+  ],
+  "physical_status": "unverified"
+}

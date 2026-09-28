@@ -1,0 +1,41 @@
+{
+  "errors": [],
+  "cases": [
+    {
+      "name": "microduck",
+      "url": "http://127.0.0.1:4178/?dir=%2Fhome%2Fexuber%2FCODE%2FCORE%2FpythonProject1%2FAUTORESEARCH%2Ffluxkernel%2F.demo%2Fv011-validation%2Fpreviews&file=microduck%2Frobot.urdf",
+      "loaded": true,
+      "text": "Toggle Sidebar\nmicroduck\nrobot.urdf\nUpdate\nTheme\nBrowser color mode: light. Switch to dark mode.\nCollapse URDF sheet\nJoints\nControls\nReset pose\nCopy angles\nValues\nleft_hip_yaw\nneck_pitch\nright_hip_yaw\nleft_hip_roll\nhead_pitch\nright_hip_roll\nleft_hip_pitch\nhead_yaw\nright_hip_pitch\nleft_knee\nhead_roll\nright_knee\nleft_ankle\nright_ankle\nAppearance\nMetadata",
+      "canvas_count": 2,
+      "range_inputs": 0,
+      "slider_roles": 14
+    },
+    {
+      "name": "xgoduck",
+      "url": "http://127.0.0.1:4178/?dir=%2Fhome%2Fexuber%2FCODE%2FCORE%2FpythonProject1%2FAUTORESEARCH%2Ffluxkernel%2F.demo%2Fv011-validation%2Fpreviews&file=xgoduck%2Frobot.urdf",
+      "loaded": true,
+      "text": "Toggle Sidebar\nxgoduck\nrobot.urdf\nUpdate\nTheme\nBrowser color mode: light. Switch to dark mode.\nCollapse URDF sheet\nJoints\nControls\nReset pose\nCopy angles\nValues\nleft_hip_yaw\nneck_pitch\nright_hip_yaw\nleft_hip_roll\nhead_pitch\nright_hip_roll\nleft_hip_pitch\nhead_yaw\nright_hip_pitch\nleft_knee\nhead_roll\nright_knee\nleft_ankle\nright_ankle\nAppearance\nMetadata",
+      "canvas_count": 2,
+      "range_inputs": 0,
+      "slider_roles": 14
+    },
+    {
+      "name": "microduck-personalized",
+      "url": "http://127.0.0.1:4178/?dir=%2Fhome%2Fexuber%2FCODE%2FCORE%2FpythonProject1%2FAUTORESEARCH%2Ffluxkernel%2F.demo%2Fv011-validation%2Fpreviews&file=microduck-personalized%2Frobot.urdf",
+      "loaded": true,
+      "text": "Toggle Sidebar\nmicroduck-personalized\nrobot.urdf\nUpdate\nTheme\nBrowser color mode: light. Switch to dark mode.\nCollapse URDF sheet\nJoints\nControls\nReset pose\nCopy angles\nValues\nleft_hip_yaw\nneck_pitch\nright_hip_yaw\nleft_hip_roll\nhead_pitch\nright_hip_roll\nleft_hip_pitch\nhead_yaw\nright_hip_pitch\nleft_knee\nhead_roll\nright_knee\nleft_ankle\nright_ankle\nAppearance\nMetadata",
+      "canvas_count": 2,
+      "range_inputs": 0,
+      "slider_roles": 14
+    },
+    {
+      "name": "xgoduck-personalized",
+      "url": "http://127.0.0.1:4178/?dir=%2Fhome%2Fexuber%2FCODE%2FCORE%2FpythonProject1%2FAUTORESEARCH%2Ffluxkernel%2F.demo%2Fv011-validation%2Fpreviews&file=xgoduck-personalized%2Frobot.urdf",
+      "loaded": true,
+      "text": "Toggle Sidebar\nxgoduck-personalized\nrobot.urdf\nUpdate\nTheme\nBrowser color mode: light. Switch to dark mode.\nCollapse URDF sheet\nJoints\nControls\nReset pose\nCopy angles\nValues\nleft_hip_yaw\nneck_pitch\nright_hip_yaw\nleft_hip_roll\nhead_pitch\nright_hip_roll\nleft_hip_pitch\nhead_yaw\nright_hip_pitch\nleft_knee\nhead_roll\nright_knee\nleft_ankle\nright_ankle\nAppearance\nMetadata",
+      "canvas_count": 2,
+      "range_inputs": 0,
+      "slider_roles": 14
+    }
+  ]
+}

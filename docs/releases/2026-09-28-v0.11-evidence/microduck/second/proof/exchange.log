@@ -1,0 +1,9 @@
+ℹ [2/3] Replayed FluxKernel.Robot
+info: formal/FluxKernel/Robot.lean:68:0: 'FluxKernel.Robot.check_sound' depends on axioms: [propext, Quot.sound]
+info: formal/FluxKernel/Robot.lean:69:0: 'FluxKernel.Robot.parent_precedes' does not depend on any axioms
+info: formal/FluxKernel/Robot.lean:70:0: 'FluxKernel.Robot.controller_bound' depends on axioms: [propext]
+ℹ [3/3] Built FluxKernel.Urdf (570ms)
+info: formal/FluxKernel/Urdf.lean:72:0: 'FluxKernel.Robot.Urdf.check_sound' does not depend on any axioms
+info: formal/FluxKernel/Urdf.lean:73:0: 'FluxKernel.Robot.Urdf.joint_type_preserved' does not depend on any axioms
+Build completed successfully (3 jobs).
+'mechanismPreserved' does not depend on any axioms

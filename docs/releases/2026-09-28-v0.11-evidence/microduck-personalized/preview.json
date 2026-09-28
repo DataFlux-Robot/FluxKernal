@@ -1,0 +1,9 @@
+{
+  "authority": "/home/exuber/CODE/CORE/pythonProject1/AUTORESEARCH/fluxkernel/.demo/v011-validation/roundtrip/urdf-f40c4791",
+  "purpose": "viewer-only derivative",
+  "units": "m",
+  "mesh_format": "binary STL float32",
+  "max_coordinate_quantization_m": 4.6507308421039895e-10,
+  "physical_status": "unverified",
+  "sealed_bundle_modified": false
+}

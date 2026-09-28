@@ -1,0 +1,243 @@
+{
+  "schema": "fk-urdf-import-v1",
+  "source": {
+    "name": "xgoduck",
+    "format": "urdf",
+    "directory": ".",
+    "entry": "consumer.urdf",
+    "input_sha256": "36b792151436cb9c89946d54fd48729b68f6a6ddadbd2767a29fb2cfb0fdbd5b",
+    "assets": [
+      {
+        "uri": "meshes/mesh-0.obj",
+        "file": "assets/0.obj",
+        "sha256": "bc3fd69d89c61fff84be8bb0c3f6732e46a28d27686cdb385eb27d892a907981",
+        "scale": [
+          1.0,
+          1.0,
+          1.0
+        ]
+      },
+      {
+        "uri": "meshes/mesh-0.obj",
+        "file": "assets/1.obj",
+        "sha256": "bc3fd69d89c61fff84be8bb0c3f6732e46a28d27686cdb385eb27d892a907981",
+        "scale": [
+          1.0,
+          1.0,
+          1.0
+        ]
+      },
+      {
+        "uri": "meshes/mesh-1.obj",
+        "file": "assets/2.obj",
+        "sha256": "b16fee11a4acc4089b15826539f37d55f280721497ca992ed29cd52ff8b96f1e",
+        "scale": [
+          1.0,
+          1.0,
+          1.0
+        ]
+      },
+      {
+        "uri": "meshes/mesh-6.obj",
+        "file": "assets/3.obj",
+        "sha256": "261539087376a367c417cdb5b599e9c99c5750a400a690ea9f18a2ab1628c94b",
+        "scale": [
+          1.0,
+          1.0,
+          1.0
+        ]
+      },
+      {
+        "uri": "meshes/mesh-10.obj",
+        "file": "assets/4.obj",
+        "sha256": "8aba7294aad8b617216bc36449abe59423c0ee3d394607a5fee27a53b8533cf1",
+        "scale": [
+          1.0,
+          1.0,
+          1.0
+        ]
+      },
+      {
+        "uri": "meshes/mesh-2.obj",
+        "file": "assets/5.obj",
+        "sha256": "6a69f3c50aa9ed2d25b57ec414d4fb00e023449e43a14a40dd70b8e1d272d800",
+        "scale": [
+          1.0,
+          1.0,
+          1.0
+        ]
+      },
+      {
+        "uri": "meshes/mesh-7.obj",
+        "file": "assets/6.obj",
+        "sha256": "e0a2d70fd9637819c533d0a5f6cdd03543d1b11e77c3eb9ae9e730cd7c1d3a60",
+        "scale": [
+          1.0,
+          1.0,
+          1.0
+        ]
+      },
+      {
+        "uri": "meshes/mesh-11.obj",
+        "file": "assets/7.obj",
+        "sha256": "dd2992949fcbc50f7776918e724c19a993e0daba1b4f134913fc5746b0e4f00d",
+        "scale": [
+          1.0,
+          1.0,
+          1.0
+        ]
+      },
+      {
+        "uri": "meshes/mesh-3.obj",
+        "file": "assets/8.obj",
+        "sha256": "5ca72d718951721cd8149b055194222070210558dc366ecb9647659489dba65d",
+        "scale": [
+          1.0,
+          1.0,
+          1.0
+        ]
+      },
+      {
+        "uri": "meshes/mesh-8.obj",
+        "file": "assets/9.obj",
+        "sha256": "c397593f4f8dc8d391a9a80fab9095b03ee87a26a6007a84d2ce36b5f024d488",
+        "scale": [
+          1.0,
+          1.0,
+          1.0
+        ]
+      },
+      {
+        "uri": "meshes/mesh-12.obj",
+        "file": "assets/10.obj",
+        "sha256": "4cff38bcd90a34bdf2982dd86fba32175174fd368a7de9695ad2e1d5628d2de4",
+        "scale": [
+          1.0,
+          1.0,
+          1.0
+        ]
+      },
+      {
+        "uri": "meshes/mesh-4.obj",
+        "file": "assets/11.obj",
+        "sha256": "a1c80c0a402dd8aaa4b5766121b0ac96cf83dc3059a7c0ea455ff16bf7d81fcf",
+        "scale": [
+          1.0,
+          1.0,
+          1.0
+        ]
+      },
+      {
+        "uri": "meshes/mesh-4.obj",
+        "file": "assets/12.obj",
+        "sha256": "a1c80c0a402dd8aaa4b5766121b0ac96cf83dc3059a7c0ea455ff16bf7d81fcf",
+        "scale": [
+          1.0,
+          1.0,
+          1.0
+        ]
+      },
+      {
+        "uri": "meshes/mesh-9.obj",
+        "file": "assets/13.obj",
+        "sha256": "f3a3356d3ce1fccce893f8d77abf080bbe37854ce4c685514f5c06e9dc46da05",
+        "scale": [
+          1.0,
+          1.0,
+          1.0
+        ]
+      },
+      {
+        "uri": "meshes/mesh-13.obj",
+        "file": "assets/14.obj",
+        "sha256": "9f73f301f22d534a61b08960eba4a6aa33c12944b8e3e17cfe7d1015f22d903b",
+        "scale": [
+          1.0,
+          1.0,
+          1.0
+        ]
+      },
+      {
+        "uri": "meshes/mesh-13.obj",
+        "file": "assets/15.obj",
+        "sha256": "9f73f301f22d534a61b08960eba4a6aa33c12944b8e3e17cfe7d1015f22d903b",
+        "scale": [
+          1.0,
+          1.0,
+          1.0
+        ]
+      },
+      {
+        "uri": "meshes/mesh-5.obj",
+        "file": "assets/16.obj",
+        "sha256": "de63de37a4cdcc83b9279df1125162f9c37aaba53b21ea9a662f5f8d56c9c7da",
+        "scale": [
+          1.0,
+          1.0,
+          1.0
+        ]
+      },
+      {
+        "uri": "meshes/mesh-5.obj",
+        "file": "assets/17.obj",
+        "sha256": "de63de37a4cdcc83b9279df1125162f9c37aaba53b21ea9a662f5f8d56c9c7da",
+        "scale": [
+          1.0,
+          1.0,
+          1.0
+        ]
+      },
+      {
+        "uri": "meshes/custom_duckling_crest_puff_mk2c.obj",
+        "file": "assets/18.obj",
+        "sha256": "c40238da0759e75a0591f9586ff2dc66f463b580dc90e0d7286f16156a31f474",
+        "scale": [
+          1.0,
+          1.0,
+          1.0
+        ]
+      },
+      {
+        "uri": "meshes/custom_duckling_crest_puff_mk2c.obj",
+        "file": "assets/19.obj",
+        "sha256": "c40238da0759e75a0591f9586ff2dc66f463b580dc90e0d7286f16156a31f474",
+        "scale": [
+          1.0,
+          1.0,
+          1.0
+        ]
+      },
+      {
+        "uri": "meshes/mesh-14.obj",
+        "file": "assets/20.obj",
+        "sha256": "a196ec787562d2daccb3e023ff9fad0a7ca36b22991f45e60636e044a90deb05",
+        "scale": [
+          1.0,
+          1.0,
+          1.0
+        ]
+      },
+      {
+        "uri": "meshes/mesh-14.obj",
+        "file": "assets/21.obj",
+        "sha256": "a196ec787562d2daccb3e023ff9fad0a7ca36b22991f45e60636e044a90deb05",
+        "scale": [
+          1.0,
+          1.0,
+          1.0
+        ]
+      }
+    ]
+  },
+  "scope": "fixed/revolute/continuous/prismatic trees, explicit inertials, separate geometry, declared limits",
+  "assumptions": [
+    "SI units follow URDF",
+    "Simulation defaults .002 s, gravity [0,0,-9.81]; not specified by URDF",
+    "Collision friction defaults are placeholders; no actuator law inferred"
+  ],
+  "losses": [
+    "XML ordering/formatting, geometry/material occurrence names",
+    "OBJ normals/UV and STL normals; triangle geometry retained"
+  ],
+  "physical_status": "unverified"
+}

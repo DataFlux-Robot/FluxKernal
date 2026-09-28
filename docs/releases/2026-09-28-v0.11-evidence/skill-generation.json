@@ -1,0 +1,30 @@
+[
+  {
+    "case": "microduck",
+    "exit_code": 0,
+    "stdout": "Wrote URDF: /home/exuber/CODE/CORE/pythonProject1/AUTORESEARCH/fluxkernel/.demo/v011-validation/roundtrip/urdf-380b9970/skill-checked.urdf\n",
+    "stderr": "",
+    "matches_sealed_output": true
+  },
+  {
+    "case": "xgoduck",
+    "exit_code": 0,
+    "stdout": "Wrote URDF: /home/exuber/CODE/CORE/pythonProject1/AUTORESEARCH/fluxkernel/.demo/v011-validation/roundtrip/urdf-7ee01605/skill-checked.urdf\n",
+    "stderr": "",
+    "matches_sealed_output": true
+  },
+  {
+    "case": "microduck-personalized",
+    "exit_code": 0,
+    "stdout": "Wrote URDF: /home/exuber/CODE/CORE/pythonProject1/AUTORESEARCH/fluxkernel/.demo/v011-validation/roundtrip/urdf-f40c4791/skill-checked.urdf\n",
+    "stderr": "",
+    "matches_sealed_output": true
+  },
+  {
+    "case": "xgoduck-personalized",
+    "exit_code": 0,
+    "stdout": "Wrote URDF: /home/exuber/CODE/CORE/pythonProject1/AUTORESEARCH/fluxkernel/.demo/v011-validation/roundtrip/urdf-24d69707/skill-checked.urdf\n",
+    "stderr": "",
+    "matches_sealed_output": true
+  }
+]
