@@ -1,0 +1,1 @@
+63bb5a55897052fbc1175b3a85335337dfc64f0bf2c92abc27a449c7bff8c1a3  fluxkernel-0.10.0-py3-none-any.whl

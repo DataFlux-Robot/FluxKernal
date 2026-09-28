@@ -1,0 +1,23 @@
+{
+  "ok": false,
+  "tokens": [
+    {
+      "line": 1,
+      "token": "#",
+      "cadPath": "home/exuber/CODE/CORE/pythonProject1/AUTORESEARCH/fluxkernel/.demo/v010-personalization/robot-pal-6985339a/round-02/xgoduck-part-0610b949/cad/custom_duckling_crest_puff_mk2c/part",
+      "stepPath": "",
+      "summary": {},
+      "selections": [],
+      "warnings": []
+    }
+  ],
+  "errors": [
+    {
+      "message": "CAD STEP ref not found for 'home/exuber/CODE/CORE/pythonProject1/AUTORESEARCH/fluxkernel/.demo/v010-personalization/robot-pal-6985339a/round-02/xgoduck-part-0610b949/cad/custom_duckling_crest_puff_mk2c/part'.",
+      "line": 1,
+      "cadPath": "home/exuber/CODE/CORE/pythonProject1/AUTORESEARCH/fluxkernel/.demo/v010-personalization/robot-pal-6985339a/round-02/xgoduck-part-0610b949/cad/custom_duckling_crest_puff_mk2c/part",
+      "selector": null,
+      "kind": "input"
+    }
+  ]
+}

@@ -1,0 +1,22 @@
+{
+  "directory": "/home/exuber/CODE/CORE/pythonProject1/AUTORESEARCH/fluxkernel/.demo/v010-personalization/robot-pal-6985339a/round-02/xgoduck-part-8397162e",
+  "native_sha256": "17292a54202ece2af2ba573318e8039e07bff8d70cd958095b72b9768c3bbe91",
+  "name": "xgoduck",
+  "bodies": 16,
+  "joints": 15,
+  "actuators": 14,
+  "meshes": 16,
+  "mass_kg": 0.8022040711459917,
+  "proof_accepted": true,
+  "deployment_ready": false,
+  "accepted": true,
+  "motion_passed": true,
+  "motion_summary": {
+    "minimum_distance_m": 0.016064206552744317,
+    "violations": []
+  },
+  "part_body": "custom_duckling_crest_puff_mk2b",
+  "added_mass_kg": 0.0022040818459917156,
+  "interface_status": "unverified",
+  "recipe_sha256": "27c28d19485a55a4a128f49e41d76bd5cbc62bb3dfb03cd7a6ab3961c1ddc6d3"
+}

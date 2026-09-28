@@ -1,0 +1,23 @@
+{
+  "ok": false,
+  "tokens": [
+    {
+      "line": 1,
+      "token": "#",
+      "cadPath": "home/exuber/CODE/CORE/pythonProject1/AUTORESEARCH/fluxkernel/.demo/v010-personalization/robot-pal-a03ce4b3/round-00/microduck-part-d2b80ad3/cad/custom_duckling_tuft_crest/part",
+      "stepPath": "",
+      "summary": {},
+      "selections": [],
+      "warnings": []
+    }
+  ],
+  "errors": [
+    {
+      "message": "CAD STEP ref not found for 'home/exuber/CODE/CORE/pythonProject1/AUTORESEARCH/fluxkernel/.demo/v010-personalization/robot-pal-a03ce4b3/round-00/microduck-part-d2b80ad3/cad/custom_duckling_tuft_crest/part'.",
+      "line": 1,
+      "cadPath": "home/exuber/CODE/CORE/pythonProject1/AUTORESEARCH/fluxkernel/.demo/v010-personalization/robot-pal-a03ce4b3/round-00/microduck-part-d2b80ad3/cad/custom_duckling_tuft_crest/part",
+      "selector": null,
+      "kind": "input"
+    }
+  ]
+}

@@ -1,0 +1,15 @@
+{
+  "recipe_sha256": "47de11472e44efcaba67d3dd13883d7764d2f1c8a084a533835950e425600c8b",
+  "verdict": "needs-review",
+  "findings": [
+    "Build is host-eligible: proof accepted, motion passed at all 31 poses with min distance 16.8 mm, single fused solid, added mass 0.88 g — no floating or disconnected geometry in the CAD facts.",
+    "Close-up renders show the crest sits cleanly on the head-top rear slope, forward of the rear edge, and does not intrude on the camera lens or front dome in any of the four views.",
+    "Problem: at 14x12x2.5 base with 6-8 mm puffs, the part reads as a tiny yellow speck in the whole-robot views (barely visible in perspective and -Y view). It fails the brief's '有辨识度' (recognizable) requirement — the silhouette is too timid relative to the large head dome.",
+    "The three-puff 'duckling tuft' idea is coherent and friendly (no sharp edges), but at this scale it reads as a generic bump rather than a crest; the top view shows it as a small dot far from the head apex, weakening the identity claim.",
+    "No obstruction found: the part is far from the lens (front of head) and clear of all source geometry; zone compliance confirmed by bbox within 80x80x35 mm.",
+    "Revision direction: scale the puff cluster up modestly (center puff ~14x11x9 mm) and shift it closer to the head apex so it is clearly visible from front and side views, while keeping lowest-Z overlap with the 2.5 mm base and staying soft/rounded per the friendly brief.",
+    "Attachment remains an adhesive-pad proposal only; interface_status is unverified and walking/printability remain open, as the brief acknowledges."
+  ],
+  "next_step": "revise",
+  "reason": "The candidate is structurally sound, connected and non-obstructive, and its friendly rounded styling matches the brief. However, the whole-robot renders show it is far too small and rear-placed to be recognizable as an identity feature on the XGO Duck's large head — it reads as a barely visible speck. A limited revision will enlarge and reposition the puff cluster for presence while preserving the accepted overlap, zone and motion-clearance margins."
+}

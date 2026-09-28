@@ -1,0 +1,193 @@
+{
+  "accepted": true,
+  "poses": [
+    {
+      "pose": 0,
+      "minimum_distance_m": 0.020877335773261674,
+      "nearest_geometry": "mjobj_geom_11",
+      "accepted": true
+    },
+    {
+      "pose": 1,
+      "minimum_distance_m": 0.020877335773261674,
+      "nearest_geometry": "mjobj_geom_11",
+      "accepted": true
+    },
+    {
+      "pose": 2,
+      "minimum_distance_m": 0.020877335773261674,
+      "nearest_geometry": "mjobj_geom_11",
+      "accepted": true
+    },
+    {
+      "pose": 3,
+      "minimum_distance_m": 0.020877335773261674,
+      "nearest_geometry": "mjobj_geom_11",
+      "accepted": true
+    },
+    {
+      "pose": 4,
+      "minimum_distance_m": 0.020877335773261674,
+      "nearest_geometry": "mjobj_geom_11",
+      "accepted": true
+    },
+    {
+      "pose": 5,
+      "minimum_distance_m": 0.020877335773261674,
+      "nearest_geometry": "mjobj_geom_11",
+      "accepted": true
+    },
+    {
+      "pose": 6,
+      "minimum_distance_m": 0.020877335773261674,
+      "nearest_geometry": "mjobj_geom_11",
+      "accepted": true
+    },
+    {
+      "pose": 7,
+      "minimum_distance_m": 0.020877335773261674,
+      "nearest_geometry": "mjobj_geom_11",
+      "accepted": true
+    },
+    {
+      "pose": 8,
+      "minimum_distance_m": 0.020877335773261674,
+      "nearest_geometry": "mjobj_geom_11",
+      "accepted": true
+    },
+    {
+      "pose": 9,
+      "minimum_distance_m": 0.020877335773261674,
+      "nearest_geometry": "mjobj_geom_11",
+      "accepted": true
+    },
+    {
+      "pose": 10,
+      "minimum_distance_m": 0.020877335773261674,
+      "nearest_geometry": "mjobj_geom_11",
+      "accepted": true
+    },
+    {
+      "pose": 11,
+      "minimum_distance_m": 0.020877335773261726,
+      "nearest_geometry": "mjobj_geom_11",
+      "accepted": true
+    },
+    {
+      "pose": 12,
+      "minimum_distance_m": 0.020877335773261667,
+      "nearest_geometry": "mjobj_geom_11",
+      "accepted": true
+    },
+    {
+      "pose": 13,
+      "minimum_distance_m": 0.020877335773261698,
+      "nearest_geometry": "mjobj_geom_11",
+      "accepted": true
+    },
+    {
+      "pose": 14,
+      "minimum_distance_m": 0.020877335773261705,
+      "nearest_geometry": "mjobj_geom_11",
+      "accepted": true
+    },
+    {
+      "pose": 15,
+      "minimum_distance_m": 0.020877335773261705,
+      "nearest_geometry": "mjobj_geom_11",
+      "accepted": true
+    },
+    {
+      "pose": 16,
+      "minimum_distance_m": 0.02087733577326172,
+      "nearest_geometry": "mjobj_geom_11",
+      "accepted": true
+    },
+    {
+      "pose": 17,
+      "minimum_distance_m": 0.01606420654253603,
+      "nearest_geometry": "mjobj_geom_11",
+      "accepted": true
+    },
+    {
+      "pose": 18,
+      "minimum_distance_m": 0.0191956677661165,
+      "nearest_geometry": "mjobj_geom_11",
+      "accepted": true
+    },
+    {
+      "pose": 19,
+      "minimum_distance_m": 0.020877335773261674,
+      "nearest_geometry": "mjobj_geom_11",
+      "accepted": true
+    },
+    {
+      "pose": 20,
+      "minimum_distance_m": 0.020877335773261674,
+      "nearest_geometry": "mjobj_geom_11",
+      "accepted": true
+    },
+    {
+      "pose": 21,
+      "minimum_distance_m": 0.020877335773261674,
+      "nearest_geometry": "mjobj_geom_11",
+      "accepted": true
+    },
+    {
+      "pose": 22,
+      "minimum_distance_m": 0.020877335773261674,
+      "nearest_geometry": "mjobj_geom_11",
+      "accepted": true
+    },
+    {
+      "pose": 23,
+      "minimum_distance_m": 0.020877335773261674,
+      "nearest_geometry": "mjobj_geom_11",
+      "accepted": true
+    },
+    {
+      "pose": 24,
+      "minimum_distance_m": 0.020877335773261674,
+      "nearest_geometry": "mjobj_geom_11",
+      "accepted": true
+    },
+    {
+      "pose": 25,
+      "minimum_distance_m": 0.020877335773261674,
+      "nearest_geometry": "mjobj_geom_11",
+      "accepted": true
+    },
+    {
+      "pose": 26,
+      "minimum_distance_m": 0.020877335773261674,
+      "nearest_geometry": "mjobj_geom_11",
+      "accepted": true
+    },
+    {
+      "pose": 27,
+      "minimum_distance_m": 0.020877335773261674,
+      "nearest_geometry": "mjobj_geom_11",
+      "accepted": true
+    },
+    {
+      "pose": 28,
+      "minimum_distance_m": 0.020877335773261674,
+      "nearest_geometry": "mjobj_geom_11",
+      "accepted": true
+    },
+    {
+      "pose": 29,
+      "minimum_distance_m": 0.02037031792107438,
+      "nearest_geometry": "mjobj_geom_11",
+      "accepted": true
+    },
+    {
+      "pose": 30,
+      "minimum_distance_m": 0.020449145330416994,
+      "nearest_geometry": "mjobj_geom_11",
+      "accepted": true
+    }
+  ],
+  "tolerance_m": 0.0002,
+  "scope": "Sampled convex-hull mesh distances against original visible geometry; target contact excluded. Not continuous collision, camera visibility or real fit validation."
+}

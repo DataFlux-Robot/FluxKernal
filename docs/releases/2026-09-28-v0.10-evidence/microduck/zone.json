@@ -1,0 +1,68 @@
+{
+  "schema": "fk-customization-zone-v1",
+  "parent_native_sha256": "8795d7f3594e388468791b15f597534c15fe533d2f1cc9501e9cd6e1d80b94ee",
+  "target_geometry": "mjobj_geom_45",
+  "target_mesh_sha256": "9c8df92830a983db5632796b89f551c7cf8b2f9d8da7613da603356e0cfb6f0c",
+  "parent_body": "jaw_soft",
+  "parent_body_index": 10,
+  "position": [
+    0.0375060602911638,
+    7.35615604316411e-08,
+    -0.0228450119373349
+  ],
+  "quaternion": [
+    0.73362699404647,
+    -0.007338970752746825,
+    0.679466543651199,
+    0.007923961971402807
+  ],
+  "frame": "metres, wxyz; +Z source surface normal, +X projected rest-pose forward, +Y left tangent",
+  "source_triangle": 2303,
+  "surface_normal_world": [
+    -0.07654271113396646,
+    0.02153626821093044,
+    0.9968336884976395
+  ],
+  "contact_origin_world_m": [
+    0.030945011937334947,
+    7.356156041949806e-08,
+    0.2731206602911638
+  ],
+  "source_bounds_world_m": [
+    [
+      -0.030399999048918214,
+      -0.04587965542269181,
+      0.23111324434936967
+    ],
+    [
+      0.09229002292358811,
+      0.04587980254581265,
+      0.27744938400005775
+    ]
+  ],
+  "max_extent_mm": [
+    80.0,
+    80.0,
+    35.0
+  ],
+  "max_added_mass_kg": 0.0147448636,
+  "budget_basis": "Pilot design search bounds, not an experimentally validated control envelope",
+  "interface_status": "unverified",
+  "mounting_assumption": "Removable adhesive/pad prototype at the top-center surface tangent; curvature fit, adhesive and assembly not qualified",
+  "frozen": [
+    "original bodies",
+    "original geometry",
+    "joints",
+    "actuators",
+    "sensors",
+    "sites",
+    "action order"
+  ],
+  "open": [
+    "Attachment curvature and retention",
+    "Camera field of view and cooling",
+    "Print process and actual mass",
+    "Controller and physical validation"
+  ],
+  "zone_sha256": "1d3b5535b1bb6d87b66a7bdf31ddcb921a1738a0d11f2a0410fa11d198f4db5c"
+}

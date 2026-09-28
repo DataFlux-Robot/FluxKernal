@@ -1,0 +1,45 @@
+{
+  "bbox_mm": [
+    [
+      -8.0000001,
+      -8.500000100000001,
+      -1e-07
+    ],
+    [
+      9.663912480913377,
+      8.500000100000001,
+      13.015531851712057
+    ]
+  ],
+  "volume_mm3": 1657.44642158324,
+  "mass_kg": 0.0020552335627632176,
+  "inertial_position": [
+    0.0010406721336721078,
+    6.528683808774441e-08,
+    0.005072560774645581
+  ],
+  "principal_inertia": [
+    4.664215158486502e-08,
+    5.6993407328411595e-08,
+    5.763703554997538e-08
+  ],
+  "inertial_quaternion": [
+    6.757024576320608e-05,
+    0.9924563747505865,
+    4.259845498930685e-05,
+    -0.12259827827729486
+  ],
+  "vertices": 5224,
+  "faces": 8339,
+  "solids": 1,
+  "density_kg_m3": 1240.0,
+  "mass_basis": "Uniform solid CAD and declared nominal polymer density; not measured print mass",
+  "integration": "Gauss-Kronrod volume (1e-8); fixed Gaussian COM/inertia, inertia normalized to GK mass. Numerical estimates, not physical measurements.",
+  "files": {
+    "part.step": "91c8a5bfd2c49c4a6da0abf0e3c6416afd39d54f055cbe0b9dfb09d08c1dc7f6",
+    "part.py": "fc11ce361d24863a52d0116bb443be4ab993e88d5a49c459cb2ff8b37f264818",
+    "recipe.json": "2df57fadb73bf999646a91ce61b50d1d2f36e4a59201425bc45610f4d31f3a98",
+    "part.obj": "3b19676b15687aef0c5628f741f9df8ecb252bc69b47af5d9519752c46b565a2",
+    "part.stl": "81b9ae7129246bd23a7121639adb4d626f14f8e830f5b78e9583599450e0fccb"
+  }
+}

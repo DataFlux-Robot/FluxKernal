@@ -1,0 +1,301 @@
+{
+  "schema": "fk-robot-pal-v1",
+  "mode": "live",
+  "model": "glm-5.3-flash",
+  "parent_native_sha256": "09efe1c893020d8d01916620f879de9f2414eceababdd1dbbce2742364fd614a",
+  "max_rounds": 3,
+  "max_provider_calls": 14,
+  "selected_round": null,
+  "status": "failed",
+  "deployment_ready": false,
+  "interface_status": "unverified",
+  "records": [
+    {
+      "round": 0,
+      "state": "rejected",
+      "attempts": [
+        {
+          "attempt": 0,
+          "state": "rejected",
+          "error": "Bilateral source features use Y >= 0; host mirrors across Y=0",
+          "proposed_recipe": {
+            "schema_version": "fk-robot-part-v1",
+            "zone_sha256": "b6e92b2a80c9501f6ae1aea3c52e5d584e8df5a18f9981e0207d796cb7f12c49",
+            "name": "duck_crest_tuft",
+            "rationale": "Round-1 proposal: a friendly duck-style crest tuft on the head-top datum. A soft oval base pad (18x16x2 mm) sits on the tangent surface, carrying a plump forward-leaning ellipsoid crest (mimicking a duck head tuft) plus two small bilateral ellipsoid 'feather' lobes set low and wide for a rounded, non-intimidating silhouette. All features positively overlap the base or crest in volume; nothing extends below Z=0 (lowest feature bottoms at Z=0 within the base) and max Z is ~14 mm, well inside the 35 mm zone limit and the X/Y half-extents. Warm orange PLA gives a recognizable, playful identity against the grey shell while keeping the camera, shell and mechanism untouched. Curvature fit, adhesive retention, camera FOV and real print/motion behavior remain open per the frozen-zone interface status.",
+            "symmetry": "bilateral",
+            "material": "pla",
+            "color_rgb": [
+              0.95,
+              0.45,
+              0.1
+            ],
+            "base_size_mm": [
+              18,
+              16,
+              2
+            ],
+            "features": [
+              {
+                "shape": "ellipsoid",
+                "size_mm": [
+                  14,
+                  12,
+                  10
+                ],
+                "center_mm": [
+                  0,
+                  0,
+                  7
+                ],
+                "rotation_deg": [
+                  0,
+                  0,
+                  0
+                ]
+              },
+              {
+                "shape": "ellipsoid",
+                "size_mm": [
+                  10,
+                  6,
+                  5
+                ],
+                "center_mm": [
+                  3,
+                  7,
+                  4
+                ],
+                "rotation_deg": [
+                  0,
+                  -20,
+                  25
+                ]
+              },
+              {
+                "shape": "ellipsoid",
+                "size_mm": [
+                  10,
+                  6,
+                  5
+                ],
+                "center_mm": [
+                  3,
+                  -7,
+                  4
+                ],
+                "rotation_deg": [
+                  0,
+                  -20,
+                  -25
+                ]
+              }
+            ]
+          }
+        },
+        {
+          "attempt": 1,
+          "state": "rejected",
+          "error": "Part CAD rejected: ValueError: Null TopoDS_Shape object",
+          "proposed_recipe": {
+            "schema_version": "fk-robot-part-v1",
+            "zone_sha256": "b6e92b2a80c9501f6ae1aea3c52e5d584e8df5a18f9981e0207d796cb7f12c49",
+            "name": "duck_crest_tuft",
+            "rationale": "Round-1 revision: same friendly duck crest concept, corrected for bilateral symmetry rule. Prior rejection was schema-only: source features listed at Y=+7 and Y=-7 must use Y>=0; the host mirrors. Oval base pad (18x16x2 mm) on the head-top tangent carries a plump ellipsoid crest tuft leaning slightly forward, plus one feather lobe at Y=+7 that mirrors to a rounded bilateral pair. All features positively overlap the base/crest in volume; lowest Z is 0 within the base, max Z ~14 mm, inside 80x80x35 mm zone. Warm orange PLA, rounded non-intimidating silhouette; camera, shell and mechanism untouched. Curvature fit, adhesive retention, camera FOV, print and motion behavior remain open per unverified interface status.",
+            "symmetry": "bilateral",
+            "material": "pla",
+            "color_rgb": [
+              0.95,
+              0.45,
+              0.1
+            ],
+            "base_size_mm": [
+              18,
+              16,
+              2
+            ],
+            "features": [
+              {
+                "shape": "ellipsoid",
+                "size_mm": [
+                  14,
+                  12,
+                  10
+                ],
+                "center_mm": [
+                  0,
+                  0,
+                  7
+                ],
+                "rotation_deg": [
+                  0,
+                  0,
+                  0
+                ]
+              },
+              {
+                "shape": "ellipsoid",
+                "size_mm": [
+                  10,
+                  6,
+                  5
+                ],
+                "center_mm": [
+                  3,
+                  7,
+                  4
+                ],
+                "rotation_deg": [
+                  0,
+                  -20,
+                  25
+                ]
+              }
+            ]
+          }
+        }
+      ]
+    },
+    {
+      "round": 1,
+      "state": "proposing",
+      "attempts": [
+        {
+          "attempt": 0,
+          "state": "rejected",
+          "error": "Part CAD rejected: ValueError: Null TopoDS_Shape object",
+          "proposed_recipe": {
+            "schema_version": "fk-robot-part-v1",
+            "zone_sha256": "b6e92b2a80c9501f6ae1aea3c52e5d584e8df5a18f9981e0207d796cb7f12c49",
+            "name": "duck_crest_tuft",
+            "rationale": "Round-2 revision after attempt-1 CAD failure (Null TopoDS_Shape): removed all feature rotations, which likely broke the boolean/mirroring kernel; all features are now axis-aligned. Also nudged the feather lobe inward to Y=+6 (spanning Y 3..9) so it overlaps the base interior (base half-Y 8) with positive volume rather than a marginal edge. Design unchanged in intent: friendly duck crest tuft on the head-top tangent — oval base pad 18x16x2 mm, plump central ellipsoid crest leaning conceptually forward, plus one mirrored rounded feather lobe pair. Lowest feature Z is 1.5 mm (nonnegative, below the 2 mm base thickness) so everything joins the base directly; max Z ~12 mm, well inside the 80x80x35 mm zone. Warm orange PLA, rounded non-intimidating silhouette preserving the XGO Duck identity; camera, shell and mechanism untouched. Curvature fit, adhesive retention, camera FOV, print and motion behavior remain open per the unverified interface status.",
+            "symmetry": "bilateral",
+            "material": "pla",
+            "color_rgb": [
+              0.95,
+              0.45,
+              0.1
+            ],
+            "base_size_mm": [
+              18,
+              16,
+              2
+            ],
+            "features": [
+              {
+                "shape": "ellipsoid",
+                "size_mm": [
+                  14,
+                  12,
+                  10
+                ],
+                "center_mm": [
+                  0,
+                  0,
+                  7
+                ],
+                "rotation_deg": [
+                  0,
+                  0,
+                  0
+                ]
+              },
+              {
+                "shape": "ellipsoid",
+                "size_mm": [
+                  10,
+                  6,
+                  5
+                ],
+                "center_mm": [
+                  3,
+                  6,
+                  4
+                ],
+                "rotation_deg": [
+                  0,
+                  0,
+                  0
+                ]
+              }
+            ]
+          }
+        }
+      ]
+    }
+  ],
+  "calls": [
+    {
+      "kind": "plan-0",
+      "model": "glm-5.3-flash",
+      "state": "received",
+      "elapsed_s": 12.43,
+      "usage": {
+        "input_tokens": 4430,
+        "output_tokens": 456,
+        "cache_read_input_tokens": 0,
+        "server_tool_use": {
+          "web_search_requests": 0
+        },
+        "service_tier": "standard"
+      },
+      "reported_model": "glm-5.3-flash",
+      "response_sha256": "014b84f68566044bf7c70aacf950fa38d4faadf535cc80d1d3ca8fbb68a0aaf1"
+    },
+    {
+      "kind": "plan-1",
+      "model": "glm-5.3-flash",
+      "state": "received",
+      "elapsed_s": 9.6,
+      "usage": {
+        "input_tokens": 4926,
+        "output_tokens": 413,
+        "cache_read_input_tokens": 0,
+        "server_tool_use": {
+          "web_search_requests": 0
+        },
+        "service_tier": "standard"
+      },
+      "reported_model": "glm-5.3-flash",
+      "response_sha256": "3750c7366b561b7983350c7c004f957f1bddc1fcbf4516cf566423c946bb01a2"
+    },
+    {
+      "kind": "plan-0",
+      "model": "glm-5.3-flash",
+      "state": "received",
+      "elapsed_s": 14.95,
+      "usage": {
+        "input_tokens": 5370,
+        "output_tokens": 648,
+        "cache_read_input_tokens": 0,
+        "server_tool_use": {
+          "web_search_requests": 0
+        },
+        "service_tier": "standard"
+      },
+      "reported_model": "glm-5.3-flash",
+      "response_sha256": "319a4b9e7606cf5141fc2c240c0a02fc1fc2a51c5f2dab4a310053dc612c7ddf"
+    },
+    {
+      "kind": "plan-1",
+      "model": "glm-5.3-flash",
+      "state": "received",
+      "elapsed_s": 14.57,
+      "usage": {
+        "input_tokens": 5859,
+        "output_tokens": 615,
+        "cache_read_input_tokens": 0,
+        "server_tool_use": {
+          "web_search_requests": 0
+        },
+        "service_tier": "standard"
+      },
+      "reported_model": "glm-5.3-flash",
+      "response_sha256": "76b5b3b71c4c98f67595628ee1f470b6a6ecaa188afdc347fecf382df8a42620"
+    }
+  ],
+  "skill_sha256": "0dba8c4fd4a14331e466e6883a82cfd6ff8b899c3217d1f663a3e772e8126477",
+  "elapsed_s": 61.42,
+  "model_calls": 4,
+  "error": "STEP volume differs from generating CAD"
+}

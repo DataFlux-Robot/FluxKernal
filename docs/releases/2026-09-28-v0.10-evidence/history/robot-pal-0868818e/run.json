@@ -1,0 +1,42 @@
+{
+  "schema": "fk-robot-pal-v1",
+  "mode": "live",
+  "model": "glm-5.3-flash",
+  "parent_native_sha256": "09efe1c893020d8d01916620f879de9f2414eceababdd1dbbce2742364fd614a",
+  "max_rounds": 3,
+  "max_provider_calls": 14,
+  "selected_round": null,
+  "status": "failed",
+  "deployment_ready": false,
+  "interface_status": "unverified",
+  "records": [
+    {
+      "round": 0,
+      "state": "proposing",
+      "attempts": []
+    }
+  ],
+  "calls": [
+    {
+      "kind": "plan-0",
+      "model": "glm-5.3-flash",
+      "state": "received",
+      "elapsed_s": 11.09,
+      "usage": {
+        "input_tokens": 4430,
+        "output_tokens": 380,
+        "cache_read_input_tokens": 0,
+        "server_tool_use": {
+          "web_search_requests": 0
+        },
+        "service_tier": "standard"
+      },
+      "reported_model": "glm-5.3-flash",
+      "response_sha256": "5c7df0d1518043a291c763a61b83ebceb670f9cc529af9717b0ee4e5b2066ae7"
+    }
+  ],
+  "skill_sha256": "0dba8c4fd4a14331e466e6883a82cfd6ff8b899c3217d1f663a3e772e8126477",
+  "error": "Command '['/home/exuber/CODE/CORE/pythonProject1/AUTORESEARCH/fluxkernel/.venv/bin/python', '-m', 'fluxkernel.robotics.part_geometry', '/home/exuber/CODE/CORE/pythonProject1/AUTORESEARCH/fluxkernel/.demo/v010-personalization/robot-pal-0868818e/round-00/xgoduck-part-4d6204e4/request.json', '/home/exuber/CODE/CORE/pythonProject1/AUTORESEARCH/fluxkernel/.demo/v010-personalization/robot-pal-0868818e/round-00/xgoduck-part-4d6204e4/cad/custom_duck_crest_ember']' timed out after 120 seconds",
+  "elapsed_s": 131.67,
+  "model_calls": 1
+}

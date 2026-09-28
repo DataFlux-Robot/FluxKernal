@@ -1,0 +1,16 @@
+{
+  "schema": "fk-robot-pal-v1",
+  "mode": "live",
+  "model": "glm-5.3-flash",
+  "parent_native_sha256": "8795d7f3594e388468791b15f597534c15fe533d2f1cc9501e9cd6e1d80b94ee",
+  "max_rounds": 3,
+  "max_provider_calls": 14,
+  "selected_round": null,
+  "status": "interrupted",
+  "deployment_ready": false,
+  "interface_status": "unverified",
+  "records": [],
+  "calls": [],
+  "skill_sha256": "0dba8c4fd4a14331e466e6883a82cfd6ff8b899c3217d1f663a3e772e8126477",
+  "interruption_reason": "Host terminated stalled all-moment Gauss-Kronrod STEP integration. No candidate selected; preserved for solver debugging."
+}

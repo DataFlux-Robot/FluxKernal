@@ -1,0 +1,74 @@
+{
+  "schema_version": "fk-robot-part-v1",
+  "zone_sha256": "b6e92b2a80c9501f6ae1aea3c52e5d584e8df5a18f9981e0207d796cb7f12c49",
+  "name": "duckling_crest_puff_mk2b",
+  "rationale": "Round-1 diagnosis: attempt-0 hit a null-shape CAD failure; attempt-1's recipe (47de lineage) was geometrically valid (all lowest-Z values positive and inside the 3 mm base: center puff ~+0.19 mm, side ~+1.4 mm, front ~+1.9 mm) but was rejected on a STEP-vs-CAD volume mismatch of ~0.8%, likely a tolerance/boolean artifact. Revision: resubmit the accepted enlarged friendly three-puff silhouette with slight size adjustments (center puff 15x12x10 at z=6.8, -10deg tilt, lowest Z ~0.1 mm fully inside the base; side puffs 10x6x7 at [-2.5,4,6], mirrored from Y>=0; front accent 7x5x5 at [4,3,5]) and a simpler rotation set to reduce boolean complexity. Renders confirm the round-0 crest was connected, clear of the camera lens and front dome, and merely too small; this keeps the doubled presence while staying soft, rounded and well inside 80x80x35 mm and 16 g. Adhesive attachment, curvature fit, printability and walking remain open per the brief.",
+  "symmetry": "bilateral",
+  "material": "pla",
+  "color_rgb": [
+    1.0,
+    0.72,
+    0.2
+  ],
+  "base_size_mm": [
+    18.0,
+    16.0,
+    3.0
+  ],
+  "features": [
+    {
+      "shape": "ellipsoid",
+      "size_mm": [
+        15.0,
+        12.0,
+        10.0
+      ],
+      "center_mm": [
+        0.0,
+        0.0,
+        6.8
+      ],
+      "rotation_deg": [
+        -10.0,
+        0.0,
+        0.0
+      ]
+    },
+    {
+      "shape": "ellipsoid",
+      "size_mm": [
+        10.0,
+        6.0,
+        7.0
+      ],
+      "center_mm": [
+        -2.5,
+        4.0,
+        6.0
+      ],
+      "rotation_deg": [
+        -15.0,
+        0.0,
+        8.0
+      ]
+    },
+    {
+      "shape": "ellipsoid",
+      "size_mm": [
+        7.0,
+        5.0,
+        5.0
+      ],
+      "center_mm": [
+        4.0,
+        3.0,
+        5.0
+      ],
+      "rotation_deg": [
+        10.0,
+        0.0,
+        0.0
+      ]
+    }
+  ]
+}

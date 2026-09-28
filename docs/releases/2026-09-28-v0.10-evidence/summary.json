@@ -1,0 +1,28 @@
+{
+  "microduck": {
+    "status": "prototype-needs-physical-validation",
+    "model": "glm-5.3-flash",
+    "model_calls": 4,
+    "max_rounds": 3,
+    "selected_round": 0,
+    "visual_status": "meets-brief",
+    "parent_native_sha256": "8795d7f3594e388468791b15f597534c15fe533d2f1cc9501e9cd6e1d80b94ee",
+    "run_id": "robot-pal-a03ce4b3",
+    "added_mass_kg": 0.0020552335627632176,
+    "native_sha256": "f5882c4a1635022ba4a9e0ec17aa014a0e769a95e6b6016484747f492a39e937",
+    "pose_count": 31
+  },
+  "xgoduck": {
+    "status": "prototype-needs-physical-validation",
+    "model": "glm-5.3-flash",
+    "model_calls": 9,
+    "max_rounds": 3,
+    "selected_round": 2,
+    "visual_status": "meets-brief",
+    "parent_native_sha256": "09efe1c893020d8d01916620f879de9f2414eceababdd1dbbce2742364fd614a",
+    "run_id": "robot-pal-6985339a",
+    "added_mass_kg": 0.0021487833055272654,
+    "native_sha256": "4a5f6cebb373e2ad8d8f5b3cd4f4692c264f356ad347cdce5a7f2b8dcd29f161",
+    "pose_count": 31
+  }
+}

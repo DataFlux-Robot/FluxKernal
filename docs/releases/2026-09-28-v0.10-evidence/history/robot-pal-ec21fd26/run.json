@@ -1,0 +1,216 @@
+{
+  "schema": "fk-robot-pal-v1",
+  "mode": "live",
+  "model": "glm-5.3-flash",
+  "parent_native_sha256": "8795d7f3594e388468791b15f597534c15fe533d2f1cc9501e9cd6e1d80b94ee",
+  "max_rounds": 3,
+  "max_provider_calls": 17,
+  "selected_round": null,
+  "status": "needs-review",
+  "deployment_ready": false,
+  "interface_status": "unverified",
+  "records": [
+    {
+      "round": 0,
+      "state": "rejected",
+      "attempts": [
+        {
+          "attempt": 0,
+          "state": "rejected",
+          "error": "Part CAD rejected: ValueError: Recipe must produce one valid connected positive-volume solid; features must overlap"
+        },
+        {
+          "attempt": 1,
+          "state": "rejected",
+          "error": "Part CAD rejected: ValueError: No geometry may extend below the fixed mounting plane Z=0"
+        }
+      ]
+    },
+    {
+      "round": 1,
+      "state": "rejected",
+      "attempts": [
+        {
+          "attempt": 0,
+          "state": "rejected",
+          "error": "Part CAD rejected: ValueError: No geometry may extend below the fixed mounting plane Z=0"
+        },
+        {
+          "attempt": 1,
+          "state": "rejected",
+          "error": "Bilateral source features use Y >= 0; host mirrors across Y=0"
+        }
+      ]
+    },
+    {
+      "round": 2,
+      "state": "reviewed",
+      "attempts": [],
+      "candidate": {
+        "directory": "/home/exuber/CODE/CORE/pythonProject1/AUTORESEARCH/fluxkernel/.demo/v010-personalization/robot-pal-ec21fd26/round-02/microduck-part-d51b6755",
+        "native_sha256": "bd98538cd96fde4f6400c243292d294e59f072f6d45b1289be3b179b3be06b35",
+        "name": "microduck",
+        "bodies": 16,
+        "joints": 15,
+        "actuators": 14,
+        "meshes": 39,
+        "mass_kg": 0.7376942182504013,
+        "proof_accepted": true,
+        "deployment_ready": false,
+        "accepted": true,
+        "motion_passed": true,
+        "motion_summary": {
+          "minimum_distance_m": 0.01878605339540111,
+          "violations": []
+        },
+        "part_body": "custom_friendly_head_crest",
+        "added_mass_kg": 0.0004510382504012769,
+        "interface_status": "unverified",
+        "recipe_sha256": "47aca1f3e3c29d9e623140da7d5f0654427903fae27ef2b39c0da076cb9f4a8c"
+      },
+      "review": {
+        "recipe_sha256": "47aca1f3e3c29d9e623140da7d5f0654427903fae27ef2b39c0da076cb9f4a8c",
+        "verdict": "needs-review",
+        "findings": [
+          "Recipe digest 47aca1f3... builds as a single connected solid (solids: 1) with no floating or disconnected geometry; all three ellipsoid lobes overlap the 16x8x2 mm base.",
+          "Whole-robot and close-up renders show the crest placed rear-top of the head, clear of the camera face and forward lens; no obstruction of the camera or vents is visible.",
+          "Motion diagnostics accepted all 31 poses, minimum distance 18.8 mm (pose 17), well above the 0.2 mm tolerance; no self-collision introduced.",
+          "Rounded ellipsoid silhouettes with the source yellow accent match the friendly brief; no sharp or intimidating forms.",
+          "Deficiency: at 364 mm3 total the crest reads in renders as a barely visible yellow nub tucked behind the head crown; it lacks the辨识度 (recognizable identity) the brief asks for and is nearly invisible from front/side views.",
+          "The rear placement means the friendly mohawk theme is mostly hidden by the head's forward rake; shifting lobes slightly forward and increasing heights would improve expression while staying within zone and mass budget (currently 0.45 g vs 14.7 g limit).",
+          "Interface status remains unverified and the pad attachment is a proposal; adhesion and real fit stay open as declared."
+        ],
+        "next_step": "revise",
+        "reason": "Structurally sound, camera-safe and friendly in silhouette, but the current crest is too small and too far rearward to read as a distinctive head decoration in the actual renders. Revise by enlarging and slightly forward-shifting the lobes within the fixed datum and zone, then re-review."
+      }
+    }
+  ],
+  "calls": [
+    {
+      "kind": "plan-0",
+      "model": "glm-5.3-flash",
+      "state": "received",
+      "elapsed_s": 12.54,
+      "usage": {
+        "input_tokens": 4362,
+        "output_tokens": 484,
+        "cache_read_input_tokens": 0,
+        "server_tool_use": {
+          "web_search_requests": 0
+        },
+        "service_tier": "standard"
+      },
+      "reported_model": "glm-5.3-flash",
+      "response_sha256": "632dc51179430d88ef09110c9fd0992a26335d69c41d6bd68ccd0d700b3268c1"
+    },
+    {
+      "kind": "plan-1",
+      "model": "glm-5.3-flash",
+      "state": "received",
+      "elapsed_s": 13.82,
+      "usage": {
+        "input_tokens": 4385,
+        "output_tokens": 512,
+        "cache_read_input_tokens": 0,
+        "server_tool_use": {
+          "web_search_requests": 0
+        },
+        "service_tier": "standard"
+      },
+      "reported_model": "glm-5.3-flash",
+      "response_sha256": "c1dc41b37deab135e01ac88a9a271afc9b7dd004363cdb3d33ccef38b92e9f89"
+    },
+    {
+      "kind": "plan-0",
+      "model": "glm-5.3-flash",
+      "state": "received",
+      "elapsed_s": 13.24,
+      "usage": {
+        "input_tokens": 4450,
+        "output_tokens": 458,
+        "cache_read_input_tokens": 0,
+        "server_tool_use": {
+          "web_search_requests": 0
+        },
+        "service_tier": "standard"
+      },
+      "reported_model": "glm-5.3-flash",
+      "response_sha256": "7924083e19263b0b9c9b32431f82f63330f440a600cb07c5a606ab45bb625f1a"
+    },
+    {
+      "kind": "plan-1",
+      "model": "glm-5.3-flash",
+      "state": "received",
+      "elapsed_s": 12.89,
+      "usage": {
+        "input_tokens": 4472,
+        "output_tokens": 457,
+        "cache_read_input_tokens": 0,
+        "server_tool_use": {
+          "web_search_requests": 0
+        },
+        "service_tier": "standard"
+      },
+      "reported_model": "glm-5.3-flash",
+      "response_sha256": "5a32a2fb9f63acba9a1b083e8bb160d80932d5bed25333a8217f759fb921e3c0"
+    },
+    {
+      "kind": "plan-0",
+      "model": "glm-5.3-flash",
+      "state": "received",
+      "elapsed_s": 18.96,
+      "usage": {
+        "input_tokens": 3063,
+        "output_tokens": 670,
+        "cache_read_input_tokens": 1472,
+        "server_tool_use": {
+          "web_search_requests": 0
+        },
+        "service_tier": "standard"
+      },
+      "reported_model": "glm-5.3-flash",
+      "response_sha256": "1e2c05d12224efff40b8d5b34f890866aa35f0a6d4952f9b5284a449d9340c71"
+    },
+    {
+      "kind": "review-0",
+      "model": "glm-5.3-flash",
+      "state": "received",
+      "elapsed_s": 15.57,
+      "usage": {
+        "input_tokens": 7064,
+        "output_tokens": 569,
+        "cache_read_input_tokens": 0,
+        "server_tool_use": {
+          "web_search_requests": 0
+        },
+        "service_tier": "standard"
+      },
+      "reported_model": "glm-5.3-flash",
+      "response_sha256": "2e76b314d522092992fcf889742bb9f9a6f98fb12b5293d8655eadcacf55c1bf"
+    },
+    {
+      "kind": "select-0",
+      "model": "glm-5.3-flash",
+      "state": "received",
+      "elapsed_s": 12.04,
+      "usage": {
+        "input_tokens": 2737,
+        "output_tokens": 415,
+        "cache_read_input_tokens": 0,
+        "server_tool_use": {
+          "web_search_requests": 0
+        },
+        "service_tier": "standard"
+      },
+      "reported_model": "glm-5.3-flash",
+      "response_sha256": "8685775b9c1a46bb678808ea53edc0f6c42684cdb212808b2f8a28bbdfa2877d"
+    }
+  ],
+  "skill_sha256": "deabf10a0a9199ef667de98850d58e86b1005d5cb03ec4088f7c1c195ebbce39",
+  "elapsed_s": 142.23,
+  "model_calls": 7,
+  "selection": {
+    "selected_round": null,
+    "reason": "Only round 2 exists and it is structurally connected (solids: 1, recipe 47aca1f3...), motion-safe (31/31 poses, min distance 18.8 mm) and friendly in silhouette. However, its own review verdict is needs-review: at 364 mm3 the yellow crest reads as a barely visible nub hidden behind the head crown in the whole-robot and close-up renders, failing the brief's core requirement of a recognizable head decoration. The review's prescribed next step was to enlarge and forward-shift the lobes, but no revised round was built, and a needs-review result must retain its label rather than be promoted by default. No built, reviewed, acceptable candidate is available; select null."
+  }
+}

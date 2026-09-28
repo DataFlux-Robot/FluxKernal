@@ -1,0 +1,9 @@
+{
+  "scope": "Post-run STL topology screen only; vertices rounded to 1e-6 mm, collapsed triangles excluded. No source mesh edited. Not a slicing or physical print validation.",
+  "triangles": 8339,
+  "excluded_collapsed_triangles": 3,
+  "edge_incidence_counts": {
+    "2": 12504
+  },
+  "repeated_directed_edges": 0
+}

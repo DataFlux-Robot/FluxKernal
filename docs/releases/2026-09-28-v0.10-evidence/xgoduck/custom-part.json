@@ -1,0 +1,136 @@
+{
+  "body": "custom_duckling_crest_puff_mk2c",
+  "recipe": {
+    "schema_version": "fk-robot-part-v1",
+    "zone_sha256": "b6e92b2a80c9501f6ae1aea3c52e5d584e8df5a18f9981e0207d796cb7f12c49",
+    "name": "duckling_crest_puff_mk2c",
+    "rationale": "Round-2 plan after round-1 rejections: the enlarged silhouette was geometrically valid (all lowest-Z inside the 3 mm base) but hit a STEP-vs-CAD volume mismatch of ~0.8-0.9%, likely a boolean/tolerance artifact aggravated by many overlapping ellipsoids with compound rotations. Fix: reduce to two puffs with simple single-axis rotations to lower boolean complexity while keeping the enlarged, recognizable friendly crest. Base stays 18x16x3; center puff 15x12x10 at [0,0,6.8] tilted only -10 deg about X (rotated Z half-extent ~5.37, lowest Z ~+1.43 mm, inside base with full XY overlap); single bilateral side puff (Y=+4 only, host mirrors) 10x6x7 at [-2.5,4,6] with one -15 deg X tilt (lowest Z ~+2.83 mm, overlapping base and center puff). No feature below Z=0; total ~18x16x~13 mm well inside 80x80x35 mm; mass far under 16 g. Whole-robot and close-up renders confirm the round-0/1 crest position is clear of the front camera lens and dome and merely needs presence, which this scale restores. Soft rounded ellipsoids only, no sharp intimidating edges. Adhesive-pad attachment, curvature fit, printability and walking remain open per the brief.",
+    "symmetry": "bilateral",
+    "material": "pla",
+    "color_rgb": [
+      1.0,
+      0.72,
+      0.2
+    ],
+    "base_size_mm": [
+      18.0,
+      16.0,
+      3.0
+    ],
+    "features": [
+      {
+        "shape": "ellipsoid",
+        "size_mm": [
+          15.0,
+          12.0,
+          10.0
+        ],
+        "center_mm": [
+          0.0,
+          0.0,
+          6.8
+        ],
+        "rotation_deg": [
+          -10.0,
+          0.0,
+          0.0
+        ]
+      },
+      {
+        "shape": "ellipsoid",
+        "size_mm": [
+          10.0,
+          6.0,
+          7.0
+        ],
+        "center_mm": [
+          -2.5,
+          4.0,
+          6.0
+        ],
+        "rotation_deg": [
+          -15.0,
+          0.0,
+          0.0
+        ]
+      }
+    ]
+  },
+  "zone": {
+    "schema": "fk-customization-zone-v1",
+    "parent_native_sha256": "09efe1c893020d8d01916620f879de9f2414eceababdd1dbbce2742364fd614a",
+    "target_geometry": "mjobj_geom_12",
+    "target_mesh_sha256": "f3a3356d3ce1fccce893f8d77abf080bbe37854ce4c685514f5c06e9dc46da05",
+    "parent_body": "jaw_soft",
+    "parent_body_index": 10,
+    "position": [
+      -3.5812137294391297e-06,
+      0.03653074027825307,
+      -0.01981773420069477
+    ],
+    "quaternion": [
+      0.5205789986965562,
+      -0.4774989927046659,
+      0.4685512909392173,
+      0.5305204103908853
+    ],
+    "frame": "metres, wxyz; +Z source surface normal, +X projected rest-pose forward, +Y left tangent",
+    "source_triangle": 8629,
+    "surface_normal_world": [
+      -0.10491675384939374,
+      0.018802694839829753,
+      0.9943032401779982
+    ],
+    "contact_origin_world_m": [
+      0.042917250145505154,
+      3.0649026780509307e-06,
+      0.25917472506336786
+    ],
+    "source_bounds_world_m": [
+      [
+        -0.019290125220608634,
+        -0.04413624084470228,
+        0.20514370927439915
+      ],
+      [
+        0.10512462551161894,
+        0.04414237065005838,
+        0.2620257495803947
+      ]
+    ],
+    "max_extent_mm": [
+      80.0,
+      80.0,
+      35.0
+    ],
+    "max_added_mass_kg": 0.015999999786000002,
+    "budget_basis": "Pilot design search bounds, not an experimentally validated control envelope",
+    "interface_status": "unverified",
+    "mounting_assumption": "Removable adhesive/pad prototype at the top-center surface tangent; curvature fit, adhesive and assembly not qualified",
+    "frozen": [
+      "original bodies",
+      "original geometry",
+      "joints",
+      "actuators",
+      "sensors",
+      "sites",
+      "action order"
+    ],
+    "open": [
+      "Attachment curvature and retention",
+      "Camera field of view and cooling",
+      "Print process and actual mass",
+      "Controller and physical validation"
+    ],
+    "zone_sha256": "b6e92b2a80c9501f6ae1aea3c52e5d584e8df5a18f9981e0207d796cb7f12c49"
+  },
+  "artifacts": {
+    "cad/custom_duckling_crest_puff_mk2c/part.step": "e955f8d62a04331c30cb50d7bfab954c483c59944cba6b4f530b00f2f0833938",
+    "cad/custom_duckling_crest_puff_mk2c/part.py": "fc11ce361d24863a52d0116bb443be4ab993e88d5a49c459cb2ff8b37f264818",
+    "cad/custom_duckling_crest_puff_mk2c/recipe.json": "3fe87cb7a98d0758585bdf63929ed7ab81d1faa1abadc00f755aa5eff0b02fcf",
+    "cad/custom_duckling_crest_puff_mk2c/properties.json": "e08169d25339d5abf19a2c1345eef4119e704d27a4641a93fb0e9d538ad78629",
+    "cad/custom_duckling_crest_puff_mk2c/part.obj": "c40238da0759e75a0591f9586ff2dc66f463b580dc90e0d7286f16156a31f474",
+    "cad/custom_duckling_crest_puff_mk2c/part.stl": "a2081304a50fc918972ddca9432c34d897810f13006c0b17efa15b73d2e7387a"
+  },
+  "interface_status": "unverified"
+}

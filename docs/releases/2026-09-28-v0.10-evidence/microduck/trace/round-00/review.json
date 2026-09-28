@@ -1,0 +1,13 @@
+{
+  "recipe_sha256": "0ff240bb16972265f2f6e7916359508d501171483b3dc75d4c806372e187c528",
+  "verdict": "meets-brief",
+  "findings": [
+    "Whole-robot and close-up renders (recipe digest duckling_tuft_crest, recipe_sha256 0ff240bb...) show a small soft backward-leaning tuft with bilateral bumps in duck-yellow, coherent with the source head's yellow accents; silhouette is rounded and friendly with no sharp or bulky features.",
+    "CAD facts confirm solids=1: the revision fixed the round-00 floating/disconnected geometry; the tuft (lowest swept Z ≈1 mm) and mirrored bumps (lowest Z ≈0.5 mm) now positively overlap the 2.5 mm base, so no floating or disconnected lumps remain.",
+    "Part mass 2.06 g, extent 17.7×17×13.0 mm, well inside the zone and far below its max Z; it does not obstruct the camera face in any rendered view, and motion checks pass at all 31 poses (min distance 17.2 mm, no violations).",
+    "Rendered placement reads as slightly perched above the curved shell crown because the flat elliptical base meets a curved surface, but the fused single solid and the pad-attachment intent make this acceptable for a prototype study; curvature fit and adhesive retention remain explicitly open.",
+    "No implausibly large or obstructive geometry identified; source shells, motors, joints and camera remain intact and visible in all four views."
+  ],
+  "next_step": "stop",
+  "reason": "The built candidate is host-eligible (proof accepted, single fused solid, motion passed) and the renders confirm a compact, friendly, recognizable duckling-tuft crest that preserves the robot identity and camera view. The revision resolved the prior disconnected-feature failure. Remaining uncertainties (curvature fit, adhesive retention, print behavior, real motion) are unverified-interface items outside this study's scope, so no further rounds are needed."
+}

@@ -1,0 +1,608 @@
+{
+  "schema": "fk-robot-pal-v1",
+  "mode": "live",
+  "model": "glm-5.3-flash",
+  "parent_native_sha256": "09efe1c893020d8d01916620f879de9f2414eceababdd1dbbce2742364fd614a",
+  "max_rounds": 3,
+  "max_provider_calls": 14,
+  "selected_round": 2,
+  "status": "prototype-needs-physical-validation",
+  "deployment_ready": false,
+  "interface_status": "unverified",
+  "records": [
+    {
+      "round": 0,
+      "state": "reviewed",
+      "attempts": [
+        {
+          "attempt": 0,
+          "state": "rejected",
+          "error": "Bilateral source features use Y >= 0; host mirrors across Y=0",
+          "proposed_recipe": {
+            "schema_version": "fk-robot-part-v1",
+            "zone_sha256": "b6e92b2a80c9501f6ae1aea3c52e5d584e8df5a18f9981e0207d796cb7f12c49",
+            "name": "duckling_crest_puff",
+            "rationale": "Plan phase 0: friendly duckling theme — a soft rounded crest tuft suggesting a hatchling's feather puff, matching the XGO Duck's rounded head shell seen in the renders. Compact base ellipse (~14x12x2.5 mm) stays well inside the 80x80x35 mm zone and light mass budget. Three tilted-back ellipsoid puffs (center plus bilateral pair) overlap the base positively; all rotated shapes keep lowest Z above 0 given centers >= ~3 mm with half-extents < ~3 mm. No fins or boxes, so no sharp or intimidating silhouettes. Camera lens on the front face and all source geometry untouched; attachment remains an unverified adhesive-pad proposal on the source triangle tangent.",
+            "symmetry": "bilateral",
+            "material": "pla",
+            "color_rgb": [
+              1.0,
+              0.72,
+              0.2
+            ],
+            "base_size_mm": [
+              14,
+              12,
+              2.5
+            ],
+            "features": [
+              {
+                "shape": "ellipsoid",
+                "size_mm": [
+                  10,
+                  8,
+                  6
+                ],
+                "center_mm": [
+                  0,
+                  0,
+                  4.5
+                ],
+                "rotation_deg": [
+                  -15,
+                  0,
+                  0
+                ]
+              },
+              {
+                "shape": "ellipsoid",
+                "size_mm": [
+                  8,
+                  5,
+                  5
+                ],
+                "center_mm": [
+                  -1.5,
+                  3.5,
+                  5.5
+                ],
+                "rotation_deg": [
+                  -25,
+                  -20,
+                  10
+                ]
+              },
+              {
+                "shape": "ellipsoid",
+                "size_mm": [
+                  8,
+                  5,
+                  5
+                ],
+                "center_mm": [
+                  -1.5,
+                  -3.5,
+                  5.5
+                ],
+                "rotation_deg": [
+                  -25,
+                  20,
+                  -10
+                ]
+              }
+            ]
+          }
+        }
+      ],
+      "candidate": {
+        "directory": "/home/exuber/CODE/CORE/pythonProject1/AUTORESEARCH/fluxkernel/.demo/v010-personalization/robot-pal-6985339a/round-00/xgoduck-part-af8c6994",
+        "native_sha256": "e6e328746f41a05a5894c6ec77f29180c340baa041317e790564992f390a5ab2",
+        "name": "xgoduck",
+        "bodies": 16,
+        "joints": 15,
+        "actuators": 14,
+        "meshes": 16,
+        "mass_kg": 0.800876800147657,
+        "proof_accepted": true,
+        "deployment_ready": false,
+        "accepted": true,
+        "motion_passed": true,
+        "motion_summary": {
+          "minimum_distance_m": 0.016773138372725746,
+          "violations": []
+        },
+        "part_body": "custom_duckling_crest_puff",
+        "added_mass_kg": 0.0008768108476570091,
+        "interface_status": "unverified",
+        "recipe_sha256": "47de11472e44efcaba67d3dd13883d7764d2f1c8a084a533835950e425600c8b"
+      },
+      "review": {
+        "recipe_sha256": "47de11472e44efcaba67d3dd13883d7764d2f1c8a084a533835950e425600c8b",
+        "verdict": "needs-review",
+        "findings": [
+          "Build is host-eligible: proof accepted, motion passed at all 31 poses with min distance 16.8 mm, single fused solid, added mass 0.88 g — no floating or disconnected geometry in the CAD facts.",
+          "Close-up renders show the crest sits cleanly on the head-top rear slope, forward of the rear edge, and does not intrude on the camera lens or front dome in any of the four views.",
+          "Problem: at 14x12x2.5 base with 6-8 mm puffs, the part reads as a tiny yellow speck in the whole-robot views (barely visible in perspective and -Y view). It fails the brief's '有辨识度' (recognizable) requirement — the silhouette is too timid relative to the large head dome.",
+          "The three-puff 'duckling tuft' idea is coherent and friendly (no sharp edges), but at this scale it reads as a generic bump rather than a crest; the top view shows it as a small dot far from the head apex, weakening the identity claim.",
+          "No obstruction found: the part is far from the lens (front of head) and clear of all source geometry; zone compliance confirmed by bbox within 80x80x35 mm.",
+          "Revision direction: scale the puff cluster up modestly (center puff ~14x11x9 mm) and shift it closer to the head apex so it is clearly visible from front and side views, while keeping lowest-Z overlap with the 2.5 mm base and staying soft/rounded per the friendly brief.",
+          "Attachment remains an adhesive-pad proposal only; interface_status is unverified and walking/printability remain open, as the brief acknowledges."
+        ],
+        "next_step": "revise",
+        "reason": "The candidate is structurally sound, connected and non-obstructive, and its friendly rounded styling matches the brief. However, the whole-robot renders show it is far too small and rear-placed to be recognizable as an identity feature on the XGO Duck's large head — it reads as a barely visible speck. A limited revision will enlarge and reposition the puff cluster for presence while preserving the accepted overlap, zone and motion-clearance margins."
+      }
+    },
+    {
+      "round": 1,
+      "state": "rejected",
+      "attempts": [
+        {
+          "attempt": 0,
+          "state": "rejected",
+          "error": "Part CAD rejected: ValueError: Null TopoDS_Shape object",
+          "proposed_recipe": {
+            "schema_version": "fk-robot-part-v1",
+            "zone_sha256": "b6e92b2a80c9501f6ae1aea3c52e5d584e8df5a18f9981e0207d796cb7f12c49",
+            "name": "duckling_crest_puff_mk2",
+            "rationale": "Revision after round-0 needs-review (recipe 47de1147…): renders show the crest is host-eligible but reads as a tiny yellow speck far from the head apex. Fix: enlarge the puff cluster and broaden the base for presence. Base grows 14x12x2.5 -> 18x16x3; center puff grows to 16x13x11 at [0,0,5.5] tilted back -15deg (lowest Z ~5.5-5.4~0.1, inside base thickness with full XY overlap). Two side puffs (bilateral, Y=+4 only, host mirrors) at [-2.5,4,6] sized 10x6x7 tilted back -25deg keep lowest Z ~1.8mm>0 and overlap the base in XY. Total silhouette roughly doubles in apparent area while staying soft, rounded ellipsoids with no sharp edges; mass stays far under 16 g and the 18x16 footprint plus ~11 mm height sits well inside the 80x80x35 mm zone. Part stays rear-of-apex on the head-top slope, clear of the front camera lens and dome seen in the +X and perspective views. Adhesive-pad attachment, curvature fit, printability and walking remain open per the brief.",
+            "symmetry": "bilateral",
+            "material": "pla",
+            "color_rgb": [
+              1.0,
+              0.72,
+              0.2
+            ],
+            "base_size_mm": [
+              18.0,
+              16.0,
+              3.0
+            ],
+            "features": [
+              {
+                "shape": "ellipsoid",
+                "size_mm": [
+                  16.0,
+                  13.0,
+                  11.0
+                ],
+                "center_mm": [
+                  0.0,
+                  0.0,
+                  5.5
+                ],
+                "rotation_deg": [
+                  -15.0,
+                  0.0,
+                  0.0
+                ]
+              },
+              {
+                "shape": "ellipsoid",
+                "size_mm": [
+                  10.0,
+                  6.0,
+                  7.0
+                ],
+                "center_mm": [
+                  -2.5,
+                  4.0,
+                  6.0
+                ],
+                "rotation_deg": [
+                  -25.0,
+                  -20.0,
+                  10.0
+                ]
+              },
+              {
+                "shape": "ellipsoid",
+                "size_mm": [
+                  7.0,
+                  5.0,
+                  5.0
+                ],
+                "center_mm": [
+                  4.0,
+                  3.0,
+                  4.5
+                ],
+                "rotation_deg": [
+                  20.0,
+                  15.0,
+                  0.0
+                ]
+              }
+            ]
+          }
+        },
+        {
+          "attempt": 1,
+          "state": "rejected",
+          "error": "STEP volume 1946.9672945001369 differs from generating CAD 1962.304377482516",
+          "proposed_recipe": {
+            "schema_version": "fk-robot-part-v1",
+            "zone_sha256": "b6e92b2a80c9501f6ae1aea3c52e5d584e8df5a18f9981e0207d796cb7f12c49",
+            "name": "duckling_crest_puff_mk2",
+            "rationale": "Revision after round-0 needs-review (recipe 47de1147…): renders confirm the crest is connected and non-obstructive but reads as a tiny speck; attempt-0 failed in CAD. Diagnosis of attempt-0: the 16x13x11 center puff tilted -15deg has a rotated Z half-extent of ~7.4 mm about center z=5.5, driving its lowest Z to ~-1.9 mm — below Z=0, invalid. Fix: keep the enlarged friendly silhouette but tilt the center puff only -10deg and raise it to z=7 (lowest Z ~+0.19 mm, inside the 3 mm base with full XY overlap, positive volume). Side puff (Y=+4 only, host mirrors bilaterally) raised to z=6 with milder rotations, lowest Z ~+1.4 mm, overlapping the 18x16 base in XY. Front accent puff at [4,3,5] with gentle 10deg tilt keeps lowest Z ~+1.9 mm. No feature reaches below Z=0; whole part ~18x16x~13 mm sits well inside 80x80x35 mm, mass far under 16 g. Soft rounded ellipsoid tuft, no sharp silhouettes; clear of the front camera lens and dome seen in +X and perspective views. Adhesive-pad attachment, curvature fit, printability and walking remain open per the brief.",
+            "symmetry": "bilateral",
+            "material": "pla",
+            "color_rgb": [
+              1.0,
+              0.72,
+              0.2
+            ],
+            "base_size_mm": [
+              18.0,
+              16.0,
+              3.0
+            ],
+            "features": [
+              {
+                "shape": "ellipsoid",
+                "size_mm": [
+                  16.0,
+                  13.0,
+                  11.0
+                ],
+                "center_mm": [
+                  0.0,
+                  0.0,
+                  7.0
+                ],
+                "rotation_deg": [
+                  -10.0,
+                  0.0,
+                  0.0
+                ]
+              },
+              {
+                "shape": "ellipsoid",
+                "size_mm": [
+                  10.0,
+                  6.0,
+                  7.0
+                ],
+                "center_mm": [
+                  -2.5,
+                  4.0,
+                  6.0
+                ],
+                "rotation_deg": [
+                  -15.0,
+                  -12.0,
+                  8.0
+                ]
+              },
+              {
+                "shape": "ellipsoid",
+                "size_mm": [
+                  7.0,
+                  5.0,
+                  5.0
+                ],
+                "center_mm": [
+                  4.0,
+                  3.0,
+                  5.0
+                ],
+                "rotation_deg": [
+                  10.0,
+                  8.0,
+                  0.0
+                ]
+              }
+            ]
+          }
+        }
+      ]
+    },
+    {
+      "round": 2,
+      "state": "reviewed",
+      "attempts": [
+        {
+          "attempt": 0,
+          "state": "rejected",
+          "error": "STEP volume 1759.9752326865964 differs from generating CAD 1777.485359670738",
+          "proposed_recipe": {
+            "schema_version": "fk-robot-part-v1",
+            "zone_sha256": "b6e92b2a80c9501f6ae1aea3c52e5d584e8df5a18f9981e0207d796cb7f12c49",
+            "name": "duckling_crest_puff_mk2b",
+            "rationale": "Round-1 diagnosis: attempt-0 hit a null-shape CAD failure; attempt-1's recipe (47de lineage) was geometrically valid (all lowest-Z values positive and inside the 3 mm base: center puff ~+0.19 mm, side ~+1.4 mm, front ~+1.9 mm) but was rejected on a STEP-vs-CAD volume mismatch of ~0.8%, likely a tolerance/boolean artifact. Revision: resubmit the accepted enlarged friendly three-puff silhouette with slight size adjustments (center puff 15x12x10 at z=6.8, -10deg tilt, lowest Z ~0.1 mm fully inside the base; side puffs 10x6x7 at [-2.5,4,6], mirrored from Y>=0; front accent 7x5x5 at [4,3,5]) and a simpler rotation set to reduce boolean complexity. Renders confirm the round-0 crest was connected, clear of the camera lens and front dome, and merely too small; this keeps the doubled presence while staying soft, rounded and well inside 80x80x35 mm and 16 g. Adhesive attachment, curvature fit, printability and walking remain open per the brief.",
+            "symmetry": "bilateral",
+            "material": "pla",
+            "color_rgb": [
+              1.0,
+              0.72,
+              0.2
+            ],
+            "base_size_mm": [
+              18.0,
+              16.0,
+              3.0
+            ],
+            "features": [
+              {
+                "shape": "ellipsoid",
+                "size_mm": [
+                  15.0,
+                  12.0,
+                  10.0
+                ],
+                "center_mm": [
+                  0.0,
+                  0.0,
+                  6.8
+                ],
+                "rotation_deg": [
+                  -10.0,
+                  0.0,
+                  0.0
+                ]
+              },
+              {
+                "shape": "ellipsoid",
+                "size_mm": [
+                  10.0,
+                  6.0,
+                  7.0
+                ],
+                "center_mm": [
+                  -2.5,
+                  4.0,
+                  6.0
+                ],
+                "rotation_deg": [
+                  -15.0,
+                  0.0,
+                  8.0
+                ]
+              },
+              {
+                "shape": "ellipsoid",
+                "size_mm": [
+                  7.0,
+                  5.0,
+                  5.0
+                ],
+                "center_mm": [
+                  4.0,
+                  3.0,
+                  5.0
+                ],
+                "rotation_deg": [
+                  10.0,
+                  0.0,
+                  0.0
+                ]
+              }
+            ]
+          }
+        }
+      ],
+      "candidate": {
+        "directory": "/home/exuber/CODE/CORE/pythonProject1/AUTORESEARCH/fluxkernel/.demo/v010-personalization/robot-pal-6985339a/round-02/xgoduck-part-0610b949",
+        "native_sha256": "4a5f6cebb373e2ad8d8f5b3cd4f4692c264f356ad347cdce5a7f2b8dcd29f161",
+        "name": "xgoduck",
+        "bodies": 16,
+        "joints": 15,
+        "actuators": 14,
+        "meshes": 16,
+        "mass_kg": 0.8021487726055273,
+        "proof_accepted": true,
+        "deployment_ready": false,
+        "accepted": true,
+        "motion_passed": true,
+        "motion_summary": {
+          "minimum_distance_m": 0.01606420654253603,
+          "violations": []
+        },
+        "part_body": "custom_duckling_crest_puff_mk2c",
+        "added_mass_kg": 0.0021487833055272654,
+        "interface_status": "unverified",
+        "recipe_sha256": "73fa5dc7fbff117625e004bce5722f34396e1c41d1f165bfcff9794a95a2c409"
+      },
+      "review": {
+        "recipe_sha256": "73fa5dc7fbff117625e004bce5722f34396e1c41d1f165bfcff9794a95a2c409",
+        "verdict": "meets-brief",
+        "findings": [
+          "Whole-robot renders (perspective, -Y, +X, top) show the yellow two-puff crest sitting centered on the head-top dome, clearly visible and recognizable without obscuring the front camera lens or face dome.",
+          "Close-up renders confirm a soft, rounded, friendly silhouette; no sharp or intimidating edges, matching the brief.",
+          "Scale is compact: bbox ~18x16x11.8 mm, well inside the 80x80x35 mm zone; added mass ~2.15 g, far under budget; nothing implausibly large or obstructive.",
+          "Part is a single fused solid (solids: 1); center puff (15x12x10, -10 deg X tilt) and bilateral side puffs (10x6x7, -15 deg X tilt) all embed within the 3 mm base with positive-volume overlap; no floating geometry; no material below Z=0 (lowest feature Z ~+1.43 mm).",
+          "Build proof accepted (proof_accepted: true), motion check passed across 31 poses with minimum distance ~16.1 mm vs 0.2 mm tolerance; no collisions with original visible geometry.",
+          "CAD-vs-STEP volume discrepancy from round 1 resolved by simplifying to two ellipsoids with single-axis rotations; reported volume 1732.9 mm3 is consistent with the recipe digest.",
+          "Camera, electronics, shells and joints untouched; only one connected decorative part added on the fixed head-top datum.",
+          "Interface status remains unverified and adhesive attachment, curvature fit, printability and real walking performance are explicitly open, consistent with prototype-study framing."
+        ],
+        "next_step": "stop",
+        "reason": "Round-2 candidate duckling_crest_puff_mk2c builds cleanly (proof accepted, single solid), passes sampled motion clearance, and the actual whole-robot and close-up renders show a friendly, recognizable rounded crest on the head top that preserves the XGO Duck identity and camera view. The prior volume-mismatch concern was addressed by simplifying geometry. Remaining unknowns (mount, fit, printing, gait) are declared open by the brief and do not block selection of this built, reviewed, eligible round."
+      }
+    }
+  ],
+  "calls": [
+    {
+      "kind": "plan-0",
+      "model": "glm-5.3-flash",
+      "state": "received",
+      "elapsed_s": 12.51,
+      "usage": {
+        "input_tokens": 14,
+        "output_tokens": 438,
+        "cache_read_input_tokens": 4416,
+        "server_tool_use": {
+          "web_search_requests": 0
+        },
+        "service_tier": "standard"
+      },
+      "reported_model": "glm-5.3-flash",
+      "response_sha256": "75515014e72c8f3610673bf111512b3e0c9d46cdfc7303b17e5b1f21c2d4a47b"
+    },
+    {
+      "kind": "plan-1",
+      "model": "glm-5.3-flash",
+      "state": "received",
+      "elapsed_s": 10.43,
+      "usage": {
+        "input_tokens": 4910,
+        "output_tokens": 450,
+        "cache_read_input_tokens": 0,
+        "server_tool_use": {
+          "web_search_requests": 0
+        },
+        "service_tier": "standard"
+      },
+      "reported_model": "glm-5.3-flash",
+      "response_sha256": "5084d1e28c4aaec628af09acb62e8378a649aa7af5cd82f3fa3b5babc0265ba5"
+    },
+    {
+      "kind": "review-0",
+      "model": "glm-5.3-flash",
+      "state": "received",
+      "elapsed_s": 17.94,
+      "usage": {
+        "input_tokens": 6468,
+        "output_tokens": 604,
+        "cache_read_input_tokens": 768,
+        "server_tool_use": {
+          "web_search_requests": 0
+        },
+        "service_tier": "standard"
+      },
+      "reported_model": "glm-5.3-flash",
+      "response_sha256": "105947b55d3f5e90fe4d2ed98a8fa7a9728fc82e6eca2beb6035bc7e8bad3203"
+    },
+    {
+      "kind": "plan-0",
+      "model": "glm-5.3-flash",
+      "state": "received",
+      "elapsed_s": 15.64,
+      "usage": {
+        "input_tokens": 7638,
+        "output_tokens": 673,
+        "cache_read_input_tokens": 0,
+        "server_tool_use": {
+          "web_search_requests": 0
+        },
+        "service_tier": "standard"
+      },
+      "reported_model": "glm-5.3-flash",
+      "response_sha256": "7d378661fbb3c6bf86916819a1ccae79badd189ac6fcc959ad32d23791ac0428"
+    },
+    {
+      "kind": "plan-1",
+      "model": "glm-5.3-flash",
+      "state": "received",
+      "elapsed_s": 22.54,
+      "usage": {
+        "input_tokens": 8284,
+        "output_tokens": 1118,
+        "cache_read_input_tokens": 0,
+        "server_tool_use": {
+          "web_search_requests": 0
+        },
+        "service_tier": "standard"
+      },
+      "reported_model": "glm-5.3-flash",
+      "response_sha256": "ebe0f58f42896158c5a8695570b4745164f66a08dac74a0203407264577ad1e2"
+    },
+    {
+      "kind": "plan-0",
+      "model": "glm-5.3-flash",
+      "state": "received",
+      "elapsed_s": 16.5,
+      "usage": {
+        "input_tokens": 8218,
+        "output_tokens": 779,
+        "cache_read_input_tokens": 768,
+        "server_tool_use": {
+          "web_search_requests": 0
+        },
+        "service_tier": "standard"
+      },
+      "reported_model": "glm-5.3-flash",
+      "response_sha256": "6492894ed65fd8852e2dfd5ea6fbc0b5f9b226976dfbb8399ac786302f5ed5a4"
+    },
+    {
+      "kind": "plan-1",
+      "model": "glm-5.3-flash",
+      "state": "received",
+      "elapsed_s": 12.21,
+      "usage": {
+        "input_tokens": 8101,
+        "output_tokens": 628,
+        "cache_read_input_tokens": 1536,
+        "server_tool_use": {
+          "web_search_requests": 0
+        },
+        "service_tier": "standard"
+      },
+      "reported_model": "glm-5.3-flash",
+      "response_sha256": "e2929fe4ab74f0a7990fc3bd5348f2146dd3e7f59de998108bcad5a2b1cc2f74"
+    },
+    {
+      "kind": "review-0",
+      "model": "glm-5.3-flash",
+      "state": "received",
+      "elapsed_s": 13.59,
+      "usage": {
+        "input_tokens": 6569,
+        "output_tokens": 552,
+        "cache_read_input_tokens": 768,
+        "server_tool_use": {
+          "web_search_requests": 0
+        },
+        "service_tier": "standard"
+      },
+      "reported_model": "glm-5.3-flash",
+      "response_sha256": "5cda752119b7c31539c48637d6ab63d59d412e1dd6ea6b630790e8bddfca9041"
+    },
+    {
+      "kind": "select-0",
+      "model": "glm-5.3-flash",
+      "state": "received",
+      "elapsed_s": 6.37,
+      "usage": {
+        "input_tokens": 4877,
+        "output_tokens": 168,
+        "cache_read_input_tokens": 0,
+        "server_tool_use": {
+          "web_search_requests": 0
+        },
+        "service_tier": "standard"
+      },
+      "reported_model": "glm-5.3-flash",
+      "response_sha256": "3d31b8d543f2b9286111c8a7b9201febec647f255a6a3541388d18af7bf1c89e"
+    }
+  ],
+  "skill_sha256": "0dba8c4fd4a14331e466e6883a82cfd6ff8b899c3217d1f663a3e772e8126477",
+  "elapsed_s": 157.89,
+  "model_calls": 9,
+  "selection": {
+    "selected_round": 2,
+    "reason": "Round-2 candidate duckling_crest_puff_mk2c (recipe 73fa5dc7...) is host-eligible: proof accepted, single fused solid, motion passed at 31 poses with min distance 16.1 mm. Whole-robot renders show the yellow two-puff crest centered on the head-top dome, clearly visible and recognizable without blocking the camera or face; close-ups confirm soft, friendly rounded styling with no sharp edges. Compact bbox (~18x16x11.8 mm, ~2.15 g) stays inside the zone with no floating or obstructive geometry. Camera, shells and mechanisms untouched. Attachment, curvature fit, printability and gait remain open per the prototype-study framing, consistent with interface_status unverified."
+  },
+  "result": {
+    "directory": "/home/exuber/CODE/CORE/pythonProject1/AUTORESEARCH/fluxkernel/.demo/v010-personalization/robot-pal-6985339a/round-02/xgoduck-part-0610b949",
+    "native_sha256": "4a5f6cebb373e2ad8d8f5b3cd4f4692c264f356ad347cdce5a7f2b8dcd29f161",
+    "name": "xgoduck",
+    "bodies": 16,
+    "joints": 15,
+    "actuators": 14,
+    "meshes": 16,
+    "mass_kg": 0.8021487726055273,
+    "proof_accepted": true,
+    "deployment_ready": false,
+    "accepted": true,
+    "motion_passed": true,
+    "motion_summary": {
+      "minimum_distance_m": 0.01606420654253603,
+      "violations": []
+    },
+    "part_body": "custom_duckling_crest_puff_mk2c",
+    "added_mass_kg": 0.0021487833055272654,
+    "interface_status": "unverified",
+    "recipe_sha256": "73fa5dc7fbff117625e004bce5722f34396e1c41d1f165bfcff9794a95a2c409"
+  },
+  "visual_status": "meets-brief"
+}

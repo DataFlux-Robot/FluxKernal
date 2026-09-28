@@ -1,0 +1,216 @@
+{
+  "schema": "fk-robot-pal-v1",
+  "mode": "live",
+  "model": "glm-5.3-flash",
+  "parent_native_sha256": "8795d7f3594e388468791b15f597534c15fe533d2f1cc9501e9cd6e1d80b94ee",
+  "max_rounds": 3,
+  "max_provider_calls": 14,
+  "selected_round": 0,
+  "status": "prototype-needs-physical-validation",
+  "deployment_ready": false,
+  "interface_status": "unverified",
+  "records": [
+    {
+      "round": 0,
+      "state": "reviewed",
+      "attempts": [
+        {
+          "attempt": 0,
+          "state": "rejected",
+          "error": "Part CAD rejected: ValueError: Recipe must produce one valid connected positive-volume solid; got valid=True, solids=3, volume_mm3=1836.4328425819592; features must overlap",
+          "proposed_recipe": {
+            "schema_version": "fk-robot-part-v1",
+            "zone_sha256": "1d3b5535b1bb6d87b66a7bdf31ddcb921a1738a0d11f2a0410fa11d198f4db5c",
+            "name": "duckling_tuft_crest",
+            "rationale": "Plan: a friendly, compact 'duckling tuft' crest echoing Microduck's yellow identity. A 16x16x2.5 mm elliptical adhesive base sits at the head-top tangent; on it, one backward-leaning rounded ellipsoid tuft (18 mm long, 11 mm tall, tilted -25 deg) forms a soft pompadour silhouette, flanked by two small bilateral ellipsoid bumps for a cute feather-bud look. Nothing exceeds the 35 mm zone height, all parts are rounded with no sharp edges, and the camera face is untouched. Symmetry bilateral so the Y>=0 bump fuses with its mirror. PLA in warm duck-yellow. Mounting retention, curvature fit and print behavior remain open per the unverified interface.",
+            "symmetry": "bilateral",
+            "material": "pla",
+            "color_rgb": [
+              1.0,
+              0.78,
+              0.05
+            ],
+            "base_size_mm": [
+              16,
+              16,
+              2.5
+            ],
+            "features": [
+              {
+                "shape": "ellipsoid",
+                "size_mm": [
+                  18,
+                  10,
+                  11
+                ],
+                "center_mm": [
+                  1.0,
+                  0,
+                  7.5
+                ],
+                "rotation_deg": [
+                  0,
+                  25,
+                  0
+                ]
+              },
+              {
+                "shape": "ellipsoid",
+                "size_mm": [
+                  6,
+                  7,
+                  7
+                ],
+                "center_mm": [
+                  7.0,
+                  6.0,
+                  5.0
+                ],
+                "rotation_deg": [
+                  0,
+                  0,
+                  0
+                ]
+              }
+            ]
+          }
+        }
+      ],
+      "candidate": {
+        "directory": "/home/exuber/CODE/CORE/pythonProject1/AUTORESEARCH/fluxkernel/.demo/v010-personalization/robot-pal-a03ce4b3/round-00/microduck-part-d2b80ad3",
+        "native_sha256": "f5882c4a1635022ba4a9e0ec17aa014a0e769a95e6b6016484747f492a39e937",
+        "name": "microduck",
+        "bodies": 16,
+        "joints": 15,
+        "actuators": 14,
+        "meshes": 39,
+        "mass_kg": 0.7392984135627633,
+        "proof_accepted": true,
+        "deployment_ready": false,
+        "accepted": true,
+        "motion_passed": true,
+        "motion_summary": {
+          "minimum_distance_m": 0.01722026532524078,
+          "violations": []
+        },
+        "part_body": "custom_duckling_tuft_crest",
+        "added_mass_kg": 0.0020552335627632176,
+        "interface_status": "unverified",
+        "recipe_sha256": "0ff240bb16972265f2f6e7916359508d501171483b3dc75d4c806372e187c528"
+      },
+      "review": {
+        "recipe_sha256": "0ff240bb16972265f2f6e7916359508d501171483b3dc75d4c806372e187c528",
+        "verdict": "meets-brief",
+        "findings": [
+          "Whole-robot and close-up renders (recipe digest duckling_tuft_crest, recipe_sha256 0ff240bb...) show a small soft backward-leaning tuft with bilateral bumps in duck-yellow, coherent with the source head's yellow accents; silhouette is rounded and friendly with no sharp or bulky features.",
+          "CAD facts confirm solids=1: the revision fixed the round-00 floating/disconnected geometry; the tuft (lowest swept Z ≈1 mm) and mirrored bumps (lowest Z ≈0.5 mm) now positively overlap the 2.5 mm base, so no floating or disconnected lumps remain.",
+          "Part mass 2.06 g, extent 17.7×17×13.0 mm, well inside the zone and far below its max Z; it does not obstruct the camera face in any rendered view, and motion checks pass at all 31 poses (min distance 17.2 mm, no violations).",
+          "Rendered placement reads as slightly perched above the curved shell crown because the flat elliptical base meets a curved surface, but the fused single solid and the pad-attachment intent make this acceptable for a prototype study; curvature fit and adhesive retention remain explicitly open.",
+          "No implausibly large or obstructive geometry identified; source shells, motors, joints and camera remain intact and visible in all four views."
+        ],
+        "next_step": "stop",
+        "reason": "The built candidate is host-eligible (proof accepted, single fused solid, motion passed) and the renders confirm a compact, friendly, recognizable duckling-tuft crest that preserves the robot identity and camera view. The revision resolved the prior disconnected-feature failure. Remaining uncertainties (curvature fit, adhesive retention, print behavior, real motion) are unverified-interface items outside this study's scope, so no further rounds are needed."
+      }
+    }
+  ],
+  "calls": [
+    {
+      "kind": "plan-0",
+      "model": "glm-5.3-flash",
+      "state": "received",
+      "elapsed_s": 13.31,
+      "usage": {
+        "input_tokens": 3675,
+        "output_tokens": 444,
+        "cache_read_input_tokens": 768,
+        "server_tool_use": {
+          "web_search_requests": 0
+        },
+        "service_tier": "standard"
+      },
+      "reported_model": "glm-5.3-flash",
+      "response_sha256": "e53e19821b5978ebe08acbfdbcf17ce325a701b6b09817a7381e8825b56edf07"
+    },
+    {
+      "kind": "plan-1",
+      "model": "glm-5.3-flash",
+      "state": "received",
+      "elapsed_s": 14.8,
+      "usage": {
+        "input_tokens": 4904,
+        "output_tokens": 570,
+        "cache_read_input_tokens": 0,
+        "server_tool_use": {
+          "web_search_requests": 0
+        },
+        "service_tier": "standard"
+      },
+      "reported_model": "glm-5.3-flash",
+      "response_sha256": "6c83373b81d8d3f3c218ff97f58f265a35486afab9e8515680ebc0ecc5bf60b6"
+    },
+    {
+      "kind": "review-0",
+      "model": "glm-5.3-flash",
+      "state": "received",
+      "elapsed_s": 14.97,
+      "usage": {
+        "input_tokens": 7172,
+        "output_tokens": 550,
+        "cache_read_input_tokens": 0,
+        "server_tool_use": {
+          "web_search_requests": 0
+        },
+        "service_tier": "standard"
+      },
+      "reported_model": "glm-5.3-flash",
+      "response_sha256": "bfe3797d85252605098c5f116aca91540813bda96dfc7c86a286c28cbfb0ed60"
+    },
+    {
+      "kind": "select-0",
+      "model": "glm-5.3-flash",
+      "state": "received",
+      "elapsed_s": 6.37,
+      "usage": {
+        "input_tokens": 2845,
+        "output_tokens": 225,
+        "cache_read_input_tokens": 0,
+        "server_tool_use": {
+          "web_search_requests": 0
+        },
+        "service_tier": "standard"
+      },
+      "reported_model": "glm-5.3-flash",
+      "response_sha256": "66044ce000dacff419e8d38df0198a4886cb3b65d30f16a1cb6c5aea27514604"
+    }
+  ],
+  "skill_sha256": "0dba8c4fd4a14331e466e6883a82cfd6ff8b899c3217d1f663a3e772e8126477",
+  "elapsed_s": 59.32,
+  "model_calls": 4,
+  "selection": {
+    "selected_round": 0,
+    "reason": "Round 0 candidate (recipe digest duckling_tuft_crest, recipe_sha256 0ff240bb...) is host-eligible: proof accepted, single fused solid, motion passed at all 31 poses (min distance 17.2 mm, no violations), added mass only 2.06 g within the zone. Whole-robot and close-up renders confirm a compact, backward-leaning duck-yellow tuft with bilateral bumps matching the source's yellow accents; silhouette is rounded and friendly with no sharp or bulky features, and the camera face and all source shells, motors and joints remain intact and visible. CAD facts confirm the tuft and mirrored bumps positively overlap the 2.5 mm base, so the earlier floating-geometry failure was resolved and no floating, disconnected, implausibly large or obstructive geometry is present. The slightly perched flat base on the curved crown is acceptable for a pad-attachment prototype study; curvature fit, adhesive retention, print behavior and real walking remain explicitly open and out of scope. No further rounds needed."
+  },
+  "result": {
+    "directory": "/home/exuber/CODE/CORE/pythonProject1/AUTORESEARCH/fluxkernel/.demo/v010-personalization/robot-pal-a03ce4b3/round-00/microduck-part-d2b80ad3",
+    "native_sha256": "f5882c4a1635022ba4a9e0ec17aa014a0e769a95e6b6016484747f492a39e937",
+    "name": "microduck",
+    "bodies": 16,
+    "joints": 15,
+    "actuators": 14,
+    "meshes": 39,
+    "mass_kg": 0.7392984135627633,
+    "proof_accepted": true,
+    "deployment_ready": false,
+    "accepted": true,
+    "motion_passed": true,
+    "motion_summary": {
+      "minimum_distance_m": 0.01722026532524078,
+      "violations": []
+    },
+    "part_body": "custom_duckling_tuft_crest",
+    "added_mass_kg": 0.0020552335627632176,
+    "interface_status": "unverified",
+    "recipe_sha256": "0ff240bb16972265f2f6e7916359508d501171483b3dc75d4c806372e187c528"
+  },
+  "visual_status": "meets-brief"
+}

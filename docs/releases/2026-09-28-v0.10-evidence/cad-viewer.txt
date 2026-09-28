@@ -1,0 +1,5 @@
+npm error Missing script: "agent:start"
+npm error
+npm error To see a list of scripts, run:
+npm error   npm run
+npm error A complete log of this run can be found in: /home/exuber/.npm/_logs/2026-09-28T12_56_05_797Z-debug-0.log

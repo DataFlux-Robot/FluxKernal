@@ -1,0 +1,122 @@
+[
+  {
+    "status": "prototype-needs-physical-validation",
+    "model": "glm-5.3-flash",
+    "model_calls": 7,
+    "max_rounds": 3,
+    "selected_round": 2,
+    "error": null,
+    "interruption_reason": null,
+    "run_id": "robot-pal-06269b2d",
+    "archived_responses": 7,
+    "delivery_run": false
+  },
+  {
+    "status": "failed",
+    "model": "glm-5.3-flash",
+    "model_calls": 1,
+    "max_rounds": 3,
+    "selected_round": null,
+    "error": "Command '['/home/exuber/CODE/CORE/pythonProject1/AUTORESEARCH/fluxkernel/.venv/bin/python', '-m', 'fluxkernel.robotics.part_geometry', '/home/exuber/CODE/CORE/pythonProject1/AUTORESEARCH/fluxkernel/.demo/v010-personalization/robot-pal-0868818e/round-00/xgoduck-part-4d6204e4/request.json', '/home/exuber/CODE/CORE/pythonProject1/AUTORESEARCH/fluxkernel/.demo/v010-personalization/robot-pal-0868818e/round-00/xgoduck-part-4d6204e4/cad/custom_duck_crest_ember']' timed out after 120 seconds",
+    "interruption_reason": null,
+    "run_id": "robot-pal-0868818e",
+    "archived_responses": 1,
+    "delivery_run": false
+  },
+  {
+    "status": "failed",
+    "model": "glm-5.3-flash",
+    "model_calls": 3,
+    "max_rounds": 3,
+    "selected_round": null,
+    "error": "STEP volume differs from generating CAD",
+    "interruption_reason": null,
+    "run_id": "robot-pal-510a52a2",
+    "archived_responses": 3,
+    "delivery_run": false
+  },
+  {
+    "status": "needs-review",
+    "model": "glm-5.3-flash",
+    "model_calls": 6,
+    "max_rounds": 3,
+    "selected_round": null,
+    "error": null,
+    "interruption_reason": null,
+    "run_id": "robot-pal-577e6f53",
+    "archived_responses": 6,
+    "delivery_run": false
+  },
+  {
+    "status": "prototype-needs-physical-validation",
+    "model": "glm-5.3-flash",
+    "model_calls": 3,
+    "max_rounds": 3,
+    "selected_round": 0,
+    "error": null,
+    "interruption_reason": null,
+    "run_id": "robot-pal-6275eeb7",
+    "archived_responses": 3,
+    "delivery_run": false
+  },
+  {
+    "status": "prototype-needs-physical-validation",
+    "model": "glm-5.3-flash",
+    "model_calls": 9,
+    "max_rounds": 3,
+    "selected_round": 2,
+    "error": null,
+    "interruption_reason": null,
+    "run_id": "robot-pal-6985339a",
+    "archived_responses": 9,
+    "delivery_run": true
+  },
+  {
+    "status": "prototype-needs-physical-validation",
+    "model": "glm-5.3-flash",
+    "model_calls": 4,
+    "max_rounds": 3,
+    "selected_round": 0,
+    "error": null,
+    "interruption_reason": null,
+    "run_id": "robot-pal-a03ce4b3",
+    "archived_responses": 4,
+    "delivery_run": true
+  },
+  {
+    "status": "failed",
+    "model": "glm-5.3-flash",
+    "model_calls": 4,
+    "max_rounds": 3,
+    "selected_round": null,
+    "error": "STEP volume differs from generating CAD",
+    "interruption_reason": null,
+    "run_id": "robot-pal-a420ade8",
+    "archived_responses": 4,
+    "delivery_run": false
+  },
+  {
+    "status": "interrupted",
+    "model": "glm-5.3-flash",
+    "model_calls": null,
+    "max_rounds": 3,
+    "selected_round": null,
+    "error": null,
+    "interruption_reason": "Host terminated stalled all-moment Gauss-Kronrod STEP integration. No candidate selected; preserved for solver debugging.",
+    "run_id": "robot-pal-a7789b30",
+    "archived_responses": 1,
+    "delivery_run": false
+  },
+  {
+    "status": "needs-review",
+    "model": "glm-5.3-flash",
+    "model_calls": 7,
+    "max_rounds": 3,
+    "selected_round": null,
+    "error": null,
+    "interruption_reason": null,
+    "run_id": "robot-pal-ec21fd26",
+    "archived_responses": 7,
+    "delivery_run": false
+  }
+]

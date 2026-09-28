@@ -1,0 +1,16 @@
+{
+  "accepted": true,
+  "checks": {
+    "joints": true,
+    "actuators": true,
+    "sensors": true,
+    "sites": true,
+    "simulation": true,
+    "original_bodies": true,
+    "original_geometry": true,
+    "original_meshes": true,
+    "one_fixed_part": true,
+    "action_order": true
+  },
+  "scope": "Exact native record equality; nominal Python checks, not a Lean geometry theorem"
+}

@@ -1,0 +1,74 @@
+{
+  "schema_version": "fk-robot-part-v1",
+  "zone_sha256": "b6e92b2a80c9501f6ae1aea3c52e5d584e8df5a18f9981e0207d796cb7f12c49",
+  "name": "duckling_crest_puff_mk2",
+  "rationale": "Revision after round-0 needs-review (recipe 47de1147…): renders show the crest is host-eligible but reads as a tiny yellow speck far from the head apex. Fix: enlarge the puff cluster and broaden the base for presence. Base grows 14x12x2.5 -> 18x16x3; center puff grows to 16x13x11 at [0,0,5.5] tilted back -15deg (lowest Z ~5.5-5.4~0.1, inside base thickness with full XY overlap). Two side puffs (bilateral, Y=+4 only, host mirrors) at [-2.5,4,6] sized 10x6x7 tilted back -25deg keep lowest Z ~1.8mm>0 and overlap the base in XY. Total silhouette roughly doubles in apparent area while staying soft, rounded ellipsoids with no sharp edges; mass stays far under 16 g and the 18x16 footprint plus ~11 mm height sits well inside the 80x80x35 mm zone. Part stays rear-of-apex on the head-top slope, clear of the front camera lens and dome seen in the +X and perspective views. Adhesive-pad attachment, curvature fit, printability and walking remain open per the brief.",
+  "symmetry": "bilateral",
+  "material": "pla",
+  "color_rgb": [
+    1.0,
+    0.72,
+    0.2
+  ],
+  "base_size_mm": [
+    18.0,
+    16.0,
+    3.0
+  ],
+  "features": [
+    {
+      "shape": "ellipsoid",
+      "size_mm": [
+        16.0,
+        13.0,
+        11.0
+      ],
+      "center_mm": [
+        0.0,
+        0.0,
+        5.5
+      ],
+      "rotation_deg": [
+        -15.0,
+        0.0,
+        0.0
+      ]
+    },
+    {
+      "shape": "ellipsoid",
+      "size_mm": [
+        10.0,
+        6.0,
+        7.0
+      ],
+      "center_mm": [
+        -2.5,
+        4.0,
+        6.0
+      ],
+      "rotation_deg": [
+        -25.0,
+        -20.0,
+        10.0
+      ]
+    },
+    {
+      "shape": "ellipsoid",
+      "size_mm": [
+        7.0,
+        5.0,
+        5.0
+      ],
+      "center_mm": [
+        4.0,
+        3.0,
+        4.5
+      ],
+      "rotation_deg": [
+        20.0,
+        15.0,
+        0.0
+      ]
+    }
+  ]
+}

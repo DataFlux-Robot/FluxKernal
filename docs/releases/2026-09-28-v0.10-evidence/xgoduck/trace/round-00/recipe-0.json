@@ -1,0 +1,74 @@
+{
+  "schema_version": "fk-robot-part-v1",
+  "zone_sha256": "b6e92b2a80c9501f6ae1aea3c52e5d584e8df5a18f9981e0207d796cb7f12c49",
+  "name": "duckling_crest_puff",
+  "rationale": "Plan phase 0: friendly duckling theme — a soft rounded crest tuft suggesting a hatchling's feather puff, matching the XGO Duck's rounded head shell seen in the renders. Compact base ellipse (~14x12x2.5 mm) stays well inside the 80x80x35 mm zone and light mass budget. Three tilted-back ellipsoid puffs (center plus bilateral pair) overlap the base positively; all rotated shapes keep lowest Z above 0 given centers >= ~3 mm with half-extents < ~3 mm. No fins or boxes, so no sharp or intimidating silhouettes. Camera lens on the front face and all source geometry untouched; attachment remains an unverified adhesive-pad proposal on the source triangle tangent.",
+  "symmetry": "bilateral",
+  "material": "pla",
+  "color_rgb": [
+    1.0,
+    0.72,
+    0.2
+  ],
+  "base_size_mm": [
+    14.0,
+    12.0,
+    2.5
+  ],
+  "features": [
+    {
+      "shape": "ellipsoid",
+      "size_mm": [
+        10.0,
+        8.0,
+        6.0
+      ],
+      "center_mm": [
+        0.0,
+        0.0,
+        4.5
+      ],
+      "rotation_deg": [
+        -15.0,
+        0.0,
+        0.0
+      ]
+    },
+    {
+      "shape": "ellipsoid",
+      "size_mm": [
+        8.0,
+        5.0,
+        5.0
+      ],
+      "center_mm": [
+        -1.5,
+        3.5,
+        5.5
+      ],
+      "rotation_deg": [
+        -25.0,
+        -20.0,
+        10.0
+      ]
+    },
+    {
+      "shape": "ellipsoid",
+      "size_mm": [
+        8.0,
+        5.0,
+        5.0
+      ],
+      "center_mm": [
+        -1.5,
+        -3.5,
+        5.5
+      ],
+      "rotation_deg": [
+        -25.0,
+        20.0,
+        -10.0
+      ]
+    }
+  ]
+}

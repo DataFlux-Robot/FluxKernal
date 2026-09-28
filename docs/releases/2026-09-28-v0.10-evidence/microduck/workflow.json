@@ -1,0 +1,22 @@
+{
+  "sources": {
+    "workflow/robotics/personalize.py": "c301391d4b4945bd697721d2b9a9adbf46fbc5e886fae7b3044cd1296080fb4a",
+    "workflow/robotics/attachment.py": "56018919e64eed1c8cad0347381c1ec921327f2970ee9a3f28a81129f49721b6",
+    "workflow/robotics/part_geometry.py": "8aefacac4e5d640f63b7ce91c1901fd67aeb314855d206903fd588880a17482e",
+    "workflow/robotics/render.py": "bdb175dae8d1ff94063f654651a7f7b00bbb7661b76429700d0fcfe03fa32db4",
+    "workflow/robotics/bundle.py": "c23c22397a86182216db264d02fd6f5a6ca131e7ff59c70d17e09b4d6289485a",
+    "workflow/robotics/native.py": "275f2c933931809f617968bb5ff8236090d764b6d611b72e845c356e88ee6d4c",
+    "workflow/robotics/projection.py": "82905e0a0cb555396e875111a60e18061079a1b46fd1d90b38375042d9f1eb9d",
+    "workflow/robotics/validation.py": "a17e4ba239dc60f018dac58356a50231987089348840c837613c40c22dabb270",
+    "workflow/robotics/proof.py": "71afeb0878d66ee5c6f75998a80e5bc4e94449ba0b1310c0ae8b6b32b263e4fb",
+    "workflow/robotics/personalization_report.py": "324b6726b4f9107b3772edc8d81457300ef22ba6bdadff7d45c314381e355b76",
+    "workflow/demo/perception.py": "ee24d5fd0c3948b5ef0e3f15be796e54bed91a80a2a831ceffe2606da325b38a",
+    "workflow/demo/vision.py": "c35a95b47901af61912e736ba20454c0a694bcf5fe88d11ef0128b5a47fcd899"
+  },
+  "versions": {
+    "build123d": "0.13.0",
+    "mujoco": "3.14.0",
+    "numpy": "2.5.3",
+    "pydantic": "2.13.5"
+  }
+}

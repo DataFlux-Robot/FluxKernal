@@ -1,0 +1,18 @@
+Traceback (most recent call last):
+  File "<frozen runpy>", line 198, in _run_module_as_main
+  File "<frozen runpy>", line 88, in _run_code
+  File "/home/exuber/.codex/skills/cad/scripts/step/__main__.py", line 16, in <module>
+    raise SystemExit(main())
+                     ^^^^^^
+  File "/home/exuber/.codex/skills/cad/scripts/step/cli.py", line 125, in main
+    return generate_step_targets(
+           ^^^^^^^^^^^^^^^^^^^^^^
+  File "/home/exuber/.codex/skills/cad/scripts/step/cli.py", line 11, in generate_step_targets
+    from cadpy.generation import generate_step_targets as generate
+  File "/home/exuber/CODE/CORE/pythonProject1/AUTORESEARCH/fluxkernel/.venv/lib/python3.12/site-packages/cadpy/generation.py", line 40, in <module>
+    from cadpy.glb import (
+  File "/home/exuber/CODE/CORE/pythonProject1/AUTORESEARCH/fluxkernel/.venv/lib/python3.12/site-packages/cadpy/glb.py", line 32, in <module>
+    from cadpy.step_scene import ColorRGBA, LoadedStepScene, OccurrenceNode, SelectorBundle, occurrence_selector_id
+  File "/home/exuber/CODE/CORE/pythonProject1/AUTORESEARCH/fluxkernel/.venv/lib/python3.12/site-packages/cadpy/step_scene.py", line 32, in <module>
+    from OCP.TDF import TDF_ChildIterator, TDF_Label, TDF_LabelSequence
+ImportError: cannot import name 'TDF_LabelSequence' from 'OCP.TDF' (/home/exuber/CODE/CORE/pythonProject1/AUTORESEARCH/fluxkernel/.venv/lib/python3.12/site-packages/OCP/TDF/__init__.py)

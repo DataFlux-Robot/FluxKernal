@@ -1,0 +1,56 @@
+{
+  "schema_version": "fk-robot-part-v1",
+  "zone_sha256": "1d3b5535b1bb6d87b66a7bdf31ddcb921a1738a0d11f2a0410fa11d198f4db5c",
+  "name": "duckling_tuft_crest",
+  "rationale": "Revision of attempt 0, which failed because the tilted tuft and side bumps did not positively overlap the base or each other. Fix: lower the backward-leaning tuft (center Z=7.0, rotated 20 deg about Y) so its lowest swept Z is about 1 mm, inside the 2.5 mm base thickness, giving solid volume overlap; and lower the bilateral feather bumps (center Z=3.5, radius 3 mm) so each directly overlaps the base (lowest Z about 0.5 mm). Both features therefore connect to the base with positive volume, producing one fused solid. Silhouette stays a soft, friendly duckling tuft in duck-yellow PLA, well under the 35 mm zone height and far from the camera face. Mounting retention, curvature fit and print behavior remain open per the unverified interface.",
+  "symmetry": "bilateral",
+  "material": "pla",
+  "color_rgb": [
+    1.0,
+    0.78,
+    0.05
+  ],
+  "base_size_mm": [
+    16.0,
+    16.0,
+    2.5
+  ],
+  "features": [
+    {
+      "shape": "ellipsoid",
+      "size_mm": [
+        18.0,
+        10.0,
+        11.0
+      ],
+      "center_mm": [
+        1.0,
+        0.0,
+        7.0
+      ],
+      "rotation_deg": [
+        0.0,
+        20.0,
+        0.0
+      ]
+    },
+    {
+      "shape": "ellipsoid",
+      "size_mm": [
+        6.0,
+        6.0,
+        6.0
+      ],
+      "center_mm": [
+        5.0,
+        5.5,
+        3.5
+      ],
+      "rotation_deg": [
+        0.0,
+        0.0,
+        0.0
+      ]
+    }
+  ]
+}

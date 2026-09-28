@@ -1,0 +1,74 @@
+{
+  "schema_version": "fk-robot-part-v1",
+  "zone_sha256": "b6e92b2a80c9501f6ae1aea3c52e5d584e8df5a18f9981e0207d796cb7f12c49",
+  "name": "duckling_crest_puff_mk2",
+  "rationale": "Revision after round-0 needs-review (recipe 47de1147…): renders confirm the crest is connected and non-obstructive but reads as a tiny speck; attempt-0 failed in CAD. Diagnosis of attempt-0: the 16x13x11 center puff tilted -15deg has a rotated Z half-extent of ~7.4 mm about center z=5.5, driving its lowest Z to ~-1.9 mm — below Z=0, invalid. Fix: keep the enlarged friendly silhouette but tilt the center puff only -10deg and raise it to z=7 (lowest Z ~+0.19 mm, inside the 3 mm base with full XY overlap, positive volume). Side puff (Y=+4 only, host mirrors bilaterally) raised to z=6 with milder rotations, lowest Z ~+1.4 mm, overlapping the 18x16 base in XY. Front accent puff at [4,3,5] with gentle 10deg tilt keeps lowest Z ~+1.9 mm. No feature reaches below Z=0; whole part ~18x16x~13 mm sits well inside 80x80x35 mm, mass far under 16 g. Soft rounded ellipsoid tuft, no sharp silhouettes; clear of the front camera lens and dome seen in +X and perspective views. Adhesive-pad attachment, curvature fit, printability and walking remain open per the brief.",
+  "symmetry": "bilateral",
+  "material": "pla",
+  "color_rgb": [
+    1.0,
+    0.72,
+    0.2
+  ],
+  "base_size_mm": [
+    18.0,
+    16.0,
+    3.0
+  ],
+  "features": [
+    {
+      "shape": "ellipsoid",
+      "size_mm": [
+        16.0,
+        13.0,
+        11.0
+      ],
+      "center_mm": [
+        0.0,
+        0.0,
+        7.0
+      ],
+      "rotation_deg": [
+        -10.0,
+        0.0,
+        0.0
+      ]
+    },
+    {
+      "shape": "ellipsoid",
+      "size_mm": [
+        10.0,
+        6.0,
+        7.0
+      ],
+      "center_mm": [
+        -2.5,
+        4.0,
+        6.0
+      ],
+      "rotation_deg": [
+        -15.0,
+        -12.0,
+        8.0
+      ]
+    },
+    {
+      "shape": "ellipsoid",
+      "size_mm": [
+        7.0,
+        5.0,
+        5.0
+      ],
+      "center_mm": [
+        4.0,
+        3.0,
+        5.0
+      ],
+      "rotation_deg": [
+        10.0,
+        8.0,
+        0.0
+      ]
+    }
+  ]
+}

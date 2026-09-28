@@ -1,0 +1,22 @@
+{
+  "directory": "/home/exuber/CODE/CORE/pythonProject1/AUTORESEARCH/fluxkernel/.demo/v010-personalization/robot-pal-a03ce4b3/round-00/microduck-part-d2b80ad3",
+  "native_sha256": "f5882c4a1635022ba4a9e0ec17aa014a0e769a95e6b6016484747f492a39e937",
+  "name": "microduck",
+  "bodies": 16,
+  "joints": 15,
+  "actuators": 14,
+  "meshes": 39,
+  "mass_kg": 0.7392984135627633,
+  "proof_accepted": true,
+  "deployment_ready": false,
+  "accepted": true,
+  "motion_passed": true,
+  "motion_summary": {
+    "minimum_distance_m": 0.01722026532524078,
+    "violations": []
+  },
+  "part_body": "custom_duckling_tuft_crest",
+  "added_mass_kg": 0.0020552335627632176,
+  "interface_status": "unverified",
+  "recipe_sha256": "0ff240bb16972265f2f6e7916359508d501171483b3dc75d4c806372e187c528"
+}
