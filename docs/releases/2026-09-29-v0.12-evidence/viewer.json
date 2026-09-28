@@ -1,0 +1,6 @@
+{
+  "started": false,
+  "reason": "Installed CAD Viewer package lacks agent:start script",
+  "numerical_consumer_checks": "passed",
+  "geometry_changed": false
+}

@@ -1,0 +1,12 @@
+{
+  "schema": "fk-lean-document-v1",
+  "accepted": true,
+  "directory": "/home/exuber/CODE/CORE/pythonProject1/AUTORESEARCH/fluxkernel/.demo/v012-lossless-final/xgoduck-personalized/lean",
+  "lean_executed": true,
+  "lean_sha256": "6c211a5c2b8995d2d819e37acc13a22a8a4c5fe86fbfdafbee5b362f8e0c0464",
+  "source_urdf_sha256": "36b792151436cb9c89946d54fd48729b68f6a6ddadbd2767a29fb2cfb0fdbd5b",
+  "xml_information_equal": true,
+  "asset_count": 16,
+  "native_file_count": 229,
+  "physical_status": "unverified"
+}

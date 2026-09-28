@@ -1,0 +1,23 @@
+{
+  "schema": "fk-robot-proof-v1",
+  "accepted": true,
+  "native_sha256": "9421e7cbc0d7409532aeaa71a8532a8139c334c845fcda422d1d35e201465f82",
+  "lean_source_sha256": "1fd572887b5719e688c25a7d426d602378989568c6475eb2ccc229cd7a8962b1",
+  "scope": [
+    "unique body/joint names",
+    "acyclic ordered body parents",
+    "nonnegative declared mass",
+    "joint references and ordered limits",
+    "unique and complete driven-joint coverage",
+    "controller bound to this plant digest"
+  ],
+  "not_proven": [
+    "mesh geometry",
+    "floating point calculations",
+    "kinematic projection equivalence",
+    "physical stability",
+    "manufacturability",
+    "policy execution safety"
+  ],
+  "exchange_required": true
+}

@@ -1,0 +1,12 @@
+{
+  "schema": "fk-lean-document-v1",
+  "accepted": true,
+  "directory": "/home/exuber/CODE/CORE/pythonProject1/AUTORESEARCH/fluxkernel/.demo/v012-validation/cli-lean",
+  "lean_executed": true,
+  "lean_sha256": "44b57fc3d343853b5dac67722a7cbeaa51b7719e9c7c1d3cd165336426da0bd1",
+  "source_urdf_sha256": "10fa6472a295177843d1ef417e8042e2447b84d6207a4938f6cd61d71ce6f8dd",
+  "xml_information_equal": true,
+  "asset_count": 0,
+  "native_file_count": 0,
+  "physical_status": "unverified"
+}

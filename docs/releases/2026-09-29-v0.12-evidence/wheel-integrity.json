@@ -1,0 +1,11 @@
+{
+  "wheel": "dist/fluxkernel-0.12.0-py3-none-any.whl",
+  "sha256": "e2522aa3d2c3926477d772db68ab199153eac8782976462676fb1dabc7e7c358",
+  "runtime_files_match": [
+    "fluxkernel/robotics/lean_document.py",
+    "fluxkernel/robotics/bundle.py",
+    "fluxkernel/robotics/cli.py"
+  ],
+  "lean_document_match": true,
+  "source_commit": "a4f1ff271a627519f3cd80ff781c081833859d52"
+}

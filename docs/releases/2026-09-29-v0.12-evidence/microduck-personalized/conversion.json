@@ -1,0 +1,12 @@
+{
+  "schema": "fk-lean-document-v1",
+  "accepted": true,
+  "directory": "/home/exuber/CODE/CORE/pythonProject1/AUTORESEARCH/fluxkernel/.demo/v012-lossless-final/microduck-personalized/lean",
+  "lean_executed": true,
+  "lean_sha256": "f835d463e803b14fd72e1d51815b6c01c958a8ad842d7c50d47fbd85a4a7b09c",
+  "source_urdf_sha256": "d1ed21a41514e905a747cdea25619824b6bfe32a31d002a3a7a47ebd49e6365f",
+  "xml_information_equal": true,
+  "asset_count": 39,
+  "native_file_count": 251,
+  "physical_status": "unverified"
+}

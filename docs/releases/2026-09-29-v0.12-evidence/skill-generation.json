@@ -1,0 +1,26 @@
+[
+  {
+    "name": "microduck",
+    "generation_validated": true,
+    "xml_equal": true,
+    "log": "Wrote URDF: /home/exuber/CODE/CORE/pythonProject1/AUTORESEARCH/fluxkernel/.demo/v012-lossless-final/microduck/lean-generated/skill-checked.urdf\n"
+  },
+  {
+    "name": "xgoduck",
+    "generation_validated": true,
+    "xml_equal": true,
+    "log": "Wrote URDF: /home/exuber/CODE/CORE/pythonProject1/AUTORESEARCH/fluxkernel/.demo/v012-lossless-final/xgoduck/lean-generated/skill-checked.urdf\n"
+  },
+  {
+    "name": "microduck-personalized",
+    "generation_validated": true,
+    "xml_equal": true,
+    "log": "Wrote URDF: /home/exuber/CODE/CORE/pythonProject1/AUTORESEARCH/fluxkernel/.demo/v012-lossless-final/microduck-personalized/lean-generated/skill-checked.urdf\n"
+  },
+  {
+    "name": "xgoduck-personalized",
+    "generation_validated": true,
+    "xml_equal": true,
+    "log": "Wrote URDF: /home/exuber/CODE/CORE/pythonProject1/AUTORESEARCH/fluxkernel/.demo/v012-lossless-final/xgoduck-personalized/lean-generated/skill-checked.urdf\n"
+  }
+]

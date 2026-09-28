@@ -1,0 +1,22 @@
+{
+  "schema": "fk-urdf-proof-v1",
+  "accepted": true,
+  "native_sha256": "9421e7cbc0d7409532aeaa71a8532a8139c334c845fcda422d1d35e201465f82",
+  "urdf_sha256": "168661a7d3d4b6706f82e0ccf0683db94e1ccfb46e48e16508d74e01cba3ad9f",
+  "lean_source_sha256": "e43f9dc9a24d1743a68aaf0372487895780e9f4171a8a6951709fe19dc498a45",
+  "scope": [
+    "link names and declared mass",
+    "joint names, parent/child and type",
+    "nonzero axis preserved as exact decimal rationals",
+    "finite limits shifted by native reference; exact rational arithmetic",
+    "declared effort/velocity limits preserved (unknown maps to zero)"
+  ],
+  "not_proven": [
+    "XML parser correctness",
+    "coordinate-transform equivalence",
+    "mesh/inertia geometry",
+    "continuous motion or dynamics",
+    "hardware capability"
+  ],
+  "physical_status": "unverified"
+}

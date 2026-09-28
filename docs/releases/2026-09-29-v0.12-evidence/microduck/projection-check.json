@@ -1,0 +1,89 @@
+{
+  "schema": "fk-robot-projection-check-v1",
+  "accepted": true,
+  "checks": [
+    {
+      "consumer": "native-mjcf",
+      "pose_fraction": null,
+      "max_frame_error": 2.7755575615628914e-16,
+      "max_mass_error_kg": 0.0,
+      "max_inertia_error_kg_m2": 2.710505431213761e-20,
+      "max_mesh_moment_error_m": 4.630629976687395e-10,
+      "accepted": true
+    },
+    {
+      "consumer": "urdf",
+      "pose_fraction": null,
+      "max_frame_error": 2.7755575615628914e-16,
+      "max_mass_error_kg": 0.0,
+      "max_inertia_error_kg_m2": 5.963111948670274e-19,
+      "max_mesh_moment_error_m": 4.630629976687395e-10,
+      "accepted": true
+    },
+    {
+      "consumer": "upstream",
+      "pose_fraction": null,
+      "max_frame_error": 2.7755575615628914e-16,
+      "max_mass_error_kg": 0.0,
+      "max_inertia_error_kg_m2": 6.776263578034403e-19,
+      "max_mesh_moment_error_m": 4.630629976687395e-10,
+      "accepted": true
+    },
+    {
+      "consumer": "native-mjcf",
+      "pose_fraction": 0.35,
+      "max_frame_error": 4.440892098500626e-16,
+      "max_mass_error_kg": 0.0,
+      "max_inertia_error_kg_m2": 8.131516293641283e-20,
+      "max_mesh_moment_error_m": 4.599035492713899e-10,
+      "accepted": true
+    },
+    {
+      "consumer": "urdf",
+      "pose_fraction": 0.35,
+      "max_frame_error": 4.440892098500626e-16,
+      "max_mass_error_kg": 0.0,
+      "max_inertia_error_kg_m2": 5.963111948670274e-19,
+      "max_mesh_moment_error_m": 4.599035492713899e-10,
+      "accepted": true
+    },
+    {
+      "consumer": "upstream",
+      "pose_fraction": 0.35,
+      "max_frame_error": 4.440892098500626e-16,
+      "max_mass_error_kg": 0.0,
+      "max_inertia_error_kg_m2": 6.776263578034403e-19,
+      "max_mesh_moment_error_m": 4.599035492713899e-10,
+      "accepted": true
+    },
+    {
+      "consumer": "native-mjcf",
+      "pose_fraction": 0.65,
+      "max_frame_error": 5.828670879282072e-16,
+      "max_mass_error_kg": 0.0,
+      "max_inertia_error_kg_m2": 1.0842021724855044e-19,
+      "max_mesh_moment_error_m": 4.6156265615104886e-10,
+      "accepted": true
+    },
+    {
+      "consumer": "urdf",
+      "pose_fraction": 0.65,
+      "max_frame_error": 5.828670879282072e-16,
+      "max_mass_error_kg": 0.0,
+      "max_inertia_error_kg_m2": 5.963111948670274e-19,
+      "max_mesh_moment_error_m": 4.6156265615104886e-10,
+      "accepted": true
+    },
+    {
+      "consumer": "upstream",
+      "pose_fraction": 0.65,
+      "max_frame_error": 5.828670879282072e-16,
+      "max_mass_error_kg": 0.0,
+      "max_inertia_error_kg_m2": 6.776263578034403e-19,
+      "max_mesh_moment_error_m": 4.6156265615104886e-10,
+      "accepted": true
+    }
+  ],
+  "scope": "three deterministic FK poses, COM, mass, inertia and mesh bounds/centroids; not locomotion or dynamics equivalence",
+  "physical_status": "unverified"
+}
