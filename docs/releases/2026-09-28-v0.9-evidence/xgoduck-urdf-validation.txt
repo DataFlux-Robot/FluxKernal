@@ -1,0 +1,1 @@
+Wrote URDF: /home/exuber/CODE/CORE/pythonProject1/AUTORESEARCH/fluxkernel/.demo/v09-native-final/xgoduck-147e9324/robot.urdf

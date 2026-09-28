@@ -1,0 +1,13 @@
+{
+  "format": "urdf",
+  "authority": "robot.json",
+  "purpose": "visualization and kinematic exchange; not deployment",
+  "losses": [
+    "root world pose and freejoint",
+    "native source/evidence/requirements/manufacturing contracts",
+    "actuator law and controller binding",
+    "sensor semantics and collision masks"
+  ],
+  "limit_policy": "unknown physical effort/velocity limits exported as zero; not drive-ready",
+  "coordinate_mapping": "URDF q = native q - native reference; link origin shifted to native joint anchor"
+}

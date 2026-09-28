@@ -1,0 +1,10 @@
+ℹ [2/5] Replayed FluxKernel.Closure
+info: formal/FluxKernel/Closure.lean:140:0: 'FluxKernel.check_sound' depends on axioms: [propext]
+info: formal/FluxKernel/Closure.lean:141:0: 'FluxKernel.no_self_bootstrap' does not depend on any axioms
+info: formal/FluxKernel/Closure.lean:142:0: 'FluxKernel.depth_bounded' does not depend on any axioms
+ℹ [3/5] Replayed FluxKernel.Robot
+info: formal/FluxKernel/Robot.lean:68:0: 'FluxKernel.Robot.check_sound' depends on axioms: [propext, Quot.sound]
+info: formal/FluxKernel/Robot.lean:69:0: 'FluxKernel.Robot.parent_precedes' does not depend on any axioms
+info: formal/FluxKernel/Robot.lean:70:0: 'FluxKernel.Robot.controller_bound' depends on axioms: [propext]
+Build completed successfully (5 jobs).
+'robotWellFormed' depends on axioms: [propext, Quot.sound]

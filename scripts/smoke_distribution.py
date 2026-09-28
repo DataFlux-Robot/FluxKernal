@@ -18,6 +18,7 @@ def main():
     parser.add_argument('--wheel', type=Path)
     parser.add_argument('--studio', action='store_true')
     parser.add_argument('--agent', action='store_true', help='Also exercise a real MCP stdio client; implies --studio')
+    parser.add_argument('--robot', action='store_true', help='Exercise native robot IR and projections from the installed wheel')
     args = parser.parse_args()
     args.studio = args.studio or args.agent
     wheels = sorted((Path(__file__).resolve().parents[1] / 'dist').glob('fluxkernel-*.whl'))
@@ -34,7 +35,8 @@ def main():
         fk = environment / ('Scripts/fk.exe' if os.name == 'nt' else 'bin/fk')
         env['FK_MODEL_CONFIG'] = str(work / 'no-model-config.json')
         env['FK_DEMO_DATA'] = str(work / 'runs')
-        spec = str(wheel) + ('[demo,agent]' if args.agent else '[demo]' if args.studio else '')
+        extras = (['demo','agent'] if args.agent else ['demo'] if args.studio else []) + (['robot'] if args.robot else [])
+        spec = str(wheel) + ('['+','.join(extras)+']' if extras else '')
         def run(command):
             p = subprocess.run([str(x) for x in command], cwd=work, env=env,
                                capture_output=True, text=True, timeout=600)
@@ -53,7 +55,7 @@ def main():
         for name in ('publish','query','instance'):
             asset_schema = json.loads(run([fk, 'schema', 'asset-'+name, '--json']))
             assert asset_schema['type'] == 'object'
-        if not args.studio:
+        if not args.studio and not args.robot:
             run([python, '-c', "import importlib.util; assert importlib.util.find_spec('OCP') is None; assert importlib.util.find_spec('numpy') is None"])
         for command in [('example',), ('init',), ('run', 'hello.fcad'), ('verify',)]:
             run([fk, *command])
@@ -99,11 +101,27 @@ assert chosen==design and report['reviewed'] and report['quality_status']=='mode
 assert (root/'perception/round-00/views.png').exists()
 assert report['model_calls']==3 and (root/'perception/skill.md').exists()
 '''])
+        if args.robot:
+            run([python, '-c', """
+from pathlib import Path
+import mujoco
+from fluxkernel.robotics.native import from_mujoco
+from fluxkernel.robotics.bundle import finish,verify
+from fluxkernel.robotics.validation import check_projection
+root=Path('native-smoke');root.mkdir();(root/'upstream').mkdir()
+xml='<mujoco><worldbody><body name="base"><geom type="box" size=".1 .1 .1" mass="1"/><body name="arm" pos=".2 0 0"><joint name="hinge"/><geom type="box" size=".1 .02 .02" mass=".1"/></body></body></worldbody></mujoco>'
+(root/'upstream/robot.xml').write_text(xml)
+r=from_mujoco(mujoco.MjModel.from_xml_string(xml),{'name':'smoke','directory':'.','entry':'robot.xml'},root/'meshes')
+result=finish(r,root)
+assert result['proof_accepted']
+assert verify(root,True)['accepted']
+assert check_projection(root)['accepted']
+"""])
         if args.agent:
             agent = json.loads(run([python, '-m', 'fluxkernel.agent_smoke', '--workspace',
                                    str(work/'agent-runs'), '--require-proof']))
             assert agent['accepted'] and agent['model_calls'] == 0
-        print(json.dumps({'wheel': wheel.name, 'isolated_install': True, 'core_workflow': 'passed',
+        print(json.dumps({'wheel': wheel.name, 'isolated_install': True, 'native_robot': 'passed' if args.robot else 'not requested', 'core_workflow': 'passed',
                           'studio_and_independent_lean': 'passed' if args.studio else 'not requested',
                           'mcp_stdio_workflow': 'passed' if args.agent else 'not requested'}))
 

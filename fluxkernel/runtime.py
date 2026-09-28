@@ -6,7 +6,7 @@ import shutil
 from pathlib import Path
 
 PROOF_FILES = (
-    "formal/FluxKernel/Closure.lean", "formal/FluxKernel.lean",
+    "formal/FluxKernel/Closure.lean", "formal/FluxKernel/Robot.lean", "formal/FluxKernel.lean",
     "lean-toolchain", "lakefile.toml",
 )
 

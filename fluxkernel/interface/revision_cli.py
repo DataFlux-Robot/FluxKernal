@@ -86,6 +86,8 @@ def cmd_perceive(args):
 def register(sub):
     from .asset_cli import register as register_assets
     register_assets(sub)
+    from ..robotics.cli import register as register_robots
+    register_robots(sub)
     from ..studio import TASKS
     p = sub.add_parser('perceive', help='run real image/render feedback on a saved parent (model API calls)')
     p.add_argument('parent'); p.add_argument('--rounds',type=int,choices=range(1,9),default=3)

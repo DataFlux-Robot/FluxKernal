@@ -10,6 +10,18 @@
 
 当前已有：三类参考设计、真实图片模型调用、STEP/STL 导出、一轮加工设备展开、实际计划的 Lean 4 检查、交付包独立复检。单张图片不能恢复全部隐藏结构，图上的条件化闭合也不等于实物制造、采购或整机性能已经通过。
 
+## 原生机器人模型
+
+Microduck / XGO 已支持转编为 FluxKernel 原生模型：刚体、关节、惯量、几何、控制绑定、制造来源和版本谱系进入内核。URDF/MJCF 从原生数据生成；修改原生参数后会重建证明，并使旧的控制适用性证据失效。
+
+```bash
+python -m pip install -e '.[robot]'
+fk robot import microduck --output ./robot-runs --require-proof
+fk robot import xgoduck --output ./robot-runs --include-hardware --require-proof
+```
+
+`--require-proof` 需要仓库指定的 Lean 工具链。两台行走模型各有 15 个刚体、14 个受控关节；刚体不等于制造 BOM 的独立零件。结构证明、数值对照与实物验证分别记录。详见[原生机器人文档](docs/NATIVE_ROBOTS.md)。
+
 ## 第一次使用
 
 Python 3.12 及以上，在仓库目录创建并激活虚拟环境：

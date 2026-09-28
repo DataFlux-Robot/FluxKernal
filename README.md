@@ -133,6 +133,23 @@ parameter adaptation, rotated module constraints and equipment capacity rejectio
 It uses authored subsystem fixtures, not whole-product designs. See
 [cross-product assets](docs/CROSS_PRODUCT_ASSETS.md) for Python, CLI and agent workflows.
 
+## Native robot designs
+
+Microduck and XGO Duck now import into a native robot IR with kernel assembly objects,
+source provenance, controller binding and actual Lean structural checks. URDF/MJCF
+are generated projections. Native parameter revisions create fresh identities and
+invalidate earlier policy/physical suitability evidence.
+
+```bash
+python -m pip install -e '.[robot]'
+fk robot import microduck --output ./robot-runs --require-proof
+fk robot import xgoduck --output ./robot-runs --include-hardware --require-proof
+```
+
+Install the pinned Lean toolchain for `--require-proof`. The walking models each
+contain 15 rigid bodies and 14 articulated joints; rigid bodies are not physical BOM
+items. See [native robots, source pins and exchange limits](docs/NATIVE_ROBOTS.md).
+
 ## Connect your agent over MCP
 
 ```bash
