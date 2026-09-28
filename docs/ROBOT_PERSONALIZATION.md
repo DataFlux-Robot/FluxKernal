@@ -1,9 +1,69 @@
 # Robot personalization with a fixed mechanical platform
 
-Status: source review and integration design, 2026-09-28. This document does not
-claim an implemented personalization generator, a new GLM run, or validated printed
-parts. The existing native robot importer/revision/export implementation is described
-in [NATIVE_ROBOTS.md](NATIVE_ROBOTS.md).
+Status: v0.10 implements a bounded **additive head accessory** pilot for native
+Microduck and XGO bundles. GLM-5.3-Flash owns design, visual review, revisions and
+selection. Existing shells and internal hardware are preserved. This is not yet
+shell replacement or a qualified installed upgrade.
+
+## Run the pilot
+
+```bash
+python -m pip install -e '.[robot,personalize]'
+fk robot import microduck --output ./robots --require-proof --json
+# Use the directory returned by import; xgoduck is also supported.
+fk robot zone ./robots/<bundle> --json
+fk robot personalize ./robots/<bundle> \
+  --brief 'A friendly, recognizable head-top accessory; retain the camera and mechanism' \
+  --rounds 3 --output ./variants --require-proof --json
+```
+
+Configure the existing [GLM model connection](QUICKSTART.md) locally. The runtime
+requires `glm-5.3-flash` and records provider-reported identity; there is no alternate
+model or authored-design fallback. Credentials are not written into run artifacts.
+A model-owned rejection returns a nonzero CLI exit and retains its evidence.
+
+Open the returned directory's `index.html` for the offline review page. It contains
+the baseline, candidate views, GLM findings/selection and links to STEP/STL, URDF and
+sampled-clearance evidence. Run artifacts also include raw model responses, recipes,
+workflow/skill snapshots and dependency versions. Every new workflow execution gets
+a new identity; rejected attempts are retained.
+
+`fk robot attach <bundle> --recipe recipe.json --output ./variants --require-proof`
+applies an explicit data-only recipe without invoking a model. It is useful for
+integration/testing; an authored recipe is not evidence of GLM generation.
+
+## What the implementation checks
+
+- A source-mesh ray intersection supplies a **geometric tangent frame**, not an
+  inferred screw pattern or mechanically validated mount. The flat base proposes
+  removable pad/adhesive attachment; fit to source curvature remains unresolved.
+- Typed recipes expose an elliptical foot and up to eight box, ellipsoid or fin
+  features, with optional bilateral mirroring. No generated Python is executed.
+- Exact CAD checks require one connected valid positive-volume solid, no material
+  below its datum, and fixed extent/added-mass search bounds. STEP is primary; STL
+  is millimetres and the native OBJ is metres. A separate STEP read checks volume
+  and creates a part snapshot.
+- Original native bodies, meshes, geometry, joints, actuators, sensors and action
+  order must remain unchanged. A fixed body and CAD-backed part node are appended.
+  Mass, COM and inertia use solid CAD and nominal polymer density, not measured
+  print mass. Generic numeric edits cannot override that part's CAD-derived body.
+- The real platforms receive 31 sampled joint configurations. Convex-hull distance
+  checks exclude the intended target contact and use a 0.2 mm penetration tolerance.
+  This is neither continuous collision coverage nor an actual mounting-fit test.
+- Fresh Lean evidence checks the existing finite native structure/controller
+  contract. Frozen-part equality and geometry checks run in Python/CAD/MuJoCo;
+  they are not Lean geometry theorems. The previous controller suitability is
+  invalidated, and deployment remains false.
+
+The budget is one to three candidate rounds, each with at most two plan and two
+review calls, plus at most two final-selection calls: at most 14 calls for three
+rounds. GLM sees its rejected recipes and exact diagnostics, as well as real whole
+robot/head renders. It may select null. A selected `needs-review` verdict stays
+visible and does not become visual acceptance merely through selection.
+
+Camera field of view, cooling, curved-surface fit, adhesive retention, print process,
+strength and walking behavior still require explicit validation. No slicing, printer
+submission, robot control or hardware actuation occurs in this workflow.
 
 ## Findings from Anything2Robot
 
@@ -53,81 +113,20 @@ Body-level mass/inertia aggregate multiple physical components. Replacing one sh
 requires its previous mass/inertia to be known or separately estimated and labeled;
 the system cannot subtract a whole-body mass as if it belonged to that shell.
 
-## First bounded product slice
+## Next operators
 
-Begin with removable head shells/masks and torso accessories. Preserve the existing
-actuator identities, articulated topology, joint axes/anchors, travel limits and
-mechanical mounting references. A fixed base platform is a constraint on design,
-not a guarantee that its original walking policy still works after changing mass.
+The implemented `attach_part` is deliberately additive: body mass aggregates the
+source shell and electronics, so replacing a shell without its own mass accounting
+would be misleading. Next work is a `replace_part` operator with physical-part/BOM
+mapping, verified mating features, reserved camera/cooling/wiring volumes and a
+recorded subtraction/addition of shell mass properties. XGO particularly needs the
+mapping between its coarse rigid-body meshes and physical covers.
 
-Start the shell-replacement prototype on Microduck, where exterior meshes are
-separate. For XGO, first establish shell/BOM correspondence or use an independently
-validated attachment interface. Defer leg lengths, load-bearing link changes and
-foot contact geometry until their dynamics and controller adaptations are in scope.
+Reusing a style recipe between platforms still requires a newly bound zone and
+fresh evaluation. Reusing an STL does not establish mechanical compatibility.
+Controller adaptation and real robot tests remain separate requirements.
 
-Each target needs an explicit `CustomizationZone` contract:
-
-- Pinned native parent, body and geometry occurrence identities.
-- Named mount frame and interface source, with unresolved dimensions kept unknown.
-- Frozen mating geometry and reserved space for camera view, wiring, speakers,
-  cooling, screws and maintenance access.
-- Editable exterior region and allowed geometry recipe operations.
-- Material/process assumptions and mass/inertia estimates with provenance.
-- Motion/collision test configurations and a declaration of their coverage limits.
-
-Mounting interfaces cannot be invented from a bounding box. A shared style recipe
-can be reused across platforms, while each platform supplies its own verified
-mechanical adapter. Reusing the same STL is not a compatibility argument.
-
-## Proposed GLM-only design loop
-
-```text
-User style/image + pinned native robot + customization-zone contract
-    -> GLM-5.3-Flash selects a target and bounded geometry recipe
-    -> deterministic CAD engine builds candidate STEP/STL
-    -> host checks mating preservation, geometry and configured motion clearances
-    -> render candidate in the complete robot, including relevant joint poses
-    -> GLM reviews actual renders and diagnostic evidence, then revises or rejects
-    -> bounded selection with complete accepted/rejected history
-    -> new native variant, fresh proof, projections and manufacturing evidence
-```
-
-Proposed pilot budget: at most three candidate rounds, configurable and recorded.
-GLM makes the design edits and final candidate selection. The host supplies finite
-operators, enforces immutable constraints and reports failed checks. A human/Codex
-must not silently repair the model's candidate and attribute the result to GLM.
-Model/API failure must remain visible rather than falling back to an authored design.
-
-The existing general product PAL cannot be directly reused without a robot-specific
-contract: it plans whole products and includes assumptions that do not fit shell
-retrofits. Add a dedicated workflow/skill and typed part operations. Do not feed the
-whole robot into that planner and then hope it preserves the existing mechanisms.
-
-## Required native operators and evidence
-
-The current `fk robot revise` only changes bounded body/joint numbers. It does not
-add or replace meshes, construct shells, or identify mounting holes. Proposed new
-operators are:
-
-1. `attach_part`: append a named fixed part with explicit body-local placement,
-   geometry, mass properties and its mechanical interface reference.
-2. `replace_part`: replace only the selected geometry occurrence, preserve locked
-   mating features and internal hardware, and update aggregate mass properties with
-   a recorded derivation and assumptions.
-3. `evaluate_variant`: run the declared geometric/motion checks, generate render
-   evidence, and compare against the pinned parent without changing that parent.
-
-After either change, bind the new native design and invalidate previous controller
-suitability evidence. Generate URDF/MJCF from this native variant; do not make an
-external URDF the new source of truth.
-
-Lean can be extended to verify source binding, required obligations, permitted edit
-scope and preserved interface declarations. Actual geometry checks, mass estimation,
-strength analysis and robot experiments have separate evaluators. Current Lean robot
-proofs do not already establish the proposed customization-zone checks.
-
-A demonstration result should include the whole-robot view, the individual part,
-STEP/STL, parent-to-child diff, interface evidence, estimated mass/COM/inertia changes,
-GLM transcript and budget, fresh structural proof, and explicit unresolved assembly
-and control obligations. A printable candidate and a validated installed upgrade are
-separate release states.
+The [robot-personalization skill](../fluxkernel/demo/skills/robot-personalization/SKILL.md)
+is loaded in every model phase. The native robot remains the design source;
+URDF/MJCF are derived projections. See [NATIVE_ROBOTS.md](NATIVE_ROBOTS.md) for the
+base importer, formal scope and export losses.

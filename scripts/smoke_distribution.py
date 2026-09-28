@@ -19,7 +19,9 @@ def main():
     parser.add_argument('--studio', action='store_true')
     parser.add_argument('--agent', action='store_true', help='Also exercise a real MCP stdio client; implies --studio')
     parser.add_argument('--robot', action='store_true', help='Exercise native robot IR and projections from the installed wheel')
+    parser.add_argument('--personalize', action='store_true', help='Exercise finite accessory CAD and native attachment; implies --robot, no model calls')
     args = parser.parse_args()
+    args.robot = args.robot or args.personalize
     args.studio = args.studio or args.agent
     wheels = sorted((Path(__file__).resolve().parents[1] / 'dist').glob('fluxkernel-*.whl'))
     wheel = (args.wheel or (wheels[-1] if wheels else Path('missing.whl'))).resolve()
@@ -36,6 +38,7 @@ def main():
         env['FK_MODEL_CONFIG'] = str(work / 'no-model-config.json')
         env['FK_DEMO_DATA'] = str(work / 'runs')
         extras = (['demo','agent'] if args.agent else ['demo'] if args.studio else []) + (['robot'] if args.robot else [])
+        if args.personalize: extras.append('personalize')
         spec = str(wheel) + ('['+','.join(extras)+']' if extras else '')
         def run(command):
             p = subprocess.run([str(x) for x in command], cwd=work, env=env,
@@ -121,7 +124,31 @@ assert check_projection(root)['accepted']
             agent = json.loads(run([python, '-m', 'fluxkernel.agent_smoke', '--workspace',
                                    str(work/'agent-runs'), '--require-proof']))
             assert agent['accepted'] and agent['model_calls'] == 0
+        if args.personalize:
+            run([python, '-c', '''
+from pathlib import Path
+import mujoco
+from fluxkernel.robotics.native import from_mujoco
+from fluxkernel.robotics.bundle import finish,verify
+from fluxkernel.robotics.attachment import zone,attach
+from fluxkernel.robotics.validation import check_projection
+from fluxkernel.robotics import personalize
+assert (Path(personalize.__file__).parents[1]/'demo/skills/robot-personalization/SKILL.md').is_file()
+root=Path('accessory-smoke');root.mkdir();(root/'upstream').mkdir()
+xml='<mujoco><asset><mesh name="cap" vertex="-.02 -.02 -.02 .02 -.02 -.02 -.02 .02 -.02 .02 .02 -.02 -.02 -.02 .02 .02 -.02 .02 -.02 .02 .02 .02 .02 .02"/></asset><worldbody><body name="head"><geom type="mesh" mesh="cap" group="2" mass="1"/></body></worldbody></mujoco>'
+(root/'upstream/robot.xml').write_text(xml)
+r=from_mujoco(mujoco.MjModel.from_xml_string(xml),{'name':'fixture','directory':'.','entry':'robot.xml'},root/'meshes')
+finish(r,root)
+z=zone(root,'cap')
+recipe={'schema_version':'fk-robot-part-v1','zone_sha256':z['zone_sha256'],'name':'fixture','rationale':'Authored package test; no model calls','symmetry':'none','material':'pla','color_rgb':[.2,.7,.9],'base_size_mm':[16.,16.,2.],'features':[{'shape':'ellipsoid','size_mm':[8.,8.,10.],'center_mm':[0.,0.,6.],'rotation_deg':[0.,0.,0.]}]}
+result=attach(root,recipe,Path('variants'),'cap')
+assert result['accepted'] and result['proof_accepted'] and not result['deployment_ready']
+assert verify(result['directory'],True)['accepted']
+assert check_projection(result['directory'])['accepted']
+assert (Path(result['directory'])/'cad/custom_fixture/part.step').is_file()
+'''])
         print(json.dumps({'wheel': wheel.name, 'isolated_install': True, 'native_robot': 'passed' if args.robot else 'not requested', 'core_workflow': 'passed',
+                          'accessory_cad_fixture': 'passed' if args.personalize else 'not requested',
                           'studio_and_independent_lean': 'passed' if args.studio else 'not requested',
                           'mcp_stdio_workflow': 'passed' if args.agent else 'not requested'}))
 

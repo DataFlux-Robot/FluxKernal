@@ -1,7 +1,7 @@
 """Render native MJCF projections at their source rest configuration."""
 
 
-def render(bundle, output):
+def render(bundle, output, *, focus_body=None, caption="native rest pose, no policy"):
     import os
 
     os.environ.setdefault("MUJOCO_GL", "egl")
@@ -11,6 +11,8 @@ def render(bundle, output):
 
     root = Path(bundle)
     model = mj.MjModel.from_xml_path(str(root / "robot.xml"))
+    model.vis.headlight.ambient[:] = [0.45, 0.45, 0.45]
+    model.vis.headlight.diffuse[:] = [0.8, 0.8, 0.8]
     data = mj.MjData(model)
     mj.mj_forward(model, data)
     canvas = Image.new("RGB", (1024, 816), (25, 29, 35))
@@ -19,8 +21,8 @@ def render(bundle, output):
     opt.geomgroup[3] = 0
     cameras = [
         ("Perspective", 135, -20),
-        ("+Y view", 90, 0),
-        ("+X view", 0, 0),
+        ("-Y view", 90, 0),
+        ("+X view", 180, 0),
         ("Top", 90, -90),
     ]
     with mj.Renderer(model, height=384, width=512) as renderer:
@@ -28,6 +30,13 @@ def render(bundle, output):
             camera = mj.MjvCamera()
             camera.lookat[:] = model.stat.center
             camera.distance = model.stat.extent * 1.25
+            if focus_body:
+                body = mj.mj_name2id(model, mj.mjtObj.mjOBJ_BODY, focus_body)
+                if body < 0:
+                    raise ValueError("Unknown focus body")
+                camera.lookat[:] = data.xpos[body]
+                camera.lookat[2] += 0.025
+                camera.distance = 0.24
             camera.azimuth = azimuth
             camera.elevation = elevation
             renderer.update_scene(data, camera=camera, scene_option=opt)
@@ -37,7 +46,55 @@ def render(bundle, output):
             canvas.paste(frame, (x, y))
             draw.text(
                 (x + 12, y + 387),
-                label + " | native rest pose, no policy",
+                label + " | " + caption,
                 (220, 230, 240),
             )
     canvas.save(output)
+
+
+def render_step(path, output):
+    """Read the primary STEP independently, validate it, then render its geometry."""
+    import tempfile
+    from pathlib import Path
+    import xml.etree.ElementTree as ET
+    import build123d as b
+    from OCP.STEPControl import STEPControl_Reader
+    from OCP.IFSelect import IFSelect_RetDone
+    from OCP.BRepGProp import BRepGProp
+    from OCP.GProp import GProp_GProps
+    from ..solvers.feature3d import _props
+
+    reader = STEPControl_Reader()
+    if reader.ReadFile(str(path)) != IFSelect_RetDone:
+        raise ValueError("STEP read failed")
+    reader.TransferRoots()
+    shape = b.Shape.cast(reader.OneShape())
+    if not shape.is_valid or len(shape.solids()) != 1:
+        raise ValueError("STEP must contain one valid solid")
+    vertices, faces = shape.tessellate(0.08, 0.1)
+    with tempfile.TemporaryDirectory(prefix="fk-part-view-") as directory:
+        root = Path(directory)
+        lines = ["v " + " ".join(str(float(x) / 1000) for x in v) for v in vertices]
+        lines += ["f " + " ".join(str(i + 1) for i in f) for f in faces]
+        (root / "part.obj").write_text("\n".join(lines) + "\n")
+        xml = ET.Element("mujoco")
+        asset = ET.SubElement(xml, "asset")
+        ET.SubElement(asset, "mesh", name="part", file="part.obj")
+        world = ET.SubElement(xml, "worldbody")
+        ET.SubElement(world, "geom", type="mesh", mesh="part", rgba=".65 .75 .85 1")
+        ET.ElementTree(xml).write(root / "robot.xml")
+        render(root, output, caption="primary STEP reconstruction")
+    properties = _props(shape.wrapped)
+    vp = GProp_GProps()
+    error = BRepGProp.VolumePropertiesGK_s(shape.wrapped, vp, 1e-8, False, True, False, False)
+    if error < 0:
+        raise ValueError("Adaptive STEP mass integration failed")
+    moments = GProp_GProps()
+    BRepGProp.VolumeProperties_s(shape.wrapped, moments)
+    properties.update(volume_mm3=vp.Mass(), com=[moments.CentreOfMass().X(), moments.CentreOfMass().Y(), moments.CentreOfMass().Z()])
+    return {
+        "accepted": True,
+        "solids": 1,
+        **properties,
+        "scope": "Independent STEP read, B-rep validity, solid count, volume, COM and bounds",
+    }

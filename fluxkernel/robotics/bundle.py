@@ -57,6 +57,25 @@ def register(r, root):
             ground={"type": "source-file", "blob": blob},
         )
         store.bind_name("hardware/" + str(i), store.put_object("node", node.payload()))
+    for part in r.get("custom_parts", []):
+        blobs = {
+            file: store.put_blob(safe(root, file).read_bytes())
+            for file in part["artifacts"]
+        }
+        node = Node(
+            role="Part",
+            kind="parametric-robot-accessory",
+            params=part,
+            ground={
+                "type": "cad-recipe",
+                "blobs": blobs,
+                "units": {"step": "mm", "stl": "mm", "recipe": "mm", "obj": "m"},
+                "interface_status": "unverified",
+            },
+        )
+        store.bind_name(
+            "custom-part/" + part["body"], store.put_object("node", node.payload())
+        )
     robot_ref = store.put_object("robot", r)
     system = Node(
         role="System",
@@ -294,6 +313,12 @@ def revise(parent, patch, output):
         item = next((b for b in items if b["name"] == edit["name"]), None)
         if item is None:
             raise ValueError("Unknown native occurrence")
+        if edit["kind"] == "body" and edit["name"] in {
+            p["body"] for p in child.get("custom_parts", [])
+        }:
+            raise ValueError(
+                "CAD-backed custom parts require regeneration; numeric body overrides are prohibited"
+            )
         item.update(edit["set"])
     child["lineage"].append(
         {
@@ -321,5 +346,7 @@ def revise(parent, patch, output):
     shutil.copytree(parent / "upstream", root / "upstream")
     if (parent / "hardware").exists():
         shutil.copytree(parent / "hardware", root / "hardware")
+    if (parent / "cad").exists():
+        shutil.copytree(parent / "cad", root / "cad")
     write(root / "parent-native.json", r)
     return finish(child, root)

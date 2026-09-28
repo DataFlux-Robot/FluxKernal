@@ -466,4 +466,8 @@ def read(bundle):
             != item["sha256"]
         ):
             raise ValueError("Hardware source content changed")
+    for part in r.get("custom_parts", []):
+        for file, expected in part["artifacts"].items():
+            if hashlib.sha256(safe(root, file).read_bytes()).hexdigest() != expected:
+                raise ValueError("Custom part CAD artifact changed")
     return r

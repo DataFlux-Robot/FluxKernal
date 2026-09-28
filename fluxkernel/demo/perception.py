@@ -139,7 +139,7 @@ X纵向、Y左右、Z上下；圆柱/管默认沿Z，飞机发动机应rotation=
 修改应解决实际错误，不要为评分缩小整机、移出画面、隐藏零件或用巨大外壳遮蔽部件。保持冻结需求。返回精确base_design_sha256及完整三元素向量。只输出JSON。'''
 
 
-def model_json(cfg, system, prompt, images, schema, directory, label, event, calls):
+def model_json(cfg, system, prompt, images, schema, directory, label, event, calls, *, decoder=None):
     messages=[{'role':'system','content':system}, {'role':'user','content':prompt+'\nJSON schema:\n'+json.dumps(schema,ensure_ascii=False),
         'images':[base64.b64encode(p.read_bytes()).decode() for p in images]}]
     save(directory/(label+'-request.json'),{'model':cfg['model'],'messages':[
@@ -155,8 +155,8 @@ def model_json(cfg, system, prompt, images, schema, directory, label, event, cal
         if cfg.get('required_model') and raw.get('model')!=cfg['required_model']:
             raise RuntimeError('Provider model identity does not match required GLM model; no fallback')
         clean=text.strip()
-        if clean.startswith('```'):clean=clean.split('\n',1)[-1].rsplit('```',1)[0].strip()
-        return json.loads(clean)
+        if decoder is None and clean.startswith('```'):clean=clean.split('\n',1)[-1].rsplit('```',1)[0].strip()
+        return (decoder or json.loads)(clean)
     except Exception:
         call.update(state='failed',elapsed_s=round(time.monotonic()-started,2))
         raise

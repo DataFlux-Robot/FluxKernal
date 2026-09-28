@@ -13,6 +13,30 @@ def command(args):
             result = import_robot(
                 args.profile, args.output, args.source, args.include_hardware
             )
+        elif args.operation == "zone":
+            from .attachment import zone
+
+            result = zone(args.bundle, args.target)
+        elif args.operation == "attach":
+            from .attachment import attach
+
+            result = attach(
+                args.bundle,
+                json.loads(Path(args.recipe).read_text()),
+                args.output,
+                args.target,
+            )
+        elif args.operation == "personalize":
+            from .personalize import run
+
+            result = run(
+                args.bundle,
+                args.brief,
+                args.output,
+                args.rounds,
+                target=args.target,
+                require_proof=args.require_proof,
+            )
         elif args.operation == "verify":
             result = verify(args.bundle, args.require_proof)
         elif args.operation == "revise":
@@ -52,7 +76,7 @@ def command(args):
             )
             else 0
         )
-    except (ValueError, OSError, KeyError, ImportError) as exc:
+    except (ValueError, OSError, KeyError, ImportError, RuntimeError) as exc:
         print(json.dumps({"accepted": False, "error": str(exc)}, ensure_ascii=False))
         return 1
 
@@ -69,6 +93,9 @@ def register(sub):
         "revise",
         "compare",
         "check-projection",
+        "zone",
+        "attach",
+        "personalize",
     ]:
         p = modes.add_parser(name)
         p.set_defaults(fn=command)
@@ -86,11 +113,22 @@ def register(sub):
             )
         else:
             p.add_argument("bundle")
-        if name in ("import", "revise"):
+        if name in ("import", "revise", "attach", "personalize"):
             p.add_argument("--output", required=True)
-        if name in ("import", "revise", "verify"):
+        if name in ("import", "revise", "verify", "attach", "personalize"):
             p.add_argument("--require-proof", action="store_true")
         if name == "revise":
             p.add_argument("--patch", required=True)
         if name == "compare":
             p.add_argument("other")
+
+        if name in ("zone", "attach", "personalize"):
+            p.add_argument(
+                "--target",
+                help="Named exterior source mesh; defaults to the platform head",
+            )
+        if name == "attach":
+            p.add_argument("--recipe", required=True)
+        if name == "personalize":
+            p.add_argument("--brief", required=True)
+            p.add_argument("--rounds", type=int, default=3)

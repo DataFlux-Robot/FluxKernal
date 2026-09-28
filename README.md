@@ -11,6 +11,8 @@ and a plan whose stated closure conditions can be checked by Lean 4.
 
 </div>
 
+**Native robot personalization (v0.10):** GLM-5.3-Flash can propose, build, inspect and revise an additive Microduck/XGO head accessory in a bounded loop. STEP/STL, native variants, Lean structure evidence and rejected attempts are retained. Mounting and walking remain unverified. [Run the pilot](docs/ROBOT_PERSONALIZATION.md).
+
 > **Development preview.** This repository currently requires access. A checked
 > manufacturing plan is conditional on its declared inputs; it is not a certificate
 > of physical manufacturability, supplier availability, or product performance.
