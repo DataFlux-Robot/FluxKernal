@@ -122,7 +122,7 @@ def check_projection(bundle):
                     continue
                 idx = (
                     gi
-                    if label == "upstream"
+                    if label == "upstream" and r["source"].get("format") != "urdf"
                     else mj.mj_name2id(model, mj.mjtObj.mjOBJ_GEOM, g["name"])
                 )
                 if idx < 0:

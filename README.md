@@ -137,26 +137,32 @@ It uses authored subsystem fixtures, not whole-product designs. See
 
 ## Native robot designs
 
-**Working bridge: native robot design → Lean 4 structural proof + URDF / MJCF export.**
-Microduck, XGO and their two personalized variants have passed proof rechecking and
-numerical comparisons of frames, COM, mass, inertia and mesh placement at three
-configurations. Native edits regenerate the proof and exchange files.
+**v0.11: supported URDF → native robot → checked URDF/MJCF round trips.**
+URDF tree import now preserves supported joints, declared limits, separate visual /
+collision geometry and inertials. New bundles receive both Lean 4 native-structure
+checks and a translation certificate for selected mechanism fields in the actual
+exported URDF. Independent numerical consumers check frames, COM, inertia and meshes.
 
 ```mermaid
 flowchart LR
-  A[Source robot] --> B[FluxKernel native model]
+  A[Supported URDF or pinned source robot] --> B[FluxKernel native model]
   B --> C[Lean 4 structural proof]
   B --> D[URDF / MJCF export]
+  B --> F[Lean mechanism-field certificate]
+  D --> F
   D --> E[Numerical consistency checks]
 ```
 
-Bidirectional lossless Lean/URDF conversion, a general URDF importer and a Lean
-proof of export equivalence are not implemented. The Lean instance contains a
-structural abstraction, not enough information to reconstruct the full robot.
-URDF currently targets visualization and kinematic exchange; missing actuator
-ratings remain explicit. [Website](https://www.datafluxdynamics.ltd/technology/fluxkernel/index.html#robot-bridge) ·
-[Microduck evidence](docs/releases/2026-09-28-v0.10-evidence/microduck/independent.json) ·
-[XGO evidence](docs/releases/2026-09-28-v0.10-evidence/xgoduck/independent.json).
+This is a bounded exchange bridge, not lossless conversion between arbitrary Lean
+and URDF. A Lean instance alone cannot reconstruct the full model. Coordinate
+transforms, mesh geometry, dynamics and physical performance are outside the finite
+Lean certificate. Native controller/manufacturing evidence absent from an input URDF
+is not reconstructed. [Import, proof scope and limitations](docs/URDF_BRIDGE.md).
+
+```bash
+fk robot import-urdf ./robot.urdf --output ./robot-runs --require-proof
+fk robot verify ./robot-runs/urdf-<id> --require-proof
+```
 
 
 Microduck and XGO Duck now import into a native robot IR with kernel assembly objects,

@@ -145,6 +145,25 @@ def validate(r):
         )
         if j["kind"] == "free":
             check(bodies[j["body"] - 1]["parent"] == 0, "free-joint-root")
+        for field in ("effort_limit", "velocity_limit"):
+            value = j.get(field)
+            check(
+                value is None or (vector([value], 1) and value >= 0), "joint-" + field
+            )
+    fixed_names = [b["fixed_joint_name"] for b in bodies if "fixed_joint_name" in b]
+    check(
+        all(isinstance(n, str) and n for n in fixed_names)
+        and len(set(fixed_names)) == len(fixed_names)
+        and not set(fixed_names) & {j["name"] for j in joints},
+        "fixed-joint-identity",
+    )
+    for b in bodies:
+        if "fixed_joint_name" in b:
+            check(
+                b["parent"] != 0
+                and not any(j["body"] == bodies.index(b) + 1 for j in joints),
+                "fixed-joint-body",
+            )
     for g in r["geometries"]:
         check(type(g["body"]) is int and 1 <= g["body"] <= len(bodies), "geometry-body")
         check(

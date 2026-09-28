@@ -7,6 +7,7 @@ URDF effort/velocity 0 for unknown limits means display-only, not actuator ratin
 """
 
 import math
+from decimal import Decimal, localcontext
 import xml.etree.ElementTree as ET
 from pathlib import Path
 from .native import validate, write
@@ -110,6 +111,7 @@ def mjcf(r, path):
                 "friction": nums(g["friction"]),
                 "margin": str(g["margin"]),
                 "gap": str(g["gap"]),
+                "mass": "0",
             }
             if g["kind"] == "mesh":
                 attrs["mesh"] = g["mesh"]
@@ -163,6 +165,17 @@ def mjcf(r, path):
         ],
         "physical_status": "unverified",
     }
+
+
+def shifted_decimal(value, reference):
+    # Decimal strings express the native contract exactly; float subtraction would
+    # silently round the range and break exact translation validation.
+    with localcontext() as context:
+        context.prec = 800
+        result = Decimal(str(value)) - Decimal(str(reference))
+    if not math.isfinite(float(result)):
+        raise ValueError("URDF shifted limit overflows consumer float range")
+    return format(result, "f")
 
 
 def urdf_xml(r):
@@ -261,7 +274,10 @@ def urdf_xml(r):
             else "fixed"
         )
         e = ET.SubElement(
-            root, "joint", name=j["name"] if j else b["name"] + "-fixed", type=kind
+            root,
+            "joint",
+            name=j["name"] if j else b.get("fixed_joint_name", b["name"] + "-fixed"),
+            type=kind,
         )
         ET.SubElement(e, "parent", link=r["bodies"][b["parent"] - 1]["name"])
         ET.SubElement(e, "child", link=b["name"])
@@ -272,12 +288,15 @@ def urdf_xml(r):
         )
         ET.SubElement(e, "origin", xyz=nums(origin), rpy=nums(rpy(b["quaternion"])))
         if j:
-            ET.SubElement(e, "axis", xyz=nums(j["axis"]))
-            limits = {"effort": "0", "velocity": "0"}
+            ET.SubElement(e, "axis", xyz=" ".join(str(x) for x in j["axis"]))
+            limits = {
+                "effort": str(j.get("effort_limit") or 0),
+                "velocity": str(j.get("velocity_limit") or 0),
+            }
             if j["limited"]:
                 limits.update(
-                    lower=str(j["range"][0] - j["reference"]),
-                    upper=str(j["range"][1] - j["reference"]),
+                    lower=shifted_decimal(j["range"][0], j["reference"]),
+                    upper=shifted_decimal(j["range"][1], j["reference"]),
                 )
             ET.SubElement(e, "limit", **limits)
             ET.SubElement(
@@ -301,7 +320,7 @@ def urdf(r, path):
             "actuator law and controller binding",
             "sensor semantics and collision masks",
         ],
-        "limit_policy": "unknown physical effort/velocity limits exported as zero; not drive-ready",
+        "limit_policy": "declared effort/velocity limits preserved; unknown values exported as zero, not drive-ready",
         "coordinate_mapping": "URDF q = native q - native reference; link origin shifted to native joint anchor",
     }
     write(Path(path).with_suffix(".projection.json"), report)

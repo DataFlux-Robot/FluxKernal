@@ -9,7 +9,17 @@ def command(args):
         from .bundle import import_robot, verify, revise
         from .native import read, digest
 
-        if args.operation == "import":
+        if args.operation == "import-urdf":
+            from .urdf_import import import_urdf
+
+            packages = {}
+            for item in args.package:
+                name, sep, directory = item.partition("=")
+                if not sep or not name or not directory or name in packages:
+                    raise ValueError("Use unique --package NAME=DIR mappings")
+                packages[name] = directory
+            result = import_urdf(args.file, args.output, packages)
+        elif args.operation == "import":
             result = import_robot(
                 args.profile, args.output, args.source, args.include_hardware
             )
@@ -88,6 +98,7 @@ def register(sub):
     modes = p.add_subparsers(dest="operation", required=True)
     for name in [
         "import",
+        "import-urdf",
         "inspect",
         "verify",
         "revise",
@@ -100,7 +111,10 @@ def register(sub):
         p = modes.add_parser(name)
         p.set_defaults(fn=command)
         p.add_argument("--json", action="store_true")
-        if name == "import":
+        if name == "import-urdf":
+            p.add_argument("file")
+            p.add_argument("--package", action="append", default=[], metavar="NAME=DIR")
+        elif name == "import":
             p.add_argument("profile", choices=("microduck", "xgoduck"))
             p.add_argument(
                 "--source",
@@ -113,9 +127,16 @@ def register(sub):
             )
         else:
             p.add_argument("bundle")
-        if name in ("import", "revise", "attach", "personalize"):
+        if name in ("import", "import-urdf", "revise", "attach", "personalize"):
             p.add_argument("--output", required=True)
-        if name in ("import", "revise", "verify", "attach", "personalize"):
+        if name in (
+            "import",
+            "import-urdf",
+            "revise",
+            "verify",
+            "attach",
+            "personalize",
+        ):
             p.add_argument("--require-proof", action="store_true")
         if name == "revise":
             p.add_argument("--patch", required=True)

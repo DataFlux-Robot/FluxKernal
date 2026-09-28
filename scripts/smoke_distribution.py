@@ -119,7 +119,13 @@ result=finish(r,root)
 assert result['proof_accepted']
 assert verify(root,True)['accepted']
 assert check_projection(root)['accepted']
+from fluxkernel.robotics.urdf_import import import_urdf
+converted=import_urdf(root/'robot.urdf',Path('urdf-imported'))
+assert converted['proof_accepted'] and converted['exchange_proof_accepted'] and converted['projection_accepted']
+assert verify(converted['directory'],True)['exchange']['accepted']
+assert check_projection(converted['directory'])['accepted']
 """])
+
         if args.agent:
             agent = json.loads(run([python, '-m', 'fluxkernel.agent_smoke', '--workspace',
                                    str(work/'agent-runs'), '--require-proof']))

@@ -153,7 +153,12 @@ def finish(r, root):
         "from pathlib import Path\nfrom fluxkernel.robotics.native import read\nfrom fluxkernel.robotics.projection import urdf_xml\ndef gen_urdf():\n    return urdf_xml(read(Path(__file__).parent))\n"
     )
     proof = prove(r, root / "proof")
+    from .exchange_proof import prove as prove_exchange
+
+    exchange = prove_exchange(r, root / "robot.urdf", root / "proof")
+    proof["exchange_required"] = True
     write(root / "proof.json", proof)
+    write(root / "exchange-proof.json", exchange)
     seal(root)
     return {
         "directory": str(root.resolve()),
@@ -164,7 +169,8 @@ def finish(r, root):
         "actuators": len(r["actuators"]),
         "meshes": len(r["meshes"]),
         "mass_kg": sum(b["mass"] for b in r["bodies"]),
-        "proof_accepted": proof["accepted"],
+        "proof_accepted": proof["accepted"] and exchange["accepted"],
+        "exchange_proof_accepted": exchange["accepted"],
         "deployment_ready": False,
     }
 
@@ -277,10 +283,17 @@ def verify(root, rerun_proof=False):
         )
         if p.returncode:
             raise ValueError("Lean recheck failed")
+    exchange = {"available": False, "accepted": False, "proof_reexecuted": False}
+    if proof.get("exchange_required") or (root / "exchange-proof.json").exists():
+        from .exchange_proof import verify as verify_exchange
+
+        exchange = verify_exchange(r, root, rerun_proof)
     return {
         "accepted": True,
+        "exchange": exchange,
         "native_sha256": digest(r),
-        "proof_accepted": proof["accepted"],
+        "proof_accepted": (True if rerun_proof else proof["accepted"])
+        and (exchange["accepted"] if exchange["available"] else True),
         "proof_reexecuted": rerun_proof,
         "physical_status": "unverified",
     }

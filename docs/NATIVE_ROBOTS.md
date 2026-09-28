@@ -30,13 +30,15 @@ this distribution contains the fetching adapter, not copies of the hardware asse
 
 ## Current bridge status
 
-The native-to-Lean and native-to-URDF/MJCF branches are implemented and have been
-rechecked on Microduck, XGO and their v0.10 additive accessory variants. The two
-branches share a pinned native source. Lean checks a structural abstraction;
-projection equivalence is currently tested numerically at three configurations.
-Neither a general URDF import interface nor bidirectional lossless Lean/URDF
-conversion is implemented. The generated `.lean` does not contain all geometry and
-coordinate information needed to reconstruct URDF by itself.
+The native-to-Lean and native-to-URDF/MJCF branches are implemented. v0.11 adds
+**supported URDF tree import** and a separate Lean certificate over mechanism fields
+parsed from the actual exported URDF. Imported and revised bundles receive native
+structure checks, export-field translation checks and independent numerical consumer
+comparisons. [Importer commands, supported subset and proof boundary](URDF_BRIDGE.md).
+
+This is not bidirectional lossless Lean/URDF conversion. The generated `.lean` files
+do not contain all geometry and frame information needed to reconstruct a robot.
+Coordinate-transform and inertia equivalence are checked numerically, not proved.
 
 [Microduck recheck](releases/2026-09-28-v0.10-evidence/microduck/independent.json) ·
 [XGO recheck](releases/2026-09-28-v0.10-evidence/xgoduck/independent.json) ·
@@ -91,6 +93,7 @@ core remains dependency-free.
 ```bash
 python -m pip install -e '.[robot]'
 lake build
+fk robot import-urdf ./robot.urdf --output ./robot-runs --require-proof
 fk robot import microduck --output ./robot-runs --require-proof
 fk robot import xgoduck --output ./robot-runs --include-hardware --require-proof
 fk robot inspect ./robot-runs/<bundle>
@@ -159,8 +162,8 @@ upstream mesh transforms a second time would be incorrect.
 The URDF projection shifts child frames to joint anchors and shifts visuals/inertials
 accordingly. `q_urdf = q_native - reference`. It omits the world root pose/free joint;
 the consumer supplies its world placement. `gen_urdf.py` is the skill-compatible Python
-entry point and reads the native authority. Unknown effort/velocity limits are written
-as zero with an explicit **display/kinematic exchange only** loss report; these are
+entry point and reads the native authority. Declared effort/velocity limits from imported URDF are retained. Unknown limits
+are written as zero with an explicit **display/kinematic exchange only** loss report; these are
 not physical actuator ratings.
 
 URDF does not carry the native evidence/requirements, controller law, sensor semantics
