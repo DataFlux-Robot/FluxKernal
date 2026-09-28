@@ -137,6 +137,28 @@ It uses authored subsystem fixtures, not whole-product designs. See
 
 ## Native robot designs
 
+**Working bridge: native robot design → Lean 4 structural proof + URDF / MJCF export.**
+Microduck, XGO and their two personalized variants have passed proof rechecking and
+numerical comparisons of frames, COM, mass, inertia and mesh placement at three
+configurations. Native edits regenerate the proof and exchange files.
+
+```mermaid
+flowchart LR
+  A[Source robot] --> B[FluxKernel native model]
+  B --> C[Lean 4 structural proof]
+  B --> D[URDF / MJCF export]
+  D --> E[Numerical consistency checks]
+```
+
+Bidirectional lossless Lean/URDF conversion, a general URDF importer and a Lean
+proof of export equivalence are not implemented. The Lean instance contains a
+structural abstraction, not enough information to reconstruct the full robot.
+URDF currently targets visualization and kinematic exchange; missing actuator
+ratings remain explicit. [Website](https://www.datafluxdynamics.ltd/technology/fluxkernel/index.html#robot-bridge) ·
+[Microduck evidence](docs/releases/2026-09-28-v0.10-evidence/microduck/independent.json) ·
+[XGO evidence](docs/releases/2026-09-28-v0.10-evidence/xgoduck/independent.json).
+
+
 Microduck and XGO Duck now import into a native robot IR with kernel assembly objects,
 source provenance, controller binding and actual Lean structural checks. URDF/MJCF
 are generated projections. Native parameter revisions create fresh identities and

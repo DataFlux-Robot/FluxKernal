@@ -28,6 +28,20 @@ Mapping physical parts to simulated rigid bodies, materials, suppliers and proce
 qualification remain open obligations. Hardware files stay in the local bundle;
 this distribution contains the fetching adapter, not copies of the hardware assets.
 
+## Current bridge status
+
+The native-to-Lean and native-to-URDF/MJCF branches are implemented and have been
+rechecked on Microduck, XGO and their v0.10 additive accessory variants. The two
+branches share a pinned native source. Lean checks a structural abstraction;
+projection equivalence is currently tested numerically at three configurations.
+Neither a general URDF import interface nor bidirectional lossless Lean/URDF
+conversion is implemented. The generated `.lean` does not contain all geometry and
+coordinate information needed to reconstruct URDF by itself.
+
+[Microduck recheck](releases/2026-09-28-v0.10-evidence/microduck/independent.json) ·
+[XGO recheck](releases/2026-09-28-v0.10-evidence/xgoduck/independent.json) ·
+[Public explanation](https://www.datafluxdynamics.ltd/technology/fluxkernel/index.html#robot-bridge).
+
 ## Native design and proof boundary
 
 ```text

@@ -14,6 +14,26 @@
 
 ## 原生机器人模型
 
+**已跑通：原生机器人模型 → Lean 4 结构证明 + URDF / MJCF 导出。**
+Microduck、XGO 及两台个性化变体均已复检。修改原生设计后重新生成证明和交换文件；
+URDF/MJCF 在三个配置下通过坐标、质心、质量、惯量和网格位置的数值对照。
+
+```mermaid
+flowchart LR
+  A[源机器人模型] --> B[FluxKernel 原生模型]
+  B --> C[Lean 4 结构证明]
+  B --> D[URDF / MJCF 导出]
+  D --> E[数值一致性检查]
+```
+
+当前尚未实现 Lean ↔ URDF 双向无损转换、通用 URDF 导入接口，或导出语义保持的
+Lean 定理。`.lean` 保存结构检查所需信息，不能独立还原完整机械模型。
+URDF 当前用于显示与运动学交换，未知的执行器限制仍需补齐。
+[官网介绍](https://www.datafluxdynamics.ltd/technology/fluxkernel/index.html#robot-bridge) ·
+[Microduck 验证](docs/releases/2026-09-28-v0.10-evidence/microduck/independent.json) ·
+[XGO 验证](docs/releases/2026-09-28-v0.10-evidence/xgoduck/independent.json)
+
+
 Microduck / XGO 已支持转编为 FluxKernel 原生模型：刚体、关节、惯量、几何、控制绑定、制造来源和版本谱系进入内核。URDF/MJCF 从原生数据生成；修改原生参数后会重建证明，并使旧的控制适用性证据失效。
 
 ```bash
