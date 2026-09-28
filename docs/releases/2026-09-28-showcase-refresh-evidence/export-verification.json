@@ -1,0 +1,23 @@
+{
+  "cases": [
+    {
+      "case": "phone",
+      "version": "early-recording",
+      "triangles": 3968,
+      "source_geometry_match": true
+    },
+    {
+      "case": "car",
+      "version": "v0.6",
+      "triangles": 11356,
+      "source_geometry_match": true
+    },
+    {
+      "case": "aircraft",
+      "version": "v0.7",
+      "triangles": 46266,
+      "source_geometry_match": true
+    }
+  ],
+  "public_disclosure_allowlist": "passed"
+}

@@ -1,0 +1,27 @@
+{
+  "base": "http://127.0.0.1:4192",
+  "viewports": [
+    {
+      "width": 1440,
+      "navigation": true,
+      "images": 2,
+      "evidence": true,
+      "scope_labels": true
+    },
+    {
+      "width": 390,
+      "navigation": true,
+      "images": 2,
+      "evidence": true,
+      "scope_labels": true
+    },
+    {
+      "width": 320,
+      "navigation": true,
+      "images": 2,
+      "evidence": true,
+      "scope_labels": true
+    }
+  ],
+  "errors": []
+}

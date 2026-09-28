@@ -1,0 +1,50 @@
+{
+  "schema": "fluxkernel-public-robot-bridge-v2",
+  "published": "2026-09-28",
+  "local_tests_passed": 272,
+  "capabilities": [
+    "Scoped Lean 4 validation",
+    "URDF/MJCF export",
+    "Robot personalization"
+  ],
+  "limitations": [
+    "Not bidirectional lossless Lean/URDF conversion",
+    "No complete geometry or physical performance proof"
+  ],
+  "physical_status": "unverified",
+  "personalization": {
+    "model": "glm-5.3-flash",
+    "max_rounds_per_run": 3,
+    "scope": "Model-designed additive head accessory prototypes"
+  },
+  "robots": {
+    "microduck": {
+      "status": "prototype-needs-physical-validation",
+      "model": "glm-5.3-flash",
+      "model_calls": 4,
+      "max_rounds": 3,
+      "selected_round": 0,
+      "visual_status": "meets-brief",
+      "added_mass_kg": 0.0020552335627632176,
+      "engineering_checks": "passed",
+      "export_checks": "passed",
+      "mass_basis": "Nominal CAD estimate; not measured printed mass",
+      "interface_status": "unverified",
+      "deployment_ready": false
+    },
+    "xgoduck": {
+      "status": "prototype-needs-physical-validation",
+      "model": "glm-5.3-flash",
+      "model_calls": 9,
+      "max_rounds": 3,
+      "selected_round": 2,
+      "visual_status": "meets-brief",
+      "added_mass_kg": 0.0021487833055272654,
+      "engineering_checks": "passed",
+      "export_checks": "passed",
+      "mass_basis": "Nominal CAD estimate; not measured printed mass",
+      "interface_status": "unverified",
+      "deployment_ready": false
+    }
+  }
+}

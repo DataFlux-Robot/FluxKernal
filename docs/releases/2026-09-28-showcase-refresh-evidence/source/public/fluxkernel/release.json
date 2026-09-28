@@ -1,0 +1,49 @@
+{
+  "date": "2026-09-28",
+  "kind": "recorded-real-model-results",
+  "cases": [
+    {
+      "case": "phone",
+      "version": "early-recording",
+      "asset_sha256": "0d6d398dec8666e5a733b97c4daf09708b67e7db4f87103f70444eb25b85d8b6",
+      "visual_status": "not-evaluated",
+      "selected_round": null,
+      "reviewed_rounds": 0,
+      "max_rounds": null,
+      "model": "glm-5.3-flash"
+    },
+    {
+      "case": "car",
+      "version": "v0.6",
+      "asset_sha256": "2ba27cbe2b54077ca64a8573b816113e38e05dcef892648b011ebfc77ce343dc",
+      "visual_status": "needs-review",
+      "selected_round": 2,
+      "reviewed_rounds": 3,
+      "max_rounds": 3,
+      "model": "glm-5.3-flash"
+    },
+    {
+      "case": "aircraft",
+      "version": "v0.7",
+      "asset_sha256": "264d4bf6012b2eca6c1ed23410dd630d5a9fe185e2659fccb261245348ba0c04",
+      "visual_status": "model-threshold-met",
+      "selected_round": 1,
+      "reviewed_rounds": 2,
+      "max_rounds": 3,
+      "model": "glm-5.3-flash"
+    }
+  ],
+  "tests_passed": 272,
+  "revision": {
+    "total_parts": 40,
+    "reused_parts": 39,
+    "changed_part": "back-cover"
+  },
+  "display_mesh": {
+    "indexed": true,
+    "coordinate_precision_mm": 0.0001,
+    "triangle_count_preserved": true
+  },
+  "scope": "Recorded model-selected concepts; no physical capability certification",
+  "selection_note": "Most recent completed car and aircraft examples. The aircraft six-round follow-up failed before review and did not replace this model-selected result. Examples do not establish reliability."
+}

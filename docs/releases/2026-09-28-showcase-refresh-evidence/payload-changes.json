@@ -1,0 +1,82 @@
+[
+  {
+    "path": "fluxkernel/aircraft.json",
+    "action": "modify"
+  },
+  {
+    "path": "fluxkernel/car.json",
+    "action": "modify"
+  },
+  {
+    "path": "fluxkernel/native-robots/evidence.json",
+    "action": "modify"
+  },
+  {
+    "path": "fluxkernel/native-robots/manifest.json",
+    "action": "modify"
+  },
+  {
+    "path": "fluxkernel/perception/aircraft/round-00-fdbb29dac47a.png",
+    "action": "add"
+  },
+  {
+    "path": "fluxkernel/perception/aircraft/round-00.png",
+    "action": "delete"
+  },
+  {
+    "path": "fluxkernel/perception/aircraft/round-01-6cc9a84fdfcc.png",
+    "action": "add"
+  },
+  {
+    "path": "fluxkernel/perception/aircraft/round-01.png",
+    "action": "delete"
+  },
+  {
+    "path": "fluxkernel/perception/aircraft/round-02.png",
+    "action": "delete"
+  },
+  {
+    "path": "fluxkernel/perception/car/round-00-889d9aa8efa3.png",
+    "action": "add"
+  },
+  {
+    "path": "fluxkernel/perception/car/round-00.png",
+    "action": "delete"
+  },
+  {
+    "path": "fluxkernel/perception/car/round-01-6ef2cc356d5d.png",
+    "action": "add"
+  },
+  {
+    "path": "fluxkernel/perception/car/round-01.png",
+    "action": "delete"
+  },
+  {
+    "path": "fluxkernel/perception/car/round-02-7c3ca887cbac.png",
+    "action": "add"
+  },
+  {
+    "path": "fluxkernel/perception/car/round-02.png",
+    "action": "delete"
+  },
+  {
+    "path": "fluxkernel/phone.json",
+    "action": "modify"
+  },
+  {
+    "path": "fluxkernel/release.json",
+    "action": "modify"
+  },
+  {
+    "path": "fluxkernel/viewer.js",
+    "action": "modify"
+  },
+  {
+    "path": "technology/fluxkernel/index.html",
+    "action": "modify"
+  },
+  {
+    "path": "technology/index.html",
+    "action": "modify"
+  }
+]

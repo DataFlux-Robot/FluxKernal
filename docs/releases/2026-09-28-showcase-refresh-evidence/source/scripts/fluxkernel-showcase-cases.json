@@ -1,0 +1,16 @@
+{
+  "phone": {
+    "run": "16f4a9945aac44a2",
+    "version": "early-recording"
+  },
+  "car": {
+    "run": "d88574fcd83a4b9a",
+    "version": "v0.6",
+    "selected_round": 2
+  },
+  "aircraft": {
+    "run": "0e14ac62392a42d5",
+    "version": "v0.7",
+    "selected_round": 1
+  }
+}
