@@ -1,0 +1,30 @@
+{
+  "verified_payload_commit": "9bdd075",
+  "tests": {
+    "passed": 334,
+    "failed": 0
+  },
+  "build": {
+    "sdist": "fluxkernel-0.12.1.tar.gz",
+    "wheel": "fluxkernel-0.12.1-py3-none-any.whl",
+    "result": "passed"
+  },
+  "history_scan": {
+    "gitleaks": "8.30.1",
+    "commits": 106,
+    "findings": 0,
+    "supplemental_credential_patterns": 0
+  },
+  "offline_library": {
+    "indexed": 295,
+    "bundled_lean_executed": 220,
+    "indexed_only": 75,
+    "local_generated_sha_matches": 295,
+    "model_calls": 0
+  },
+  "artifact_sha256": {
+    "robots/index.json": "459fd665c3599332cc8fc9c6205e2fe743c3abaaff71a1ca56220044cbeedb6f",
+    "scripts/robot_library.py": "f33e21324cfb2ff2ce59309ab6ea248bda962c49da7f2c17055e9dc92153d3dd",
+    "docs/media/fluxkernal-295-funnel.png": "6ea178fa3876e1e7a42daad0bde369d1f0b407ed2e8127b3a146b43ec86f6ba8"
+  }
+}

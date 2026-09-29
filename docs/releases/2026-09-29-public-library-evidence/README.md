@@ -28,3 +28,9 @@ PYTEST_DISABLE_PLUGIN_AUTOLOAD=1 python -m pytest tests/test_robot_library.py te
 These checks concern document preservation. The separate full-catalog audit still
 records 295/297 document round trips and 62/297 complete asset-package round trips.
 The promotional image is a generated concept illustration, not a test rendering.
+
+Full project regression: **334 tests passed** ([log](full-tests.txt)). Source and wheel
+builds passed. The 106-commit payload history scan found zero Gitleaks findings;
+supplemental credential-pattern checks also returned zero. These checks reduce
+release risk but are not a guarantee that every possible secret pattern is covered.
+[Acceptance receipt](receipt.json).
