@@ -1,0 +1,46 @@
+{
+  "url": "https://github.com/ExuberantWitness/fluxkernel/actions/runs/36538583922",
+  "head_sha": "d1e0393c98af8b9bff34747b86263757ae57b605",
+  "jobs": [
+    {
+      "name": "MCP / windows-latest / Python 3.12",
+      "conclusion": "success"
+    },
+    {
+      "name": "Core / ubuntu-latest / Python 3.13",
+      "conclusion": "success"
+    },
+    {
+      "name": "CAD + real Lean + installed wheel",
+      "conclusion": "success"
+    },
+    {
+      "name": "Core / windows-latest / Python 3.12",
+      "conclusion": "success"
+    },
+    {
+      "name": "MCP / ubuntu-latest / Python 3.12",
+      "conclusion": "success"
+    },
+    {
+      "name": "MCP / macos-latest / Python 3.12",
+      "conclusion": "success"
+    },
+    {
+      "name": "Core / macos-latest / Python 3.13",
+      "conclusion": "success"
+    },
+    {
+      "name": "Core / windows-latest / Python 3.13",
+      "conclusion": "success"
+    },
+    {
+      "name": "Core / macos-latest / Python 3.12",
+      "conclusion": "success"
+    },
+    {
+      "name": "Core / ubuntu-latest / Python 3.12",
+      "conclusion": "success"
+    }
+  ]
+}

@@ -13,6 +13,10 @@ no additional URDF files.
 
 ## Results
 
+For explicit results in **both directions for every catalog file**, including
+Lean edits, XML-free reconstruction and rejection checks, see the follow-up
+[bidirectional catalog acceptance](BIDIRECTIONAL_CATALOG.md).
+
 | Check | Result | Meaning |
 | --- | ---: | --- |
 | Catalog entry coverage | 114/114 | Every linked URDF scope received a recorded disposition |

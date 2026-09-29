@@ -1,0 +1,4 @@
+Network enforcement: Linux libseccomp, inherited by all descendants.
+Observed network syscalls: 1 (the intentionally denied harness probe).
+Conversion network syscalls observed: 0.
+2764876 socket(AF_INET, SOCK_STREAM|SOCK_CLOEXEC, IPPROTO_IP) = -1 EPERM (不允许的操作)

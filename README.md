@@ -143,6 +143,11 @@ Full-document preservation passed 295/297; complete local asset packages passed
 open. v0.12.1 fixes namespace preservation, plugin/resource classification and
 secondary mesh dependencies.
 
+The [full-catalog bidirectional suite](docs/BIDIRECTIONAL_CATALOG.md) reports both
+URDF → Lean → URDF and Lean → URDF → Lean for every file, plus Lean edit propagation,
+XML-free package reconstruction and corruption rejection. Failed prerequisites
+remain visible as blocked checks instead of being removed from the denominator.
+
 **Offline conversion:** install dependencies and acquire assets while online, then
 run both conversion directions without network access. Conversion uses the pinned
 local Lean compiler directly and never starts its downloader. Microduck/XGO and

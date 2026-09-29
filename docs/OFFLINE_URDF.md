@@ -41,6 +41,10 @@ and Xacro need further interoperability work. An offline runtime is not a claim
 that all catalog robots are already supported; see the
 [full audit](AWESOME_URDF_AUDIT.md) for the denominator and failure classification.
 
+The follow-up [full-catalog bidirectional suite](BIDIRECTIONAL_CATALOG.md) expands
+these checks into separate per-file direction results, edit propagation and
+negative tests for every catalog case, with the same enforced offline execution.
+
 The guarantee covers FluxKernel's canonical data-only Lean document package,
 not arbitrary Lean programs or external Lake projects. No new physical correctness
 theorem is claimed. Keep all asset and optional native sidecar files when moving

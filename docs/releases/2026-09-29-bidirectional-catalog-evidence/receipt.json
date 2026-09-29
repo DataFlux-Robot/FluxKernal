@@ -1,0 +1,36 @@
+{
+  "code_commit": "d1e0393c98af8b9bff34747b86263757ae57b605",
+  "catalog_commit": "706eccf089099055241d7829f9a1d8108353fbce",
+  "inventory_sha256": "aa65865fd8987f1be1eb7b0edb661e6dcfdc09470c9400d28e1389350ec354cd",
+  "assets_ledger_sha256": "a96c339c4d24474a5383d4e5632c94d1d0b739e9569a582f23e518e39b8fd31d",
+  "harness_sha256": "53ed7c0b2854c06e9204a757b730102fa1ac99c6232889cc355f7713d125f0fc",
+  "implementations": {
+    "fluxkernel.robotics.lean_document": "d7225800e61894a4e661ced8a4d51226b7b6e2682fff41cbf5e628afc9bda02f",
+    "fluxkernel.robotics.lean_runtime": "9b7f30cf0f7e7de8782cc6aecde4cc5211aa23f7a163784abc1c35520b39713b",
+    "fluxkernel.robotics.urdf_assets": "d9f3a2696d3f962fc4cb8eb9b69d0177416d81e95ce58e622590509e15246947"
+  },
+  "pinned_resources_verified": 3395,
+  "completed_cases": 297,
+  "catalog_entries": 114,
+  "source_files_unchanged": true,
+  "offline_enforcement": "Linux libseccomp",
+  "raw_trace_sha256": "2f4f01217f9a66648293ba16ac7bfc8678f1e2f943a4e6d93adb2d78a1a951c1",
+  "network_calls": {
+    "denied_probe": 1,
+    "conversion": 0
+  },
+  "all_applicable_passed": false,
+  "targeted_tests_passed": 27,
+  "ci_jobs_passed": 10,
+  "artifacts": {
+    "cases.csv": "3a71efc0151492ee336de26f0e2271e659facf1012611640e2496c60d8da9ab8",
+    "catalog.md": "d4b0f34d1e304ca19a45e18aa394b24b16878011979d025d38a93d0e4ffdb87a",
+    "ci.json": "f4c06cf78be66e044d7dbd12996fed407e098f367b147cdfc80a73c3452b3359",
+    "network-summary.txt": "9af175ff34f22c2b1e5fc849a0855835b277255074496b2ecea4720bcb7a759f",
+    "network.trace.gz": "0a11e2352c3096e6d8903b467eafba2ed182232b7e35287e094a0a3194ef9daa",
+    "report.json": "42b89684d74e648fb23b2ecc537ca03fd5df2397f334caa22dd530d8ffc97917",
+    "run.txt": "31c75c4ba2c62aab527bcf1688d8eac2749f5fdb237e42774febdba86048370f",
+    "tests.txt": "6f9d91f36efc96f4d60b5cba9cfad18e7a7eb2efdf758b2a75fcdeeec61f71f1",
+    "viewer.txt": "a7478e6cb65ab92a1cd1f0c68cfd27eaf25aa74e29fa903a1bcae51d87ce7e35"
+  }
+}
