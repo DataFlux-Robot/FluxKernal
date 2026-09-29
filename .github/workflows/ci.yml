@@ -64,6 +64,13 @@ jobs:
           PYTEST_DISABLE_PLUGIN_AUTOLOAD: '1'
       - name: Execute bundled Lean with socket syscalls denied
         run: python scripts/without_network.py python scripts/robot_library.py verify --execute --output library-verification.json
+      - name: Checked design definitions with socket syscalls denied
+        run: python scripts/without_network.py python -m fluxkernel.interface.cli design demo --output design-demo
+      - uses: actions/upload-artifact@v4
+        if: always()
+        with:
+          name: checked-design-definitions
+          path: design-demo
       - uses: actions/upload-artifact@v4
         if: always()
         with:
@@ -98,4 +105,4 @@ jobs:
       - run: python -m build
       - run: python scripts/smoke_distribution.py --studio --agent --robot --personalize
       - name: Installed robot wheel with runtime network denied
-        run: python scripts/smoke_distribution.py --robot --offline
+        run: python scripts/smoke_distribution.py --robot --design --offline

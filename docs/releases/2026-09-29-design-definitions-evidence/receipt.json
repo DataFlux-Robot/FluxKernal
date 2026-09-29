@@ -1,0 +1,35 @@
+{
+  "schema": "fluxkernal-design-release-v1",
+  "version": "0.13.0",
+  "full_tests": 360,
+  "focused_tests": 26,
+  "checked_demo_frames": 5,
+  "rejected_demo_counterexamples": 15,
+  "published_certificates_replayed": 5,
+  "proof_mode": "decide +kernel; no sorryAx or Lean.ofReduceBool",
+  "runtime_network": "seccomp-deny-sockets",
+  "model_calls": 0,
+  "source_sha256": {
+    "fluxkernel/design/cli.py": "7bfc677c313576489da1a68c32ff0e51c97a0298c9355c84e96e4f504285809e",
+    "fluxkernel/design/examples.py": "67e4bbf00b13bc67f49ab16c1bfd4b744b65f8ae30b0926d3d5e5d08772cfac1",
+    "fluxkernel/design/proof.py": "75e30acf46c477062fea02b26c3ffdf92d65f7be7a154b1972c421ffa1b1cc61",
+    "fluxkernel/design/model.py": "74831ea3777343ce736547ca791b2dd88a62226175ba1127cb1f05ded7e3d4f7",
+    "fluxkernel/design/showcase.py": "b5c5a7d02c5ff71d58566882a43c7dfcc768766bb83894214fb848ed228eaada",
+    "fluxkernel/design/__init__.py": "d7e1ac6ed9f56b722a3dead1f3a8ea909bc6415bfc496bbc1196bbdc4a13f7eb",
+    "formal/FluxKernel/Design.lean": "b6e23bc8dbc20dada92a2b7db50a4c0f0414d7905be443bc72545c4eb3d948a0",
+    "fluxkernel/interface/cli.py": "9152493d1831ac0df868ea59447ef0a5239ca73edab98d75db98274da8b2431e",
+    "tests/test_design.py": "99099a0ae2ff9724ef1f2b7a12d1ff5478abecd2286525ebac63e1b80d594734",
+    "docs/demos/design-definitions/evidence.json": "55e703add1f808031511b2ac6015840e29a8e435892bac2298a6c2bdcab18ce8"
+  },
+  "wheel_sha256": "96d6145a869644df4a2cc3260d93a14c19d04333daecd62a01c3c79df5cd116b",
+  "demo_zip_sha256": "badbebc589d7f41c4e61a8600adc4f01fe7e52f8a692510c4803aaafa9511d2a",
+  "urdf_regression": {
+    "cases": 297,
+    "case_status_changes": 0,
+    "conversion_module_hash_changes": 0,
+    "document_roundtrips": 295,
+    "complete_package_roundtrips": 62,
+    "network_denied": true,
+    "report_sha256": "6d6ce15ce7e525c335373d9390f953c6ccbe3d1cb761887c08f187027d54a413"
+  }
+}

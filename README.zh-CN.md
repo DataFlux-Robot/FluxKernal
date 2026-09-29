@@ -39,6 +39,32 @@
 [逐文件双向结果](docs/releases/2026-09-29-bidirectional-catalog-evidence/cases.csv) ·
 [完整验收](docs/BIDIRECTIONAL_CATALOG.md) · [离线命令](docs/LOSSLESS_ROBOTS.md)
 
+## 可执行设计定义：闭链、参数关系与验证义务
+
+![闭链构型与可检查的设计要求](docs/media/design-definitions.png)
+
+新增 `fk design` 定义层，保留既有 `fk robot to-lean/from-lean` 双向转换路径。
+它可以定义允许闭环的点/杆机构、带单位的参数表达式、隐式四次曲面与 CSG，
+并把接口孔径、装配位置、板厚和简化工程公式纳入同一组检查。
+
+```bash
+fk design example --output fourbar.json
+fk design certify fourbar.json --output certificate
+fk design verify certificate --design fourbar.json
+fk design demo --output design-demo
+```
+
+打开 `design-demo/index.html` 可切换 5 个构型，以及杆长错误、孔径不匹配、
+板厚不足三类反例。有效构型有真实 Lean 内核检查的证书；修改设计或参数后，
+旧证书不能继续用于新输入。另提供有明确假设的有理数平行四边形机构族定理。
+整个流程无需 Agent 或模型 token。
+
+这里增加的是**可检查的设计关系与证据**。MuJoCo 已有闭链求解，USD 已有组合、
+变体和扩展能力，SDFormat 已有完整场景/机器人描述；本次不宣称全面替代它们。
+新定义暂不导出这些格式，也不把离散构型证明当成动力学或可制造性证明。
+[完整定义、使用说明及能力对比](docs/DESIGN_DEFINITIONS.md)。
+[下载离线交互演示](https://github.com/DataFlux-Robot/FluxKernal/releases/download/v0.13.0/design-demo.zip)。
+
 ## 原生机器人模型
 
 **已跑通：原生机器人模型 → Lean 4 结构证明 + URDF / MJCF 导出。**

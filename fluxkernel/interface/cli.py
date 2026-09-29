@@ -782,6 +782,8 @@ def build_parser() -> argparse.ArgumentParser:
     sub = p.add_subparsers(dest="cmd", required=True)
     from .revision_cli import register
     register(sub)
+    from ..design.cli import register as register_design
+    register_design(sub)
 
     s = sub.add_parser("doctor", help="diagnose an installation without API calls")
     s.add_argument("--profile", choices=("core", "studio", "proof", "live", "agent"), default="core")

@@ -3,3 +3,5 @@ fluxkernel/demo/static/vendor/* linguist-vendored -whitespace
 robots/models/** -text linguist-vendored -whitespace
 robots/models/**/Robot.lean linguist-generated
 robots/index.json -text
+formal/FluxKernel/Design.lean text eol=lf
+docs/demos/design-definitions/** -text

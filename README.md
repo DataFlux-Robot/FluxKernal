@@ -94,6 +94,29 @@ in this document library.
 
 ## Design and manufacturing workflows
 
+### New: executable design definitions
+
+[![Closed-chain definitions and checked design requirements](docs/media/design-definitions.png)](docs/demos/design-definitions/README.md)
+
+`fk design` adds dimensioned parameter expressions, a closed four-bar member graph,
+implicit/CSG geometry, mating interfaces and manufacturing requirements. Real Lean
+checks exact instance obligations; changing the design or parameters invalidates
+the corresponding certificate. A separate rational parallelogram-family theorem
+is included. Existing URDF ↔ Lean exchange commands retain their behavior.
+
+```bash
+fk design example --output fourbar.json
+fk design certify fourbar.json --output certificate
+fk design demo --output design-demo
+# Open design-demo/index.html locally: five checked configurations, 15 rejected cases.
+```
+
+[Definition semantics, limits and comparison with MJCF / USD / SDFormat](docs/DESIGN_DEFINITIONS.md).
+[Download the offline interactive demo](https://github.com/DataFlux-Robot/FluxKernal/releases/download/v0.13.0/design-demo.zip)
+or [inspect its source and certificates](docs/demos/design-definitions/README.md).
+The new layer checks declared design intent; it does not replace these systems'
+geometry or simulation engines. The interactive demo runs offline without model calls.
+
 The kernel also supports named parts, CAD artifacts, manufacturing dependencies,
 cross-product reuse and bounded agent-driven personalization. These workflows have
 their own assumptions and validation scope. A checked manufacturing plan is

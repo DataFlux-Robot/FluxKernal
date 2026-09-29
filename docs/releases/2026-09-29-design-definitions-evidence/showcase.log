@@ -1,0 +1,10 @@
+{"network_policy": "seccomp-deny-sockets", "probe": "EPERM"}
+{
+  "accepted": true,
+  "model_calls": 0,
+  "frames": 5,
+  "lean_certificates": 5,
+  "rejected_counterexamples": 15,
+  "scope": "discrete exact-rational configurations, not continuous dynamics",
+  "html": ".demo/design-layer/showcase/index.html"
+}

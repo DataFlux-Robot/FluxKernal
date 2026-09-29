@@ -1,0 +1,341 @@
+{"network_policy": "seccomp-deny-sockets", "probe": "EPERM"}
+checked 1/297
+checked 2/297
+checked 3/297
+checked 4/297
+checked 5/297
+checked 6/297
+checked 7/297
+checked 8/297
+checked 9/297
+checked 10/297
+checked 11/297
+checked 12/297
+checked 13/297
+checked 14/297
+checked 15/297
+checked 16/297
+checked 17/297
+checked 18/297
+checked 19/297
+checked 20/297
+checked 21/297
+checked 22/297
+checked 23/297
+checked 24/297
+checked 25/297
+checked 26/297
+checked 27/297
+checked 28/297
+checked 29/297
+checked 30/297
+checked 31/297
+checked 32/297
+checked 33/297
+checked 34/297
+checked 35/297
+checked 36/297
+checked 37/297
+checked 38/297
+checked 39/297
+checked 40/297
+checked 41/297
+checked 42/297
+checked 43/297
+checked 44/297
+checked 45/297
+checked 46/297
+checked 47/297
+checked 48/297
+checked 49/297
+checked 50/297
+checked 51/297
+checked 52/297
+checked 53/297
+checked 54/297
+checked 55/297
+checked 56/297
+checked 57/297
+checked 58/297
+checked 59/297
+checked 60/297
+checked 61/297
+checked 62/297
+checked 63/297
+checked 64/297
+checked 65/297
+checked 66/297
+checked 67/297
+checked 68/297
+checked 69/297
+checked 70/297
+checked 71/297
+checked 72/297
+checked 73/297
+checked 74/297
+checked 75/297
+checked 76/297
+checked 77/297
+checked 78/297
+checked 79/297
+checked 80/297
+checked 81/297
+checked 82/297
+checked 83/297
+checked 84/297
+checked 85/297
+checked 86/297
+checked 87/297
+checked 88/297
+checked 89/297
+checked 90/297
+checked 91/297
+checked 92/297
+checked 93/297
+checked 94/297
+checked 95/297
+checked 96/297
+checked 97/297
+checked 98/297
+checked 99/297
+checked 100/297
+checked 101/297
+checked 102/297
+checked 103/297
+checked 104/297
+checked 105/297
+checked 106/297
+checked 107/297
+checked 108/297
+checked 109/297
+checked 110/297
+checked 111/297
+checked 112/297
+checked 113/297
+checked 114/297
+checked 115/297
+checked 116/297
+checked 117/297
+checked 118/297
+checked 119/297
+checked 120/297
+checked 121/297
+checked 122/297
+checked 123/297
+checked 124/297
+checked 125/297
+checked 126/297
+checked 127/297
+checked 128/297
+checked 129/297
+checked 130/297
+checked 131/297
+checked 132/297
+checked 133/297
+checked 134/297
+checked 135/297
+checked 136/297
+checked 137/297
+checked 138/297
+checked 139/297
+checked 140/297
+checked 141/297
+checked 142/297
+checked 143/297
+checked 144/297
+checked 145/297
+checked 146/297
+checked 147/297
+checked 148/297
+checked 149/297
+checked 150/297
+checked 151/297
+checked 152/297
+checked 153/297
+checked 154/297
+checked 155/297
+checked 156/297
+checked 157/297
+checked 158/297
+checked 159/297
+checked 160/297
+checked 161/297
+checked 162/297
+checked 163/297
+checked 164/297
+checked 165/297
+checked 166/297
+checked 167/297
+checked 168/297
+checked 169/297
+checked 170/297
+checked 171/297
+checked 172/297
+checked 173/297
+checked 174/297
+checked 175/297
+checked 176/297
+checked 177/297
+checked 178/297
+checked 179/297
+checked 180/297
+checked 181/297
+checked 182/297
+checked 183/297
+checked 184/297
+checked 185/297
+checked 186/297
+checked 187/297
+checked 188/297
+checked 189/297
+checked 190/297
+checked 191/297
+checked 192/297
+checked 193/297
+checked 194/297
+checked 195/297
+checked 196/297
+checked 197/297
+checked 198/297
+checked 199/297
+checked 200/297
+checked 201/297
+checked 202/297
+checked 203/297
+checked 204/297
+checked 205/297
+checked 206/297
+checked 207/297
+checked 208/297
+checked 209/297
+checked 210/297
+checked 211/297
+checked 212/297
+checked 213/297
+checked 214/297
+checked 215/297
+checked 216/297
+checked 217/297
+checked 218/297
+checked 219/297
+checked 220/297
+checked 221/297
+checked 222/297
+checked 223/297
+checked 224/297
+checked 225/297
+checked 226/297
+checked 227/297
+checked 228/297
+checked 229/297
+checked 230/297
+checked 231/297
+checked 232/297
+checked 233/297
+checked 234/297
+checked 235/297
+checked 236/297
+checked 237/297
+checked 238/297
+checked 239/297
+checked 240/297
+checked 241/297
+checked 242/297
+checked 243/297
+checked 244/297
+checked 245/297
+checked 246/297
+checked 247/297
+checked 248/297
+checked 249/297
+checked 250/297
+checked 251/297
+checked 252/297
+checked 253/297
+checked 254/297
+checked 255/297
+checked 256/297
+checked 257/297
+checked 258/297
+checked 259/297
+checked 260/297
+checked 261/297
+checked 262/297
+checked 263/297
+checked 264/297
+checked 265/297
+checked 266/297
+checked 267/297
+checked 268/297
+checked 269/297
+checked 270/297
+checked 271/297
+checked 272/297
+checked 273/297
+checked 274/297
+checked 275/297
+checked 276/297
+checked 277/297
+checked 278/297
+checked 279/297
+checked 280/297
+checked 281/297
+checked 282/297
+checked 283/297
+checked 284/297
+checked 285/297
+checked 286/297
+checked 287/297
+checked 288/297
+checked 289/297
+checked 290/297
+checked 291/297
+checked 292/297
+checked 293/297
+checked 294/297
+checked 295/297
+checked 296/297
+checked 297/297
+{
+  "document_urdf_lean_urdf": {
+    "passed": 295,
+    "failed": 2
+  },
+  "document_lean_urdf_lean": {
+    "passed": 295,
+    "blocked": 2
+  },
+  "document_lean_edit": {
+    "passed": 295,
+    "blocked": 2
+  },
+  "document_executable_rejected": {
+    "passed": 295,
+    "blocked": 2
+  },
+  "package_urdf_lean_urdf": {
+    "failed": 235,
+    "passed": 62
+  },
+  "package_lean_urdf_lean": {
+    "blocked": 235,
+    "passed": 62
+  },
+  "package_xml_free": {
+    "blocked": 235,
+    "passed": 62
+  },
+  "package_stale_snapshot_rejected": {
+    "blocked": 235,
+    "passed": 62
+  },
+  "package_lean_edit": {
+    "blocked": 235,
+    "passed": 62
+  },
+  "package_asset_tamper_rejected": {
+    "blocked": 235,
+    "passed": 47,
+    "not_applicable": 15
+  }
+}

@@ -20,6 +20,7 @@ def main():
     parser.add_argument('--agent', action='store_true', help='Also exercise a real MCP stdio client; implies --studio')
     parser.add_argument('--robot', action='store_true', help='Exercise native robot IR and projections from the installed wheel')
     parser.add_argument('--offline', action='store_true', help='Linux: allow online installation, then deny network in every runtime check with libseccomp')
+    parser.add_argument('--design', action='store_true', help='Check dimensioned design and real Lean certificates from the installed wheel')
     parser.add_argument('--personalize', action='store_true', help='Exercise finite accessory CAD and native attachment; implies --robot, no model calls')
     args = parser.parse_args()
     args.robot = args.robot or args.personalize
@@ -70,6 +71,24 @@ def main():
         one = json.loads(run([fk, 'show', 'housing-v1', '--json']))
         two = json.loads(run([fk, 'show', 'housing-v2', '--json']))
         assert one != two
+        if args.design:
+            run([fk, 'design', 'example', '--output', 'fourbar.json'])
+            result = json.loads(run([fk, 'design', 'certify', 'fourbar.json', '--output', 'design-certificate']))
+            assert result['accepted'] and result['proof']['accepted'] and result['independent_cycles'] == 1
+            checked = json.loads(run([fk, 'design', 'verify', 'design-certificate', '--design', 'fourbar.json']))
+            assert checked['accepted'] and checked['model_calls'] == 0
+            run([python, '-c', '''
+from fluxkernel.design.examples import fourbar
+from fluxkernel.design.model import Design
+from fluxkernel.design.proof import verify
+assert not Design(fourbar()).check({'pin':'8'})['accepted']
+try:
+    verify('design-certificate', overrides={'phase':'3/4'})
+except ValueError as error:
+    assert 'inputs changed' in str(error)
+else:
+    raise AssertionError('Stale evidence accepted')
+'''])
         if args.studio:
             result = json.loads(run([fk, 'demo', '--reference', 'phone', '--require-proof', '--json']))
             assert result['mode'] == 'reference' and result['proof_accepted']
@@ -170,6 +189,7 @@ assert check_projection(result['directory'])['accepted']
 assert (Path(result['directory'])/'cad/custom_fixture/part.step').is_file()
 '''])
         print(json.dumps({'wheel': wheel.name, 'isolated_install': True, 'runtime_network_denied': args.offline, 'native_robot': 'passed' if args.robot else 'not requested', 'core_workflow': 'passed',
+                          'design_definitions': 'passed' if args.design else 'not requested',
                           'accessory_cad_fixture': 'passed' if args.personalize else 'not requested',
                           'studio_and_independent_lean': 'passed' if args.studio else 'not requested',
                           'mcp_stdio_workflow': 'passed' if args.agent else 'not requested'}))
