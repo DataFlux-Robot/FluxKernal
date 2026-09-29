@@ -156,3 +156,118 @@ def test_reserved_asset_and_depth_limits(tmp_path):
     with pytest.raises(ValueError, match="Reserved"):
         from_lean(pkg, tmp_path / "out")
     assert not (tmp_path / "out").exists()
+
+
+def test_namespace_prefixes_and_scoped_declarations_survive_lean(tmp_path):
+    raw = b"""<robot name="r" xmlns:ext="urn:outer"><link name="base"/>
+      <ext:property ext:value="0.0010" xml:lang="en">a&amp;b</ext:property>
+      <group xmlns:ext="urn:inner"><ext:item/></group></robot>"""
+    path = tmp_path / "input.urdf"
+    path.write_bytes(raw)
+    to_lean(path, tmp_path / "lean")
+    (tmp_path / "lean/source.urdf").unlink()
+    from_lean(tmp_path / "lean", tmp_path / "out")
+    generated = (tmp_path / "out/robot.urdf").read_bytes()
+    assert tree(raw) == tree(generated)
+    xml = ET.fromstring(generated)
+    assert xml.find("{urn:outer}property").get("{urn:outer}value") == "0.0010"
+    assert xml.find("group/{urn:inner}item") is not None
+
+
+def test_undeclared_namespace_still_rejected():
+    with pytest.raises(ValueError, match="Invalid URDF XML"):
+        tree(b'<robot name="r"><ext:property/></robot>')
+
+
+def test_plugin_is_metadata_and_obj_texture_closure_is_preserved(tmp_path):
+    root = ET.parse(FIXTURE).getroot()
+    g = root.find("link/visual/geometry")
+    g.clear()
+    ET.SubElement(g, "mesh", filename="meshes/shape.obj")
+    ET.SubElement(
+        ET.SubElement(root, "gazebo"),
+        "plugin",
+        name="runtime",
+        filename="libgazebo_ros_control.so",
+    )
+    mesh = tmp_path / "meshes"
+    mesh.mkdir()
+    (mesh / "shape.obj").write_text(
+        "mtllib surface.mtl\nv 0 0 0\nv 1 0 0\nv 0 1 0\nf 1 2 3\n"
+    )
+    (mesh / "surface.mtl").write_text(
+        'newmtl shell\nmap_Kd -s 1 1 1 "shell texture.png"\n'
+    )
+    (mesh / "shell texture.png").write_bytes(b"authored byte-preservation fixture")
+    f = tmp_path / "input.urdf"
+    ET.ElementTree(root).write(f)
+    result = to_lean(f, tmp_path / "lean")
+    assert result["asset_count"] == 3
+    from_lean(tmp_path / "lean", tmp_path / "out")
+    for p in mesh.iterdir():
+        assert p.read_bytes() == (tmp_path / "out/meshes" / p.name).read_bytes()
+    assert (tmp_path / "out/robot.urdf").read_bytes() == f.read_bytes()
+    to_lean(tmp_path / "out/robot.urdf", tmp_path / "again")
+    assert (tmp_path / "lean/Robot.lean").read_bytes() == (
+        tmp_path / "again/Robot.lean"
+    ).read_bytes()
+    (tmp_path / "lean/assets/meshes/shell texture.png").write_bytes(b"changed")
+    with pytest.raises(ValueError, match="Changed Lean document resource"):
+        from_lean(tmp_path / "lean", tmp_path / "bad")
+
+
+@pytest.mark.parametrize("extension", ["dae", "gltf", "glb"])
+def test_texture_and_buffer_discovery(extension, tmp_path):
+    import struct
+    from fluxkernel.robotics.urdf_assets import records
+
+    # Authored dependency fragments; this checks packaging, not geometry loading.
+    if extension == "dae":
+        raw = b'<COLLADA xmlns="urn:collada"><library_images><image><init_from>texture.bin</init_from></image></library_images></COLLADA>'
+    else:
+        raw = json.dumps(
+            {
+                "asset": {"version": "2.0"},
+                "buffers": [{"uri": "buffer.bin"}],
+                "images": [
+                    {"uri": "texture.bin"},
+                    {"uri": "data:image/png;base64,AAAA"},
+                ],
+            }
+        ).encode()
+        if extension == "glb":
+            raw += b" " * (-len(raw) % 4)
+            raw = (
+                b"glTF"
+                + struct.pack("<4I", 2, 20 + len(raw), len(raw), 0x4E4F534A)
+                + raw
+            )
+    (tmp_path / ("mesh." + extension)).write_bytes(raw)
+    (tmp_path / "texture.bin").write_bytes(b"texture")
+    (tmp_path / "buffer.bin").write_bytes(b"vertices")
+    xml = f'<robot name="r"><link name="base"><visual><geometry><mesh filename="mesh.{extension}"/></geometry></visual></link></robot>'.encode()
+    found = dict(records(xml, tmp_path))
+    assert set(found) == {"mesh." + extension, "texture.bin"} | (
+        {"buffer.bin"} if extension != "dae" else set()
+    )
+
+
+@pytest.mark.parametrize(
+    "dependency", ["../../outside.png", "https://example.com/file.png"]
+)
+def test_secondary_assets_cannot_escape_root(tmp_path, dependency):
+    from fluxkernel.robotics.urdf_assets import records
+
+    (tmp_path / "material.mtl").write_text("map_Kd " + dependency + "\n")
+    xml = b'<robot name="r"><mesh filename="material.mtl"/></robot>'
+    with pytest.raises(ValueError):
+        records(xml, tmp_path)
+
+
+def test_xacro_is_not_misreported_as_complete_asset_package(tmp_path):
+    f = tmp_path / "template.urdf"
+    f.write_text(
+        '<robot name="r" xmlns:xacro="http://www.ros.org/wiki/xacro"><xacro:include filename="missing.xacro"/></robot>'
+    )
+    with pytest.raises(ValueError, match="Expand Xacro"):
+        to_lean(f, tmp_path / "lean")

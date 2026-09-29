@@ -1,0 +1,16 @@
+[
+  {
+    "parent": "laas/simple_humanoid_description",
+    "path": "cmake",
+    "url": "https://github.com/jrl-umi3218/jrl-cmakemodules.git",
+    "commit": "5caf3a6fc4f0e79bd47a8aaba50e50207948da3a",
+    "urdfs": []
+  },
+  {
+    "parent": "stack-of-tasks/talos-data",
+    "path": "cmake",
+    "url": "https://github.com/jrl-umi3218/jrl-cmakemodules.git",
+    "commit": "d3185885a294ad2d1fd7c65f758675b7f376d3b5",
+    "urdfs": []
+  }
+]

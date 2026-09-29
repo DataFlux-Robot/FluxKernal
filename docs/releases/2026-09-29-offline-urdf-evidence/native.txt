@@ -1,0 +1,5 @@
+{"network_policy": "seccomp-deny-sockets", "probe": "EPERM"}
+{"source": ".demo/awesome-urdf/native-regression/microduck/restored", "accepted": true, "sealed_files": 226, "sealed_bytes_equal": true, "lean_source_equal": true, "xml_free_reconstruction": true, "relocated_package": true}
+{"source": ".demo/awesome-urdf/native-regression/xgoduck/restored", "accepted": true, "sealed_files": 208, "sealed_bytes_equal": true, "lean_source_equal": true, "xml_free_reconstruction": true, "relocated_package": true}
+{"source": ".demo/awesome-urdf/native-regression/microduck-personalized/restored", "accepted": true, "sealed_files": 251, "sealed_bytes_equal": true, "lean_source_equal": true, "xml_free_reconstruction": true, "relocated_package": true}
+{"source": ".demo/awesome-urdf/native-regression/xgoduck-personalized/restored", "accepted": true, "sealed_files": 229, "sealed_bytes_equal": true, "lean_source_equal": true, "xml_free_reconstruction": true, "relocated_package": true}

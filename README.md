@@ -137,6 +137,18 @@ It uses authored subsystem fixtures, not whole-product designs. See
 
 ## Native robot designs
 
+**Robustness audit:** [114 catalog entries / 297 URDF paths](docs/AWESOME_URDF_AUDIT.md).
+Full-document preservation passed 295/297; complete local asset packages passed
+62/297. These are separate checks; package URI and parent-directory support remain
+open. v0.12.1 fixes namespace preservation, plugin/resource classification and
+secondary mesh dependencies.
+
+**Offline conversion:** install dependencies and acquire assets while online, then
+run both conversion directions without network access. Conversion uses the pinned
+local Lean compiler directly and never starts its downloader. Microduck/XGO and
+both personalized variants pass enforced offline round trips. See
+[offline acceptance and setup](docs/OFFLINE_URDF.md).
+
 **v0.12: complete Lean ↔ URDF packages for Microduck/XGO cases.**
 A data-only Lean document now preserves the full XML information tree and exact
 numeric strings. Lean itself renders the URDF; bound resources preserve asset bytes

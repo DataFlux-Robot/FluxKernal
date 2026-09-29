@@ -1,0 +1,689 @@
+{
+  "catalog_commit": "706eccf089099055241d7829f9a1d8108353fbce",
+  "entries": [
+    {
+      "name": "e.DO",
+      "category": "Arms",
+      "url": "https://github.com/ianathompson/eDO_description",
+      "row": "| e.DO | Comau | [URDF](https://github.com/ianathompson/eDO_description) | [BSD-3-Clause](https://github.com/ianathompson/eDO_description/blob/17b3f92f834746106d6a4befaab8eeab3ac248e6/LICENSE) | \u2714\ufe0f | \u2714\ufe0f | \u2714\ufe0f |"
+    },
+    {
+      "name": "Gen2",
+      "category": "Arms",
+      "url": "https://github.com/Gepetto/example-robot-data/tree/master/robots/kinova_description",
+      "row": "| Gen2 | Kinova | [URDF](https://github.com/Gepetto/example-robot-data/tree/master/robots/kinova_description) | BSD-3-Clause | \u2714\ufe0f | \u2714\ufe0f | \u2714\ufe0f |"
+    },
+    {
+      "name": "Gen3 Lite",
+      "category": "Arms",
+      "url": "https://github.com/Kinovarobotics/ros2_kortex/blob/main/kortex_description/robots/gen3_lite.urdf",
+      "row": "| Gen3 Lite | Kinova | [URDF](https://github.com/Kinovarobotics/ros2_kortex/blob/main/kortex_description/robots/gen3_lite.urdf) | BSD-3-Clause | \u2714\ufe0f | \u2714\ufe0f | \u2714\ufe0f |"
+    },
+    {
+      "name": "Gen3",
+      "category": "Arms",
+      "url": "https://github.com/Kinovarobotics/ros_kortex/blob/noetic-devel/kortex_description/robots/gen3.urdf",
+      "row": "| Gen3 | Kinova | [URDF](https://github.com/Kinovarobotics/ros_kortex/blob/noetic-devel/kortex_description/robots/gen3.urdf) | BSD-3-Clause | \u2714\ufe0f | \u2714\ufe0f | \u2714\ufe0f |"
+    },
+    {
+      "name": "iiwa 14",
+      "category": "Arms",
+      "url": "https://github.com/RobotLocomotion/models/tree/master/iiwa_description/urdf",
+      "row": "| iiwa 14 | KUKA | [URDF](https://github.com/RobotLocomotion/models/tree/master/iiwa_description/urdf), [MJCF](https://github.com/google-deepmind/mujoco_menagerie/tree/main/kuka_iiwa_14) | BSD-3-Clause | \u2714\ufe0f | \u2714\ufe0f | \u2714\ufe0f |"
+    },
+    {
+      "name": "iiwa 7",
+      "category": "Arms",
+      "url": "https://github.com/facebookresearch/differentiable-robot-model/blob/main/diff_robot_data/kuka_iiwa/urdf",
+      "row": "| iiwa 7 | KUKA | [URDF](https://github.com/facebookresearch/differentiable-robot-model/blob/main/diff_robot_data/kuka_iiwa/urdf) | MIT | \u2714\ufe0f | \u2714\ufe0f | \u2714\ufe0f |"
+    },
+    {
+      "name": "Koch v1.1",
+      "category": "Arms",
+      "url": "https://github.com/s1lent4gnt/koch-v1-1/blob/cc1a4eb9b27978b6bc3bb34f12fa5a7d229f1fde/simulation/follower.urdf",
+      "row": "| Koch v1.1 | Alexander Koch | [URDF](https://github.com/s1lent4gnt/koch-v1-1/blob/cc1a4eb9b27978b6bc3bb34f12fa5a7d229f1fde/simulation/follower.urdf) | Apache-2.0 | \u2714\ufe0f | \u2714\ufe0f | \u2714\ufe0f |"
+    },
+    {
+      "name": "Low-Cost Robot Arm",
+      "category": "Arms",
+      "url": "https://github.com/tc-huang/low_cost_robot/tree/6c42a82763c2ff056832b87314324b88faf51b61/ros2_ws/src/low_cost_robot_description",
+      "row": "| Low-Cost Robot Arm | Alexander Koch | [URDF](https://github.com/tc-huang/low_cost_robot/tree/6c42a82763c2ff056832b87314324b88faf51b61/ros2_ws/src/low_cost_robot_description) | MIT | \u2714\ufe0f | \u2714\ufe0f | \u2714\ufe0f |"
+    },
+    {
+      "name": "M-710iC",
+      "category": "Arms",
+      "url": "https://github.com/robot-descriptions/fanuc_m710ic_description",
+      "row": "| M-710iC | FANUC | [URDF](https://github.com/robot-descriptions/fanuc_m710ic_description), [Xacro](https://github.com/ros-industrial/fanuc/tree/melodic-devel/fanuc_m710ic_support) | BSD-3-Clause | \u2714\ufe0f | \u2716\ufe0f | \u2714\ufe0f |"
+    },
+    {
+      "name": "Panda",
+      "category": "Arms",
+      "url": "https://github.com/Gepetto/example-robot-data/tree/master/robots/panda_description",
+      "row": "| Panda | Franka Robotics | [URDF](https://github.com/Gepetto/example-robot-data/tree/master/robots/panda_description), [Xacro](https://github.com/frankaemika/franka_ros/tree/develop/franka_description) | Apache-2.0 | \u2714\ufe0f | \u2716\ufe0f | \u2714\ufe0f |"
+    },
+    {
+      "name": "PiPER",
+      "category": "Arms",
+      "url": "https://github.com/agilexrobotics/Piper_ros/tree/ros-noetic-no-aloha/src/piper_description/urdf",
+      "row": "| PiPER | AgileX | [MJCF](https://github.com/google-deepmind/mujoco_menagerie/tree/main/agilex_piper), [URDF](https://github.com/agilexrobotics/Piper_ros/tree/ros-noetic-no-aloha/src/piper_description/urdf) | MIT | \u2714\ufe0f | \u2714\ufe0f | \u2714\ufe0f |"
+    },
+    {
+      "name": "Poppy Ergo Jr",
+      "category": "Arms",
+      "url": "https://github.com/poppy-project/poppy_ergo_jr_description",
+      "row": "| Poppy Ergo Jr | Poppy Project | [URDF](https://github.com/poppy-project/poppy_ergo_jr_description) | GPL-3.0 | \u2714\ufe0f | \u2714\ufe0f | \u2714\ufe0f |"
+    },
+    {
+      "name": "SO-ARM 100",
+      "category": "Arms",
+      "url": "https://github.com/TheRobotStudio/SO-ARM100/blob/main/Simulation/SO100/so100.urdf",
+      "row": "| SO-ARM 100 | The Robot Studio | [URDF](https://github.com/TheRobotStudio/SO-ARM100/blob/main/Simulation/SO100/so100.urdf) | Apache-2.0 | \u2714\ufe0f | \u2714\ufe0f | \u2714\ufe0f |"
+    },
+    {
+      "name": "UR10",
+      "category": "Arms",
+      "url": "https://github.com/Gepetto/example-robot-data/blob/master/robots/ur_description/urdf/ur10_robot.urdf",
+      "row": "| UR10 | Universal Robots | [URDF](https://github.com/Gepetto/example-robot-data/blob/master/robots/ur_description/urdf/ur10_robot.urdf), [Xacro](https://github.com/ros-industrial/universal_robot/blob/kinetic-devel/ur_description/urdf/ur10.urdf.xacro) | Apache-2.0 | \u2714\ufe0f | \u2714\ufe0f | \u2714\ufe0f |"
+    },
+    {
+      "name": "UR3",
+      "category": "Arms",
+      "url": "https://github.com/Gepetto/example-robot-data/blob/master/robots/ur_description/urdf/ur3_robot.urdf",
+      "row": "| UR3 | Universal Robots | [URDF](https://github.com/Gepetto/example-robot-data/blob/master/robots/ur_description/urdf/ur3_robot.urdf), [Xacro](https://github.com/ros-industrial/universal_robot/blob/kinetic-devel/ur_description/urdf/ur3.urdf.xacro) | Apache-2.0 | \u2714\ufe0f | \u2714\ufe0f | \u2714\ufe0f |"
+    },
+    {
+      "name": "UR5",
+      "category": "Arms",
+      "url": "https://github.com/Gepetto/example-robot-data/blob/master/robots/ur_description/urdf/ur5_robot.urdf",
+      "row": "| UR5 | Universal Robots | [URDF](https://github.com/Gepetto/example-robot-data/blob/master/robots/ur_description/urdf/ur5_robot.urdf), [Xacro](https://github.com/ros-industrial/universal_robot/blob/kinetic-devel/ur_description/urdf/ur5.urdf.xacro) | Apache-2.0 | \u2714\ufe0f | \u2714\ufe0f | \u2714\ufe0f |"
+    },
+    {
+      "name": "Z1",
+      "category": "Arms",
+      "url": "https://github.com/unitreerobotics/unitree_ros/blob/master/robots/z1_description/xacro/z1.urdf",
+      "row": "| Z1 | UNITREE Robotics | [URDF](https://github.com/unitreerobotics/unitree_ros/blob/master/robots/z1_description/xacro/z1.urdf) | BSD-3-Clause | \u2714\ufe0f | \u2714\ufe0f | \u2714\ufe0f |"
+    },
+    {
+      "name": "Bolt",
+      "category": "Bipeds",
+      "url": "https://github.com/Gepetto/example-robot-data/tree/master/robots/bolt_description",
+      "row": "| Bolt | ODRI | [URDF](https://github.com/Gepetto/example-robot-data/tree/master/robots/bolt_description) | BSD-3-Clause | \u2714\ufe0f | \u2714\ufe0f | \u2714\ufe0f |"
+    },
+    {
+      "name": "BD-X",
+      "category": "Bipeds",
+      "url": "https://github.com/rimim/AWD/blob/main/awd/data/assets/go_bdx/go_bdx.urdf",
+      "row": "| BD-X | Disney | [URDF](https://github.com/rimim/AWD/blob/main/awd/data/assets/go_bdx/go_bdx.urdf) [MJCF](https://github.com/rimim/AWD/blob/main/awd/data/assets/go_bdx/go_bdx.xml) | NVIDIA License | \u2714\ufe0f | \u2714\ufe0f | \u2714\ufe0f |"
+    },
+    {
+      "name": "Cassie",
+      "category": "Bipeds",
+      "url": "https://github.com/robot-descriptions/cassie_description",
+      "row": "| Cassie | Agility Robotics | [URDF](https://github.com/robot-descriptions/cassie_description), [MJCF](https://github.com/deepmind/mujoco_menagerie/tree/main/agility_cassie) | MIT | \u2714\ufe0f | \u2714\ufe0f | \u2714\ufe0f |"
+    },
+    {
+      "name": "Cookie",
+      "category": "Bipeds",
+      "url": "https://codeberg.org/upkie/cookie_description",
+      "row": "| Cookie | Michael Mathieu | [URDF](https://codeberg.org/upkie/cookie_description) | Apache-2.0 | \u2714\ufe0f | \u2714\ufe0f | \u2714\ufe0f |"
+    },
+    {
+      "name": "PF_TRON1A",
+      "category": "Bipeds",
+      "url": "https://github.com/limxdynamics/tron1-robot-description/tree/master/pointfoot/PF_TRON1A/urdf",
+      "row": "| PF_TRON1A | LimX Dynamics | [URDF](https://github.com/limxdynamics/tron1-robot-description/tree/master/pointfoot/PF_TRON1A/urdf), [Xacro](https://github.com/limxdynamics/tron1-robot-description/tree/master/pointfoot/PF_TRON1A/xacro), [MJCF](https://github.com/limxdynamics/tron1-robot-description/tree/master/pointfoot/PF_TRON1A/xml) | Apache-2.0 | \u2714\ufe0f | \u2714\ufe0f | \u2714\ufe0f |"
+    },
+    {
+      "name": "PF_TRON1B",
+      "category": "Bipeds",
+      "url": "https://github.com/limxdynamics/tron1-robot-description/tree/master/pointfoot/PF_TRON1B/urdf",
+      "row": "| PF_TRON1B | LimX Dynamics | [URDF](https://github.com/limxdynamics/tron1-robot-description/tree/master/pointfoot/PF_TRON1B/urdf), [Xacro](https://github.com/limxdynamics/tron1-robot-description/tree/master/pointfoot/PF_TRON1B/xacro), [MJCF](https://github.com/limxdynamics/tron1-robot-description/tree/master/pointfoot/PF_TRON1B/xml) | Apache-2.0 | \u2714\ufe0f | \u2714\ufe0f | \u2714\ufe0f |"
+    },
+    {
+      "name": "Rhea",
+      "category": "Bipeds",
+      "url": "https://github.com/G-Levine/rhea_description",
+      "row": "| Rhea | Gabrael Levine | [URDF](https://github.com/G-Levine/rhea_description) | MIT | \u2714\ufe0f | \u2716\ufe0f | \u2714\ufe0f |"
+    },
+    {
+      "name": "SF_TRON1A",
+      "category": "Bipeds",
+      "url": "https://github.com/limxdynamics/tron1-robot-description/tree/master/pointfoot/SF_TRON1A/urdf",
+      "row": "| SF_TRON1A | LimX Dynamics | [URDF](https://github.com/limxdynamics/tron1-robot-description/tree/master/pointfoot/SF_TRON1A/urdf), [Xacro](https://github.com/limxdynamics/tron1-robot-description/tree/master/pointfoot/SF_TRON1A/xacro), [MJCF](https://github.com/limxdynamics/tron1-robot-description/tree/master/pointfoot/SF_TRON1A/xml) | Apache-2.0 | \u2714\ufe0f | \u2714\ufe0f | \u2714\ufe0f |"
+    },
+    {
+      "name": "SF_TRON1B",
+      "category": "Bipeds",
+      "url": "https://github.com/limxdynamics/tron1-robot-description/tree/master/pointfoot/SF_TRON1B/urdf",
+      "row": "| SF_TRON1B | LimX Dynamics | [URDF](https://github.com/limxdynamics/tron1-robot-description/tree/master/pointfoot/SF_TRON1B/urdf), [Xacro](https://github.com/limxdynamics/tron1-robot-description/tree/master/pointfoot/SF_TRON1B/xacro), [MJCF](https://github.com/limxdynamics/tron1-robot-description/tree/master/pointfoot/SF_TRON1B/xml) | Apache-2.0 | \u2714\ufe0f | \u2714\ufe0f | \u2714\ufe0f |"
+    },
+    {
+      "name": "SF_TRON2A",
+      "category": "Bipeds",
+      "url": "https://github.com/limxdynamics/tron2-robot-description/tree/main/tron2/SF_TRON2A/urdf",
+      "row": "| SF_TRON2A | LimX Dynamics | [URDF](https://github.com/limxdynamics/tron2-robot-description/tree/main/tron2/SF_TRON2A/urdf), [Xacro](https://github.com/limxdynamics/tron2-robot-description/tree/main/tron2/SF_TRON2A/xacro), [MJCF](https://github.com/limxdynamics/tron2-robot-description/tree/main/tron2/SF_TRON2A/xml) | Apache-2.0 | \u2714\ufe0f | \u2714\ufe0f | \u2714\ufe0f |"
+    },
+    {
+      "name": "SFYG_TRON2A",
+      "category": "Bipeds",
+      "url": "https://github.com/limxdynamics/tron2-robot-description/tree/main/tron2/SFYG_TRON2A/urdf",
+      "row": "| SFYG_TRON2A | LimX Dynamics | [URDF](https://github.com/limxdynamics/tron2-robot-description/tree/main/tron2/SFYG_TRON2A/urdf), [Xacro](https://github.com/limxdynamics/tron2-robot-description/tree/main/tron2/SFYG_TRON2A/xacro), [MJCF](https://github.com/limxdynamics/tron2-robot-description/tree/main/tron2/SFYG_TRON2A/xml) | Apache-2.0 | \u2714\ufe0f | \u2714\ufe0f | \u2714\ufe0f |"
+    },
+    {
+      "name": "Spryped",
+      "category": "Bipeds",
+      "url": "https://github.com/bbokser/spryped/tree/master/spryped_urdf_rev06",
+      "row": "| Spryped | Benjamin Bokser | [URDF](https://github.com/bbokser/spryped/tree/master/spryped_urdf_rev06) | GPL-3.0 | \u2714\ufe0f | \u2714\ufe0f | \u2714\ufe0f |"
+    },
+    {
+      "name": "Upkie",
+      "category": "Bipeds",
+      "url": "https://github.com/upkie/upkie_description",
+      "row": "| Upkie | St\u00e9phane Caron | [URDF](https://github.com/upkie/upkie_description) | Apache-2.0 | \u2714\ufe0f | \u2714\ufe0f | \u2714\ufe0f |"
+    },
+    {
+      "name": "WF_TRON1A",
+      "category": "Bipeds",
+      "url": "https://github.com/limxdynamics/tron1-robot-description/tree/master/pointfoot/WF_TRON1A/urdf",
+      "row": "| WF_TRON1A | LimX Dynamics | [URDF](https://github.com/limxdynamics/tron1-robot-description/tree/master/pointfoot/WF_TRON1A/urdf), [Xacro](https://github.com/limxdynamics/tron1-robot-description/tree/master/pointfoot/WF_TRON1A/xacro), [MJCF](https://github.com/limxdynamics/tron1-robot-description/tree/master/pointfoot/WF_TRON1A/xml) | Apache-2.0 | \u2714\ufe0f | \u2714\ufe0f | \u2714\ufe0f |"
+    },
+    {
+      "name": "WF_TRON1B",
+      "category": "Bipeds",
+      "url": "https://github.com/limxdynamics/tron1-robot-description/tree/master/pointfoot/WF_TRON1B/urdf",
+      "row": "| WF_TRON1B | LimX Dynamics | [URDF](https://github.com/limxdynamics/tron1-robot-description/tree/master/pointfoot/WF_TRON1B/urdf), [Xacro](https://github.com/limxdynamics/tron1-robot-description/tree/master/pointfoot/WF_TRON1B/xacro), [MJCF](https://github.com/limxdynamics/tron1-robot-description/tree/master/pointfoot/WF_TRON1B/xml) | Apache-2.0 | \u2714\ufe0f | \u2714\ufe0f | \u2714\ufe0f |"
+    },
+    {
+      "name": "WF_TRON2A",
+      "category": "Bipeds",
+      "url": "https://github.com/limxdynamics/tron2-robot-description/tree/main/tron2/WF_TRON2A/urdf",
+      "row": "| WF_TRON2A | LimX Dynamics | [URDF](https://github.com/limxdynamics/tron2-robot-description/tree/main/tron2/WF_TRON2A/urdf), [Xacro](https://github.com/limxdynamics/tron2-robot-description/tree/main/tron2/WF_TRON2A/xacro), [MJCF](https://github.com/limxdynamics/tron2-robot-description/tree/main/tron2/WF_TRON2A/xml) | Apache-2.0 | \u2714\ufe0f | \u2714\ufe0f | \u2714\ufe0f |"
+    },
+    {
+      "name": "WFYG_TRON2A",
+      "category": "Bipeds",
+      "url": "https://github.com/limxdynamics/tron2-robot-description/tree/main/tron2/WFYG_TRON2A/urdf",
+      "row": "| WFYG_TRON2A | LimX Dynamics | [URDF](https://github.com/limxdynamics/tron2-robot-description/tree/main/tron2/WFYG_TRON2A/urdf), [Xacro](https://github.com/limxdynamics/tron2-robot-description/tree/main/tron2/WFYG_TRON2A/xacro), [MJCF](https://github.com/limxdynamics/tron2-robot-description/tree/main/tron2/WFYG_TRON2A/xml) | Apache-2.0 | \u2714\ufe0f | \u2714\ufe0f | \u2714\ufe0f |"
+    },
+    {
+      "name": "Baxter",
+      "category": "Dual Arms",
+      "url": "https://github.com/RethinkRobotics/baxter_common/blob/master/baxter_description/urdf/baxter.urdf",
+      "row": "| Baxter | Rethink Robotics | [URDF](https://github.com/RethinkRobotics/baxter_common/blob/master/baxter_description/urdf/baxter.urdf), [Xacro](https://github.com/RethinkRobotics/baxter_common/blob/master/baxter_description/urdf/baxter.urdf.xacro) | BSD-3-Clause | \u2714\ufe0f | \u2714\ufe0f | \u2714\ufe0f |"
+    },
+    {
+      "name": "DACH_TRON2A",
+      "category": "Dual Arms",
+      "url": "https://github.com/limxdynamics/tron2-robot-description/tree/main/tron2/DACH_TRON2A/urdf",
+      "row": "| DACH_TRON2A | LimX Dynamics | [URDF](https://github.com/limxdynamics/tron2-robot-description/tree/main/tron2/DACH_TRON2A/urdf), [Xacro](https://github.com/limxdynamics/tron2-robot-description/tree/main/tron2/DACH_TRON2A/xacro), [MJCF](https://github.com/limxdynamics/tron2-robot-description/tree/main/tron2/DACH_TRON2A/xml) | Apache-2.0 | \u2714\ufe0f | \u2714\ufe0f | \u2714\ufe0f |"
+    },
+    {
+      "name": "Dual iiwa 14",
+      "category": "Dual Arms",
+      "url": "https://github.com/RobotLocomotion/models/blob/master/iiwa_description/urdf/dual_iiwa14_polytope_collision.urdf",
+      "row": "| Dual iiwa 14 | KUKA | [URDF](https://github.com/RobotLocomotion/models/blob/master/iiwa_description/urdf/dual_iiwa14_polytope_collision.urdf), [Xacro](https://github.com/RobotLocomotion/models/blob/master/iiwa_description/urdf/dual_iiwa14_polytope_collision.urdf.xacro) | BSD-3-Clause | \u2714\ufe0f | \u2714\ufe0f | \u2714\ufe0f |"
+    },
+    {
+      "name": "NEXTAGE",
+      "category": "Dual Arms",
+      "url": "https://github.com/tork-a/rtmros_nextage/tree/indigo-devel/nextage_description",
+      "row": "| NEXTAGE | Kawada Robotics | [URDF](https://github.com/tork-a/rtmros_nextage/tree/indigo-devel/nextage_description) | BSD | \u2714\ufe0f | \u2714\ufe0f | \u2714\ufe0f |"
+    },
+    {
+      "name": "Poppy Torso",
+      "category": "Dual Arms",
+      "url": "https://github.com/poppy-project/poppy_torso_description",
+      "row": "| Poppy Torso | Pollen Robotics | [URDF](https://github.com/poppy-project/poppy_torso_description) | GPL-3.0 | \u2714\ufe0f | \u2714\ufe0f | \u2714\ufe0f |"
+    },
+    {
+      "name": "YuMi",
+      "category": "Dual Arms",
+      "url": "https://github.com/OrebroUniversity/yumi/tree/master/yumi_description",
+      "row": "| YuMi | ABB | [URDF](https://github.com/OrebroUniversity/yumi/tree/master/yumi_description) | BSD-2-Clause | \u2714\ufe0f | \u2714\ufe0f | \u2714\ufe0f |"
+    },
+    {
+      "name": "Crazyflie 2.0",
+      "category": "Drones",
+      "url": "https://github.com/utiasDSL/gym-pybullet-drones/tree/master/gym_pybullet_drones/assets",
+      "row": "| Crazyflie 2.0 | Bitcraze | [URDF](https://github.com/utiasDSL/gym-pybullet-drones/tree/master/gym_pybullet_drones/assets), [MJCF](https://github.com/google-deepmind/mujoco_menagerie/tree/main/bitcraze_crazyflie_2) | MIT | \u2714\ufe0f | \u2714\ufe0f | \u2714\ufe0f |"
+    },
+    {
+      "name": "X2",
+      "category": "Drones",
+      "url": "https://github.com/lvjonok/skydio_x2_description/blob/master/urdf/skydio_x2.urdf",
+      "row": "| X2 | Skydio | [MJCF](https://github.com/google-deepmind/mujoco_menagerie/tree/main/skydio_x2), [URDF](https://github.com/lvjonok/skydio_x2_description/blob/master/urdf/skydio_x2.urdf) | Apache-2.0 | \u2714\ufe0f | \u2714\ufe0f | \u2714\ufe0f |"
+    },
+    {
+      "name": "Ingenuity",
+      "category": "Drones",
+      "url": "https://github.com/david-dorf/perseverance-ingenuity-urdfs/tree/main/ingenuity",
+      "row": "| Ingenuity | NASA JPL | [URDF](https://github.com/david-dorf/perseverance-ingenuity-urdfs/tree/main/ingenuity) | Apache-2.0 | \u2714\ufe0f | \u2714\ufe0f | \u2714\ufe0f |"
+    },
+    {
+      "name": "Double Pendulum",
+      "category": "Educational",
+      "url": "https://github.com/Gepetto/example-robot-data/tree/master/robots/double_pendulum_description",
+      "row": "| Double Pendulum | [URDF](https://github.com/Gepetto/example-robot-data/tree/master/robots/double_pendulum_description) | BSD-3-Clause | \u2714\ufe0f | \u2714\ufe0f | \u2714\ufe0f |"
+    },
+    {
+      "name": "FingerEdu",
+      "category": "Educational",
+      "url": "https://github.com/Gepetto/example-robot-data/tree/master/robots/finger_edu_description",
+      "row": "| FingerEdu | [URDF](https://github.com/Gepetto/example-robot-data/tree/master/robots/finger_edu_description) | BSD-3-Clause | \u2714\ufe0f | \u2714\ufe0f | \u2714\ufe0f |"
+    },
+    {
+      "name": "Simple Humanoid",
+      "category": "Educational",
+      "url": "https://github.com/laas/simple_humanoid_description",
+      "row": "| Simple Humanoid | [URDF](https://github.com/laas/simple_humanoid_description) | BSD-2-Clause | \u2714\ufe0f | \u2714\ufe0f | \u2716\ufe0f |"
+    },
+    {
+      "name": "TriFingerEdu",
+      "category": "Educational",
+      "url": "https://github.com/facebookresearch/differentiable-robot-model/tree/main/diff_robot_data/trifinger_edu_description",
+      "row": "| TriFingerEdu | [URDF](https://github.com/facebookresearch/differentiable-robot-model/tree/main/diff_robot_data/trifinger_edu_description) | MIT | \u2714\ufe0f | \u2714\ufe0f | \u2714\ufe0f |"
+    },
+    {
+      "name": "Ability Hand",
+      "category": "End Effectors",
+      "url": "https://github.com/psyonicinc/ability-hand-api/tree/master/URDF",
+      "row": "| Ability Hand | PSYONIC, Inc. | [MJCF](https://github.com/psyonicinc/ability-hand-api/tree/master/python/ah_simulators/mujoco_xml), [URDF](https://github.com/psyonicinc/ability-hand-api/tree/master/URDF) | [MIT](https://github.com/psyonicinc/ability-hand-api/blob/d82ca9db87fab43ac4cdd4b5144ea1080b51bab6/LICENSE) | \u2714\ufe0f | \u2714\ufe0f | \u2714\ufe0f |"
+    },
+    {
+      "name": "Aero Hand",
+      "category": "End Effectors",
+      "url": "https://github.com/TetherIA/aero-hand-open/blob/0855379781311731c4ab555ee1b8f374ec7a118d/ros2/src/aero_hand_open_description/urdf/aero_hand_open_left.urdf",
+      "row": "| Aero Hand | TetherIA | [URDF](https://github.com/TetherIA/aero-hand-open/blob/0855379781311731c4ab555ee1b8f374ec7a118d/ros2/src/aero_hand_open_description/urdf/aero_hand_open_left.urdf) | [Apache-2.0](https://github.com/TetherIA/aero-hand-open/blob/0855379781311731c4ab555ee1b8f374ec7a118d/LICENSE.md) | \u2714\ufe0f | \u2714\ufe0f | \u2714\ufe0f |"
+    },
+    {
+      "name": "Allegro Hand",
+      "category": "End Effectors",
+      "url": "https://github.com/RobotLocomotion/models/tree/master/allegro_hand_description/urdf",
+      "row": "| Allegro Hand | Wonik Robotics | [URDF](https://github.com/RobotLocomotion/models/tree/master/allegro_hand_description/urdf), [MJCF](https://github.com/google-deepmind/mujoco_menagerie/tree/main/wonik_allegro) | BSD | \u2714\ufe0f | \u2714\ufe0f | \u2714\ufe0f |"
+    },
+    {
+      "name": "BarrettHand",
+      "category": "End Effectors",
+      "url": "https://github.com/jhu-lcsr-attic/bhand_model/tree/master/robots",
+      "row": "| BarrettHand | Barrett Technology | [URDF](https://github.com/jhu-lcsr-attic/bhand_model/tree/master/robots) | BSD | \u2716\ufe0f | \u2714\ufe0f | \u2714\ufe0f |"
+    },
+    {
+      "name": "DexHand",
+      "category": "End Effectors",
+      "url": "https://github.com/iotdesignshop/dexhand_description/tree/main/urdf",
+      "row": "| DexHand | The Robot Studio | [URDF](https://github.com/iotdesignshop/dexhand_description/tree/main/urdf) | CC-BY-NC-SA | \u2714\ufe0f | \u2714\ufe0f | \u2714\ufe0f |"
+    },
+    {
+      "name": "LEAP Hand v1",
+      "category": "End Effectors",
+      "url": "https://github.com/leap-hand/LEAP_Hand_Sim/blob/150bc3d4b61fd6619193ba5a8ef209f3609ced89/assets/leap_hand/robot.urdf",
+      "row": "| LEAP Hand v1 | Carnegie Mellon University | [URDF](https://github.com/leap-hand/LEAP_Hand_Sim/blob/150bc3d4b61fd6619193ba5a8ef209f3609ced89/assets/leap_hand/robot.urdf) | MIT | \u2714\ufe0f | \u2714\ufe0f | \u2714\ufe0f |"
+    },
+    {
+      "name": "Robotiq 2F-85",
+      "category": "End Effectors",
+      "url": "https://github.com/a-price/robotiq_arg85_description",
+      "row": "| Robotiq 2F-85 | Robotiq | [MJCF](https://github.com/deepmind/mujoco_menagerie/tree/main/robotiq_2f85), [URDF](https://github.com/a-price/robotiq_arg85_description), [Xacro](https://github.com/ros-industrial/robotiq/tree/kinetic-devel/robotiq_2f_85_gripper_visualization) | BSD-2-Clause | \u2714\ufe0f | \u2714\ufe0f | \u2714\ufe0f |"
+    },
+    {
+      "name": "AgiBot X1",
+      "category": "Humanoids",
+      "url": "https://github.com/AgibotTech/agibot_x1_train/tree/main/resources/robots/x1/urdf",
+      "row": "| AgiBot X1 | AgibotTech | [MJCF](https://github.com/AgibotTech/agibot_x1_train/tree/main/resources/robots/x1/mjcf), [URDF](https://github.com/AgibotTech/agibot_x1_train/tree/main/resources/robots/x1/urdf) | \u2716\ufe0f  | \u2714\ufe0f | \u2714\ufe0f | \u2716\ufe0f |"
+    },
+    {
+      "name": "Atlas DRC (v3)",
+      "category": "Humanoids",
+      "url": "https://github.com/RobotLocomotion/models/blob/master/atlas/atlas_convex_hull.urdf",
+      "row": "| Atlas DRC (v3) | Boston Dynamics | [URDF](https://github.com/RobotLocomotion/models/blob/master/atlas/atlas_convex_hull.urdf) | BSD-3-Clause | \u2714\ufe0f | \u2714\ufe0f | \u2714\ufe0f |"
+    },
+    {
+      "name": "Atlas v4",
+      "category": "Humanoids",
+      "url": "https://github.com/openai/roboschool/tree/1.0.49/roboschool/models_robot/atlas_description",
+      "row": "| Atlas v4 | Boston Dynamics | [URDF](https://github.com/openai/roboschool/tree/1.0.49/roboschool/models_robot/atlas_description) | MIT | \u2714\ufe0f | \u2714\ufe0f | \u2714\ufe0f |"
+    },
+    {
+      "name": "Berkeley Humanoid",
+      "category": "Humanoids",
+      "url": "https://github.com/HybridRobotics/berkeley_humanoid_description",
+      "row": "| Berkeley Humanoid | Hybrid Robotics | [URDF](https://github.com/HybridRobotics/berkeley_humanoid_description) | BSD-3-Clause | \u2714\ufe0f | \u2714\ufe0f | \u2714\ufe0f |"
+    },
+    {
+      "name": "Booster T1",
+      "category": "Humanoids",
+      "url": "https://github.com/BoosterRobotics/booster_gym/tree/main/resources/T1",
+      "row": "| Booster T1 | Booster Robotics | [URDF](https://github.com/BoosterRobotics/booster_gym/tree/main/resources/T1) | Apache-2.0 | \u2714\ufe0f | \u2714\ufe0f | \u2714\ufe0f | "
+    },
+    {
+      "name": "Digit",
+      "category": "Humanoids",
+      "url": "https://github.com/adubredu/DigitRobot.jl",
+      "row": "| Digit | Agility Robotics | [URDF](https://github.com/adubredu/DigitRobot.jl) | \u2716\ufe0f | \u2714\ufe0f | \u2714\ufe0f | \u2714\ufe0f |"
+    },
+    {
+      "name": "Draco3",
+      "category": "Humanoids",
+      "url": "https://github.com/shbang91/draco3_description",
+      "row": "| Draco3 | Apptronik | [URDF](https://github.com/shbang91/draco3_description) | BSD-2-Clause | \u2714\ufe0f | \u2714\ufe0f | \u2714\ufe0f |"
+    },
+    {
+      "name": "Elf2",
+      "category": "Humanoids",
+      "url": "https://github.com/bxirobotics/robot_models/tree/main/elf2_dof25/urdf",
+      "row": "| Elf2 | BXI Robotics | [MJCF](https://github.com/bxirobotics/robot_models/tree/main/elf2_dof25/xml), [URDF](https://github.com/bxirobotics/robot_models/tree/main/elf2_dof25/urdf) | Apache-2.0   | \u2714\ufe0f | \u2714\ufe0f | \u2714\ufe0f |"
+    },
+    {
+      "name": "ergoCub",
+      "category": "Humanoids",
+      "url": "https://github.com/icub-tech-iit/ergocub-software/tree/master/urdf/ergoCub",
+      "row": "| ergoCub | IIT | [URDF](https://github.com/icub-tech-iit/ergocub-software/tree/master/urdf/ergoCub) | BSD-3-Clause | \u2714\ufe0f | \u2714\ufe0f | \u2714\ufe0f |"
+    },
+    {
+      "name": "G1",
+      "category": "Humanoids",
+      "url": "https://github.com/unitreerobotics/unitree_ros/tree/master/robots/g1_description",
+      "row": "| G1 | UNITREE Robotics | [MJCF](https://github.com/google-deepmind/mujoco_menagerie/tree/main/unitree_g1), [URDF](https://github.com/unitreerobotics/unitree_ros/tree/master/robots/g1_description) | BSD-3-Clause | \u2714\ufe0f | \u2714\ufe0f | \u2714\ufe0f |"
+    },
+    {
+      "name": "GENE.01",
+      "category": "Humanoids",
+      "url": "https://github.com/gbionics/gb-robot-models/blob/ae990f38968c2ae29caee88851f9153168630b8f/share/gb_robot_models/robots/gene01_0/model.urdf",
+      "row": "| GENE.01 | Generative Bionics | [URDF](https://github.com/gbionics/gb-robot-models/blob/ae990f38968c2ae29caee88851f9153168630b8f/share/gb_robot_models/robots/gene01_0/model.urdf) | [CC-BY-NC-4.0 \u2716\ufe0f](https://github.com/gbionics/gb-robot-models/blob/ae990f38968c2ae29caee88851f9153168630b8f/LICENSE) | \u2714\ufe0f | \u2714\ufe0f | \u2714\ufe0f |"
+    },
+    {
+      "name": "GR-1",
+      "category": "Humanoids",
+      "url": "https://github.com/FFTAI/Wiki-GRx-Models/tree/master/GRX/GR1",
+      "row": "| GR-1 | Fourier | [URDF](https://github.com/FFTAI/Wiki-GRx-Models/tree/master/GRX/GR1) | [GPL-3.0](https://github.com/FFTAI/Wiki-GRx-Models/blob/351245ac8fa4bf6f4b0c41556e1e6976a438bcef/LICENSE) | \u2714\ufe0f | \u2714\ufe0f | \u2714\ufe0f |"
+    },
+    {
+      "name": "Gundam RX-78",
+      "category": "Humanoids",
+      "url": "https://github.com/gundam-global-challenge/gundam_robot/tree/master/gundam_rx78_description",
+      "row": "| Gundam RX-78 | Bandai Namco Filmworks | [URDF](https://github.com/gundam-global-challenge/gundam_robot/tree/master/gundam_rx78_description) | \u2716\ufe0f  | \u2714\ufe0f | \u2714\ufe0f | \u2714\ufe0f |"
+    },
+    {
+      "name": "H1",
+      "category": "Humanoids",
+      "url": "https://github.com/unitreerobotics/unitree_ros/tree/master/robots/h1_description",
+      "row": "| H1 | UNITREE Robotics | [MJCF](https://github.com/google-deepmind/mujoco_menagerie/tree/main/unitree_h1), [URDF](https://github.com/unitreerobotics/unitree_ros/tree/master/robots/h1_description) | BSD-3-Clause | \u2714\ufe0f | \u2714\ufe0f | \u2714\ufe0f |"
+    },
+    {
+      "name": "iCub",
+      "category": "Humanoids",
+      "url": "https://github.com/robotology/icub-models/tree/master/iCub",
+      "row": "| iCub | IIT | [URDF](https://github.com/robotology/icub-models/tree/master/iCub) | CC-BY-SA-4.0 | \u2714\ufe0f | \u2714\ufe0f | \u2714\ufe0f |"
+    },
+    {
+      "name": "JAXON",
+      "category": "Humanoids",
+      "url": "https://github.com/robot-descriptions/jaxon_description",
+      "row": "| JAXON | JSK | [COLLADA](https://github.com/stephane-caron/openrave_models/tree/master/JAXON), [URDF](https://github.com/robot-descriptions/jaxon_description), [VRML](https://github.com/start-jsk/rtmros_choreonoid/tree/master/jvrc_models/JAXON_JVRC) | CC-BY-SA-4.0 | \u2714\ufe0f | \u2714\ufe0f | \u2714\ufe0f |"
+    },
+    {
+      "name": "JVRC-1",
+      "category": "Humanoids",
+      "url": "https://github.com/stephane-caron/jvrc_description",
+      "row": "| JVRC-1 | AIST | [MJCF](https://github.com/isri-aist/jvrc_mj_description/), [URDF](https://github.com/stephane-caron/jvrc_description) | BSD-2-Clause | \u2714\ufe0f | \u2714\ufe0f | \u2714\ufe0f |"
+    },
+    {
+      "name": "Microban",
+      "category": "Humanoids",
+      "url": "https://github.com/Rhoban/microban/blob/main/src/model/urdf/robot.urdf",
+      "row": "| Microban | Marc Duclusaud | [URDF](https://github.com/Rhoban/microban/blob/main/src/model/urdf/robot.urdf) | GPL-3.0 | \u2716\ufe0f | \u2714\ufe0f | \u2716\ufe0f |"
+    },
+    {
+      "name": "N1",
+      "category": "Humanoids",
+      "url": "https://github.com/FFTAI/Wiki-GRx-Models/tree/FourierN1/N1",
+      "row": "| N1 | Fourier | [URDF](https://github.com/FFTAI/Wiki-GRx-Models/tree/FourierN1/N1) | [Apache-2.0](https://github.com/FFTAI/Wiki-GRx-Models/blob/f8e683f00d1d99deb882deb9dfce6030095b466a/LICENSE) | \u2714\ufe0f | \u2714\ufe0f | \u2714\ufe0f |"
+    },
+    {
+      "name": "NAO",
+      "category": "Humanoids",
+      "url": "https://github.com/ros-naoqi/nao_robot/tree/master/nao_description/urdf/naoV50_generated_urdf",
+      "row": "| NAO | SoftBank Robotics | [URDF](https://github.com/ros-naoqi/nao_robot/tree/master/nao_description/urdf/naoV50_generated_urdf), [Xacro](https://github.com/ros-naoqi/nao_robot/tree/master/nao_description/) | BSD-3-Clause | [:heavy_minus_sign:](https://github.com/ros-naoqi/nao_meshes#readme) ([?](https://github.com/robot-descriptions/awesome-robot-descriptions/issues/7)) | \u2714\ufe0f | \u2714\ufe0f |"
+    },
+    {
+      "name": "Oli",
+      "category": "Humanoids",
+      "url": "https://github.com/limxdynamics/humanoid-description/blob/master/HU_D04_description/urdf/HU_D04_01.urdf",
+      "row": "| Oli | LimX Dynamics | [URDF](https://github.com/limxdynamics/humanoid-description/blob/master/HU_D04_description/urdf/HU_D04_01.urdf), [MJCF](https://github.com/limxdynamics/humanoid-description/blob/master/HU_D04_description/xml/HU_D04_01.xml) | Apache-2.0 | \u2714\ufe0f | \u2714\ufe0f | \u2714\ufe0f |"
+    },
+    {
+      "name": "Robonaut 2",
+      "category": "Humanoids",
+      "url": "https://github.com/gkjohnson/nasa-urdf-robots/tree/master/r2_description",
+      "row": "| Robonaut 2 | NASA JSC Robotics | [URDF](https://github.com/gkjohnson/nasa-urdf-robots/tree/master/r2_description) | NASA-1.3 | \u2714\ufe0f | \u2714\ufe0f | \u2714\ufe0f |"
+    },
+    {
+      "name": "Romeo",
+      "category": "Humanoids",
+      "url": "https://github.com/ros-aldebaran/romeo_robot/tree/master/romeo_description",
+      "row": "| Romeo | Aldebaran Robotics | [URDF](https://github.com/ros-aldebaran/romeo_robot/tree/master/romeo_description) | BSD-3-Clause | \u2714\ufe0f | \u2714\ufe0f | \u2714\ufe0f |"
+    },
+    {
+      "name": "SigmaBan",
+      "category": "Humanoids",
+      "url": "https://github.com/Rhoban/sigmaban_urdf",
+      "row": "| SigmaBan | Rhoban | [URDF](https://github.com/Rhoban/sigmaban_urdf) | MIT | \u2714\ufe0f | \u2714\ufe0f | \u2714\ufe0f |"
+    },
+    {
+      "name": "TALOS",
+      "category": "Humanoids",
+      "url": "https://github.com/stack-of-tasks/talos-data",
+      "row": "| TALOS | PAL Robotics | [URDF](https://github.com/stack-of-tasks/talos-data), [Xacro](https://github.com/pal-robotics/talos_robot/tree/kinetic-devel/talos_description), [MJCF](https://github.com/google-deepmind/mujoco_menagerie/tree/main/pal_talos) | LGPL-3.0, Apache-2.0 | \u2714\ufe0f | \u2714\ufe0f | \u2714\ufe0f |"
+    },
+    {
+      "name": "ToddlerBot 2XC",
+      "category": "Humanoids",
+      "url": "https://github.com/hshi74/toddlerbot/blob/main/toddlerbot/descriptions/toddlerbot_2xc/toddlerbot_2xc.urdf",
+      "row": "| ToddlerBot 2XC | Stanford University | [URDF](https://github.com/hshi74/toddlerbot/blob/main/toddlerbot/descriptions/toddlerbot_2xc/toddlerbot_2xc.urdf) | MIT | \u2714\ufe0f | \u2714\ufe0f | \u2714\ufe0f |"
+    },
+    {
+      "name": "ToddlerBot 2XM",
+      "category": "Humanoids",
+      "url": "https://github.com/hshi74/toddlerbot/blob/main/toddlerbot/descriptions/toddlerbot_2xm/toddlerbot_2xm.urdf",
+      "row": "| ToddlerBot 2XM | Stanford University | [URDF](https://github.com/hshi74/toddlerbot/blob/main/toddlerbot/descriptions/toddlerbot_2xm/toddlerbot_2xm.urdf) | MIT | \u2714\ufe0f | \u2714\ufe0f | \u2714\ufe0f |"
+    },
+    {
+      "name": "Valkyrie",
+      "category": "Humanoids",
+      "url": "https://github.com/gkjohnson/nasa-urdf-robots/tree/master/val_description/model",
+      "row": "| Valkyrie | NASA JSC Robotics | [URDF](https://github.com/gkjohnson/nasa-urdf-robots/tree/master/val_description/model), [Xacro](https://gitlab.com/nasa-jsc-robotics/val_description) | NASA-1.3 | \u2714\ufe0f | \u2714\ufe0f | \u2714\ufe0f |"
+    },
+    {
+      "name": "BamBot",
+      "category": "Mobile Manipulators",
+      "url": "https://github.com/timqian/bambot/blob/main/website/public/URDFs/bambot_v0.urdf",
+      "row": "| BamBot | Tim Qian | [URDF](https://github.com/timqian/bambot/blob/main/website/public/URDFs/bambot_v0.urdf) | Apache-2.0 | \u2714\ufe0f | \u2714\ufe0f | \u2714\ufe0f |"
+    },
+    {
+      "name": "Eve R3",
+      "category": "Mobile Manipulators",
+      "url": "https://github.com/robot-descriptions/halodi-robot-models",
+      "row": "| Eve R3 | Halodi | [URDF](https://github.com/robot-descriptions/halodi-robot-models) | Apache-2.0 | \u2714\ufe0f | \u2714\ufe0f | \u2714\ufe0f |"
+    },
+    {
+      "name": "Fetch",
+      "category": "Mobile Manipulators",
+      "url": "https://github.com/openai/roboschool/tree/master/roboschool/models_robot/fetch_description",
+      "row": "| Fetch | Fetch Robotics | [URDF](https://github.com/openai/roboschool/tree/master/roboschool/models_robot/fetch_description) | MIT | \u2714\ufe0f | \u2714\ufe0f | \u2714\ufe0f |"
+    },
+    {
+      "name": "Ginger",
+      "category": "Mobile Manipulators",
+      "url": "https://github.com/Rayckey/GingerURDF",
+      "row": "| Ginger | Paaila Technology | [URDF](https://github.com/Rayckey/GingerURDF) | BSD | \u2714\ufe0f | \u2714\ufe0f | \u2714\ufe0f |"
+    },
+    {
+      "name": "Pepper",
+      "category": "Mobile Manipulators",
+      "url": "https://github.com/jrl-umi3218/pepper_description",
+      "row": "| Pepper | SoftBank Robotics | [URDF](https://github.com/jrl-umi3218/pepper_description) | BSD-2-Clause | \u2714\ufe0f | \u2714\ufe0f | \u2714\ufe0f |"
+    },
+    {
+      "name": "PR2",
+      "category": "Mobile Manipulators",
+      "url": "https://github.com/ankurhanda/robot-assets/tree/master/urdfs/robots/pr2",
+      "row": "| PR2 | Willow Garage | [URDF](https://github.com/ankurhanda/robot-assets/tree/master/urdfs/robots/pr2), [Xacro](https://github.com/PR2/pr2_common/blob/melodic-devel/pr2_description/urdf/common.xacro) | BSD | \u2714\ufe0f | \u2714\ufe0f | \u2714\ufe0f |"
+    },
+    {
+      "name": "R1",
+      "category": "Mobile Manipulators",
+      "url": "https://github.com/userguide-galaxea/URDF/blob/40f728d49ef3799721d5d566a07efbb70cae6b53/R1/urdf/r1_v2_1_0.urdf",
+      "row": "| R1 |  Galaxea Dynamics  | [URDF](https://github.com/userguide-galaxea/URDF/blob/40f728d49ef3799721d5d566a07efbb70cae6b53/R1/urdf/r1_v2_1_0.urdf) | :heavy_minus_sign: | \u2714\ufe0f | \u2714\ufe0f | \u2714\ufe0f |"
+    },
+    {
+      "name": "Reachy",
+      "category": "Mobile Manipulators",
+      "url": "https://github.com/aubrune/reachy_description",
+      "row": "| Reachy | Pollen Robotics | [URDF](https://github.com/aubrune/reachy_description) | Apache-2.0 | \u2714\ufe0f | \u2714\ufe0f | \u2714\ufe0f |"
+    },
+    {
+      "name": "RBY1",
+      "category": "Mobile Manipulators",
+      "url": "https://github.com/uynitsuj/rby1_description/blob/e4c07203aa0a0d1b6b3b39da105cb00a77e2bc72/models/rby1a/urdf/model.urdf",
+      "row": "| RBY1 | Rainbow Robotics  | [URDF](https://github.com/uynitsuj/rby1_description/blob/e4c07203aa0a0d1b6b3b39da105cb00a77e2bc72/models/rby1a/urdf/model.urdf) | [MIT](https://github.com/uynitsuj/rby1_description/blob/e4c07203aa0a0d1b6b3b39da105cb00a77e2bc72/LICENSE) | \u2714\ufe0f | \u2714\ufe0f | \u2714\ufe0f |"
+    },
+    {
+      "name": "Stretch RE1",
+      "category": "Mobile Manipulators",
+      "url": "https://github.com/robot-descriptions/stretch_description",
+      "row": "| Stretch RE1 | Hello Robot | [URDF](https://github.com/robot-descriptions/stretch_description), [Xacro](https://github.com/hello-robot/stretch_ros/tree/master/stretch_description) | CC-BY-NC-SA-4.0 | \u2714\ufe0f | \u2714\ufe0f | \u2714\ufe0f |"
+    },
+    {
+      "name": "TIAGo",
+      "category": "Mobile Manipulators",
+      "url": "https://github.com/Gepetto/example-robot-data/tree/master/robots/tiago_description",
+      "row": "| TIAGo | PAL Robotics | [URDF](https://github.com/Gepetto/example-robot-data/tree/master/robots/tiago_description), [MJCF](https://github.com/google-deepmind/mujoco_menagerie/tree/main/pal_tiago), [Xacro](https://github.com/pal-robotics/tiago_robot/blob/kinetic-devel/tiago_description/robots/tiago.urdf.xacro) | Apache-2.0 | \u2714\ufe0f | \u2714\ufe0f | \u2714\ufe0f |"
+    },
+    {
+      "name": "Perseverance",
+      "category": "Mobile Manipulators",
+      "url": "https://github.com/david-dorf/perseverance-ingenuity-urdfs/tree/main/perseverance",
+      "row": "| Perseverance | NASA JPL | [URDF](https://github.com/david-dorf/perseverance-ingenuity-urdfs/tree/main/perseverance) | Apache-2.0 | \u2714\ufe0f | \u2716\ufe0f | \u2716\ufe0f |"
+    },
+    {
+      "name": "A1",
+      "category": "Quadrupeds",
+      "url": "https://github.com/unitreerobotics/unitree_ros/tree/master/robots/a1_description",
+      "row": "| A1 | UNITREE Robotics | [MJCF](https://github.com/unitreerobotics/unitree_mujoco/tree/main/data/a1/xml), [URDF](https://github.com/unitreerobotics/unitree_ros/tree/master/robots/a1_description) | MPL-2.0 | \u2714\ufe0f | \u2714\ufe0f | \u2714\ufe0f |"
+    },
+    {
+      "name": "Aliengo",
+      "category": "Quadrupeds",
+      "url": "https://github.com/unitreerobotics/unitree_ros/tree/master/robots/aliengo_description",
+      "row": "| Aliengo | UNITREE Robotics | [MJCF](https://github.com/unitreerobotics/unitree_mujoco/tree/main/data/aliengo/xml), [URDF](https://github.com/unitreerobotics/unitree_ros/tree/master/robots/aliengo_description) | MPL-2.0 | \u2714\ufe0f | \u2714\ufe0f | \u2714\ufe0f |"
+    },
+    {
+      "name": "ANYmal B",
+      "category": "Quadrupeds",
+      "url": "https://github.com/ANYbotics/anymal_b_simple_description",
+      "row": "| ANYmal B | ANYbotics | [MJCF](https://github.com/deepmind/mujoco_menagerie/tree/main/anybotics_anymal_b), [URDF](https://github.com/ANYbotics/anymal_b_simple_description) | BSD-3-Clause | \u2714\ufe0f | \u2714\ufe0f | \u2714\ufe0f |"
+    },
+    {
+      "name": "ANYmal C",
+      "category": "Quadrupeds",
+      "url": "https://github.com/ANYbotics/anymal_c_simple_description",
+      "row": "| ANYmal C | ANYbotics | [MJCF](https://github.com/deepmind/mujoco_menagerie/tree/main/anybotics_anymal_c), [URDF](https://github.com/ANYbotics/anymal_c_simple_description) | BSD-3-Clause | \u2714\ufe0f | \u2714\ufe0f | \u2714\ufe0f |"
+    },
+    {
+      "name": "ANYmal D",
+      "category": "Quadrupeds",
+      "url": "https://github.com/ANYbotics/anymal_d_simple_description",
+      "row": "| ANYmal D | ANYbotics | [URDF](https://github.com/ANYbotics/anymal_d_simple_description) | BSD-3-Clause | \u2714\ufe0f | \u2714\ufe0f | \u2714\ufe0f |"
+    },
+    {
+      "name": "B1",
+      "category": "Quadrupeds",
+      "url": "https://github.com/unitreerobotics/unitree_ros/tree/master/robots/b1_description",
+      "row": "| B1 | UNITREE Robotics | [URDF](https://github.com/unitreerobotics/unitree_ros/tree/master/robots/b1_description) | BSD-3-Clause | \u2714\ufe0f | \u2714\ufe0f | \u2714\ufe0f |"
+    },
+    {
+      "name": "B2",
+      "category": "Quadrupeds",
+      "url": "https://github.com/unitreerobotics/unitree_ros/tree/master/robots/b2_description",
+      "row": "| B2 | UNITREE Robotics | [URDF](https://github.com/unitreerobotics/unitree_ros/tree/master/robots/b2_description) | BSD-3-Clause | \u2714\ufe0f | \u2714\ufe0f | \u2714\ufe0f |"
+    },
+    {
+      "name": "Barkour v0",
+      "category": "Quadrupeds",
+      "url": "https://github.com/google-deepmind/mujoco_menagerie/blob/main/google_barkour_v0/barkour_v0.urdf",
+      "row": "| Barkour v0 | Google | [URDF](https://github.com/google-deepmind/mujoco_menagerie/blob/main/google_barkour_v0/barkour_v0.urdf) | Apache-2.0 | \u2714\ufe0f | \u2716\ufe0f  | \u2714\ufe0f |"
+    },
+    {
+      "name": "Barkour vb",
+      "category": "Quadrupeds",
+      "url": "https://github.com/google-deepmind/mujoco_menagerie/blob/main/google_barkour_vb/barkour_vb_rev_1_0_head_straight.urdf",
+      "row": "| Barkour vb | Google | [MJCF](https://github.com/google-deepmind/mujoco_menagerie/blob/main/google_barkour_vb/barkour_vb.xml), [URDF](https://github.com/google-deepmind/mujoco_menagerie/blob/main/google_barkour_vb/barkour_vb_rev_1_0_head_straight.urdf) | Apache-2.0 | \u2714\ufe0f | \u2714\ufe0f | \u2714\ufe0f |"
+    },
+    {
+      "name": "Go1",
+      "category": "Quadrupeds",
+      "url": "https://github.com/unitreerobotics/unitree_mujoco/tree/main/data/go1/urdf",
+      "row": "| Go1 | UNITREE Robotics | [MJCF](https://github.com/unitreerobotics/unitree_mujoco/tree/main/data/go1/xml), [URDF](https://github.com/unitreerobotics/unitree_mujoco/tree/main/data/go1/urdf) | BSD-3-Clause | \u2714\ufe0f | \u2714\ufe0f | \u2714\ufe0f |"
+    },
+    {
+      "name": "Go2",
+      "category": "Quadrupeds",
+      "url": "https://github.com/unitreerobotics/unitree_ros/tree/master/robots/go2_description",
+      "row": "| Go2 | UNITREE Robotics | [MJCF](https://github.com/google-deepmind/mujoco_menagerie/tree/main/unitree_go2), [URDF](https://github.com/unitreerobotics/unitree_ros/tree/master/robots/go2_description) | BSD-3-Clause | \u2714\ufe0f | \u2714\ufe0f | \u2714\ufe0f |"
+    },
+    {
+      "name": "HyQ",
+      "category": "Quadrupeds",
+      "url": "https://github.com/Gepetto/example-robot-data/tree/master/robots/hyq_description",
+      "row": "| HyQ | IIT | [URDF](https://github.com/Gepetto/example-robot-data/tree/master/robots/hyq_description) | Apache-2.0 | \u2714\ufe0f | \u2714\ufe0f | \u2714\ufe0f |"
+    },
+    {
+      "name": "Laikago",
+      "category": "Quadrupeds",
+      "url": "https://github.com/unitreerobotics/unitree_ros/tree/master/robots/laikago_description",
+      "row": "| Laikago | UNITREE Robotics | [MJCF](https://github.com/unitreerobotics/unitree_mujoco/tree/main/data/laikago/xml), [URDF](https://github.com/unitreerobotics/unitree_ros/tree/master/robots/laikago_description) | MPL-2.0 | \u2714\ufe0f | \u2714\ufe0f | \u2714\ufe0f |"
+    },
+    {
+      "name": "Mini Cheetah",
+      "category": "Quadrupeds",
+      "url": "https://github.com/Derek-TH-Wang/mini_cheetah_urdf",
+      "row": "| Mini Cheetah | MIT | [URDF](https://github.com/Derek-TH-Wang/mini_cheetah_urdf) | BSD | \u2714\ufe0f | \u2714\ufe0f | \u2714\ufe0f |"
+    },
+    {
+      "name": "Minitaur",
+      "category": "Quadrupeds",
+      "url": "https://github.com/bulletphysics/bullet3/blob/master/data/quadruped/minitaur.urdf",
+      "row": "| Minitaur | Ghost Robotics | [URDF](https://github.com/bulletphysics/bullet3/blob/master/data/quadruped/minitaur.urdf) | BSD-2-Clause | \u2714\ufe0f | \u2714\ufe0f | \u2714\ufe0f |"
+    },
+    {
+      "name": "Pupper v3",
+      "category": "Quadrupeds",
+      "url": "https://github.com/G-Levine/pupper_v3_description",
+      "row": "| Pupper v3 | Gabrael Levine | [URDF](https://github.com/G-Levine/pupper_v3_description) | MIT | \u2714\ufe0f | \u2714\ufe0f | \u2714\ufe0f |"
+    },
+    {
+      "name": "Solo",
+      "category": "Quadrupeds",
+      "url": "https://github.com/Gepetto/example-robot-data/tree/master/robots/solo_description",
+      "row": "| Solo | ODRI | [URDF](https://github.com/Gepetto/example-robot-data/tree/master/robots/solo_description) | BSD-3-Clause | \u2714\ufe0f | \u2714\ufe0f | \u2714\ufe0f |"
+    },
+    {
+      "name": "RSK omnidirectional",
+      "category": "Wheeled",
+      "url": "https://github.com/Rhoban/onshape-to-robot-examples/tree/master/rsk_urdf",
+      "row": "| RSK omnidirectional | [Robot Soccer Kit](https://robot-soccer-kit.github.io/) | [URDF](https://github.com/Rhoban/onshape-to-robot-examples/tree/master/rsk_urdf) | MIT | \u2714\ufe0f | \u2714\ufe0f | \u2714\ufe0f |"
+    },
+    {
+      "name": "WL P311D",
+      "category": "Wheeled",
+      "url": "https://github.com/limxdynamics/robot-description/tree/master/wheellegged/WL_P311D",
+      "row": "| WL P311D | LimX Dynamics | [URDF](https://github.com/limxdynamics/robot-description/tree/master/wheellegged/WL_P311D) | Apache-2.0 | \u2714\ufe0f | \u2714\ufe0f | \u2714\ufe0f |"
+    },
+    {
+      "name": "WL P311E",
+      "category": "Wheeled",
+      "url": "https://github.com/limxdynamics/robot-description/tree/master/wheellegged/WL_P311E",
+      "row": "| WL P311E | LimX Dynamics | [URDF](https://github.com/limxdynamics/robot-description/tree/master/wheellegged/WL_P311E) | Apache-2.0 | \u2714\ufe0f | \u2714\ufe0f | \u2714\ufe0f |"
+    }
+  ]
+}

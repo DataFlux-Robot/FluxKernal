@@ -1,0 +1,3523 @@
+{
+  "implementation_sha256": "c96c793c397e1decf8df0e5752a172e572184d8bf61b3aea3661cd31849d8b35",
+  "cases": [
+    {
+      "case_id": "02da502cbea0ef2e7110",
+      "entry_ids": [
+        94
+      ],
+      "status": "failed",
+      "error_type": "FileNotFoundError",
+      "error": "[Errno 2] No such file or directory: '/home/exuber/CODE/CORE/pythonProject1/AUTORESEARCH/fluxkernel/.demo/awesome-urdf/sources/unitreerobotics--unitree_ros--ccfc6fd8430a/robots/a1_description/urdf/libLinkPlot3DPlugin.so'"
+    },
+    {
+      "case_id": "03277530c18ff9a483ec",
+      "entry_ids": [
+        48
+      ],
+      "status": "failed",
+      "error_type": "ValueError",
+      "error": "Lossless case packages require relative asset paths"
+    },
+    {
+      "case_id": "04f1504d95e3e5685755",
+      "entry_ids": [
+        56
+      ],
+      "status": "failed",
+      "error_type": "ValueError",
+      "error": "Lossless case packages require relative asset paths"
+    },
+    {
+      "case_id": "0633ec0aee0e8504d6d8",
+      "entry_ids": [
+        10
+      ],
+      "status": "failed",
+      "error_type": "ValueError",
+      "error": "Lossless case packages require relative asset paths"
+    },
+    {
+      "case_id": "04948cf6f6efb1a1a9a4",
+      "entry_ids": [
+        85
+      ],
+      "status": "failed",
+      "error_type": "ValueError",
+      "error": "Lossless case packages require relative asset paths"
+    },
+    {
+      "case_id": "0606bdce41a2abc785e5",
+      "entry_ids": [
+        68
+      ],
+      "status": "failed",
+      "error_type": "FileNotFoundError",
+      "error": "[Errno 2] No such file or directory: '/home/exuber/CODE/CORE/pythonProject1/AUTORESEARCH/fluxkernel/.demo/awesome-urdf/sources/robotology--icub-models--dca8c618c264/iCub/robots/iCubGazeboV2_6/gz-sim-forcetorque-system'"
+    },
+    {
+      "case_id": "08f903dd5286a775848c",
+      "entry_ids": [
+        10
+      ],
+      "status": "failed",
+      "error_type": "ValueError",
+      "error": "Lossless case packages require relative asset paths"
+    },
+    {
+      "case_id": "0a173b9443cd6ff6fe47",
+      "entry_ids": [
+        72
+      ],
+      "status": "failed",
+      "error_type": "ValueError",
+      "error": "Unsafe relative path"
+    },
+    {
+      "case_id": "08888b6eb0e2a900b9b8",
+      "entry_ids": [
+        62
+      ],
+      "status": "failed",
+      "error_type": "FileNotFoundError",
+      "error": "[Errno 2] No such file or directory: '/home/exuber/CODE/CORE/pythonProject1/AUTORESEARCH/fluxkernel/.demo/awesome-urdf/sources/icub-tech-iit--ergocub-software--bc9865a5adb7/urdf/ergoCub/robots/ergoCubGazeboV1_1_minContacts/gz-sim-yarp-controlboard-system'"
+    },
+    {
+      "case_id": "0ac85230558f96e7d52e",
+      "entry_ids": [
+        109
+      ],
+      "status": "failed",
+      "error_type": "ValueError",
+      "error": "Lossless case packages require relative asset paths"
+    },
+    {
+      "case_id": "0b3ea74ccc86046cfcf9",
+      "entry_ids": [
+        26
+      ],
+      "status": "failed",
+      "error_type": "ValueError",
+      "error": "Unsafe relative path"
+    },
+    {
+      "case_id": "0c32888330998a3b37d6",
+      "entry_ids": [
+        113
+      ],
+      "status": "failed",
+      "error_type": "FileNotFoundError",
+      "error": "[Errno 2] No such file or directory: '/home/exuber/CODE/CORE/pythonProject1/AUTORESEARCH/fluxkernel/.demo/awesome-urdf/sources/limxdynamics--robot-description--5b97add1f3b4/wheellegged/WL_P311E/urdf/libgazebo_ros_p3d.so'"
+    },
+    {
+      "case_id": "0b732b860f924082074b",
+      "entry_ids": [
+        68
+      ],
+      "status": "failed",
+      "error_type": "FileNotFoundError",
+      "error": "[Errno 2] No such file or directory: '/home/exuber/CODE/CORE/pythonProject1/AUTORESEARCH/fluxkernel/.demo/awesome-urdf/sources/robotology--icub-models--dca8c618c264/iCub/robots/iCubGazeboV2_5/gz-sim-forcetorque-system'"
+    },
+    {
+      "case_id": "0b84fa063ca9e6f2ad19",
+      "entry_ids": [
+        62
+      ],
+      "status": "failed",
+      "error_type": "FileNotFoundError",
+      "error": "[Errno 2] No such file or directory: '/home/exuber/CODE/CORE/pythonProject1/AUTORESEARCH/fluxkernel/.demo/awesome-urdf/sources/icub-tech-iit--ergocub-software--bc9865a5adb7/urdf/ergoCub/robots/ergoCubGazeboSN000_minContacts/gz-sim-yarp-controlboard-system'"
+    },
+    {
+      "case_id": "0d0361182f913ffe8b6e",
+      "entry_ids": [
+        11
+      ],
+      "status": "failed",
+      "error_type": "FileNotFoundError",
+      "error": "[Errno 2] No such file or directory: '/home/exuber/CODE/CORE/pythonProject1/AUTORESEARCH/fluxkernel/.demo/awesome-urdf/sources/poppy-project--poppy_ergo_jr_description--7eb32bd385af/urdf/libgazebo_ros_control.so'"
+    },
+    {
+      "case_id": "0e50bfab076a361682a2",
+      "entry_ids": [
+        75
+      ],
+      "status": "failed",
+      "error_type": "ValueError",
+      "error": "Lossless case packages require relative asset paths"
+    },
+    {
+      "case_id": "0ea68b331d92367e151e",
+      "entry_ids": [
+        83
+      ],
+      "status": "failed",
+      "error_type": "FileNotFoundError",
+      "error": "[Errno 2] No such file or directory: '/home/exuber/CODE/CORE/pythonProject1/AUTORESEARCH/fluxkernel/.demo/awesome-urdf/sources/robot-descriptions--halodi-robot-models--5d1d5eb3c15c/halodi-robot-models-unity-support/Packages/halodi-robot-models/Runtime/Halodi/Models/libgazebo_ros_camera.so'"
+    },
+    {
+      "case_id": "0f36ebeb8f5910f26db4",
+      "entry_ids": [
+        4
+      ],
+      "status": "failed",
+      "error_type": "FileNotFoundError",
+      "error": "[Errno 2] No such file or directory: '/home/exuber/CODE/CORE/pythonProject1/AUTORESEARCH/fluxkernel/.demo/awesome-urdf/sources/RobotLocomotion--models--3bd1111011ea/iiwa_description/urdf/libgazebo_ros_control.so'"
+    },
+    {
+      "case_id": "0de71040f58c4120c022",
+      "entry_ids": [
+        63
+      ],
+      "status": "passed",
+      "primary_roundtrip": true,
+      "urdf_bytes_equal": true,
+      "asset_bytes_equal": true,
+      "lean_source_equal": true,
+      "asset_count": 34,
+      "dependency_closure": "preserved",
+      "missing_dependencies": []
+    },
+    {
+      "case_id": "10ad0c4265319ac7f666",
+      "entry_ids": [
+        81
+      ],
+      "status": "failed",
+      "error_type": "FileNotFoundError",
+      "error": "[Errno 2] No such file or directory: '/home/exuber/CODE/CORE/pythonProject1/AUTORESEARCH/fluxkernel/.demo/awesome-urdf/sources/gkjohnson--nasa-urdf-robots--1f89ecba9112/val_description/model/robots/libgazebo_ros_imu.so'"
+    },
+    {
+      "case_id": "10dc808f1ed384a533ba",
+      "entry_ids": [
+        83
+      ],
+      "status": "failed",
+      "error_type": "FileNotFoundError",
+      "error": "[Errno 2] No such file or directory: '/home/exuber/CODE/CORE/pythonProject1/AUTORESEARCH/fluxkernel/.demo/awesome-urdf/sources/robot-descriptions--halodi-robot-models--5d1d5eb3c15c/halodi-robot-models-unity-support/Packages/halodi-robot-models/Runtime/Halodi/Models/libgazebo_ros_camera.so'"
+    },
+    {
+      "case_id": "1165954f2cdc15014bf7",
+      "entry_ids": [
+        35
+      ],
+      "status": "failed",
+      "error_type": "ValueError",
+      "error": "Unsafe relative path"
+    },
+    {
+      "case_id": "119b7077aa561fc6d8b7",
+      "entry_ids": [
+        22
+      ],
+      "status": "failed",
+      "error_type": "FileNotFoundError",
+      "error": "[Errno 2] No such file or directory: '/home/exuber/CODE/CORE/pythonProject1/AUTORESEARCH/fluxkernel/.demo/awesome-urdf/sources/limxdynamics--tron1-robot-description--5b97add1f3b4/pointfoot/PF_TRON1B/urdf/libgazebo_ros_p3d.so'"
+    },
+    {
+      "case_id": "11b2d94b2a391042707d",
+      "entry_ids": [
+        63
+      ],
+      "status": "failed",
+      "error_type": "FileNotFoundError",
+      "error": "[Errno 2] No such file or directory: '/home/exuber/CODE/CORE/pythonProject1/AUTORESEARCH/fluxkernel/.demo/awesome-urdf/sources/unitreerobotics--unitree_ros--ccfc6fd8430a/robots/g1_description/inspire_hand/meshes/L_hand_base_link.STL'"
+    },
+    {
+      "case_id": "0cca1c214e6157b37fab",
+      "entry_ids": [
+        63
+      ],
+      "status": "passed",
+      "primary_roundtrip": true,
+      "urdf_bytes_equal": true,
+      "asset_bytes_equal": true,
+      "lean_source_equal": true,
+      "asset_count": 35,
+      "dependency_closure": "preserved",
+      "missing_dependencies": []
+    },
+    {
+      "case_id": "144641a1d00acbd9e72a",
+      "entry_ids": [
+        83
+      ],
+      "status": "failed",
+      "error_type": "FileNotFoundError",
+      "error": "[Errno 2] No such file or directory: '/home/exuber/CODE/CORE/pythonProject1/AUTORESEARCH/fluxkernel/.demo/awesome-urdf/sources/robot-descriptions--halodi-robot-models--5d1d5eb3c15c/halodi-robot-models-unity-support/Packages/halodi-robot-models/Runtime/Halodi/Models/libgazebo_ros_camera.so'"
+    },
+    {
+      "case_id": "14529dd19d8272391625",
+      "entry_ids": [
+        53
+      ],
+      "status": "failed",
+      "error_type": "ValueError",
+      "error": "Lossless case packages require relative asset paths"
+    },
+    {
+      "case_id": "16df662e92dcfedc9662",
+      "entry_ids": [
+        68
+      ],
+      "status": "failed",
+      "error_type": "FileNotFoundError",
+      "error": "[Errno 2] No such file or directory: '/home/exuber/CODE/CORE/pythonProject1/AUTORESEARCH/fluxkernel/.demo/awesome-urdf/sources/robotology--icub-models--dca8c618c264/iCub/robots/iCubGazeboV2_7/gz-sim-forcetorque-system'"
+    },
+    {
+      "case_id": "1720345a596c3882eb50",
+      "entry_ids": [
+        97
+      ],
+      "status": "failed",
+      "error_type": "ValueError",
+      "error": "Lossless case packages require relative asset paths"
+    },
+    {
+      "case_id": "180d0fae05602bd0a9c2",
+      "entry_ids": [
+        75
+      ],
+      "status": "failed",
+      "error_type": "ValueError",
+      "error": "Lossless case packages require relative asset paths"
+    },
+    {
+      "case_id": "1068316410280b6a498f",
+      "entry_ids": [
+        87
+      ],
+      "status": "failed",
+      "primary_roundtrip": true,
+      "urdf_bytes_equal": true,
+      "asset_bytes_equal": true,
+      "lean_source_equal": true,
+      "asset_count": 31,
+      "dependency_closure": "omitted_by_export",
+      "missing_dependencies": [
+        {
+          "path": "meshes/forearm_v0/forearm_normals.tif",
+          "resource_key": "ankurhanda/robot-assets@24b61c71c07e831a55c5bac1e8d3e2ee83ff9b99:urdfs/robots/pr2/meshes/forearm_v0/forearm_normals.tif"
+        },
+        {
+          "path": "meshes/forearm_v0/forearm_color.tif",
+          "resource_key": "ankurhanda/robot-assets@24b61c71c07e831a55c5bac1e8d3e2ee83ff9b99:urdfs/robots/pr2/meshes/forearm_v0/forearm_color.tif"
+        },
+        {
+          "path": "meshes/forearm_v0/wrist_color.tif",
+          "resource_key": "ankurhanda/robot-assets@24b61c71c07e831a55c5bac1e8d3e2ee83ff9b99:urdfs/robots/pr2/meshes/forearm_v0/wrist_color.tif"
+        },
+        {
+          "path": "meshes/forearm_v0/wrist_normals.tif",
+          "resource_key": "ankurhanda/robot-assets@24b61c71c07e831a55c5bac1e8d3e2ee83ff9b99:urdfs/robots/pr2/meshes/forearm_v0/wrist_normals.tif"
+        },
+        {
+          "path": "meshes/gripper_v0/gripper_palm_color.tif",
+          "resource_key": "ankurhanda/robot-assets@24b61c71c07e831a55c5bac1e8d3e2ee83ff9b99:urdfs/robots/pr2/meshes/gripper_v0/gripper_palm_color.tif"
+        },
+        {
+          "path": "meshes/gripper_v0/gripper_palm_normals.tif",
+          "resource_key": "ankurhanda/robot-assets@24b61c71c07e831a55c5bac1e8d3e2ee83ff9b99:urdfs/robots/pr2/meshes/gripper_v0/gripper_palm_normals.tif"
+        },
+        {
+          "path": "meshes/gripper_v0/l_finger_color.tif",
+          "resource_key": "ankurhanda/robot-assets@24b61c71c07e831a55c5bac1e8d3e2ee83ff9b99:urdfs/robots/pr2/meshes/gripper_v0/l_finger_color.tif"
+        },
+        {
+          "path": "meshes/gripper_v0/l_finger_normals.tif",
+          "resource_key": "ankurhanda/robot-assets@24b61c71c07e831a55c5bac1e8d3e2ee83ff9b99:urdfs/robots/pr2/meshes/gripper_v0/l_finger_normals.tif"
+        },
+        {
+          "path": "meshes/gripper_v0/l_finger_tip_color.tif",
+          "resource_key": "ankurhanda/robot-assets@24b61c71c07e831a55c5bac1e8d3e2ee83ff9b99:urdfs/robots/pr2/meshes/gripper_v0/l_finger_tip_color.tif"
+        },
+        {
+          "path": "meshes/gripper_v0/l_finger_tip_normals.tif",
+          "resource_key": "ankurhanda/robot-assets@24b61c71c07e831a55c5bac1e8d3e2ee83ff9b99:urdfs/robots/pr2/meshes/gripper_v0/l_finger_tip_normals.tif"
+        },
+        {
+          "path": "meshes/shoulder_v0/shoulder_lift_color.tif",
+          "resource_key": "ankurhanda/robot-assets@24b61c71c07e831a55c5bac1e8d3e2ee83ff9b99:urdfs/robots/pr2/meshes/shoulder_v0/shoulder_lift_color.tif"
+        },
+        {
+          "path": "meshes/shoulder_v0/shoulder_lift_normals.tif",
+          "resource_key": "ankurhanda/robot-assets@24b61c71c07e831a55c5bac1e8d3e2ee83ff9b99:urdfs/robots/pr2/meshes/shoulder_v0/shoulder_lift_normals.tif"
+        },
+        {
+          "path": "meshes/shoulder_v0/shoulder_pan_color.tif",
+          "resource_key": "ankurhanda/robot-assets@24b61c71c07e831a55c5bac1e8d3e2ee83ff9b99:urdfs/robots/pr2/meshes/shoulder_v0/shoulder_pan_color.tif"
+        },
+        {
+          "path": "meshes/shoulder_v0/shoulder_pan_normals.tif",
+          "resource_key": "ankurhanda/robot-assets@24b61c71c07e831a55c5bac1e8d3e2ee83ff9b99:urdfs/robots/pr2/meshes/shoulder_v0/shoulder_pan_normals.tif"
+        },
+        {
+          "path": "meshes/upper_arm_v0/elbow_flex_color.tif",
+          "resource_key": "ankurhanda/robot-assets@24b61c71c07e831a55c5bac1e8d3e2ee83ff9b99:urdfs/robots/pr2/meshes/upper_arm_v0/elbow_flex_color.tif"
+        },
+        {
+          "path": "meshes/upper_arm_v0/elbow_flex_normals.tif",
+          "resource_key": "ankurhanda/robot-assets@24b61c71c07e831a55c5bac1e8d3e2ee83ff9b99:urdfs/robots/pr2/meshes/upper_arm_v0/elbow_flex_normals.tif"
+        },
+        {
+          "path": "meshes/upper_arm_v0/upper_arm_color.tif",
+          "resource_key": "ankurhanda/robot-assets@24b61c71c07e831a55c5bac1e8d3e2ee83ff9b99:urdfs/robots/pr2/meshes/upper_arm_v0/upper_arm_color.tif"
+        },
+        {
+          "path": "meshes/upper_arm_v0/upper_arm_normals.tif",
+          "resource_key": "ankurhanda/robot-assets@24b61c71c07e831a55c5bac1e8d3e2ee83ff9b99:urdfs/robots/pr2/meshes/upper_arm_v0/upper_arm_normals.tif"
+        }
+      ]
+    },
+    {
+      "case_id": "18982746bbc05872a7e7",
+      "entry_ids": [
+        62
+      ],
+      "status": "failed",
+      "error_type": "FileNotFoundError",
+      "error": "[Errno 2] No such file or directory: '/home/exuber/CODE/CORE/pythonProject1/AUTORESEARCH/fluxkernel/.demo/awesome-urdf/sources/icub-tech-iit--ergocub-software--bc9865a5adb7/urdf/ergoCub/robots/ergoCubGazeboSN002_minContacts/gz-sim-yarp-controlboard-system'"
+    },
+    {
+      "case_id": "197e54898c50964c16bf",
+      "entry_ids": [
+        83
+      ],
+      "status": "failed",
+      "error_type": "FileNotFoundError",
+      "error": "[Errno 2] No such file or directory: '/home/exuber/CODE/CORE/pythonProject1/AUTORESEARCH/fluxkernel/.demo/awesome-urdf/sources/robot-descriptions--halodi-robot-models--5d1d5eb3c15c/eve_r3_description/urdf.in/libgazebo_ros_camera.so'"
+    },
+    {
+      "case_id": "198aceb5566392b5d158",
+      "entry_ids": [
+        75
+      ],
+      "status": "failed",
+      "error_type": "ValueError",
+      "error": "Lossless case packages require relative asset paths"
+    },
+    {
+      "case_id": "1c770d09cc0c9879ab15",
+      "entry_ids": [
+        106
+      ],
+      "status": "failed",
+      "error_type": "ValueError",
+      "error": "Unsafe relative path"
+    },
+    {
+      "case_id": "1e50266f0aded9eff76b",
+      "entry_ids": [
+        21
+      ],
+      "status": "failed",
+      "error_type": "FileNotFoundError",
+      "error": "[Errno 2] No such file or directory: '/home/exuber/CODE/CORE/pythonProject1/AUTORESEARCH/fluxkernel/.demo/awesome-urdf/sources/limxdynamics--tron1-robot-description--5b97add1f3b4/pointfoot/PF_TRON1A/urdf/libgazebo_ros_p3d.so'"
+    },
+    {
+      "case_id": "1e57845e5b846bf4e39c",
+      "entry_ids": [
+        62
+      ],
+      "status": "failed",
+      "error_type": "FileNotFoundError",
+      "error": "[Errno 2] No such file or directory: '/home/exuber/CODE/CORE/pythonProject1/AUTORESEARCH/fluxkernel/.demo/awesome-urdf/sources/icub-tech-iit--ergocub-software--bc9865a5adb7/urdf/ergoCub/robots/ergoCubGazeboSN003/gz-sim-yarp-controlboard-system'"
+    },
+    {
+      "case_id": "1eee6cfaf3eefeb2b80c",
+      "entry_ids": [
+        13
+      ],
+      "status": "failed",
+      "error_type": "FileNotFoundError",
+      "error": "[Errno 2] No such file or directory: '/home/exuber/CODE/CORE/pythonProject1/AUTORESEARCH/fluxkernel/.demo/awesome-urdf/sources/Gepetto--example-robot-data--6249cab1cdff/robots/ur_description/urdf/libgazebo_ros_control.so'"
+    },
+    {
+      "case_id": "182e69737ebb230ff1a2",
+      "entry_ids": [
+        83
+      ],
+      "status": "passed",
+      "primary_roundtrip": true,
+      "urdf_bytes_equal": true,
+      "asset_bytes_equal": true,
+      "lean_source_equal": true,
+      "asset_count": 0,
+      "dependency_closure": "preserved",
+      "missing_dependencies": []
+    },
+    {
+      "case_id": "20ed7112e642a3c15cbe",
+      "entry_ids": [
+        29
+      ],
+      "status": "failed",
+      "error_type": "ValueError",
+      "error": "Lossless case packages require relative asset paths"
+    },
+    {
+      "case_id": "03c74d26196289067a88",
+      "entry_ids": [
+        79
+      ],
+      "status": "passed",
+      "primary_roundtrip": true,
+      "urdf_bytes_equal": true,
+      "asset_bytes_equal": true,
+      "lean_source_equal": true,
+      "asset_count": 45,
+      "dependency_closure": "preserved",
+      "missing_dependencies": []
+    },
+    {
+      "case_id": "2213555f8772c2c6a20a",
+      "entry_ids": [
+        68
+      ],
+      "status": "failed",
+      "error_type": "FileNotFoundError",
+      "error": "[Errno 2] No such file or directory: '/home/exuber/CODE/CORE/pythonProject1/AUTORESEARCH/fluxkernel/.demo/awesome-urdf/sources/robotology--icub-models--dca8c618c264/iCub/robots/iCubGenova04/gz-sim-forcetorque-system'"
+    },
+    {
+      "case_id": "233d78aac9c6e6958ba4",
+      "entry_ids": [
+        100
+      ],
+      "status": "failed",
+      "error_type": "ValueError",
+      "error": "Lossless case packages require relative asset paths"
+    },
+    {
+      "case_id": "240cfe5f9b987ad798fe",
+      "entry_ids": [
+        83
+      ],
+      "status": "failed",
+      "error_type": "ValueError",
+      "error": "Lossless case packages require relative asset paths"
+    },
+    {
+      "case_id": "12770aa5aa7985dafb53",
+      "entry_ids": [
+        47
+      ],
+      "status": "passed",
+      "primary_roundtrip": true,
+      "urdf_bytes_equal": true,
+      "asset_bytes_equal": true,
+      "lean_source_equal": true,
+      "asset_count": 11,
+      "dependency_closure": "preserved",
+      "missing_dependencies": []
+    },
+    {
+      "case_id": "2500fe842701e14068cd",
+      "entry_ids": [
+        39
+      ],
+      "status": "failed",
+      "error_type": "FileNotFoundError",
+      "error": "[Errno 2] No such file or directory: '/home/exuber/CODE/CORE/pythonProject1/AUTORESEARCH/fluxkernel/.demo/awesome-urdf/sources/OrebroUniversity--yumi--fb7f57df0544/yumi_description/urdf/libgazebo_mimic_plugin.so'"
+    },
+    {
+      "case_id": "27cde9698009b039d3f7",
+      "entry_ids": [
+        83
+      ],
+      "status": "failed",
+      "error_type": "ValueError",
+      "error": "Lossless case packages require relative asset paths"
+    },
+    {
+      "case_id": "28160dae6d913dc0cae8",
+      "entry_ids": [
+        78
+      ],
+      "status": "failed",
+      "error_type": "FileNotFoundError",
+      "error": "[Errno 2] No such file or directory: '/home/exuber/CODE/CORE/pythonProject1/AUTORESEARCH/fluxkernel/.demo/awesome-urdf/sources/stack-of-tasks--talos-data--dc636c94d307/urdf/libgazebo_ros_control.so'"
+    },
+    {
+      "case_id": "283390843ad8c693aa72",
+      "entry_ids": [
+        75
+      ],
+      "status": "failed",
+      "error_type": "ValueError",
+      "error": "Lossless case packages require relative asset paths"
+    },
+    {
+      "case_id": "288d3e7ce8df7b3cc3d4",
+      "entry_ids": [
+        15
+      ],
+      "status": "failed",
+      "error_type": "FileNotFoundError",
+      "error": "[Errno 2] No such file or directory: '/home/exuber/CODE/CORE/pythonProject1/AUTORESEARCH/fluxkernel/.demo/awesome-urdf/sources/Gepetto--example-robot-data--6249cab1cdff/robots/ur_description/urdf/libgazebo_ros_control.so'"
+    },
+    {
+      "case_id": "28fe5c9ffa0245f52f0b",
+      "entry_ids": [
+        92
+      ],
+      "status": "failed",
+      "error_type": "FileNotFoundError",
+      "error": "[Errno 2] No such file or directory: '/home/exuber/CODE/CORE/pythonProject1/AUTORESEARCH/fluxkernel/.demo/awesome-urdf/sources/Gepetto--example-robot-data--6249cab1cdff/robots/tiago_description/robots/libgazebo_ros_control.so'"
+    },
+    {
+      "case_id": "204304e1961f251fe42e",
+      "entry_ids": [
+        41
+      ],
+      "status": "passed",
+      "primary_roundtrip": true,
+      "urdf_bytes_equal": true,
+      "asset_bytes_equal": true,
+      "lean_source_equal": true,
+      "asset_count": 0,
+      "dependency_closure": "preserved",
+      "missing_dependencies": []
+    },
+    {
+      "case_id": "299dbc3dd03dc8427667",
+      "entry_ids": [
+        65
+      ],
+      "status": "failed",
+      "error_type": "ValueError",
+      "error": "Unsafe relative path"
+    },
+    {
+      "case_id": "29ad7642742e409c8768",
+      "entry_ids": [
+        75
+      ],
+      "status": "failed",
+      "error_type": "ValueError",
+      "error": "Lossless case packages require relative asset paths"
+    },
+    {
+      "case_id": "21a78c7939829fe866bc",
+      "entry_ids": [
+        83
+      ],
+      "status": "passed",
+      "primary_roundtrip": true,
+      "urdf_bytes_equal": true,
+      "asset_bytes_equal": true,
+      "lean_source_equal": true,
+      "asset_count": 0,
+      "dependency_closure": "preserved",
+      "missing_dependencies": []
+    },
+    {
+      "case_id": "2a3065ce83123dff6a30",
+      "entry_ids": [
+        75
+      ],
+      "status": "failed",
+      "error_type": "ValueError",
+      "error": "Lossless case packages require relative asset paths"
+    },
+    {
+      "case_id": "2a54a7d8445a370ec2c1",
+      "entry_ids": [
+        50
+      ],
+      "status": "failed",
+      "error_type": "ValueError",
+      "error": "Lossless case packages require relative asset paths"
+    },
+    {
+      "case_id": "2a8823bc1baa5cc5262f",
+      "entry_ids": [
+        81
+      ],
+      "status": "failed",
+      "error_type": "FileNotFoundError",
+      "error": "[Errno 2] No such file or directory: '/home/exuber/CODE/CORE/pythonProject1/AUTORESEARCH/fluxkernel/.demo/awesome-urdf/sources/gkjohnson--nasa-urdf-robots--1f89ecba9112/val_description/model/robots/libgazebo_ros_imu.so'"
+    },
+    {
+      "case_id": "2c51e4ddd215dece9e8b",
+      "entry_ids": [
+        109
+      ],
+      "status": "failed",
+      "error_type": "ValueError",
+      "error": "Unsafe relative path"
+    },
+    {
+      "case_id": "245f5d606674f3328f79",
+      "entry_ids": [
+        58
+      ],
+      "status": "passed",
+      "primary_roundtrip": true,
+      "urdf_bytes_equal": true,
+      "asset_bytes_equal": true,
+      "lean_source_equal": true,
+      "asset_count": 24,
+      "dependency_closure": "preserved",
+      "missing_dependencies": []
+    },
+    {
+      "case_id": "2f0d9cb7e8593f549244",
+      "entry_ids": [
+        81
+      ],
+      "status": "failed",
+      "error_type": "FileNotFoundError",
+      "error": "[Errno 2] No such file or directory: '/home/exuber/CODE/CORE/pythonProject1/AUTORESEARCH/fluxkernel/.demo/awesome-urdf/sources/gkjohnson--nasa-urdf-robots--1f89ecba9112/val_description/model/robots/libSRCMultiSenseSLPlugin.so'"
+    },
+    {
+      "case_id": "2912a96b9d4402105115",
+      "entry_ids": [
+        108
+      ],
+      "status": "failed",
+      "primary_roundtrip": true,
+      "urdf_bytes_equal": true,
+      "asset_bytes_equal": true,
+      "lean_source_equal": true,
+      "asset_count": 1,
+      "dependency_closure": "omitted_by_export",
+      "missing_dependencies": [
+        {
+          "path": "tmotor3.mtl",
+          "resource_key": "bulletphysics/bullet3@63c4d67e337017f9d8b298c900e9aabdb69296e7:data/quadruped/tmotor3.mtl"
+        },
+        {
+          "path": "t-motor.jpg",
+          "resource_key": "bulletphysics/bullet3@63c4d67e337017f9d8b298c900e9aabdb69296e7:data/quadruped/t-motor.jpg"
+        }
+      ]
+    },
+    {
+      "case_id": "3028b6d073a654a7b29a",
+      "entry_ids": [
+        23
+      ],
+      "status": "failed",
+      "error_type": "ValueError",
+      "error": "Lossless case packages require relative asset paths"
+    },
+    {
+      "case_id": "309894cec1893ad09ea1",
+      "entry_ids": [
+        68
+      ],
+      "status": "failed",
+      "error_type": "FileNotFoundError",
+      "error": "[Errno 2] No such file or directory: '/home/exuber/CODE/CORE/pythonProject1/AUTORESEARCH/fluxkernel/.demo/awesome-urdf/sources/robotology--icub-models--dca8c618c264/iCub/robots/left_hand_mk3/libgazebo_yarp_controlboard.so'"
+    },
+    {
+      "case_id": "322f5fdbd0fbb9f7cabc",
+      "entry_ids": [
+        4,
+        36
+      ],
+      "status": "failed",
+      "error_type": "FileNotFoundError",
+      "error": "[Errno 2] No such file or directory: '/home/exuber/CODE/CORE/pythonProject1/AUTORESEARCH/fluxkernel/.demo/awesome-urdf/sources/RobotLocomotion--models--3bd1111011ea/iiwa_description/urdf/libgazebo_ros_control.so'"
+    },
+    {
+      "case_id": "326eb7f9c23b898b8b2c",
+      "entry_ids": [
+        78
+      ],
+      "status": "failed",
+      "error_type": "FileNotFoundError",
+      "error": "[Errno 2] No such file or directory: '/home/exuber/CODE/CORE/pythonProject1/AUTORESEARCH/fluxkernel/.demo/awesome-urdf/sources/stack-of-tasks--talos-data--dc636c94d307/urdf/libgazebo_ros_camera.so'"
+    },
+    {
+      "case_id": "332f2a65a078a8e9dd8c",
+      "entry_ids": [
+        43
+      ],
+      "status": "failed",
+      "error_type": "ValueError",
+      "error": "Lossless case packages require relative asset paths"
+    },
+    {
+      "case_id": "339dc085adf8b3671e18",
+      "entry_ids": [
+        33
+      ],
+      "status": "failed",
+      "error_type": "ValueError",
+      "error": "Lossless case packages require relative asset paths"
+    },
+    {
+      "case_id": "364c1f7058ca524b54bf",
+      "entry_ids": [
+        111
+      ],
+      "status": "failed",
+      "error_type": "ValueError",
+      "error": "Lossless case packages require relative asset paths"
+    },
+    {
+      "case_id": "36504ab071da6ea6939d",
+      "entry_ids": [
+        31
+      ],
+      "status": "failed",
+      "error_type": "FileNotFoundError",
+      "error": "[Errno 2] No such file or directory: '/home/exuber/CODE/CORE/pythonProject1/AUTORESEARCH/fluxkernel/.demo/awesome-urdf/sources/limxdynamics--tron1-robot-description--5b97add1f3b4/pointfoot/WF_TRON1B/urdf/libgazebo_ros_p3d.so'"
+    },
+    {
+      "case_id": "36b7b42eaaa9385905c0",
+      "entry_ids": [
+        75
+      ],
+      "status": "failed",
+      "error_type": "ValueError",
+      "error": "Lossless case packages require relative asset paths"
+    },
+    {
+      "case_id": "37b659d461c3db395d03",
+      "entry_ids": [
+        46
+      ],
+      "status": "failed",
+      "error_type": "ValueError",
+      "error": "Lossless case packages require relative asset paths"
+    },
+    {
+      "case_id": "37e9ee0d15011641fe7c",
+      "entry_ids": [
+        4
+      ],
+      "status": "failed",
+      "error_type": "FileNotFoundError",
+      "error": "[Errno 2] No such file or directory: '/home/exuber/CODE/CORE/pythonProject1/AUTORESEARCH/fluxkernel/.demo/awesome-urdf/sources/RobotLocomotion--models--3bd1111011ea/iiwa_description/urdf/libgazebo_ros_control.so'"
+    },
+    {
+      "case_id": "384ed36213d9de455e8e",
+      "entry_ids": [
+        64
+      ],
+      "status": "failed",
+      "error_type": "ValueError",
+      "error": "Lossless case packages require relative asset paths"
+    },
+    {
+      "case_id": "386919e7f2fee02cc230",
+      "entry_ids": [
+        102
+      ],
+      "status": "failed",
+      "error_type": "ValueError",
+      "error": "Lossless case packages require relative asset paths"
+    },
+    {
+      "case_id": "29dfbb73448df3956d73",
+      "entry_ids": [
+        63
+      ],
+      "status": "passed",
+      "primary_roundtrip": true,
+      "urdf_bytes_equal": true,
+      "asset_bytes_equal": true,
+      "lean_source_equal": true,
+      "asset_count": 34,
+      "dependency_closure": "preserved",
+      "missing_dependencies": []
+    },
+    {
+      "case_id": "2febce3f549ab8d1f379",
+      "entry_ids": [
+        18
+      ],
+      "status": "passed",
+      "primary_roundtrip": true,
+      "urdf_bytes_equal": true,
+      "asset_bytes_equal": true,
+      "lean_source_equal": true,
+      "asset_count": 17,
+      "dependency_closure": "preserved",
+      "missing_dependencies": []
+    },
+    {
+      "case_id": "2e735772a89ebcdcd34e",
+      "entry_ids": [
+        63
+      ],
+      "status": "passed",
+      "primary_roundtrip": true,
+      "urdf_bytes_equal": true,
+      "asset_bytes_equal": true,
+      "lean_source_equal": true,
+      "asset_count": 59,
+      "dependency_closure": "preserved",
+      "missing_dependencies": []
+    },
+    {
+      "case_id": "3e093c100a551667b2b9",
+      "entry_ids": [
+        62
+      ],
+      "status": "failed",
+      "error_type": "FileNotFoundError",
+      "error": "[Errno 2] No such file or directory: '/home/exuber/CODE/CORE/pythonProject1/AUTORESEARCH/fluxkernel/.demo/awesome-urdf/sources/icub-tech-iit--ergocub-software--bc9865a5adb7/urdf/ergoCub/robots/ergoCubSN000/gz-sim-yarp-controlboard-system'"
+    },
+    {
+      "case_id": "3f40947825e7e47b7d60",
+      "entry_ids": [
+        20
+      ],
+      "status": "failed",
+      "error_type": "ValueError",
+      "error": "Lossless case packages require relative asset paths"
+    },
+    {
+      "case_id": "437d85aeb1cd2673d766",
+      "entry_ids": [
+        2
+      ],
+      "status": "failed",
+      "error_type": "ValueError",
+      "error": "Lossless case packages require relative asset paths"
+    },
+    {
+      "case_id": "43b773d143aa2ef624b6",
+      "entry_ids": [
+        67
+      ],
+      "status": "failed",
+      "error_type": "ValueError",
+      "error": "Lossless case packages require relative asset paths"
+    },
+    {
+      "case_id": "43ca40f96fdcc2afc124",
+      "entry_ids": [
+        63
+      ],
+      "status": "failed",
+      "error_type": "FileNotFoundError",
+      "error": "[Errno 2] No such file or directory: '/home/exuber/CODE/CORE/pythonProject1/AUTORESEARCH/fluxkernel/.demo/awesome-urdf/sources/unitreerobotics--unitree_ros--ccfc6fd8430a/robots/g1_description/inspire_hand/meshes/right_base_link.STL'"
+    },
+    {
+      "case_id": "450bdd2de16eaf500898",
+      "entry_ids": [
+        5
+      ],
+      "status": "failed",
+      "error_type": "ValueError",
+      "error": "Unsafe relative path"
+    },
+    {
+      "case_id": "455c64b05a0627e1340c",
+      "entry_ids": [
+        78
+      ],
+      "status": "failed",
+      "error_type": "FileNotFoundError",
+      "error": "[Errno 2] No such file or directory: '/home/exuber/CODE/CORE/pythonProject1/AUTORESEARCH/fluxkernel/.demo/awesome-urdf/sources/stack-of-tasks--talos-data--dc636c94d307/urdf/libgazebo_ros_control.so'"
+    },
+    {
+      "case_id": "4635d83ddc818c02ef32",
+      "entry_ids": [
+        38
+      ],
+      "status": "failed",
+      "error_type": "ValueError",
+      "error": "Lossless case packages require relative asset paths"
+    },
+    {
+      "case_id": "3bd6a05eb9a7ebe1b73b",
+      "entry_ids": [
+        47
+      ],
+      "status": "passed",
+      "primary_roundtrip": true,
+      "urdf_bytes_equal": true,
+      "asset_bytes_equal": true,
+      "lean_source_equal": true,
+      "asset_count": 13,
+      "dependency_closure": "preserved",
+      "missing_dependencies": []
+    },
+    {
+      "case_id": "49ddead9178562c07aee",
+      "entry_ids": [
+        110
+      ],
+      "status": "failed",
+      "error_type": "ValueError",
+      "error": "Lossless case packages require relative asset paths"
+    },
+    {
+      "case_id": "49f2abea18693849374a",
+      "entry_ids": [
+        81
+      ],
+      "status": "failed",
+      "error_type": "FileNotFoundError",
+      "error": "[Errno 2] No such file or directory: '/home/exuber/CODE/CORE/pythonProject1/AUTORESEARCH/fluxkernel/.demo/awesome-urdf/sources/gkjohnson--nasa-urdf-robots--1f89ecba9112/val_description/model/robots/libgazebo_ros_imu.so'"
+    },
+    {
+      "case_id": "38a3f0a78e740ef436d6",
+      "entry_ids": [
+        63
+      ],
+      "status": "passed",
+      "primary_roundtrip": true,
+      "urdf_bytes_equal": true,
+      "asset_bytes_equal": true,
+      "lean_source_equal": true,
+      "asset_count": 49,
+      "dependency_closure": "preserved",
+      "missing_dependencies": []
+    },
+    {
+      "case_id": "4b2a583f0b84da244be7",
+      "entry_ids": [
+        62
+      ],
+      "status": "failed",
+      "error_type": "FileNotFoundError",
+      "error": "[Errno 2] No such file or directory: '/home/exuber/CODE/CORE/pythonProject1/AUTORESEARCH/fluxkernel/.demo/awesome-urdf/sources/icub-tech-iit--ergocub-software--bc9865a5adb7/urdf/ergoCub/robots/ergoCubGazeboSN000/gz-sim-yarp-controlboard-system'"
+    },
+    {
+      "case_id": "4bc82feb91e49468a17e",
+      "entry_ids": [
+        83
+      ],
+      "status": "failed",
+      "error_type": "ValueError",
+      "error": "Lossless case packages require relative asset paths"
+    },
+    {
+      "case_id": "4ee4b964a4d6c5fa8f51",
+      "entry_ids": [
+        83
+      ],
+      "status": "failed",
+      "error_type": "ValueError",
+      "error": "Lossless case packages require relative asset paths"
+    },
+    {
+      "case_id": "4f002a04f1e87cd50dc3",
+      "entry_ids": [
+        96
+      ],
+      "status": "failed",
+      "error_type": "ValueError",
+      "error": "Lossless case packages require relative asset paths"
+    },
+    {
+      "case_id": "4f3a7a802806afc921fa",
+      "entry_ids": [
+        62
+      ],
+      "status": "failed",
+      "error_type": "FileNotFoundError",
+      "error": "[Errno 2] No such file or directory: '/home/exuber/CODE/CORE/pythonProject1/AUTORESEARCH/fluxkernel/.demo/awesome-urdf/sources/icub-tech-iit--ergocub-software--bc9865a5adb7/urdf/ergoCub/robots/ergoCubGazeboV1_3/gz-sim-yarp-controlboard-system'"
+    },
+    {
+      "case_id": "3d0193f88adf29d68308",
+      "entry_ids": [
+        71
+      ],
+      "status": "passed",
+      "primary_roundtrip": true,
+      "urdf_bytes_equal": true,
+      "asset_bytes_equal": true,
+      "lean_source_equal": true,
+      "asset_count": 0,
+      "dependency_closure": "preserved",
+      "missing_dependencies": []
+    },
+    {
+      "case_id": "50e3617f1d6acbb101c8",
+      "entry_ids": [
+        81
+      ],
+      "status": "failed",
+      "error_type": "FileNotFoundError",
+      "error": "[Errno 2] No such file or directory: '/home/exuber/CODE/CORE/pythonProject1/AUTORESEARCH/fluxkernel/.demo/awesome-urdf/sources/gkjohnson--nasa-urdf-robots--1f89ecba9112/val_description/model/robots/libgazebo_ros_imu.so'"
+    },
+    {
+      "case_id": "514409dc84ec2aad96be",
+      "entry_ids": [
+        14
+      ],
+      "status": "failed",
+      "error_type": "FileNotFoundError",
+      "error": "[Errno 2] No such file or directory: '/home/exuber/CODE/CORE/pythonProject1/AUTORESEARCH/fluxkernel/.demo/awesome-urdf/sources/Gepetto--example-robot-data--6249cab1cdff/robots/ur_description/urdf/libgazebo_ros_control.so'"
+    },
+    {
+      "case_id": "515b9c6d6abd97b24f47",
+      "entry_ids": [
+        78
+      ],
+      "status": "failed",
+      "error_type": "FileNotFoundError",
+      "error": "[Errno 2] No such file or directory: '/home/exuber/CODE/CORE/pythonProject1/AUTORESEARCH/fluxkernel/.demo/awesome-urdf/sources/stack-of-tasks--talos-data--dc636c94d307/urdf/libgazebo_ros_camera.so'"
+    },
+    {
+      "case_id": "519ebdf100d6fe4453f2",
+      "entry_ids": [
+        81
+      ],
+      "status": "failed",
+      "error_type": "FileNotFoundError",
+      "error": "[Errno 2] No such file or directory: '/home/exuber/CODE/CORE/pythonProject1/AUTORESEARCH/fluxkernel/.demo/awesome-urdf/sources/gkjohnson--nasa-urdf-robots--1f89ecba9112/val_description/model/robots/libSRCMultiSenseSLPlugin.so'"
+    },
+    {
+      "case_id": "53afb9524b5449eb3e4a",
+      "entry_ids": [
+        75
+      ],
+      "status": "failed",
+      "error_type": "ValueError",
+      "error": "Lossless case packages require relative asset paths"
+    },
+    {
+      "case_id": "53dcfc17009eafce5bdd",
+      "entry_ids": [
+        57
+      ],
+      "status": "failed",
+      "error_type": "ValueError",
+      "error": "Lossless case packages require relative asset paths"
+    },
+    {
+      "case_id": "5533338348520f1f12af",
+      "entry_ids": [
+        81
+      ],
+      "status": "failed",
+      "error_type": "FileNotFoundError",
+      "error": "[Errno 2] No such file or directory: '/home/exuber/CODE/CORE/pythonProject1/AUTORESEARCH/fluxkernel/.demo/awesome-urdf/sources/gkjohnson--nasa-urdf-robots--1f89ecba9112/val_description/model/robots/libgazebo_ros_imu.so'"
+    },
+    {
+      "case_id": "563cab20b3cc46f4b9a4",
+      "entry_ids": [
+        78
+      ],
+      "status": "failed",
+      "error_type": "FileNotFoundError",
+      "error": "[Errno 2] No such file or directory: '/home/exuber/CODE/CORE/pythonProject1/AUTORESEARCH/fluxkernel/.demo/awesome-urdf/sources/stack-of-tasks--talos-data--dc636c94d307/robots/libroboticsgroup_gazebo_mimic_joint_plugin.so'"
+    },
+    {
+      "case_id": "57b82639a5dad3e148e6",
+      "entry_ids": [
+        99
+      ],
+      "status": "failed",
+      "error_type": "FileNotFoundError",
+      "error": "[Errno 2] No such file or directory: '/home/exuber/CODE/CORE/pythonProject1/AUTORESEARCH/fluxkernel/.demo/awesome-urdf/sources/unitreerobotics--unitree_ros--ccfc6fd8430a/robots/b1_description/xacro/libLinkPlot3DPlugin.so'"
+    },
+    {
+      "case_id": "4728ac3e7d3d1cd3d9dc",
+      "entry_ids": [
+        40
+      ],
+      "status": "passed",
+      "primary_roundtrip": true,
+      "urdf_bytes_equal": true,
+      "asset_bytes_equal": true,
+      "lean_source_equal": true,
+      "asset_count": 1,
+      "dependency_closure": "preserved",
+      "missing_dependencies": []
+    },
+    {
+      "case_id": "5a98a24ec5d00d87d7c4",
+      "entry_ids": [
+        32
+      ],
+      "status": "failed",
+      "error_type": "ValueError",
+      "error": "Lossless case packages require relative asset paths"
+    },
+    {
+      "case_id": "5b2e4fd1ad2e8d56c5c2",
+      "entry_ids": [
+        83
+      ],
+      "status": "failed",
+      "error_type": "FileNotFoundError",
+      "error": "[Errno 2] No such file or directory: '/home/exuber/CODE/CORE/pythonProject1/AUTORESEARCH/fluxkernel/.demo/awesome-urdf/sources/robot-descriptions--halodi-robot-models--5d1d5eb3c15c/halodi-robot-models-unity-support/Packages/halodi-robot-models/Runtime/Halodi/Models/libgazebo_ros_camera.so'"
+    },
+    {
+      "case_id": "4a4601774c261e3cd220",
+      "entry_ids": [
+        47
+      ],
+      "status": "passed",
+      "primary_roundtrip": true,
+      "urdf_bytes_equal": true,
+      "asset_bytes_equal": true,
+      "lean_source_equal": true,
+      "asset_count": 12,
+      "dependency_closure": "preserved",
+      "missing_dependencies": []
+    },
+    {
+      "case_id": "5bdf01ef23881118da9e",
+      "entry_ids": [
+        4
+      ],
+      "status": "failed",
+      "error_type": "FileNotFoundError",
+      "error": "[Errno 2] No such file or directory: '/home/exuber/CODE/CORE/pythonProject1/AUTORESEARCH/fluxkernel/.demo/awesome-urdf/sources/RobotLocomotion--models--3bd1111011ea/iiwa_description/urdf/libgazebo_ros_control.so'"
+    },
+    {
+      "case_id": "5e26621259ae228dbf67",
+      "entry_ids": [
+        28
+      ],
+      "status": "failed",
+      "error_type": "ValueError",
+      "error": "Lossless case packages require relative asset paths"
+    },
+    {
+      "case_id": "5ea98ea5e6f3c1a5d313",
+      "entry_ids": [
+        65
+      ],
+      "status": "failed",
+      "error_type": "ValueError",
+      "error": "Unsafe relative path"
+    },
+    {
+      "case_id": "5ec03cdfaf6f2a69f3ea",
+      "entry_ids": [
+        57
+      ],
+      "status": "failed",
+      "error_type": "ValueError",
+      "error": "Invalid URDF XML"
+    },
+    {
+      "case_id": "5bd8f72f8fe9f68143bf",
+      "entry_ids": [
+        81
+      ],
+      "status": "passed",
+      "primary_roundtrip": true,
+      "urdf_bytes_equal": true,
+      "asset_bytes_equal": true,
+      "lean_source_equal": true,
+      "asset_count": 0,
+      "dependency_closure": "preserved",
+      "missing_dependencies": []
+    },
+    {
+      "case_id": "5fae0a143ba38d352e41",
+      "entry_ids": [
+        65
+      ],
+      "status": "failed",
+      "error_type": "ValueError",
+      "error": "Unsafe relative path"
+    },
+    {
+      "case_id": "6060e6d7b74c2975e270",
+      "entry_ids": [
+        17
+      ],
+      "status": "failed",
+      "error_type": "ValueError",
+      "error": "Lossless case packages require relative asset paths"
+    },
+    {
+      "case_id": "6093086e2352eeb80e65",
+      "entry_ids": [
+        6
+      ],
+      "status": "failed",
+      "error_type": "ValueError",
+      "error": "Lossless case packages require relative asset paths"
+    },
+    {
+      "case_id": "62042f2f2f702446b8a0",
+      "entry_ids": [
+        10
+      ],
+      "status": "failed",
+      "error_type": "ValueError",
+      "error": "Lossless case packages require relative asset paths"
+    },
+    {
+      "case_id": "50a1e16870431c6a833f",
+      "entry_ids": [
+        58
+      ],
+      "status": "passed",
+      "primary_roundtrip": true,
+      "urdf_bytes_equal": true,
+      "asset_bytes_equal": true,
+      "lean_source_equal": true,
+      "asset_count": 24,
+      "dependency_closure": "preserved",
+      "missing_dependencies": []
+    },
+    {
+      "case_id": "6331902cbaf1bc07bd46",
+      "entry_ids": [
+        83
+      ],
+      "status": "failed",
+      "error_type": "ValueError",
+      "error": "Lossless case packages require relative asset paths"
+    },
+    {
+      "case_id": "63c0e5ab442672d81e90",
+      "entry_ids": [
+        65
+      ],
+      "status": "failed",
+      "error_type": "ValueError",
+      "error": "Unsafe relative path"
+    },
+    {
+      "case_id": "59b5ac192cc71884d3cb",
+      "entry_ids": [
+        63
+      ],
+      "status": "passed",
+      "primary_roundtrip": true,
+      "urdf_bytes_equal": true,
+      "asset_bytes_equal": true,
+      "lean_source_equal": true,
+      "asset_count": 50,
+      "dependency_closure": "preserved",
+      "missing_dependencies": []
+    },
+    {
+      "case_id": "677dc9a6aa26e469b547",
+      "entry_ids": [
+        75
+      ],
+      "status": "failed",
+      "error_type": "ValueError",
+      "error": "Lossless case packages require relative asset paths"
+    },
+    {
+      "case_id": "6bddc35884ebfa7200b7",
+      "entry_ids": [
+        83
+      ],
+      "status": "failed",
+      "error_type": "ValueError",
+      "error": "Lossless case packages require relative asset paths"
+    },
+    {
+      "case_id": "6c3d95234e7b8ec0eda5",
+      "entry_ids": [
+        75
+      ],
+      "status": "failed",
+      "error_type": "ValueError",
+      "error": "Lossless case packages require relative asset paths"
+    },
+    {
+      "case_id": "6d5bf0f4b51be9efa2bd",
+      "entry_ids": [
+        68
+      ],
+      "status": "failed",
+      "error_type": "FileNotFoundError",
+      "error": "[Errno 2] No such file or directory: '/home/exuber/CODE/CORE/pythonProject1/AUTORESEARCH/fluxkernel/.demo/awesome-urdf/sources/robotology--icub-models--dca8c618c264/iCub/robots/iCubWaterloo01/gz-sim-forcetorque-system'"
+    },
+    {
+      "case_id": "62ab9bce61d47bc9e329",
+      "entry_ids": [
+        45
+      ],
+      "status": "passed",
+      "primary_roundtrip": true,
+      "urdf_bytes_equal": true,
+      "asset_bytes_equal": true,
+      "lean_source_equal": true,
+      "asset_count": 0,
+      "dependency_closure": "preserved",
+      "missing_dependencies": []
+    },
+    {
+      "case_id": "6e08572ac0a68f640234",
+      "entry_ids": [
+        81
+      ],
+      "status": "failed",
+      "error_type": "ValueError",
+      "error": "Lossless case packages require relative asset paths"
+    },
+    {
+      "case_id": "6452d622038239bdc6ad",
+      "entry_ids": [
+        42
+      ],
+      "status": "passed",
+      "primary_roundtrip": true,
+      "urdf_bytes_equal": true,
+      "asset_bytes_equal": true,
+      "lean_source_equal": true,
+      "asset_count": 7,
+      "dependency_closure": "preserved",
+      "missing_dependencies": []
+    },
+    {
+      "case_id": "6eae940187c95e2de804",
+      "entry_ids": [
+        54
+      ],
+      "status": "failed",
+      "error_type": "ValueError",
+      "error": "Unsafe relative path"
+    },
+    {
+      "case_id": "6fe2f78f2e5eb8be096b",
+      "entry_ids": [
+        95
+      ],
+      "status": "failed",
+      "error_type": "FileNotFoundError",
+      "error": "[Errno 2] No such file or directory: '/home/exuber/CODE/CORE/pythonProject1/AUTORESEARCH/fluxkernel/.demo/awesome-urdf/sources/unitreerobotics--unitree_ros--ccfc6fd8430a/robots/aliengo_description/urdf/libLinkPlot3DPlugin.so'"
+    },
+    {
+      "case_id": "735dfde5a310f365a453",
+      "entry_ids": [
+        4
+      ],
+      "status": "failed",
+      "error_type": "FileNotFoundError",
+      "error": "[Errno 2] No such file or directory: '/home/exuber/CODE/CORE/pythonProject1/AUTORESEARCH/fluxkernel/.demo/awesome-urdf/sources/RobotLocomotion--models--3bd1111011ea/iiwa_description/urdf/libgazebo_ros_control.so'"
+    },
+    {
+      "case_id": "7390fcc3586fd15d031e",
+      "entry_ids": [
+        74
+      ],
+      "status": "failed",
+      "error_type": "ValueError",
+      "error": "Lossless case packages require relative asset paths"
+    },
+    {
+      "case_id": "73a57516987a6eea7e88",
+      "entry_ids": [
+        81
+      ],
+      "status": "failed",
+      "error_type": "ValueError",
+      "error": "Lossless case packages require relative asset paths"
+    },
+    {
+      "case_id": "73ac38639c0abdc8f8f8",
+      "entry_ids": [
+        68
+      ],
+      "status": "failed",
+      "error_type": "FileNotFoundError",
+      "error": "[Errno 2] No such file or directory: '/home/exuber/CODE/CORE/pythonProject1/AUTORESEARCH/fluxkernel/.demo/awesome-urdf/sources/robotology--icub-models--dca8c618c264/iCub/robots/left_wrist_mk2/libgazebo_yarp_controlboard.so'"
+    },
+    {
+      "case_id": "73e55138b5be60ed3bd4",
+      "entry_ids": [
+        78
+      ],
+      "status": "failed",
+      "error_type": "FileNotFoundError",
+      "error": "[Errno 2] No such file or directory: '/home/exuber/CODE/CORE/pythonProject1/AUTORESEARCH/fluxkernel/.demo/awesome-urdf/sources/stack-of-tasks--talos-data--dc636c94d307/robots/libgazebo_ros_control.so'"
+    },
+    {
+      "case_id": "742643932eea9197fd77",
+      "entry_ids": [
+        75
+      ],
+      "status": "failed",
+      "error_type": "ValueError",
+      "error": "Lossless case packages require relative asset paths"
+    },
+    {
+      "case_id": "746d7c4042a9f5d8e5db",
+      "entry_ids": [
+        1
+      ],
+      "status": "failed",
+      "error_type": "ValueError",
+      "error": "Lossless case packages require relative asset paths"
+    },
+    {
+      "case_id": "75c33ec65300d35e9327",
+      "entry_ids": [
+        75
+      ],
+      "status": "failed",
+      "error_type": "ValueError",
+      "error": "Lossless case packages require relative asset paths"
+    },
+    {
+      "case_id": "5f91e011ad82606215ae",
+      "entry_ids": [
+        63
+      ],
+      "status": "passed",
+      "primary_roundtrip": true,
+      "urdf_bytes_equal": true,
+      "asset_bytes_equal": true,
+      "lean_source_equal": true,
+      "asset_count": 30,
+      "dependency_closure": "preserved",
+      "missing_dependencies": []
+    },
+    {
+      "case_id": "7656eb4026f0647c13b3",
+      "entry_ids": [
+        75
+      ],
+      "status": "failed",
+      "error_type": "ValueError",
+      "error": "Lossless case packages require relative asset paths"
+    },
+    {
+      "case_id": "7917230866830a44df36",
+      "entry_ids": [
+        19
+      ],
+      "status": "failed",
+      "error_type": "ValueError",
+      "error": "Lossless case packages require relative asset paths"
+    },
+    {
+      "case_id": "79d9c061c84fe7093f5d",
+      "entry_ids": [
+        49
+      ],
+      "status": "failed",
+      "error_type": "ValueError",
+      "error": "Lossless case packages require relative asset paths"
+    },
+    {
+      "case_id": "7a8218e66a6a4a525036",
+      "entry_ids": [
+        88
+      ],
+      "status": "failed",
+      "error_type": "ValueError",
+      "error": "Lossless case packages require relative asset paths"
+    },
+    {
+      "case_id": "7b3b515c16244512780a",
+      "entry_ids": [
+        33
+      ],
+      "status": "failed",
+      "error_type": "ValueError",
+      "error": "Unsafe relative path"
+    },
+    {
+      "case_id": "7b4f23ce5a5ccc92a939",
+      "entry_ids": [
+        89
+      ],
+      "status": "failed",
+      "error_type": "ValueError",
+      "error": "Lossless case packages require relative asset paths"
+    },
+    {
+      "case_id": "7c4a628f68d81a4f6c4d",
+      "entry_ids": [
+        75
+      ],
+      "status": "failed",
+      "error_type": "ValueError",
+      "error": "Lossless case packages require relative asset paths"
+    },
+    {
+      "case_id": "7c5ca36035650b24215b",
+      "entry_ids": [
+        109
+      ],
+      "status": "failed",
+      "error_type": "ValueError",
+      "error": "Unsafe relative path"
+    },
+    {
+      "case_id": "7cd98ecf7e44a9934f69",
+      "entry_ids": [
+        81
+      ],
+      "status": "failed",
+      "error_type": "FileNotFoundError",
+      "error": "[Errno 2] No such file or directory: '/home/exuber/CODE/CORE/pythonProject1/AUTORESEARCH/fluxkernel/.demo/awesome-urdf/sources/gkjohnson--nasa-urdf-robots--1f89ecba9112/val_description/model/robots/libgazebo_ros_imu.so'"
+    },
+    {
+      "case_id": "6e4ba0a3a7a7e5ed6204",
+      "entry_ids": [
+        107
+      ],
+      "status": "failed",
+      "primary_roundtrip": true,
+      "urdf_bytes_equal": true,
+      "asset_bytes_equal": true,
+      "lean_source_equal": true,
+      "asset_count": 14,
+      "dependency_closure": "omitted_by_export",
+      "missing_dependencies": [
+        {
+          "path": "chassis_vhacd_mod_zup.mtl",
+          "resource_key": "Derek-TH-Wang/mini_cheetah_urdf@1988bceb26e81f28594a16e7d5e6abe5cbb27ace:urdf/chassis_vhacd_mod_zup.mtl"
+        },
+        {
+          "path": "chassis_zup.mtl",
+          "resource_key": "Derek-TH-Wang/mini_cheetah_urdf@1988bceb26e81f28594a16e7d5e6abe5cbb27ace:urdf/chassis_zup.mtl"
+        },
+        {
+          "path": "laikago_tex.jpg",
+          "resource_key": "Derek-TH-Wang/mini_cheetah_urdf@1988bceb26e81f28594a16e7d5e6abe5cbb27ace:urdf/laikago_tex.jpg"
+        },
+        {
+          "path": "hip_motor.mtl",
+          "resource_key": "Derek-TH-Wang/mini_cheetah_urdf@1988bceb26e81f28594a16e7d5e6abe5cbb27ace:urdf/hip_motor.mtl"
+        },
+        {
+          "path": "laikago_tex.jpg",
+          "resource_key": "Derek-TH-Wang/mini_cheetah_urdf@1988bceb26e81f28594a16e7d5e6abe5cbb27ace:urdf/laikago_tex.jpg"
+        },
+        {
+          "path": "hip_motor_mirror.mtl",
+          "resource_key": "Derek-TH-Wang/mini_cheetah_urdf@1988bceb26e81f28594a16e7d5e6abe5cbb27ace:urdf/hip_motor_mirror.mtl"
+        },
+        {
+          "path": "laikago_tex.jpg",
+          "resource_key": "Derek-TH-Wang/mini_cheetah_urdf@1988bceb26e81f28594a16e7d5e6abe5cbb27ace:urdf/laikago_tex.jpg"
+        },
+        {
+          "path": "lower_leg3.mtl",
+          "resource_key": "Derek-TH-Wang/mini_cheetah_urdf@1988bceb26e81f28594a16e7d5e6abe5cbb27ace:urdf/lower_leg3.mtl"
+        },
+        {
+          "path": "laikago_tex.jpg",
+          "resource_key": "Derek-TH-Wang/mini_cheetah_urdf@1988bceb26e81f28594a16e7d5e6abe5cbb27ace:urdf/laikago_tex.jpg"
+        },
+        {
+          "path": "upper_leg_left.mtl",
+          "resource_key": "Derek-TH-Wang/mini_cheetah_urdf@1988bceb26e81f28594a16e7d5e6abe5cbb27ace:urdf/upper_leg_left.mtl"
+        },
+        {
+          "path": "laikago_tex.jpg",
+          "resource_key": "Derek-TH-Wang/mini_cheetah_urdf@1988bceb26e81f28594a16e7d5e6abe5cbb27ace:urdf/laikago_tex.jpg"
+        },
+        {
+          "path": "upper_leg_left2.mtl",
+          "resource_key": "Derek-TH-Wang/mini_cheetah_urdf@1988bceb26e81f28594a16e7d5e6abe5cbb27ace:urdf/upper_leg_left2.mtl"
+        },
+        {
+          "path": "laikago_tex.jpg",
+          "resource_key": "Derek-TH-Wang/mini_cheetah_urdf@1988bceb26e81f28594a16e7d5e6abe5cbb27ace:urdf/laikago_tex.jpg"
+        },
+        {
+          "path": "upper_leg_mirror.mtl",
+          "resource_key": "Derek-TH-Wang/mini_cheetah_urdf@1988bceb26e81f28594a16e7d5e6abe5cbb27ace:urdf/upper_leg_mirror.mtl"
+        },
+        {
+          "path": "laikago_tex.jpg",
+          "resource_key": "Derek-TH-Wang/mini_cheetah_urdf@1988bceb26e81f28594a16e7d5e6abe5cbb27ace:urdf/laikago_tex.jpg"
+        },
+        {
+          "path": "upper_leg_mirror2.mtl",
+          "resource_key": "Derek-TH-Wang/mini_cheetah_urdf@1988bceb26e81f28594a16e7d5e6abe5cbb27ace:urdf/upper_leg_mirror2.mtl"
+        },
+        {
+          "path": "laikago_tex.jpg",
+          "resource_key": "Derek-TH-Wang/mini_cheetah_urdf@1988bceb26e81f28594a16e7d5e6abe5cbb27ace:urdf/laikago_tex.jpg"
+        }
+      ]
+    },
+    {
+      "case_id": "7fe5342ad2625b66c859",
+      "entry_ids": [
+        4
+      ],
+      "status": "failed",
+      "error_type": "FileNotFoundError",
+      "error": "[Errno 2] No such file or directory: '/home/exuber/CODE/CORE/pythonProject1/AUTORESEARCH/fluxkernel/.demo/awesome-urdf/sources/RobotLocomotion--models--3bd1111011ea/iiwa_description/urdf/libgazebo_ros_control.so'"
+    },
+    {
+      "case_id": "816aeb950f6116e84597",
+      "entry_ids": [
+        27
+      ],
+      "status": "failed",
+      "error_type": "ValueError",
+      "error": "Unsafe relative path"
+    },
+    {
+      "case_id": "821a60e8b14cc23a28e7",
+      "entry_ids": [
+        29
+      ],
+      "status": "failed",
+      "error_type": "ValueError",
+      "error": "Lossless case packages require relative asset paths"
+    },
+    {
+      "case_id": "829f8d03d0b0c12ccb03",
+      "entry_ids": [
+        101
+      ],
+      "status": "failed",
+      "error_type": "FileNotFoundError",
+      "error": "[Errno 2] No such file or directory: '/home/exuber/CODE/CORE/pythonProject1/AUTORESEARCH/fluxkernel/.demo/awesome-urdf/sources/google-deepmind--mujoco_menagerie--2cd6b7be1544/google_barkour_v0/meshes/abduction.stl'"
+    },
+    {
+      "case_id": "83cdbedbd1ce3497a62d",
+      "entry_ids": [
+        83
+      ],
+      "status": "failed",
+      "error_type": "ValueError",
+      "error": "Lossless case packages require relative asset paths"
+    },
+    {
+      "case_id": "84d2f8a668fc6e4f5e94",
+      "entry_ids": [
+        91
+      ],
+      "status": "failed",
+      "error_type": "ValueError",
+      "error": "Lossless case packages require relative asset paths"
+    },
+    {
+      "case_id": "760999f8f3f9c4cadde9",
+      "entry_ids": [
+        47
+      ],
+      "status": "passed",
+      "primary_roundtrip": true,
+      "urdf_bytes_equal": true,
+      "asset_bytes_equal": true,
+      "lean_source_equal": true,
+      "asset_count": 11,
+      "dependency_closure": "preserved",
+      "missing_dependencies": []
+    },
+    {
+      "case_id": "85e7106618057abe4b44",
+      "entry_ids": [
+        81
+      ],
+      "status": "failed",
+      "error_type": "FileNotFoundError",
+      "error": "[Errno 2] No such file or directory: '/home/exuber/CODE/CORE/pythonProject1/AUTORESEARCH/fluxkernel/.demo/awesome-urdf/sources/gkjohnson--nasa-urdf-robots--1f89ecba9112/val_description/model/robots/libSRCMultiSenseSLPlugin.so'"
+    },
+    {
+      "case_id": "86718e55597cf5fda863",
+      "entry_ids": [
+        30
+      ],
+      "status": "failed",
+      "error_type": "FileNotFoundError",
+      "error": "[Errno 2] No such file or directory: '/home/exuber/CODE/CORE/pythonProject1/AUTORESEARCH/fluxkernel/.demo/awesome-urdf/sources/limxdynamics--tron1-robot-description--5b97add1f3b4/pointfoot/WF_TRON1A/urdf/libgazebo_ros_p3d.so'"
+    },
+    {
+      "case_id": "87913b0b7309ebc56653",
+      "entry_ids": [
+        5
+      ],
+      "status": "failed",
+      "error_type": "FileNotFoundError",
+      "error": "[Errno 2] No such file or directory: '/home/exuber/CODE/CORE/pythonProject1/AUTORESEARCH/fluxkernel/.demo/awesome-urdf/sources/facebookresearch--differentiable-robot-model--d7bd1b3b8ef1/diff_robot_data/kuka_iiwa/urdf/libgazebo_ros_control.so'"
+    },
+    {
+      "case_id": "880aa25962d0235de7f6",
+      "entry_ids": [
+        67
+      ],
+      "status": "failed",
+      "error_type": "ValueError",
+      "error": "Lossless case packages require relative asset paths"
+    },
+    {
+      "case_id": "88d12b08bd2e55f269d8",
+      "entry_ids": [
+        4
+      ],
+      "status": "failed",
+      "error_type": "FileNotFoundError",
+      "error": "[Errno 2] No such file or directory: '/home/exuber/CODE/CORE/pythonProject1/AUTORESEARCH/fluxkernel/.demo/awesome-urdf/sources/RobotLocomotion--models--3bd1111011ea/iiwa_description/urdf/libgazebo_ros_control.so'"
+    },
+    {
+      "case_id": "8967a1ef37cfef3ae6fe",
+      "entry_ids": [
+        10
+      ],
+      "status": "failed",
+      "error_type": "FileNotFoundError",
+      "error": "[Errno 2] No such file or directory: '/home/exuber/CODE/CORE/pythonProject1/AUTORESEARCH/fluxkernel/.demo/awesome-urdf/sources/agilexrobotics--Piper_ros--ac41fcbcdda5/src/piper_description/urdf/$(find piper_camera_moveit_config)/condfig/gazebo.xacro'"
+    },
+    {
+      "case_id": "89b7c88c307320c857e2",
+      "entry_ids": [
+        83
+      ],
+      "status": "failed",
+      "error_type": "ValueError",
+      "error": "Lossless case packages require relative asset paths"
+    },
+    {
+      "case_id": "8d38019f7179fd45ac9f",
+      "entry_ids": [
+        35
+      ],
+      "status": "failed",
+      "error_type": "ValueError",
+      "error": "Lossless case packages require relative asset paths"
+    },
+    {
+      "case_id": "900498e901ec83028eb6",
+      "entry_ids": [
+        68
+      ],
+      "status": "failed",
+      "error_type": "FileNotFoundError",
+      "error": "[Errno 2] No such file or directory: '/home/exuber/CODE/CORE/pythonProject1/AUTORESEARCH/fluxkernel/.demo/awesome-urdf/sources/robotology--icub-models--dca8c618c264/iCub/robots/iCubErzelli02/gz-sim-forcetorque-system'"
+    },
+    {
+      "case_id": "9035dee9f984950dcf23",
+      "entry_ids": [
+        43
+      ],
+      "status": "failed",
+      "error_type": "ValueError",
+      "error": "Lossless case packages require relative asset paths"
+    },
+    {
+      "case_id": "904afa1e080ce6368b9d",
+      "entry_ids": [
+        83
+      ],
+      "status": "failed",
+      "error_type": "ValueError",
+      "error": "Lossless case packages require relative asset paths"
+    },
+    {
+      "case_id": "91b264e94363120b5be1",
+      "entry_ids": [
+        75
+      ],
+      "status": "failed",
+      "error_type": "ValueError",
+      "error": "Lossless case packages require relative asset paths"
+    },
+    {
+      "case_id": "9209d95434de4b7dd84b",
+      "entry_ids": [
+        35
+      ],
+      "status": "failed",
+      "error_type": "ValueError",
+      "error": "Lossless case packages require relative asset paths"
+    },
+    {
+      "case_id": "925fd93431920b7b7815",
+      "entry_ids": [
+        83
+      ],
+      "status": "failed",
+      "error_type": "ValueError",
+      "error": "Lossless case packages require relative asset paths"
+    },
+    {
+      "case_id": "93d4bbd47360c9632fd7",
+      "entry_ids": [
+        26
+      ],
+      "status": "failed",
+      "error_type": "ValueError",
+      "error": "Lossless case packages require relative asset paths"
+    },
+    {
+      "case_id": "93fb6fb67b4a7a71e7f5",
+      "entry_ids": [
+        10
+      ],
+      "status": "failed",
+      "error_type": "ValueError",
+      "error": "Lossless case packages require relative asset paths"
+    },
+    {
+      "case_id": "7ecd655d338e649e3a5a",
+      "entry_ids": [
+        63
+      ],
+      "status": "passed",
+      "primary_roundtrip": true,
+      "urdf_bytes_equal": true,
+      "asset_bytes_equal": true,
+      "lean_source_equal": true,
+      "asset_count": 22,
+      "dependency_closure": "preserved",
+      "missing_dependencies": []
+    },
+    {
+      "case_id": "950d643c04e7031206f8",
+      "entry_ids": [
+        62
+      ],
+      "status": "failed",
+      "error_type": "FileNotFoundError",
+      "error": "[Errno 2] No such file or directory: '/home/exuber/CODE/CORE/pythonProject1/AUTORESEARCH/fluxkernel/.demo/awesome-urdf/sources/icub-tech-iit--ergocub-software--bc9865a5adb7/urdf/ergoCub/robots/ergoCubGazeboSN003_minContacts/gz-sim-yarp-controlboard-system'"
+    },
+    {
+      "case_id": "951ed6b183669019d5a5",
+      "entry_ids": [
+        75
+      ],
+      "status": "failed",
+      "error_type": "ValueError",
+      "error": "Lossless case packages require relative asset paths"
+    },
+    {
+      "case_id": "6dc0dd1dd387ffdebac1",
+      "entry_ids": [
+        63
+      ],
+      "status": "passed",
+      "primary_roundtrip": true,
+      "urdf_bytes_equal": true,
+      "asset_bytes_equal": true,
+      "lean_source_equal": true,
+      "asset_count": 29,
+      "dependency_closure": "preserved",
+      "missing_dependencies": []
+    },
+    {
+      "case_id": "963f3c4323826e5f0a18",
+      "entry_ids": [
+        62
+      ],
+      "status": "failed",
+      "error_type": "FileNotFoundError",
+      "error": "[Errno 2] No such file or directory: '/home/exuber/CODE/CORE/pythonProject1/AUTORESEARCH/fluxkernel/.demo/awesome-urdf/sources/icub-tech-iit--ergocub-software--bc9865a5adb7/urdf/ergoCub/robots/ergoCubSN002/gz-sim-yarp-controlboard-system'"
+    },
+    {
+      "case_id": "98578bb9624bd366fc78",
+      "entry_ids": [
+        27
+      ],
+      "status": "failed",
+      "error_type": "ValueError",
+      "error": "Lossless case packages require relative asset paths"
+    },
+    {
+      "case_id": "999a94830d07d681cf99",
+      "entry_ids": [
+        70
+      ],
+      "status": "failed",
+      "error_type": "ValueError",
+      "error": "Lossless case packages require relative asset paths"
+    },
+    {
+      "case_id": "9a1b637697175944d69b",
+      "entry_ids": [
+        107
+      ],
+      "status": "failed",
+      "primary_roundtrip": true,
+      "urdf_bytes_equal": true,
+      "asset_bytes_equal": true,
+      "lean_source_equal": true,
+      "asset_count": 14,
+      "dependency_closure": "omitted_by_export",
+      "missing_dependencies": [
+        {
+          "path": "chassis.mtl",
+          "resource_key": "Derek-TH-Wang/mini_cheetah_urdf@1988bceb26e81f28594a16e7d5e6abe5cbb27ace:urdf/chassis.mtl"
+        },
+        {
+          "path": "laikago_tex.jpg",
+          "resource_key": "Derek-TH-Wang/mini_cheetah_urdf@1988bceb26e81f28594a16e7d5e6abe5cbb27ace:urdf/laikago_tex.jpg"
+        },
+        {
+          "path": "hip_motor.mtl",
+          "resource_key": "Derek-TH-Wang/mini_cheetah_urdf@1988bceb26e81f28594a16e7d5e6abe5cbb27ace:urdf/hip_motor.mtl"
+        },
+        {
+          "path": "laikago_tex.jpg",
+          "resource_key": "Derek-TH-Wang/mini_cheetah_urdf@1988bceb26e81f28594a16e7d5e6abe5cbb27ace:urdf/laikago_tex.jpg"
+        },
+        {
+          "path": "hip_motor_mirror.mtl",
+          "resource_key": "Derek-TH-Wang/mini_cheetah_urdf@1988bceb26e81f28594a16e7d5e6abe5cbb27ace:urdf/hip_motor_mirror.mtl"
+        },
+        {
+          "path": "laikago_tex.jpg",
+          "resource_key": "Derek-TH-Wang/mini_cheetah_urdf@1988bceb26e81f28594a16e7d5e6abe5cbb27ace:urdf/laikago_tex.jpg"
+        },
+        {
+          "path": "lower_leg3.mtl",
+          "resource_key": "Derek-TH-Wang/mini_cheetah_urdf@1988bceb26e81f28594a16e7d5e6abe5cbb27ace:urdf/lower_leg3.mtl"
+        },
+        {
+          "path": "laikago_tex.jpg",
+          "resource_key": "Derek-TH-Wang/mini_cheetah_urdf@1988bceb26e81f28594a16e7d5e6abe5cbb27ace:urdf/laikago_tex.jpg"
+        },
+        {
+          "path": "upper_leg_left.mtl",
+          "resource_key": "Derek-TH-Wang/mini_cheetah_urdf@1988bceb26e81f28594a16e7d5e6abe5cbb27ace:urdf/upper_leg_left.mtl"
+        },
+        {
+          "path": "laikago_tex.jpg",
+          "resource_key": "Derek-TH-Wang/mini_cheetah_urdf@1988bceb26e81f28594a16e7d5e6abe5cbb27ace:urdf/laikago_tex.jpg"
+        },
+        {
+          "path": "upper_leg_left2.mtl",
+          "resource_key": "Derek-TH-Wang/mini_cheetah_urdf@1988bceb26e81f28594a16e7d5e6abe5cbb27ace:urdf/upper_leg_left2.mtl"
+        },
+        {
+          "path": "laikago_tex.jpg",
+          "resource_key": "Derek-TH-Wang/mini_cheetah_urdf@1988bceb26e81f28594a16e7d5e6abe5cbb27ace:urdf/laikago_tex.jpg"
+        },
+        {
+          "path": "upper_leg_mirror.mtl",
+          "resource_key": "Derek-TH-Wang/mini_cheetah_urdf@1988bceb26e81f28594a16e7d5e6abe5cbb27ace:urdf/upper_leg_mirror.mtl"
+        },
+        {
+          "path": "laikago_tex.jpg",
+          "resource_key": "Derek-TH-Wang/mini_cheetah_urdf@1988bceb26e81f28594a16e7d5e6abe5cbb27ace:urdf/laikago_tex.jpg"
+        },
+        {
+          "path": "upper_leg_mirror2.mtl",
+          "resource_key": "Derek-TH-Wang/mini_cheetah_urdf@1988bceb26e81f28594a16e7d5e6abe5cbb27ace:urdf/upper_leg_mirror2.mtl"
+        },
+        {
+          "path": "laikago_tex.jpg",
+          "resource_key": "Derek-TH-Wang/mini_cheetah_urdf@1988bceb26e81f28594a16e7d5e6abe5cbb27ace:urdf/laikago_tex.jpg"
+        }
+      ]
+    },
+    {
+      "case_id": "9a2df87793db4c20cff4",
+      "entry_ids": [
+        62
+      ],
+      "status": "failed",
+      "error_type": "FileNotFoundError",
+      "error": "[Errno 2] No such file or directory: '/home/exuber/CODE/CORE/pythonProject1/AUTORESEARCH/fluxkernel/.demo/awesome-urdf/sources/icub-tech-iit--ergocub-software--bc9865a5adb7/urdf/ergoCub/robots/ergoCubGazeboV1_minContacts/gz-sim-yarp-controlboard-system'"
+    },
+    {
+      "case_id": "9b31b6ac08f6ccfdbb5a",
+      "entry_ids": [
+        62
+      ],
+      "status": "failed",
+      "error_type": "FileNotFoundError",
+      "error": "[Errno 2] No such file or directory: '/home/exuber/CODE/CORE/pythonProject1/AUTORESEARCH/fluxkernel/.demo/awesome-urdf/sources/icub-tech-iit--ergocub-software--bc9865a5adb7/urdf/ergoCub/robots/ergoCubGazeboSN001_minContacts/gz-sim-yarp-controlboard-system'"
+    },
+    {
+      "case_id": "9d8b19ead9ffb8f38a91",
+      "entry_ids": [
+        62
+      ],
+      "status": "failed",
+      "error_type": "FileNotFoundError",
+      "error": "[Errno 2] No such file or directory: '/home/exuber/CODE/CORE/pythonProject1/AUTORESEARCH/fluxkernel/.demo/awesome-urdf/sources/icub-tech-iit--ergocub-software--bc9865a5adb7/urdf/ergoCub/robots/ergoCubGazeboV1_3_minContacts/gz-sim-yarp-controlboard-system'"
+    },
+    {
+      "case_id": "9e52891fcbfbd7c86415",
+      "entry_ids": [
+        63
+      ],
+      "status": "failed",
+      "error_type": "FileNotFoundError",
+      "error": "[Errno 2] No such file or directory: '/home/exuber/CODE/CORE/pythonProject1/AUTORESEARCH/fluxkernel/.demo/awesome-urdf/sources/unitreerobotics--unitree_ros--ccfc6fd8430a/robots/g1_description/inspire_hand/meshes/left_base_link.STL'"
+    },
+    {
+      "case_id": "a0b78ef83e4699ea5f7f",
+      "entry_ids": [
+        62
+      ],
+      "status": "failed",
+      "error_type": "FileNotFoundError",
+      "error": "[Errno 2] No such file or directory: '/home/exuber/CODE/CORE/pythonProject1/AUTORESEARCH/fluxkernel/.demo/awesome-urdf/sources/icub-tech-iit--ergocub-software--bc9865a5adb7/urdf/ergoCub/robots/ergoCubSN001/gz-sim-yarp-controlboard-system'"
+    },
+    {
+      "case_id": "94cb45be54ff23532a09",
+      "entry_ids": [
+        63
+      ],
+      "status": "passed",
+      "primary_roundtrip": true,
+      "urdf_bytes_equal": true,
+      "asset_bytes_equal": true,
+      "lean_source_equal": true,
+      "asset_count": 34,
+      "dependency_closure": "preserved",
+      "missing_dependencies": []
+    },
+    {
+      "case_id": "a10b04bab32a6042dd6b",
+      "entry_ids": [
+        68
+      ],
+      "status": "failed",
+      "error_type": "FileNotFoundError",
+      "error": "[Errno 2] No such file or directory: '/home/exuber/CODE/CORE/pythonProject1/AUTORESEARCH/fluxkernel/.demo/awesome-urdf/sources/robotology--icub-models--dca8c618c264/iCub/robots/iCubGazeboV2_5_KIT_007/gz-sim-forcetorque-system'"
+    },
+    {
+      "case_id": "9690f64ad396d8dd1ec5",
+      "entry_ids": [
+        63
+      ],
+      "status": "passed",
+      "primary_roundtrip": true,
+      "urdf_bytes_equal": true,
+      "asset_bytes_equal": true,
+      "lean_source_equal": true,
+      "asset_count": 34,
+      "dependency_closure": "preserved",
+      "missing_dependencies": []
+    },
+    {
+      "case_id": "84edfb10e6e999d0b992",
+      "entry_ids": [
+        63
+      ],
+      "status": "passed",
+      "primary_roundtrip": true,
+      "urdf_bytes_equal": true,
+      "asset_bytes_equal": true,
+      "lean_source_equal": true,
+      "asset_count": 49,
+      "dependency_closure": "preserved",
+      "missing_dependencies": []
+    },
+    {
+      "case_id": "a0e53270fe1711fbaeb9",
+      "entry_ids": [
+        45
+      ],
+      "status": "passed",
+      "primary_roundtrip": true,
+      "urdf_bytes_equal": true,
+      "asset_bytes_equal": true,
+      "lean_source_equal": true,
+      "asset_count": 0,
+      "dependency_closure": "preserved",
+      "missing_dependencies": []
+    },
+    {
+      "case_id": "a3d1be4a3c24aebe9805",
+      "entry_ids": [
+        75
+      ],
+      "status": "failed",
+      "error_type": "ValueError",
+      "error": "Lossless case packages require relative asset paths"
+    },
+    {
+      "case_id": "a42e5352d0cd928e96ba",
+      "entry_ids": [
+        75
+      ],
+      "status": "failed",
+      "error_type": "ValueError",
+      "error": "Lossless case packages require relative asset paths"
+    },
+    {
+      "case_id": "a8f43518f0125b465ffb",
+      "entry_ids": [
+        49
+      ],
+      "status": "failed",
+      "error_type": "ValueError",
+      "error": "Lossless case packages require relative asset paths"
+    },
+    {
+      "case_id": "aabdc747afeb10cafb9e",
+      "entry_ids": [
+        34
+      ],
+      "status": "failed",
+      "error_type": "FileNotFoundError",
+      "error": "[Errno 2] No such file or directory: '/home/exuber/CODE/CORE/pythonProject1/AUTORESEARCH/fluxkernel/.demo/awesome-urdf/sources/RethinkRobotics--baxter_common--6c4b0f375fe4/baxter_description/urdf/libbaxter_gazebo_ros_control.so'"
+    },
+    {
+      "case_id": "a2c8db82ef672d5100cb",
+      "entry_ids": [
+        83
+      ],
+      "status": "passed",
+      "primary_roundtrip": true,
+      "urdf_bytes_equal": true,
+      "asset_bytes_equal": true,
+      "lean_source_equal": true,
+      "asset_count": 0,
+      "dependency_closure": "preserved",
+      "missing_dependencies": []
+    },
+    {
+      "case_id": "ab2cf08afa0448f8754d",
+      "entry_ids": [
+        103
+      ],
+      "status": "failed",
+      "error_type": "FileNotFoundError",
+      "error": "[Errno 2] No such file or directory: '/home/exuber/CODE/CORE/pythonProject1/AUTORESEARCH/fluxkernel/.demo/awesome-urdf/sources/unitreerobotics--unitree_ros--ccfc6fd8430a/robots/go1_description/urdf/libLinkPlot3DPlugin.so'"
+    },
+    {
+      "case_id": "ab53af1288c0ecad90c7",
+      "entry_ids": [
+        83
+      ],
+      "status": "failed",
+      "error_type": "ValueError",
+      "error": "Lossless case packages require relative asset paths"
+    },
+    {
+      "case_id": "ab0b45263a150106bcaa",
+      "entry_ids": [
+        40
+      ],
+      "status": "passed",
+      "primary_roundtrip": true,
+      "urdf_bytes_equal": true,
+      "asset_bytes_equal": true,
+      "lean_source_equal": true,
+      "asset_count": 1,
+      "dependency_closure": "preserved",
+      "missing_dependencies": []
+    },
+    {
+      "case_id": "ac8cf2058ab18b983087",
+      "entry_ids": [
+        43
+      ],
+      "status": "passed",
+      "primary_roundtrip": true,
+      "urdf_bytes_equal": true,
+      "asset_bytes_equal": true,
+      "lean_source_equal": true,
+      "asset_count": 0,
+      "dependency_closure": "preserved",
+      "missing_dependencies": []
+    },
+    {
+      "case_id": "afb4cc56f2831663e8b2",
+      "entry_ids": [
+        83
+      ],
+      "status": "failed",
+      "error_type": "FileNotFoundError",
+      "error": "[Errno 2] No such file or directory: '/home/exuber/CODE/CORE/pythonProject1/AUTORESEARCH/fluxkernel/.demo/awesome-urdf/sources/robot-descriptions--halodi-robot-models--5d1d5eb3c15c/eve_r3_description/urdf/libgazebo_ros_camera.so'"
+    },
+    {
+      "case_id": "afb6ef2764a81c00eaf8",
+      "entry_ids": [
+        0
+      ],
+      "status": "failed",
+      "error_type": "ValueError",
+      "error": "Lossless case packages require relative asset paths"
+    },
+    {
+      "case_id": "a3557edbf515460b5df9",
+      "entry_ids": [
+        63
+      ],
+      "status": "passed",
+      "primary_roundtrip": true,
+      "urdf_bytes_equal": true,
+      "asset_bytes_equal": true,
+      "lean_source_equal": true,
+      "asset_count": 37,
+      "dependency_closure": "preserved",
+      "missing_dependencies": []
+    },
+    {
+      "case_id": "b0bf7071a57d26f0edea",
+      "entry_ids": [
+        75
+      ],
+      "status": "failed",
+      "error_type": "ValueError",
+      "error": "Lossless case packages require relative asset paths"
+    },
+    {
+      "case_id": "b179a5b7e40356b3c1d5",
+      "entry_ids": [
+        51
+      ],
+      "status": "failed",
+      "error_type": "FileNotFoundError",
+      "error": "[Errno 2] No such file or directory: '/home/exuber/CODE/CORE/pythonProject1/AUTORESEARCH/fluxkernel/.demo/awesome-urdf/sources/iotdesignshop--dexhand_description--211b0ea23e21/urdf/libgazebo_ros_control.so'"
+    },
+    {
+      "case_id": "b27b70241c1338c08ff6",
+      "entry_ids": [
+        65
+      ],
+      "status": "failed",
+      "error_type": "ValueError",
+      "error": "Unsafe relative path"
+    },
+    {
+      "case_id": "b48e3bfa49bd60912c88",
+      "entry_ids": [
+        68
+      ],
+      "status": "failed",
+      "error_type": "FileNotFoundError",
+      "error": "[Errno 2] No such file or directory: '/home/exuber/CODE/CORE/pythonProject1/AUTORESEARCH/fluxkernel/.demo/awesome-urdf/sources/robotology--icub-models--dca8c618c264/iCub/robots/iCubGenova02/gz-sim-forcetorque-system'"
+    },
+    {
+      "case_id": "aee9dbd2286d32cbee75",
+      "entry_ids": [
+        40
+      ],
+      "status": "passed",
+      "primary_roundtrip": true,
+      "urdf_bytes_equal": true,
+      "asset_bytes_equal": true,
+      "lean_source_equal": true,
+      "asset_count": 1,
+      "dependency_closure": "preserved",
+      "missing_dependencies": []
+    },
+    {
+      "case_id": "a121c9efec021032cb9e",
+      "entry_ids": [
+        80
+      ],
+      "status": "passed",
+      "primary_roundtrip": true,
+      "urdf_bytes_equal": true,
+      "asset_bytes_equal": true,
+      "lean_source_equal": true,
+      "asset_count": 45,
+      "dependency_closure": "preserved",
+      "missing_dependencies": []
+    },
+    {
+      "case_id": "b77377a4fa78fd716a07",
+      "entry_ids": [
+        69
+      ],
+      "status": "failed",
+      "error_type": "ValueError",
+      "error": "Lossless case packages require relative asset paths"
+    },
+    {
+      "case_id": "b6ca3554fdb914f13abb",
+      "entry_ids": [
+        83
+      ],
+      "status": "passed",
+      "primary_roundtrip": true,
+      "urdf_bytes_equal": true,
+      "asset_bytes_equal": true,
+      "lean_source_equal": true,
+      "asset_count": 0,
+      "dependency_closure": "preserved",
+      "missing_dependencies": []
+    },
+    {
+      "case_id": "b8c55203a535e34eb5df",
+      "entry_ids": [
+        81
+      ],
+      "status": "failed",
+      "error_type": "FileNotFoundError",
+      "error": "[Errno 2] No such file or directory: '/home/exuber/CODE/CORE/pythonProject1/AUTORESEARCH/fluxkernel/.demo/awesome-urdf/sources/gkjohnson--nasa-urdf-robots--1f89ecba9112/val_description/model/robots/libgazebo_ros_imu.so'"
+    },
+    {
+      "case_id": "bab5c905ab969cef0055",
+      "entry_ids": [
+        66
+      ],
+      "status": "failed",
+      "error_type": "FileNotFoundError",
+      "error": "[Errno 2] No such file or directory: '/home/exuber/CODE/CORE/pythonProject1/AUTORESEARCH/fluxkernel/.demo/awesome-urdf/sources/gundam-global-challenge--gundam_robot--411d5db72a12/gundam_rx78_description/urdf/libgazebo_ros_control.so'"
+    },
+    {
+      "case_id": "bb3edbdb611bad580a12",
+      "entry_ids": [
+        51
+      ],
+      "status": "failed",
+      "error_type": "FileNotFoundError",
+      "error": "[Errno 2] No such file or directory: '/home/exuber/CODE/CORE/pythonProject1/AUTORESEARCH/fluxkernel/.demo/awesome-urdf/sources/iotdesignshop--dexhand_description--211b0ea23e21/urdf/libgazebo_ros_control.so'"
+    },
+    {
+      "case_id": "b014ba36cc213ac6171c",
+      "entry_ids": [
+        90
+      ],
+      "status": "passed",
+      "primary_roundtrip": true,
+      "urdf_bytes_equal": true,
+      "asset_bytes_equal": true,
+      "lean_source_equal": true,
+      "asset_count": 29,
+      "dependency_closure": "preserved",
+      "missing_dependencies": []
+    },
+    {
+      "case_id": "b6d9cbc26698c629dae7",
+      "entry_ids": [
+        12
+      ],
+      "status": "passed",
+      "primary_roundtrip": true,
+      "urdf_bytes_equal": true,
+      "asset_bytes_equal": true,
+      "lean_source_equal": true,
+      "asset_count": 13,
+      "dependency_closure": "preserved",
+      "missing_dependencies": []
+    },
+    {
+      "case_id": "bc3b53d050ab25c3a2b1",
+      "entry_ids": [
+        59
+      ],
+      "status": "failed",
+      "error_type": "ValueError",
+      "error": "Lossless case packages require relative asset paths"
+    },
+    {
+      "case_id": "bc92416f2c3012308b07",
+      "entry_ids": [
+        16
+      ],
+      "status": "failed",
+      "error_type": "FileNotFoundError",
+      "error": "[Errno 2] No such file or directory: '/home/exuber/CODE/CORE/pythonProject1/AUTORESEARCH/fluxkernel/.demo/awesome-urdf/sources/unitreerobotics--unitree_ros--ccfc6fd8430a/robots/z1_description/xacro/libgazebo_ros_control.so'"
+    },
+    {
+      "case_id": "b79621c170444cd361bc",
+      "entry_ids": [
+        63
+      ],
+      "status": "passed",
+      "primary_roundtrip": true,
+      "urdf_bytes_equal": true,
+      "asset_bytes_equal": true,
+      "lean_source_equal": true,
+      "asset_count": 36,
+      "dependency_closure": "preserved",
+      "missing_dependencies": []
+    },
+    {
+      "case_id": "bf18ab5637b038bd05c0",
+      "entry_ids": [
+        25
+      ],
+      "status": "failed",
+      "error_type": "FileNotFoundError",
+      "error": "[Errno 2] No such file or directory: '/home/exuber/CODE/CORE/pythonProject1/AUTORESEARCH/fluxkernel/.demo/awesome-urdf/sources/limxdynamics--tron1-robot-description--5b97add1f3b4/pointfoot/SF_TRON1B/urdf/libgazebo_ros_p3d.so'"
+    },
+    {
+      "case_id": "bfbfeb219d5ca32595c6",
+      "entry_ids": [
+        62
+      ],
+      "status": "failed",
+      "error_type": "FileNotFoundError",
+      "error": "[Errno 2] No such file or directory: '/home/exuber/CODE/CORE/pythonProject1/AUTORESEARCH/fluxkernel/.demo/awesome-urdf/sources/icub-tech-iit--ergocub-software--bc9865a5adb7/urdf/ergoCub/robots/ergoCubGazeboSN002/gz-sim-yarp-controlboard-system'"
+    },
+    {
+      "case_id": "bb6435969cce2c2fbe5d",
+      "entry_ids": [
+        63
+      ],
+      "status": "passed",
+      "primary_roundtrip": true,
+      "urdf_bytes_equal": true,
+      "asset_bytes_equal": true,
+      "lean_source_equal": true,
+      "asset_count": 35,
+      "dependency_closure": "preserved",
+      "missing_dependencies": []
+    },
+    {
+      "case_id": "c1911b5ff05031f4098c",
+      "entry_ids": [
+        55
+      ],
+      "status": "failed",
+      "error_type": "FileNotFoundError",
+      "error": "[Errno 2] No such file or directory: '/home/exuber/CODE/CORE/pythonProject1/AUTORESEARCH/fluxkernel/.demo/awesome-urdf/sources/RobotLocomotion--models--3bd1111011ea/atlas/libgazebo_ros_camera.so'"
+    },
+    {
+      "case_id": "c1c6294dfb4a9b1cffde",
+      "entry_ids": [
+        68
+      ],
+      "status": "failed",
+      "error_type": "FileNotFoundError",
+      "error": "[Errno 2] No such file or directory: '/home/exuber/CODE/CORE/pythonProject1/AUTORESEARCH/fluxkernel/.demo/awesome-urdf/sources/robotology--icub-models--dca8c618c264/iCub/robots/iCubGenova11/gz-sim-forcetorque-system'"
+    },
+    {
+      "case_id": "c494f415d61cab1f3d94",
+      "entry_ids": [
+        9
+      ],
+      "status": "failed",
+      "error_type": "ValueError",
+      "error": "Lossless case packages require relative asset paths"
+    },
+    {
+      "case_id": "c516770ecf454d0332a1",
+      "entry_ids": [
+        86
+      ],
+      "status": "failed",
+      "error_type": "ValueError",
+      "error": "Lossless case packages require relative asset paths"
+    },
+    {
+      "case_id": "c538f6611561dc1bbac9",
+      "entry_ids": [
+        83
+      ],
+      "status": "failed",
+      "error_type": "ValueError",
+      "error": "Lossless case packages require relative asset paths"
+    },
+    {
+      "case_id": "c57898b081f49903b225",
+      "entry_ids": [
+        84
+      ],
+      "status": "failed",
+      "error_type": "ValueError",
+      "error": "Invalid URDF XML"
+    },
+    {
+      "case_id": "bd33cd4f479947911e2a",
+      "entry_ids": [
+        82
+      ],
+      "status": "passed",
+      "primary_roundtrip": true,
+      "urdf_bytes_equal": true,
+      "asset_bytes_equal": true,
+      "lean_source_equal": true,
+      "asset_count": 16,
+      "dependency_closure": "preserved",
+      "missing_dependencies": []
+    },
+    {
+      "case_id": "cb739e616756e71efa0f",
+      "entry_ids": [
+        107
+      ],
+      "status": "failed",
+      "error_type": "ValueError",
+      "error": "Lossless case packages require relative asset paths"
+    },
+    {
+      "case_id": "cc0f99655a41e29413d7",
+      "entry_ids": [
+        32
+      ],
+      "status": "failed",
+      "error_type": "ValueError",
+      "error": "Unsafe relative path"
+    },
+    {
+      "case_id": "c12478cd8b4646621233",
+      "entry_ids": [
+        81
+      ],
+      "status": "passed",
+      "primary_roundtrip": true,
+      "urdf_bytes_equal": true,
+      "asset_bytes_equal": true,
+      "lean_source_equal": true,
+      "asset_count": 0,
+      "dependency_closure": "preserved",
+      "missing_dependencies": []
+    },
+    {
+      "case_id": "bb6f992fef6ef4e3e9b2",
+      "entry_ids": [
+        93
+      ],
+      "status": "failed",
+      "primary_roundtrip": true,
+      "urdf_bytes_equal": true,
+      "asset_bytes_equal": true,
+      "lean_source_equal": true,
+      "asset_count": 31,
+      "dependency_closure": "omitted_by_export",
+      "missing_dependencies": [
+        {
+          "path": "meshes/AbradingBitInTurretAtZeroFeed.bin",
+          "resource_key": "david-dorf/perseverance-ingenuity-urdfs@17b93151ff6028f4385a3ec2f1394d3deac6fa94:perseverance/meshes/AbradingBitInTurretAtZeroFeed.bin"
+        },
+        {
+          "path": "meshes/Textures/M2020_Rover_Texture.jpg",
+          "resource_key": "david-dorf/perseverance-ingenuity-urdfs@17b93151ff6028f4385a3ec2f1394d3deac6fa94:perseverance/meshes/Textures/M2020_Rover_Texture.jpg"
+        },
+        {
+          "path": "meshes/Arm_LINK_1.bin",
+          "resource_key": "david-dorf/perseverance-ingenuity-urdfs@17b93151ff6028f4385a3ec2f1394d3deac6fa94:perseverance/meshes/Arm_LINK_1.bin"
+        },
+        {
+          "path": "meshes/Textures/M2020_Rover_Texture.jpg",
+          "resource_key": "david-dorf/perseverance-ingenuity-urdfs@17b93151ff6028f4385a3ec2f1394d3deac6fa94:perseverance/meshes/Textures/M2020_Rover_Texture.jpg"
+        },
+        {
+          "path": "meshes/Arm_LINK_2.bin",
+          "resource_key": "david-dorf/perseverance-ingenuity-urdfs@17b93151ff6028f4385a3ec2f1394d3deac6fa94:perseverance/meshes/Arm_LINK_2.bin"
+        },
+        {
+          "path": "meshes/Textures/M2020_Rover_Texture.jpg",
+          "resource_key": "david-dorf/perseverance-ingenuity-urdfs@17b93151ff6028f4385a3ec2f1394d3deac6fa94:perseverance/meshes/Textures/M2020_Rover_Texture.jpg"
+        },
+        {
+          "path": "meshes/Arm_LINK_3.bin",
+          "resource_key": "david-dorf/perseverance-ingenuity-urdfs@17b93151ff6028f4385a3ec2f1394d3deac6fa94:perseverance/meshes/Arm_LINK_3.bin"
+        },
+        {
+          "path": "meshes/Textures/M2020_Rover_Texture.jpg",
+          "resource_key": "david-dorf/perseverance-ingenuity-urdfs@17b93151ff6028f4385a3ec2f1394d3deac6fa94:perseverance/meshes/Textures/M2020_Rover_Texture.jpg"
+        },
+        {
+          "path": "meshes/Arm_LINK_4.bin",
+          "resource_key": "david-dorf/perseverance-ingenuity-urdfs@17b93151ff6028f4385a3ec2f1394d3deac6fa94:perseverance/meshes/Arm_LINK_4.bin"
+        },
+        {
+          "path": "meshes/Textures/M2020_Rover_Texture.jpg",
+          "resource_key": "david-dorf/perseverance-ingenuity-urdfs@17b93151ff6028f4385a3ec2f1394d3deac6fa94:perseverance/meshes/Textures/M2020_Rover_Texture.jpg"
+        },
+        {
+          "path": "meshes/Arm_LINK_5.bin",
+          "resource_key": "david-dorf/perseverance-ingenuity-urdfs@17b93151ff6028f4385a3ec2f1394d3deac6fa94:perseverance/meshes/Arm_LINK_5.bin"
+        },
+        {
+          "path": "meshes/Textures/M2020_Rover_Texture.jpg",
+          "resource_key": "david-dorf/perseverance-ingenuity-urdfs@17b93151ff6028f4385a3ec2f1394d3deac6fa94:perseverance/meshes/Textures/M2020_Rover_Texture.jpg"
+        },
+        {
+          "path": "meshes/CHASSIS.bin",
+          "resource_key": "david-dorf/perseverance-ingenuity-urdfs@17b93151ff6028f4385a3ec2f1394d3deac6fa94:perseverance/meshes/CHASSIS.bin"
+        },
+        {
+          "path": "meshes/Textures/M2020_Rover_Texture.jpg",
+          "resource_key": "david-dorf/perseverance-ingenuity-urdfs@17b93151ff6028f4385a3ec2f1394d3deac6fa94:perseverance/meshes/Textures/M2020_Rover_Texture.jpg"
+        },
+        {
+          "path": "meshes/CenterDifferential.bin",
+          "resource_key": "david-dorf/perseverance-ingenuity-urdfs@17b93151ff6028f4385a3ec2f1394d3deac6fa94:perseverance/meshes/CenterDifferential.bin"
+        },
+        {
+          "path": "meshes/Textures/M2020_Rover_Texture.jpg",
+          "resource_key": "david-dorf/perseverance-ingenuity-urdfs@17b93151ff6028f4385a3ec2f1394d3deac6fa94:perseverance/meshes/Textures/M2020_Rover_Texture.jpg"
+        },
+        {
+          "path": "meshes/ContextImager_Cap.bin",
+          "resource_key": "david-dorf/perseverance-ingenuity-urdfs@17b93151ff6028f4385a3ec2f1394d3deac6fa94:perseverance/meshes/ContextImager_Cap.bin"
+        },
+        {
+          "path": "meshes/Textures/M2020_Rover_Texture.jpg",
+          "resource_key": "david-dorf/perseverance-ingenuity-urdfs@17b93151ff6028f4385a3ec2f1394d3deac6fa94:perseverance/meshes/Textures/M2020_Rover_Texture.jpg"
+        },
+        {
+          "path": "meshes/HGA_AZ.bin",
+          "resource_key": "david-dorf/perseverance-ingenuity-urdfs@17b93151ff6028f4385a3ec2f1394d3deac6fa94:perseverance/meshes/HGA_AZ.bin"
+        },
+        {
+          "path": "meshes/Textures/M2020_Rover_Texture.jpg",
+          "resource_key": "david-dorf/perseverance-ingenuity-urdfs@17b93151ff6028f4385a3ec2f1394d3deac6fa94:perseverance/meshes/Textures/M2020_Rover_Texture.jpg"
+        },
+        {
+          "path": "meshes/HGA_EL.bin",
+          "resource_key": "david-dorf/perseverance-ingenuity-urdfs@17b93151ff6028f4385a3ec2f1394d3deac6fa94:perseverance/meshes/HGA_EL.bin"
+        },
+        {
+          "path": "meshes/Textures/M2020_Rover_Texture.jpg",
+          "resource_key": "david-dorf/perseverance-ingenuity-urdfs@17b93151ff6028f4385a3ec2f1394d3deac6fa94:perseverance/meshes/Textures/M2020_Rover_Texture.jpg"
+        },
+        {
+          "path": "meshes/Left_Bogie.bin",
+          "resource_key": "david-dorf/perseverance-ingenuity-urdfs@17b93151ff6028f4385a3ec2f1394d3deac6fa94:perseverance/meshes/Left_Bogie.bin"
+        },
+        {
+          "path": "meshes/Textures/M2020_Rover_Texture.jpg",
+          "resource_key": "david-dorf/perseverance-ingenuity-urdfs@17b93151ff6028f4385a3ec2f1394d3deac6fa94:perseverance/meshes/Textures/M2020_Rover_Texture.jpg"
+        },
+        {
+          "path": "meshes/Left_Rocker.bin",
+          "resource_key": "david-dorf/perseverance-ingenuity-urdfs@17b93151ff6028f4385a3ec2f1394d3deac6fa94:perseverance/meshes/Left_Rocker.bin"
+        },
+        {
+          "path": "meshes/Textures/M2020_Rover_Texture.jpg",
+          "resource_key": "david-dorf/perseverance-ingenuity-urdfs@17b93151ff6028f4385a3ec2f1394d3deac6fa94:perseverance/meshes/Textures/M2020_Rover_Texture.jpg"
+        },
+        {
+          "path": "meshes/RSM.bin",
+          "resource_key": "david-dorf/perseverance-ingenuity-urdfs@17b93151ff6028f4385a3ec2f1394d3deac6fa94:perseverance/meshes/RSM.bin"
+        },
+        {
+          "path": "meshes/Textures/M2020_Rover_Texture.jpg",
+          "resource_key": "david-dorf/perseverance-ingenuity-urdfs@17b93151ff6028f4385a3ec2f1394d3deac6fa94:perseverance/meshes/Textures/M2020_Rover_Texture.jpg"
+        },
+        {
+          "path": "meshes/RSM_Head.bin",
+          "resource_key": "david-dorf/perseverance-ingenuity-urdfs@17b93151ff6028f4385a3ec2f1394d3deac6fa94:perseverance/meshes/RSM_Head.bin"
+        },
+        {
+          "path": "meshes/Textures/M2020_Rover_Texture.jpg",
+          "resource_key": "david-dorf/perseverance-ingenuity-urdfs@17b93151ff6028f4385a3ec2f1394d3deac6fa94:perseverance/meshes/Textures/M2020_Rover_Texture.jpg"
+        },
+        {
+          "path": "meshes/Right_Bogie.bin",
+          "resource_key": "david-dorf/perseverance-ingenuity-urdfs@17b93151ff6028f4385a3ec2f1394d3deac6fa94:perseverance/meshes/Right_Bogie.bin"
+        },
+        {
+          "path": "meshes/Textures/M2020_Rover_Texture.jpg",
+          "resource_key": "david-dorf/perseverance-ingenuity-urdfs@17b93151ff6028f4385a3ec2f1394d3deac6fa94:perseverance/meshes/Textures/M2020_Rover_Texture.jpg"
+        },
+        {
+          "path": "meshes/Right_Rocker.bin",
+          "resource_key": "david-dorf/perseverance-ingenuity-urdfs@17b93151ff6028f4385a3ec2f1394d3deac6fa94:perseverance/meshes/Right_Rocker.bin"
+        },
+        {
+          "path": "meshes/Textures/M2020_Rover_Texture.jpg",
+          "resource_key": "david-dorf/perseverance-ingenuity-urdfs@17b93151ff6028f4385a3ec2f1394d3deac6fa94:perseverance/meshes/Textures/M2020_Rover_Texture.jpg"
+        },
+        {
+          "path": "meshes/StabilizerFarInTurret.bin",
+          "resource_key": "david-dorf/perseverance-ingenuity-urdfs@17b93151ff6028f4385a3ec2f1394d3deac6fa94:perseverance/meshes/StabilizerFarInTurret.bin"
+        },
+        {
+          "path": "meshes/Textures/M2020_Rover_Texture.jpg",
+          "resource_key": "david-dorf/perseverance-ingenuity-urdfs@17b93151ff6028f4385a3ec2f1394d3deac6fa94:perseverance/meshes/Textures/M2020_Rover_Texture.jpg"
+        },
+        {
+          "path": "meshes/StabilizerNearInTurret.bin",
+          "resource_key": "david-dorf/perseverance-ingenuity-urdfs@17b93151ff6028f4385a3ec2f1394d3deac6fa94:perseverance/meshes/StabilizerNearInTurret.bin"
+        },
+        {
+          "path": "meshes/Textures/M2020_Rover_Texture.jpg",
+          "resource_key": "david-dorf/perseverance-ingenuity-urdfs@17b93151ff6028f4385a3ec2f1394d3deac6fa94:perseverance/meshes/Textures/M2020_Rover_Texture.jpg"
+        },
+        {
+          "path": "meshes/Steer_LeftFront.bin",
+          "resource_key": "david-dorf/perseverance-ingenuity-urdfs@17b93151ff6028f4385a3ec2f1394d3deac6fa94:perseverance/meshes/Steer_LeftFront.bin"
+        },
+        {
+          "path": "meshes/Textures/M2020_Rover_Texture.jpg",
+          "resource_key": "david-dorf/perseverance-ingenuity-urdfs@17b93151ff6028f4385a3ec2f1394d3deac6fa94:perseverance/meshes/Textures/M2020_Rover_Texture.jpg"
+        },
+        {
+          "path": "meshes/Steer_LeftRear.bin",
+          "resource_key": "david-dorf/perseverance-ingenuity-urdfs@17b93151ff6028f4385a3ec2f1394d3deac6fa94:perseverance/meshes/Steer_LeftRear.bin"
+        },
+        {
+          "path": "meshes/Textures/M2020_Rover_Texture.jpg",
+          "resource_key": "david-dorf/perseverance-ingenuity-urdfs@17b93151ff6028f4385a3ec2f1394d3deac6fa94:perseverance/meshes/Textures/M2020_Rover_Texture.jpg"
+        },
+        {
+          "path": "meshes/Steer_RightFront.bin",
+          "resource_key": "david-dorf/perseverance-ingenuity-urdfs@17b93151ff6028f4385a3ec2f1394d3deac6fa94:perseverance/meshes/Steer_RightFront.bin"
+        },
+        {
+          "path": "meshes/Textures/M2020_Rover_Texture.jpg",
+          "resource_key": "david-dorf/perseverance-ingenuity-urdfs@17b93151ff6028f4385a3ec2f1394d3deac6fa94:perseverance/meshes/Textures/M2020_Rover_Texture.jpg"
+        },
+        {
+          "path": "meshes/Steer_RightRear.bin",
+          "resource_key": "david-dorf/perseverance-ingenuity-urdfs@17b93151ff6028f4385a3ec2f1394d3deac6fa94:perseverance/meshes/Steer_RightRear.bin"
+        },
+        {
+          "path": "meshes/Textures/M2020_Rover_Texture.jpg",
+          "resource_key": "david-dorf/perseverance-ingenuity-urdfs@17b93151ff6028f4385a3ec2f1394d3deac6fa94:perseverance/meshes/Textures/M2020_Rover_Texture.jpg"
+        },
+        {
+          "path": "meshes/Turret.bin",
+          "resource_key": "david-dorf/perseverance-ingenuity-urdfs@17b93151ff6028f4385a3ec2f1394d3deac6fa94:perseverance/meshes/Turret.bin"
+        },
+        {
+          "path": "meshes/Textures/M2020_Rover_Texture.jpg",
+          "resource_key": "david-dorf/perseverance-ingenuity-urdfs@17b93151ff6028f4385a3ec2f1394d3deac6fa94:perseverance/meshes/Textures/M2020_Rover_Texture.jpg"
+        },
+        {
+          "path": "meshes/WATSON_Camera_Cap.bin",
+          "resource_key": "david-dorf/perseverance-ingenuity-urdfs@17b93151ff6028f4385a3ec2f1394d3deac6fa94:perseverance/meshes/WATSON_Camera_Cap.bin"
+        },
+        {
+          "path": "meshes/Textures/M2020_Rover_Texture.jpg",
+          "resource_key": "david-dorf/perseverance-ingenuity-urdfs@17b93151ff6028f4385a3ec2f1394d3deac6fa94:perseverance/meshes/Textures/M2020_Rover_Texture.jpg"
+        },
+        {
+          "path": "meshes/Wheel_LeftFront.bin",
+          "resource_key": "david-dorf/perseverance-ingenuity-urdfs@17b93151ff6028f4385a3ec2f1394d3deac6fa94:perseverance/meshes/Wheel_LeftFront.bin"
+        },
+        {
+          "path": "meshes/Textures/M2020_Rover_Texture.jpg",
+          "resource_key": "david-dorf/perseverance-ingenuity-urdfs@17b93151ff6028f4385a3ec2f1394d3deac6fa94:perseverance/meshes/Textures/M2020_Rover_Texture.jpg"
+        },
+        {
+          "path": "meshes/Wheel_LeftMiddle.bin",
+          "resource_key": "david-dorf/perseverance-ingenuity-urdfs@17b93151ff6028f4385a3ec2f1394d3deac6fa94:perseverance/meshes/Wheel_LeftMiddle.bin"
+        },
+        {
+          "path": "meshes/Textures/M2020_Rover_Texture.jpg",
+          "resource_key": "david-dorf/perseverance-ingenuity-urdfs@17b93151ff6028f4385a3ec2f1394d3deac6fa94:perseverance/meshes/Textures/M2020_Rover_Texture.jpg"
+        },
+        {
+          "path": "meshes/Wheel_LeftRear.bin",
+          "resource_key": "david-dorf/perseverance-ingenuity-urdfs@17b93151ff6028f4385a3ec2f1394d3deac6fa94:perseverance/meshes/Wheel_LeftRear.bin"
+        },
+        {
+          "path": "meshes/Textures/M2020_Rover_Texture.jpg",
+          "resource_key": "david-dorf/perseverance-ingenuity-urdfs@17b93151ff6028f4385a3ec2f1394d3deac6fa94:perseverance/meshes/Textures/M2020_Rover_Texture.jpg"
+        },
+        {
+          "path": "meshes/Wheel_RightFront.bin",
+          "resource_key": "david-dorf/perseverance-ingenuity-urdfs@17b93151ff6028f4385a3ec2f1394d3deac6fa94:perseverance/meshes/Wheel_RightFront.bin"
+        },
+        {
+          "path": "meshes/Textures/M2020_Rover_Texture.jpg",
+          "resource_key": "david-dorf/perseverance-ingenuity-urdfs@17b93151ff6028f4385a3ec2f1394d3deac6fa94:perseverance/meshes/Textures/M2020_Rover_Texture.jpg"
+        },
+        {
+          "path": "meshes/Wheel_RightMiddle.bin",
+          "resource_key": "david-dorf/perseverance-ingenuity-urdfs@17b93151ff6028f4385a3ec2f1394d3deac6fa94:perseverance/meshes/Wheel_RightMiddle.bin"
+        },
+        {
+          "path": "meshes/Textures/M2020_Rover_Texture.jpg",
+          "resource_key": "david-dorf/perseverance-ingenuity-urdfs@17b93151ff6028f4385a3ec2f1394d3deac6fa94:perseverance/meshes/Textures/M2020_Rover_Texture.jpg"
+        },
+        {
+          "path": "meshes/Wheel_RightRear.bin",
+          "resource_key": "david-dorf/perseverance-ingenuity-urdfs@17b93151ff6028f4385a3ec2f1394d3deac6fa94:perseverance/meshes/Wheel_RightRear.bin"
+        },
+        {
+          "path": "meshes/Textures/M2020_Rover_Texture.jpg",
+          "resource_key": "david-dorf/perseverance-ingenuity-urdfs@17b93151ff6028f4385a3ec2f1394d3deac6fa94:perseverance/meshes/Textures/M2020_Rover_Texture.jpg"
+        }
+      ]
+    },
+    {
+      "case_id": "ce6b9199c20174fd7416",
+      "entry_ids": [
+        76
+      ],
+      "status": "failed",
+      "error_type": "FileNotFoundError",
+      "error": "[Errno 2] No such file or directory: '/home/exuber/CODE/CORE/pythonProject1/AUTORESEARCH/fluxkernel/.demo/awesome-urdf/sources/ros-aldebaran--romeo_robot--e53c8f3d7057/romeo_description/urdf/romeo_generated_urdf/libgazebo_ros_camera.so'"
+    },
+    {
+      "case_id": "ce7d406d8bfdc0833517",
+      "entry_ids": [
+        83
+      ],
+      "status": "failed",
+      "error_type": "FileNotFoundError",
+      "error": "[Errno 2] No such file or directory: '/home/exuber/CODE/CORE/pythonProject1/AUTORESEARCH/fluxkernel/.demo/awesome-urdf/sources/robot-descriptions--halodi-robot-models--5d1d5eb3c15c/eve_r3_description/urdf/libgazebo_ros_camera.so'"
+    },
+    {
+      "case_id": "d2f30493ee5eac5243c8",
+      "entry_ids": [
+        83
+      ],
+      "status": "failed",
+      "error_type": "FileNotFoundError",
+      "error": "[Errno 2] No such file or directory: '/home/exuber/CODE/CORE/pythonProject1/AUTORESEARCH/fluxkernel/.demo/awesome-urdf/sources/robot-descriptions--halodi-robot-models--5d1d5eb3c15c/eve_r3_description/urdf/libgazebo_ros_camera.so'"
+    },
+    {
+      "case_id": "d3396759e4a7cf053bfc",
+      "entry_ids": [
+        4
+      ],
+      "status": "failed",
+      "error_type": "FileNotFoundError",
+      "error": "[Errno 2] No such file or directory: '/home/exuber/CODE/CORE/pythonProject1/AUTORESEARCH/fluxkernel/.demo/awesome-urdf/sources/RobotLocomotion--models--3bd1111011ea/iiwa_description/urdf/libgazebo_ros_control.so'"
+    },
+    {
+      "case_id": "d37355dcf804dea7575b",
+      "entry_ids": [
+        68
+      ],
+      "status": "failed",
+      "error_type": "ValueError",
+      "error": "Lossless case packages require relative asset paths"
+    },
+    {
+      "case_id": "d4f64e88fe03b442475e",
+      "entry_ids": [
+        75
+      ],
+      "status": "failed",
+      "error_type": "ValueError",
+      "error": "Lossless case packages require relative asset paths"
+    },
+    {
+      "case_id": "c7bd0e8d07187198c760",
+      "entry_ids": [
+        52
+      ],
+      "status": "passed",
+      "primary_roundtrip": true,
+      "urdf_bytes_equal": true,
+      "asset_bytes_equal": true,
+      "lean_source_equal": true,
+      "asset_count": 8,
+      "dependency_closure": "preserved",
+      "missing_dependencies": []
+    },
+    {
+      "case_id": "d564eda3bbc03365225b",
+      "entry_ids": [
+        47
+      ],
+      "status": "passed",
+      "primary_roundtrip": true,
+      "urdf_bytes_equal": true,
+      "asset_bytes_equal": true,
+      "lean_source_equal": true,
+      "asset_count": 13,
+      "dependency_closure": "preserved",
+      "missing_dependencies": []
+    },
+    {
+      "case_id": "d67ab51829943d4dc277",
+      "entry_ids": [
+        105
+      ],
+      "status": "failed",
+      "error_type": "FileNotFoundError",
+      "error": "[Errno 2] No such file or directory: '/home/exuber/CODE/CORE/pythonProject1/AUTORESEARCH/fluxkernel/.demo/awesome-urdf/sources/Gepetto--example-robot-data--6249cab1cdff/robots/hyq_description/robots/libgazebo_ros_bumper.so'"
+    },
+    {
+      "case_id": "d6bbec816ad1c4e891b6",
+      "entry_ids": [
+        63
+      ],
+      "status": "failed",
+      "error_type": "FileNotFoundError",
+      "error": "[Errno 2] No such file or directory: '/home/exuber/CODE/CORE/pythonProject1/AUTORESEARCH/fluxkernel/.demo/awesome-urdf/sources/unitreerobotics--unitree_ros--ccfc6fd8430a/robots/g1_description/inspire_hand/meshes/Link11_R.STL'"
+    },
+    {
+      "case_id": "d8ba39b180e62d0f6d23",
+      "entry_ids": [
+        83
+      ],
+      "status": "failed",
+      "error_type": "ValueError",
+      "error": "Lossless case packages require relative asset paths"
+    },
+    {
+      "case_id": "da8f9ef5c5da1b50a912",
+      "entry_ids": [
+        68
+      ],
+      "status": "failed",
+      "error_type": "ValueError",
+      "error": "Lossless case packages require relative asset paths"
+    },
+    {
+      "case_id": "ce07d8ae0905cf0138e3",
+      "entry_ids": [
+        63
+      ],
+      "status": "passed",
+      "primary_roundtrip": true,
+      "urdf_bytes_equal": true,
+      "asset_bytes_equal": true,
+      "lean_source_equal": true,
+      "asset_count": 26,
+      "dependency_closure": "preserved",
+      "missing_dependencies": []
+    },
+    {
+      "case_id": "dc2dd8709addb4d07141",
+      "entry_ids": [
+        35
+      ],
+      "status": "failed",
+      "error_type": "ValueError",
+      "error": "Lossless case packages require relative asset paths"
+    },
+    {
+      "case_id": "dc7933f3c677270715e5",
+      "entry_ids": [
+        73
+      ],
+      "status": "failed",
+      "error_type": "FileNotFoundError",
+      "error": "[Errno 2] No such file or directory: '/home/exuber/CODE/CORE/pythonProject1/AUTORESEARCH/fluxkernel/.demo/awesome-urdf/sources/ros-naoqi--nao_robot--67476469a137/nao_description/urdf/naoV50_generated_urdf/libgazebo_ros_bumper.so'"
+    },
+    {
+      "case_id": "d6535b1c0bafc58e8e46",
+      "entry_ids": [
+        83
+      ],
+      "status": "passed",
+      "primary_roundtrip": true,
+      "urdf_bytes_equal": true,
+      "asset_bytes_equal": true,
+      "lean_source_equal": true,
+      "asset_count": 0,
+      "dependency_closure": "preserved",
+      "missing_dependencies": []
+    },
+    {
+      "case_id": "de618a11195d5464c131",
+      "entry_ids": [
+        81
+      ],
+      "status": "failed",
+      "error_type": "FileNotFoundError",
+      "error": "[Errno 2] No such file or directory: '/home/exuber/CODE/CORE/pythonProject1/AUTORESEARCH/fluxkernel/.demo/awesome-urdf/sources/gkjohnson--nasa-urdf-robots--1f89ecba9112/val_description/model/robots/libSRCMultiSenseSLPlugin.so'"
+    },
+    {
+      "case_id": "dea7d361f7c8b14d460e",
+      "entry_ids": [
+        7
+      ],
+      "status": "failed",
+      "error_type": "ValueError",
+      "error": "Lossless case packages require relative asset paths"
+    },
+    {
+      "case_id": "df3a76dd83bd1f17bde6",
+      "entry_ids": [
+        92
+      ],
+      "status": "failed",
+      "error_type": "FileNotFoundError",
+      "error": "[Errno 2] No such file or directory: '/home/exuber/CODE/CORE/pythonProject1/AUTORESEARCH/fluxkernel/.demo/awesome-urdf/sources/Gepetto--example-robot-data--6249cab1cdff/robots/tiago_description/robots/libgazebo_ros_control.so'"
+    },
+    {
+      "case_id": "df5ada8905978789d842",
+      "entry_ids": [
+        83
+      ],
+      "status": "failed",
+      "error_type": "FileNotFoundError",
+      "error": "[Errno 2] No such file or directory: '/home/exuber/CODE/CORE/pythonProject1/AUTORESEARCH/fluxkernel/.demo/awesome-urdf/sources/robot-descriptions--halodi-robot-models--5d1d5eb3c15c/eve_r3_description/urdf/libgazebo_ros_camera.so'"
+    },
+    {
+      "case_id": "dfc6596c05c2b6ecdc31",
+      "entry_ids": [
+        81
+      ],
+      "status": "failed",
+      "error_type": "FileNotFoundError",
+      "error": "[Errno 2] No such file or directory: '/home/exuber/CODE/CORE/pythonProject1/AUTORESEARCH/fluxkernel/.demo/awesome-urdf/sources/gkjohnson--nasa-urdf-robots--1f89ecba9112/val_description/model/robots/libgazebo_ros_imu.so'"
+    },
+    {
+      "case_id": "e04d7f22b05a23205ee1",
+      "entry_ids": [
+        107
+      ],
+      "status": "failed",
+      "error_type": "FileNotFoundError",
+      "error": "[Errno 2] No such file or directory: '/home/exuber/CODE/CORE/pythonProject1/AUTORESEARCH/fluxkernel/.demo/awesome-urdf/sources/Derek-TH-Wang--mini_cheetah_urdf--1988bceb26e8/urdf/meshes/mini_abad.obj'"
+    },
+    {
+      "case_id": "e059353a2f85899104ff",
+      "entry_ids": [
+        104
+      ],
+      "status": "failed",
+      "error_type": "ValueError",
+      "error": "Lossless case packages require relative asset paths"
+    },
+    {
+      "case_id": "e0ff2c40f4458f5dc4cc",
+      "entry_ids": [
+        107
+      ],
+      "status": "failed",
+      "error_type": "ValueError",
+      "error": "Lossless case packages require relative asset paths"
+    },
+    {
+      "case_id": "d18c9fd8bbe7d610b9b2",
+      "entry_ids": [
+        63
+      ],
+      "status": "passed",
+      "primary_roundtrip": true,
+      "urdf_bytes_equal": true,
+      "asset_bytes_equal": true,
+      "lean_source_equal": true,
+      "asset_count": 27,
+      "dependency_closure": "preserved",
+      "missing_dependencies": []
+    },
+    {
+      "case_id": "daf9ce6443351ec69efd",
+      "entry_ids": [
+        83
+      ],
+      "status": "passed",
+      "primary_roundtrip": true,
+      "urdf_bytes_equal": true,
+      "asset_bytes_equal": true,
+      "lean_source_equal": true,
+      "asset_count": 0,
+      "dependency_closure": "preserved",
+      "missing_dependencies": []
+    },
+    {
+      "case_id": "e2a2e108363fa914d550",
+      "entry_ids": [
+        68
+      ],
+      "status": "failed",
+      "error_type": "ValueError",
+      "error": "Lossless case packages require relative asset paths"
+    },
+    {
+      "case_id": "e30d143ea11e5985d9bd",
+      "entry_ids": [
+        37
+      ],
+      "status": "failed",
+      "error_type": "FileNotFoundError",
+      "error": "[Errno 2] No such file or directory: '/home/exuber/CODE/CORE/pythonProject1/AUTORESEARCH/fluxkernel/.demo/awesome-urdf/sources/tork-a--rtmros_nextage--5fe35ea32825/nextage_description/urdf/$(find nextage_description)/urdf/materials.urdf.xacro'"
+    },
+    {
+      "case_id": "e334eb86d83f6767af63",
+      "entry_ids": [
+        60
+      ],
+      "status": "failed",
+      "error_type": "ValueError",
+      "error": "Lossless case packages require relative asset paths"
+    },
+    {
+      "case_id": "e3cdff697169ffc75188",
+      "entry_ids": [
+        75
+      ],
+      "status": "failed",
+      "error_type": "ValueError",
+      "error": "Lossless case packages require relative asset paths"
+    },
+    {
+      "case_id": "dcfef537fada60f52da3",
+      "entry_ids": [
+        77
+      ],
+      "status": "passed",
+      "primary_roundtrip": true,
+      "urdf_bytes_equal": true,
+      "asset_bytes_equal": true,
+      "lean_source_equal": true,
+      "asset_count": 0,
+      "dependency_closure": "preserved",
+      "missing_dependencies": []
+    },
+    {
+      "case_id": "e5991b2438b7c2160992",
+      "entry_ids": [
+        44
+      ],
+      "status": "failed",
+      "error_type": "ValueError",
+      "error": "Lossless case packages require relative asset paths"
+    },
+    {
+      "case_id": "e639ee9c86648567ca8b",
+      "entry_ids": [
+        83
+      ],
+      "status": "failed",
+      "error_type": "ValueError",
+      "error": "Lossless case packages require relative asset paths"
+    },
+    {
+      "case_id": "e6d503197eee4198869b",
+      "entry_ids": [
+        3
+      ],
+      "status": "failed",
+      "error_type": "ValueError",
+      "error": "Lossless case packages require relative asset paths"
+    },
+    {
+      "case_id": "e830f4064003fb5a4c48",
+      "entry_ids": [
+        62
+      ],
+      "status": "failed",
+      "error_type": "FileNotFoundError",
+      "error": "[Errno 2] No such file or directory: '/home/exuber/CODE/CORE/pythonProject1/AUTORESEARCH/fluxkernel/.demo/awesome-urdf/sources/icub-tech-iit--ergocub-software--bc9865a5adb7/urdf/ergoCub/robots/ergoCubGazeboSN001/gz-sim-yarp-controlboard-system'"
+    },
+    {
+      "case_id": "ead7684473e97654f072",
+      "entry_ids": [
+        68
+      ],
+      "status": "failed",
+      "error_type": "FileNotFoundError",
+      "error": "[Errno 2] No such file or directory: '/home/exuber/CODE/CORE/pythonProject1/AUTORESEARCH/fluxkernel/.demo/awesome-urdf/sources/robotology--icub-models--dca8c618c264/iCub/robots/iCubDarmstadt01/gz-sim-forcetorque-system'"
+    },
+    {
+      "case_id": "ec146089bdb3c07bfb10",
+      "entry_ids": [
+        83
+      ],
+      "status": "failed",
+      "error_type": "ValueError",
+      "error": "Lossless case packages require relative asset paths"
+    },
+    {
+      "case_id": "ec4db2469b03e1b5275b",
+      "entry_ids": [
+        62
+      ],
+      "status": "failed",
+      "error_type": "FileNotFoundError",
+      "error": "[Errno 2] No such file or directory: '/home/exuber/CODE/CORE/pythonProject1/AUTORESEARCH/fluxkernel/.demo/awesome-urdf/sources/icub-tech-iit--ergocub-software--bc9865a5adb7/urdf/ergoCub/robots/ergoCubGazeboV1_1/gz-sim-yarp-controlboard-system'"
+    },
+    {
+      "case_id": "edbb3f148575988d0d44",
+      "entry_ids": [
+        75
+      ],
+      "status": "failed",
+      "error_type": "ValueError",
+      "error": "Lossless case packages require relative asset paths"
+    },
+    {
+      "case_id": "e235532afa2ee88cd029",
+      "entry_ids": [
+        63
+      ],
+      "status": "passed",
+      "primary_roundtrip": true,
+      "urdf_bytes_equal": true,
+      "asset_bytes_equal": true,
+      "lean_source_equal": true,
+      "asset_count": 34,
+      "dependency_closure": "preserved",
+      "missing_dependencies": []
+    },
+    {
+      "case_id": "f15a2c85534744539bf2",
+      "entry_ids": [
+        62
+      ],
+      "status": "failed",
+      "error_type": "FileNotFoundError",
+      "error": "[Errno 2] No such file or directory: '/home/exuber/CODE/CORE/pythonProject1/AUTORESEARCH/fluxkernel/.demo/awesome-urdf/sources/icub-tech-iit--ergocub-software--bc9865a5adb7/urdf/ergoCub/robots/ergoCubSN003/gz-sim-yarp-controlboard-system'"
+    },
+    {
+      "case_id": "f34d8a3e11f5853b980d",
+      "entry_ids": [
+        112
+      ],
+      "status": "failed",
+      "error_type": "FileNotFoundError",
+      "error": "[Errno 2] No such file or directory: '/home/exuber/CODE/CORE/pythonProject1/AUTORESEARCH/fluxkernel/.demo/awesome-urdf/sources/limxdynamics--robot-description--5b97add1f3b4/wheellegged/WL_P311D/urdf/libgazebo_ros_p3d.so'"
+    },
+    {
+      "case_id": "f3501ecbb40fee19415e",
+      "entry_ids": [
+        83
+      ],
+      "status": "failed",
+      "error_type": "ValueError",
+      "error": "Lossless case packages require relative asset paths"
+    },
+    {
+      "case_id": "f3fc31176398c59d56d1",
+      "entry_ids": [
+        75
+      ],
+      "status": "failed",
+      "error_type": "ValueError",
+      "error": "Lossless case packages require relative asset paths"
+    },
+    {
+      "case_id": "e266564116c12af4efdd",
+      "entry_ids": [
+        63
+      ],
+      "status": "passed",
+      "primary_roundtrip": true,
+      "urdf_bytes_equal": true,
+      "asset_bytes_equal": true,
+      "lean_source_equal": true,
+      "asset_count": 35,
+      "dependency_closure": "preserved",
+      "missing_dependencies": []
+    },
+    {
+      "case_id": "f438e5b659f5abbd5b98",
+      "entry_ids": [
+        68
+      ],
+      "status": "failed",
+      "error_type": "FileNotFoundError",
+      "error": "[Errno 2] No such file or directory: '/home/exuber/CODE/CORE/pythonProject1/AUTORESEARCH/fluxkernel/.demo/awesome-urdf/sources/robotology--icub-models--dca8c618c264/iCub/robots/iCubGenova01/gz-sim-forcetorque-system'"
+    },
+    {
+      "case_id": "f64305f0243383756ad8",
+      "entry_ids": [
+        78
+      ],
+      "status": "failed",
+      "error_type": "FileNotFoundError",
+      "error": "[Errno 2] No such file or directory: '/home/exuber/CODE/CORE/pythonProject1/AUTORESEARCH/fluxkernel/.demo/awesome-urdf/sources/stack-of-tasks--talos-data--dc636c94d307/urdf/libgazebo_ros_camera.so'"
+    },
+    {
+      "case_id": "f71d404c4708a75486e3",
+      "entry_ids": [
+        62
+      ],
+      "status": "failed",
+      "error_type": "FileNotFoundError",
+      "error": "[Errno 2] No such file or directory: '/home/exuber/CODE/CORE/pythonProject1/AUTORESEARCH/fluxkernel/.demo/awesome-urdf/sources/icub-tech-iit--ergocub-software--bc9865a5adb7/urdf/ergoCub/robots/ergoCubGazeboV1/gz-sim-yarp-controlboard-system'"
+    },
+    {
+      "case_id": "f8070cc4f46726d78bda",
+      "entry_ids": [
+        65
+      ],
+      "status": "failed",
+      "error_type": "ValueError",
+      "error": "Unsafe relative path"
+    },
+    {
+      "case_id": "f424f4418a0d822d0501",
+      "entry_ids": [
+        40
+      ],
+      "status": "passed",
+      "primary_roundtrip": true,
+      "urdf_bytes_equal": true,
+      "asset_bytes_equal": true,
+      "lean_source_equal": true,
+      "asset_count": 0,
+      "dependency_closure": "preserved",
+      "missing_dependencies": []
+    },
+    {
+      "case_id": "f12551654c13b919263e",
+      "entry_ids": [
+        63
+      ],
+      "status": "passed",
+      "primary_roundtrip": true,
+      "urdf_bytes_equal": true,
+      "asset_bytes_equal": true,
+      "lean_source_equal": true,
+      "asset_count": 35,
+      "dependency_closure": "preserved",
+      "missing_dependencies": []
+    },
+    {
+      "case_id": "f989089a161d5417bd39",
+      "entry_ids": [
+        9
+      ],
+      "status": "failed",
+      "error_type": "ValueError",
+      "error": "Lossless case packages require relative asset paths"
+    },
+    {
+      "case_id": "f865e32c83a9c81108e1",
+      "entry_ids": [
+        61
+      ],
+      "status": "passed",
+      "primary_roundtrip": true,
+      "urdf_bytes_equal": true,
+      "asset_bytes_equal": true,
+      "lean_source_equal": true,
+      "asset_count": 27,
+      "dependency_closure": "preserved",
+      "missing_dependencies": []
+    },
+    {
+      "case_id": "fcc237d0aeabc4e0c3b5",
+      "entry_ids": [
+        10
+      ],
+      "status": "failed",
+      "error_type": "ValueError",
+      "error": "Lossless case packages require relative asset paths"
+    },
+    {
+      "case_id": "fdb55d4d1bd38bd6c723",
+      "entry_ids": [
+        78
+      ],
+      "status": "failed",
+      "error_type": "FileNotFoundError",
+      "error": "[Errno 2] No such file or directory: '/home/exuber/CODE/CORE/pythonProject1/AUTORESEARCH/fluxkernel/.demo/awesome-urdf/sources/stack-of-tasks--talos-data--dc636c94d307/urdf/libgazebo_ros_camera.so'"
+    },
+    {
+      "case_id": "fdf50d9831cfd15eb49e",
+      "entry_ids": [
+        72
+      ],
+      "status": "failed",
+      "error_type": "ValueError",
+      "error": "Unsafe relative path"
+    },
+    {
+      "case_id": "fe21276429045134f427",
+      "entry_ids": [
+        8
+      ],
+      "status": "failed",
+      "error_type": "ValueError",
+      "error": "Lossless case packages require relative asset paths"
+    },
+    {
+      "case_id": "ff60cb44d1b21dfd2e6c",
+      "entry_ids": [
+        98
+      ],
+      "status": "failed",
+      "error_type": "ValueError",
+      "error": "Lossless case packages require relative asset paths"
+    },
+    {
+      "case_id": "ff6ce723d048f747ecb5",
+      "entry_ids": [
+        24
+      ],
+      "status": "failed",
+      "error_type": "FileNotFoundError",
+      "error": "[Errno 2] No such file or directory: '/home/exuber/CODE/CORE/pythonProject1/AUTORESEARCH/fluxkernel/.demo/awesome-urdf/sources/limxdynamics--tron1-robot-description--5b97add1f3b4/pointfoot/SF_TRON1A/urdf/libgazebo_ros_p3d.so'"
+    },
+    {
+      "case_id": "ffb29153b1b072440c06",
+      "entry_ids": [
+        92
+      ],
+      "status": "failed",
+      "error_type": "FileNotFoundError",
+      "error": "[Errno 2] No such file or directory: '/home/exuber/CODE/CORE/pythonProject1/AUTORESEARCH/fluxkernel/.demo/awesome-urdf/sources/Gepetto--example-robot-data--6249cab1cdff/robots/tiago_description/robots/libgazebo_ros_control.so'"
+    },
+    {
+      "case_id": "fffbb3eebfd09c634128",
+      "entry_ids": [
+        110
+      ],
+      "status": "failed",
+      "error_type": "ValueError",
+      "error": "Lossless case packages require relative asset paths"
+    },
+    {
+      "case_id": "f94e0ecf99dd71385106",
+      "entry_ids": [
+        107
+      ],
+      "status": "failed",
+      "primary_roundtrip": true,
+      "urdf_bytes_equal": true,
+      "asset_bytes_equal": true,
+      "lean_source_equal": true,
+      "asset_count": 14,
+      "dependency_closure": "omitted_by_export",
+      "missing_dependencies": [
+        {
+          "path": "chassis.mtl",
+          "resource_key": "Derek-TH-Wang/mini_cheetah_urdf@1988bceb26e81f28594a16e7d5e6abe5cbb27ace:urdf/chassis.mtl"
+        },
+        {
+          "path": "laikago_tex.jpg",
+          "resource_key": "Derek-TH-Wang/mini_cheetah_urdf@1988bceb26e81f28594a16e7d5e6abe5cbb27ace:urdf/laikago_tex.jpg"
+        },
+        {
+          "path": "hip_motor.mtl",
+          "resource_key": "Derek-TH-Wang/mini_cheetah_urdf@1988bceb26e81f28594a16e7d5e6abe5cbb27ace:urdf/hip_motor.mtl"
+        },
+        {
+          "path": "laikago_tex.jpg",
+          "resource_key": "Derek-TH-Wang/mini_cheetah_urdf@1988bceb26e81f28594a16e7d5e6abe5cbb27ace:urdf/laikago_tex.jpg"
+        },
+        {
+          "path": "hip_motor_mirror.mtl",
+          "resource_key": "Derek-TH-Wang/mini_cheetah_urdf@1988bceb26e81f28594a16e7d5e6abe5cbb27ace:urdf/hip_motor_mirror.mtl"
+        },
+        {
+          "path": "laikago_tex.jpg",
+          "resource_key": "Derek-TH-Wang/mini_cheetah_urdf@1988bceb26e81f28594a16e7d5e6abe5cbb27ace:urdf/laikago_tex.jpg"
+        },
+        {
+          "path": "lower_leg3.mtl",
+          "resource_key": "Derek-TH-Wang/mini_cheetah_urdf@1988bceb26e81f28594a16e7d5e6abe5cbb27ace:urdf/lower_leg3.mtl"
+        },
+        {
+          "path": "laikago_tex.jpg",
+          "resource_key": "Derek-TH-Wang/mini_cheetah_urdf@1988bceb26e81f28594a16e7d5e6abe5cbb27ace:urdf/laikago_tex.jpg"
+        },
+        {
+          "path": "upper_leg_left.mtl",
+          "resource_key": "Derek-TH-Wang/mini_cheetah_urdf@1988bceb26e81f28594a16e7d5e6abe5cbb27ace:urdf/upper_leg_left.mtl"
+        },
+        {
+          "path": "laikago_tex.jpg",
+          "resource_key": "Derek-TH-Wang/mini_cheetah_urdf@1988bceb26e81f28594a16e7d5e6abe5cbb27ace:urdf/laikago_tex.jpg"
+        },
+        {
+          "path": "upper_leg_left2.mtl",
+          "resource_key": "Derek-TH-Wang/mini_cheetah_urdf@1988bceb26e81f28594a16e7d5e6abe5cbb27ace:urdf/upper_leg_left2.mtl"
+        },
+        {
+          "path": "laikago_tex.jpg",
+          "resource_key": "Derek-TH-Wang/mini_cheetah_urdf@1988bceb26e81f28594a16e7d5e6abe5cbb27ace:urdf/laikago_tex.jpg"
+        },
+        {
+          "path": "upper_leg_mirror.mtl",
+          "resource_key": "Derek-TH-Wang/mini_cheetah_urdf@1988bceb26e81f28594a16e7d5e6abe5cbb27ace:urdf/upper_leg_mirror.mtl"
+        },
+        {
+          "path": "laikago_tex.jpg",
+          "resource_key": "Derek-TH-Wang/mini_cheetah_urdf@1988bceb26e81f28594a16e7d5e6abe5cbb27ace:urdf/laikago_tex.jpg"
+        },
+        {
+          "path": "upper_leg_mirror2.mtl",
+          "resource_key": "Derek-TH-Wang/mini_cheetah_urdf@1988bceb26e81f28594a16e7d5e6abe5cbb27ace:urdf/upper_leg_mirror2.mtl"
+        },
+        {
+          "path": "laikago_tex.jpg",
+          "resource_key": "Derek-TH-Wang/mini_cheetah_urdf@1988bceb26e81f28594a16e7d5e6abe5cbb27ace:urdf/laikago_tex.jpg"
+        }
+      ]
+    },
+    {
+      "case_id": "e4237b979765073cd3e5",
+      "entry_ids": [
+        63
+      ],
+      "status": "passed",
+      "primary_roundtrip": true,
+      "urdf_bytes_equal": true,
+      "asset_bytes_equal": true,
+      "lean_source_equal": true,
+      "asset_count": 93,
+      "dependency_closure": "preserved",
+      "missing_dependencies": []
+    },
+    {
+      "case_id": "fa2d2ba17cbdf5a66ca7",
+      "entry_ids": [
+        63
+      ],
+      "status": "passed",
+      "primary_roundtrip": true,
+      "urdf_bytes_equal": true,
+      "asset_bytes_equal": true,
+      "lean_source_equal": true,
+      "asset_count": 36,
+      "dependency_closure": "preserved",
+      "missing_dependencies": []
+    }
+  ],
+  "completed": true,
+  "total": 297,
+  "passed": 56,
+  "primary_passed": 62
+}

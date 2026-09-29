@@ -1,0 +1,1 @@
+{"wheel": "fluxkernel-0.12.1-py3-none-any.whl", "isolated_install": true, "native_robot": "passed", "core_workflow": "passed", "accessory_cad_fixture": "not requested", "studio_and_independent_lean": "not requested", "mcp_stdio_workflow": "not requested"}

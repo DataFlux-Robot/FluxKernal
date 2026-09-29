@@ -1,0 +1,13 @@
+{"network_policy": "seccomp-deny-sockets", "probe": "EPERM"}
+package checked 25 / 297
+package checked 50 / 297
+package checked 75 / 297
+package checked 100 / 297
+package checked 125 / 297
+package checked 150 / 297
+package checked 175 / 297
+package checked 200 / 297
+package checked 225 / 297
+package checked 250 / 297
+package checked 275 / 297
+Complete package passed 62 / 297 primary bytes passed 62

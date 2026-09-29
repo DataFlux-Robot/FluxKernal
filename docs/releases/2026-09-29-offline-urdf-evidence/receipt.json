@@ -1,0 +1,34 @@
+{
+  "wheel": "fluxkernel-0.12.1-py3-none-any.whl",
+  "wheel_sha256": "b0b6cb6065eb50ac41f06633140df1fd69ab8e77b511fb1ffc03eaf1efb70f1e",
+  "modules": {
+    "fluxkernel/robotics/lean_document.py": "d7225800e61894a4e661ced8a4d51226b7b6e2682fff41cbf5e628afc9bda02f",
+    "fluxkernel/robotics/lean_runtime.py": "9b7f30cf0f7e7de8782cc6aecde4cc5211aa23f7a163784abc1c35520b39713b",
+    "fluxkernel/robotics/urdf_assets.py": "d9f3a2696d3f962fc4cb8eb9b69d0177416d81e95ce58e622590509e15246947",
+    "formal/FluxKernel/UrdfDocument.lean": "241193d84964ff5bab5bc1694a91a0ab1668c93aa4f10cbff415c7b7542706fe",
+    "lean-toolchain": "d5edba4e4b8faad9c1baeadb265716d20d03be4d1a2647dc5e35b0c0325bea7b"
+  },
+  "wheel_modules_match": true,
+  "report_modules_match": true,
+  "network_enforcement": "Linux libseccomp inherited by child processes",
+  "socket_probe_denied": true,
+  "native_traced_network_syscalls": 1,
+  "native_conversion_network_syscalls": 0,
+  "tests_passed": 328,
+  "native_cases_passed": 4,
+  "catalog_document_passed": 295,
+  "catalog_package_passed": 62,
+  "catalog_total": 297,
+  "model_calls": 0,
+  "artifacts": {
+    "documents.json": "9ed780c2fc9682913ea952a7509f2ccdcad5cdcd9983e8002ac7eddb59d4d21a",
+    "documents.txt": "c74e5a02fef7d0e72f28f84618c2cb89f7f6319075947163040b58a8db566cd4",
+    "native.json": "5b2a4ccbd4d4b902e7e7a1cad0f0b62f6ab5ed36bd3ceb560d01204cf62b3e59",
+    "native.txt": "2886efb5359457752cd2857eb6ae74dcccc9ab122833fe906d13f7cfd04ce51d",
+    "network.trace": "09c4f939ec3c1aee6d3b91edab5a1d187376c05b0f9ce9b2c4fc6f27fbdde942",
+    "packages.json": "54f7dc1e6cc605e83117aa3dd494bdfb041e390ccd7b05608d6a6ca2e2bdc333",
+    "packages.txt": "60f098cca82fb5a126881f3d6cdb1bd301966226d681bb9e4e332abf62ff4c79",
+    "tests.txt": "8c60a14ec0afeb2493d5b716ed237e46fffd9fee97d9485da4c974812037d8c1",
+    "wheel.txt": "0d076f06e7e321feb1e89487af65dd8f2f53bdc1b42b02298fba163164a52e70"
+  }
+}

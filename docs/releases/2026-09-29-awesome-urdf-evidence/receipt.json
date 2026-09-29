@@ -1,0 +1,16 @@
+{
+  "wheel": "fluxkernel-0.12.1-py3-none-any.whl",
+  "wheel_sha256": "5d6f502903e524637aef1d1f07c608d2d701e387666061fefa49e712747ac062",
+  "modules": {
+    "fluxkernel/robotics/lean_document.py": "cd2c26dc278200ab4778f36700128c8be37f42ede955cc395cf943bc4ec57a7e",
+    "fluxkernel/robotics/urdf_assets.py": "d9f3a2696d3f962fc4cb8eb9b69d0177416d81e95ce58e622590509e15246947",
+    "formal/FluxKernel/UrdfDocument.lean": "241193d84964ff5bab5bc1694a91a0ab1668c93aa4f10cbff415c7b7542706fe"
+  },
+  "document_module_matches": true,
+  "package_module_matches": true,
+  "upstream_code_executed": false,
+  "model_calls": 0,
+  "case_count": 297,
+  "catalog_entries": 114,
+  "repositories": 75
+}

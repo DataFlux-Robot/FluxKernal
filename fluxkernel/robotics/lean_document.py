@@ -9,13 +9,16 @@ Arbitrary Lean programs and package build scripts are never executed.
 
 import hashlib
 import json
+import os
 from pathlib import Path
 import re
 import shutil
 import subprocess
 import tempfile
+from xml.parsers import expat
 
-from ..runtime import assets_root, copy_proof_project
+from ..runtime import assets_root
+from .lean_runtime import lean_binary
 from .sources import safe
 from .urdf_import import xml_root
 
@@ -34,24 +37,41 @@ def sha(raw):
 
 
 def tree(raw):
-    def node(e, depth=0):
-        if depth > 128:
-            raise ValueError("XML tree depth exceeds 128")
-        # Namespace expansion cannot be serialized as a literal XML tag name.
-        if not re.fullmatch(r"[A-Za-z_][A-Za-z_0-9.-]*", e.tag) or any(
-            not re.fullmatch(r"[A-Za-z_][A-Za-z_0-9.-]*", k) for k in e.attrib
-        ):
-            raise ValueError("Namespaced XML is outside the lossless case adapter")
-        children = []
-        if e.text:
-            children.append(e.text)
-        for child in e:
-            children.append(node(child, depth + 1))
-            if child.tail:
-                children.append(child.tail)
-        return [e.tag, list(map(list, e.attrib.items())), children]
+    # First validate namespace well-formedness and the existing XML safety bounds.
+    xml_root(raw)
+    # Expat without namespace expansion preserves prefixes and xmlns declarations.
+    # ElementTree's {URI}name expansion is not a serializable XML tag name.
+    parser = expat.ParserCreate()
+    parser.ordered_attributes = True
+    parser.buffer_text = True
+    stack = []
+    root = None
 
-    return node(xml_root(raw))
+    def start(name, attrs):
+        nonlocal root
+        if len(stack) > 128:
+            raise ValueError("XML tree depth exceeds 128")
+        n = [name, [attrs[i : i + 2] for i in range(0, len(attrs), 2)], []]
+        if stack:
+            stack[-1][2].append(n)
+        else:
+            root = n
+        stack.append(n)
+
+    def text(value):
+        if not stack or not value:
+            return
+        children = stack[-1][2]
+        if children and isinstance(children[-1], str):
+            children[-1] += value
+        else:
+            children.append(value)
+
+    parser.StartElementHandler = start
+    parser.EndElementHandler = lambda _: stack.pop()
+    parser.CharacterDataHandler = text
+    parser.Parse(raw, True)
+    return root
 
 
 def quote(s):
@@ -110,12 +130,12 @@ class Reader:
     def string(self):
         self.ws()
         try:
-            s, length = json.JSONDecoder().raw_decode(self.text[self.i :])
+            s, end = json.JSONDecoder().raw_decode(self.text, self.i)
         except ValueError as exc:
             raise ValueError("Invalid Lean string") from exc
         if not isinstance(s, str):
             raise ValueError("Expected a string literal")
-        self.i += length
+        self.i = end
         return s
 
     def items(self, parse):
@@ -187,27 +207,35 @@ def load(root):
 
 def render_lean(text):
     # Only installed project files and a locally regenerated data-only term run.
+    binary = str(lean_binary())
     with tempfile.TemporaryDirectory(prefix="fk-lean-document-") as tmp:
         root = Path(tmp)
-        copy_proof_project(root)
-        target = root / MODULE
+        target = root / "FluxKernel/UrdfDocument.lean"
         target.parent.mkdir(parents=True, exist_ok=True)
         target.write_bytes((assets_root() / MODULE).read_bytes())
         (root / "Robot.lean").write_text(text)
+        env = {**os.environ, "LEAN_PATH": str(root)}
         built = subprocess.run(
-            ["lake", "build", "FluxKernel.UrdfDocument"],
+            [
+                binary,
+                "-o",
+                "FluxKernel/UrdfDocument.olean",
+                "FluxKernel/UrdfDocument.lean",
+            ],
             cwd=root,
+            env=env,
             capture_output=True,
             timeout=120,
         )
         if built.returncode:
             raise ValueError(
                 "Lean document build failed: "
-                + built.stderr.decode(errors="replace")[-2000:]
+                + (built.stdout + built.stderr).decode(errors="replace")[-2000:]
             )
         run = subprocess.run(
-            ["lake", "env", "lean", "--run", "Robot.lean"],
+            [binary, "--run", "Robot.lean"],
             cwd=root,
+            env=env,
             capture_output=True,
             timeout=120,
         )
@@ -230,17 +258,9 @@ def to_lean(input_path, output):
         path = bundle / "robot.urdf"
     raw = path.read_bytes()
     n = tree(raw)
-    assets = []
-    for name in sorted(
-        {e.get("filename") for e in xml_root(raw).iter() if e.get("filename")}
-    ):
-        # No URI rewrite, mesh rescaling or OBJ/STL conversion in this path.
-        if ":" in name:
-            raise ValueError("Lossless case packages require relative asset paths")
-        asset = safe(path.parent, name)
-        if asset.stat().st_size > 64 * 1024 * 1024:
-            raise ValueError("Asset exceeds 64 MiB")
-        assets.append([name, sha(asset.read_bytes())])
+    from .urdf_assets import records
+
+    assets = records(raw, path.parent)
     native = []
     if bundle:
         files = json.loads((bundle / "manifest.json").read_text())
@@ -303,8 +323,9 @@ def from_lean(package, output):
             raise ValueError("Stale lexical URDF snapshot; it differs from Lean")
         raw = original
     # Require all referenced files in the Lean resource table, not just a folder.
-    referenced = {e.get("filename") for e in xml_root(raw).iter() if e.get("filename")}
-    if referenced != {name for name, _ in assets}:
+    from .urdf_assets import records
+
+    if records(raw, package / "assets") != assets:
         raise ValueError("Lean asset inventory differs from XML references")
     if native:
         verify(package / "native")

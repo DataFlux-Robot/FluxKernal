@@ -19,6 +19,7 @@ def main():
     parser.add_argument('--studio', action='store_true')
     parser.add_argument('--agent', action='store_true', help='Also exercise a real MCP stdio client; implies --studio')
     parser.add_argument('--robot', action='store_true', help='Exercise native robot IR and projections from the installed wheel')
+    parser.add_argument('--offline', action='store_true', help='Linux: allow online installation, then deny network in every runtime check with libseccomp')
     parser.add_argument('--personalize', action='store_true', help='Exercise finite accessory CAD and native attachment; implies --robot, no model calls')
     args = parser.parse_args()
     args.robot = args.robot or args.personalize
@@ -40,7 +41,10 @@ def main():
         extras = (['demo','agent'] if args.agent else ['demo'] if args.studio else []) + (['robot'] if args.robot else [])
         if args.personalize: extras.append('personalize')
         spec = str(wheel) + ('['+','.join(extras)+']' if extras else '')
+        installed_runtime = False
         def run(command):
+            if args.offline and installed_runtime:
+                command = [python, Path(__file__).resolve().with_name('without_network.py'), *command]
             p = subprocess.run([str(x) for x in command], cwd=work, env=env,
                                capture_output=True, text=True, timeout=600)
             if p.returncode:
@@ -49,6 +53,7 @@ def main():
         installer = ([shutil.which('uv'), 'pip', 'install', '--python', python, spec]
                      if shutil.which('uv') else [python, '-m', 'pip', 'install', spec])
         run(installer)
+        installed_runtime = True
         installed = run([python, '-c', 'from fluxkernel.runtime import assets_root; print(assets_root())']).strip()
         assert Path(installed).resolve().is_relative_to(environment.resolve()) and Path(installed).name == '_assets', installed
         report = json.loads(run([fk, 'doctor', '--json']))
@@ -164,7 +169,7 @@ assert verify(result['directory'],True)['accepted']
 assert check_projection(result['directory'])['accepted']
 assert (Path(result['directory'])/'cad/custom_fixture/part.step').is_file()
 '''])
-        print(json.dumps({'wheel': wheel.name, 'isolated_install': True, 'native_robot': 'passed' if args.robot else 'not requested', 'core_workflow': 'passed',
+        print(json.dumps({'wheel': wheel.name, 'isolated_install': True, 'runtime_network_denied': args.offline, 'native_robot': 'passed' if args.robot else 'not requested', 'core_workflow': 'passed',
                           'accessory_cad_fixture': 'passed' if args.personalize else 'not requested',
                           'studio_and_independent_lean': 'passed' if args.studio else 'not requested',
                           'mcp_stdio_workflow': 'passed' if args.agent else 'not requested'}))
