@@ -1,0 +1,2 @@
+{"network_policy": "seccomp-deny-sockets", "probe": "EPERM"}
+{"output": ".demo/public-release/g1.urdf", "scope": "document-only", "lean_executed": true, "model_calls": 0}

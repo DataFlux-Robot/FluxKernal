@@ -1,0 +1,2 @@
+{"network_policy": "seccomp-deny-sockets", "probe": "EPERM"}
+{"generated": 295, "output": ".demo/public-release/all-295-local", "model_calls": 0}

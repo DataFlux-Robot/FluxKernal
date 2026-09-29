@@ -1,0 +1,1779 @@
+{
+  "accepted": true,
+  "indexed": 295,
+  "bundled_passed": 220,
+  "indexed_only": 75,
+  "lean_executed": true,
+  "cases": [
+    {
+      "id": "02da502cbea0ef2e7110",
+      "distribution": "bundled",
+      "status": "passed",
+      "lean_executed": true
+    },
+    {
+      "id": "03277530c18ff9a483ec",
+      "distribution": "indexed-only",
+      "status": "indexed_only",
+      "reason": "Repository design guide, ROS README and package metadata declare different licenses; scope clarification pending"
+    },
+    {
+      "id": "03c74d26196289067a88",
+      "distribution": "bundled",
+      "status": "passed",
+      "lean_executed": true
+    },
+    {
+      "id": "04948cf6f6efb1a1a9a4",
+      "distribution": "indexed-only",
+      "status": "indexed_only",
+      "reason": "No applicable license text located in the pinned repository"
+    },
+    {
+      "id": "04f1504d95e3e5685755",
+      "distribution": "bundled",
+      "status": "passed",
+      "lean_executed": true
+    },
+    {
+      "id": "0606bdce41a2abc785e5",
+      "distribution": "bundled",
+      "status": "passed",
+      "lean_executed": true
+    },
+    {
+      "id": "0633ec0aee0e8504d6d8",
+      "distribution": "bundled",
+      "status": "passed",
+      "lean_executed": true
+    },
+    {
+      "id": "08888b6eb0e2a900b9b8",
+      "distribution": "bundled",
+      "status": "passed",
+      "lean_executed": true
+    },
+    {
+      "id": "08f903dd5286a775848c",
+      "distribution": "bundled",
+      "status": "passed",
+      "lean_executed": true
+    },
+    {
+      "id": "0a173b9443cd6ff6fe47",
+      "distribution": "bundled",
+      "status": "passed",
+      "lean_executed": true
+    },
+    {
+      "id": "0ac85230558f96e7d52e",
+      "distribution": "bundled",
+      "status": "passed",
+      "lean_executed": true
+    },
+    {
+      "id": "0b3ea74ccc86046cfcf9",
+      "distribution": "bundled",
+      "status": "passed",
+      "lean_executed": true
+    },
+    {
+      "id": "0b732b860f924082074b",
+      "distribution": "bundled",
+      "status": "passed",
+      "lean_executed": true
+    },
+    {
+      "id": "0b84fa063ca9e6f2ad19",
+      "distribution": "bundled",
+      "status": "passed",
+      "lean_executed": true
+    },
+    {
+      "id": "0c32888330998a3b37d6",
+      "distribution": "bundled",
+      "status": "passed",
+      "lean_executed": true
+    },
+    {
+      "id": "0cca1c214e6157b37fab",
+      "distribution": "bundled",
+      "status": "passed",
+      "lean_executed": true
+    },
+    {
+      "id": "0d0361182f913ffe8b6e",
+      "distribution": "indexed-only",
+      "status": "indexed_only",
+      "reason": "No applicable license text located in the pinned repository"
+    },
+    {
+      "id": "0de71040f58c4120c022",
+      "distribution": "bundled",
+      "status": "passed",
+      "lean_executed": true
+    },
+    {
+      "id": "0e50bfab076a361682a2",
+      "distribution": "indexed-only",
+      "status": "indexed_only",
+      "reason": "License identified in upstream README; release obligations need a separate review"
+    },
+    {
+      "id": "0ea68b331d92367e151e",
+      "distribution": "bundled",
+      "status": "passed",
+      "lean_executed": true
+    },
+    {
+      "id": "0f36ebeb8f5910f26db4",
+      "distribution": "indexed-only",
+      "status": "indexed_only",
+      "reason": "No unambiguous redistribution grant confirmed"
+    },
+    {
+      "id": "1068316410280b6a498f",
+      "distribution": "indexed-only",
+      "status": "indexed_only",
+      "reason": "No applicable license text located in the pinned repository"
+    },
+    {
+      "id": "10ad0c4265319ac7f666",
+      "distribution": "indexed-only",
+      "status": "indexed_only",
+      "reason": "License identified in upstream README; release obligations need a separate review"
+    },
+    {
+      "id": "10dc808f1ed384a533ba",
+      "distribution": "bundled",
+      "status": "passed",
+      "lean_executed": true
+    },
+    {
+      "id": "1165954f2cdc15014bf7",
+      "distribution": "bundled",
+      "status": "passed",
+      "lean_executed": true
+    },
+    {
+      "id": "119b7077aa561fc6d8b7",
+      "distribution": "bundled",
+      "status": "passed",
+      "lean_executed": true
+    },
+    {
+      "id": "11b2d94b2a391042707d",
+      "distribution": "bundled",
+      "status": "passed",
+      "lean_executed": true
+    },
+    {
+      "id": "12770aa5aa7985dafb53",
+      "distribution": "bundled",
+      "status": "passed",
+      "lean_executed": true
+    },
+    {
+      "id": "144641a1d00acbd9e72a",
+      "distribution": "bundled",
+      "status": "passed",
+      "lean_executed": true
+    },
+    {
+      "id": "14529dd19d8272391625",
+      "distribution": "indexed-only",
+      "status": "indexed_only",
+      "reason": "No applicable license text located in the pinned repository"
+    },
+    {
+      "id": "16df662e92dcfedc9662",
+      "distribution": "bundled",
+      "status": "passed",
+      "lean_executed": true
+    },
+    {
+      "id": "1720345a596c3882eb50",
+      "distribution": "bundled",
+      "status": "passed",
+      "lean_executed": true
+    },
+    {
+      "id": "180d0fae05602bd0a9c2",
+      "distribution": "indexed-only",
+      "status": "indexed_only",
+      "reason": "License identified in upstream README; release obligations need a separate review"
+    },
+    {
+      "id": "182e69737ebb230ff1a2",
+      "distribution": "bundled",
+      "status": "passed",
+      "lean_executed": true
+    },
+    {
+      "id": "18982746bbc05872a7e7",
+      "distribution": "bundled",
+      "status": "passed",
+      "lean_executed": true
+    },
+    {
+      "id": "197e54898c50964c16bf",
+      "distribution": "bundled",
+      "status": "passed",
+      "lean_executed": true
+    },
+    {
+      "id": "198aceb5566392b5d158",
+      "distribution": "indexed-only",
+      "status": "indexed_only",
+      "reason": "License identified in upstream README; release obligations need a separate review"
+    },
+    {
+      "id": "1c770d09cc0c9879ab15",
+      "distribution": "bundled",
+      "status": "passed",
+      "lean_executed": true
+    },
+    {
+      "id": "1e50266f0aded9eff76b",
+      "distribution": "bundled",
+      "status": "passed",
+      "lean_executed": true
+    },
+    {
+      "id": "1e57845e5b846bf4e39c",
+      "distribution": "bundled",
+      "status": "passed",
+      "lean_executed": true
+    },
+    {
+      "id": "1eee6cfaf3eefeb2b80c",
+      "distribution": "bundled",
+      "status": "passed",
+      "lean_executed": true
+    },
+    {
+      "id": "204304e1961f251fe42e",
+      "distribution": "bundled",
+      "status": "passed",
+      "lean_executed": true
+    },
+    {
+      "id": "20ed7112e642a3c15cbe",
+      "distribution": "bundled",
+      "status": "passed",
+      "lean_executed": true
+    },
+    {
+      "id": "21a78c7939829fe866bc",
+      "distribution": "bundled",
+      "status": "passed",
+      "lean_executed": true
+    },
+    {
+      "id": "2213555f8772c2c6a20a",
+      "distribution": "bundled",
+      "status": "passed",
+      "lean_executed": true
+    },
+    {
+      "id": "233d78aac9c6e6958ba4",
+      "distribution": "bundled",
+      "status": "passed",
+      "lean_executed": true
+    },
+    {
+      "id": "240cfe5f9b987ad798fe",
+      "distribution": "bundled",
+      "status": "passed",
+      "lean_executed": true
+    },
+    {
+      "id": "245f5d606674f3328f79",
+      "distribution": "bundled",
+      "status": "passed",
+      "lean_executed": true
+    },
+    {
+      "id": "2500fe842701e14068cd",
+      "distribution": "bundled",
+      "status": "passed",
+      "lean_executed": true
+    },
+    {
+      "id": "27cde9698009b039d3f7",
+      "distribution": "bundled",
+      "status": "passed",
+      "lean_executed": true
+    },
+    {
+      "id": "28160dae6d913dc0cae8",
+      "distribution": "bundled",
+      "status": "passed",
+      "lean_executed": true
+    },
+    {
+      "id": "283390843ad8c693aa72",
+      "distribution": "indexed-only",
+      "status": "indexed_only",
+      "reason": "License identified in upstream README; release obligations need a separate review"
+    },
+    {
+      "id": "288d3e7ce8df7b3cc3d4",
+      "distribution": "bundled",
+      "status": "passed",
+      "lean_executed": true
+    },
+    {
+      "id": "28fe5c9ffa0245f52f0b",
+      "distribution": "bundled",
+      "status": "passed",
+      "lean_executed": true
+    },
+    {
+      "id": "2912a96b9d4402105115",
+      "distribution": "bundled",
+      "status": "passed",
+      "lean_executed": true
+    },
+    {
+      "id": "299dbc3dd03dc8427667",
+      "distribution": "bundled",
+      "status": "passed",
+      "lean_executed": true
+    },
+    {
+      "id": "29ad7642742e409c8768",
+      "distribution": "indexed-only",
+      "status": "indexed_only",
+      "reason": "License identified in upstream README; release obligations need a separate review"
+    },
+    {
+      "id": "29dfbb73448df3956d73",
+      "distribution": "bundled",
+      "status": "passed",
+      "lean_executed": true
+    },
+    {
+      "id": "2a3065ce83123dff6a30",
+      "distribution": "indexed-only",
+      "status": "indexed_only",
+      "reason": "License identified in upstream README; release obligations need a separate review"
+    },
+    {
+      "id": "2a54a7d8445a370ec2c1",
+      "distribution": "indexed-only",
+      "status": "indexed_only",
+      "reason": "No applicable license text located in the pinned repository"
+    },
+    {
+      "id": "2a8823bc1baa5cc5262f",
+      "distribution": "indexed-only",
+      "status": "indexed_only",
+      "reason": "License identified in upstream README; release obligations need a separate review"
+    },
+    {
+      "id": "2c51e4ddd215dece9e8b",
+      "distribution": "bundled",
+      "status": "passed",
+      "lean_executed": true
+    },
+    {
+      "id": "2e735772a89ebcdcd34e",
+      "distribution": "bundled",
+      "status": "passed",
+      "lean_executed": true
+    },
+    {
+      "id": "2f0d9cb7e8593f549244",
+      "distribution": "indexed-only",
+      "status": "indexed_only",
+      "reason": "License identified in upstream README; release obligations need a separate review"
+    },
+    {
+      "id": "2febce3f549ab8d1f379",
+      "distribution": "indexed-only",
+      "status": "indexed_only",
+      "reason": "Noncommercial or custom restriction"
+    },
+    {
+      "id": "3028b6d073a654a7b29a",
+      "distribution": "bundled",
+      "status": "passed",
+      "lean_executed": true
+    },
+    {
+      "id": "309894cec1893ad09ea1",
+      "distribution": "bundled",
+      "status": "passed",
+      "lean_executed": true
+    },
+    {
+      "id": "322f5fdbd0fbb9f7cabc",
+      "distribution": "indexed-only",
+      "status": "indexed_only",
+      "reason": "No unambiguous redistribution grant confirmed"
+    },
+    {
+      "id": "326eb7f9c23b898b8b2c",
+      "distribution": "bundled",
+      "status": "passed",
+      "lean_executed": true
+    },
+    {
+      "id": "332f2a65a078a8e9dd8c",
+      "distribution": "bundled",
+      "status": "passed",
+      "lean_executed": true
+    },
+    {
+      "id": "339dc085adf8b3671e18",
+      "distribution": "bundled",
+      "status": "passed",
+      "lean_executed": true
+    },
+    {
+      "id": "364c1f7058ca524b54bf",
+      "distribution": "bundled",
+      "status": "passed",
+      "lean_executed": true
+    },
+    {
+      "id": "36504ab071da6ea6939d",
+      "distribution": "bundled",
+      "status": "passed",
+      "lean_executed": true
+    },
+    {
+      "id": "36b7b42eaaa9385905c0",
+      "distribution": "indexed-only",
+      "status": "indexed_only",
+      "reason": "License identified in upstream README; release obligations need a separate review"
+    },
+    {
+      "id": "37b659d461c3db395d03",
+      "distribution": "bundled",
+      "status": "passed",
+      "lean_executed": true
+    },
+    {
+      "id": "37e9ee0d15011641fe7c",
+      "distribution": "indexed-only",
+      "status": "indexed_only",
+      "reason": "No unambiguous redistribution grant confirmed"
+    },
+    {
+      "id": "384ed36213d9de455e8e",
+      "distribution": "indexed-only",
+      "status": "indexed_only",
+      "reason": "Noncommercial or custom restriction"
+    },
+    {
+      "id": "386919e7f2fee02cc230",
+      "distribution": "bundled",
+      "status": "passed",
+      "lean_executed": true
+    },
+    {
+      "id": "38a3f0a78e740ef436d6",
+      "distribution": "bundled",
+      "status": "passed",
+      "lean_executed": true
+    },
+    {
+      "id": "3bd6a05eb9a7ebe1b73b",
+      "distribution": "bundled",
+      "status": "passed",
+      "lean_executed": true
+    },
+    {
+      "id": "3d0193f88adf29d68308",
+      "distribution": "bundled",
+      "status": "passed",
+      "lean_executed": true
+    },
+    {
+      "id": "3e093c100a551667b2b9",
+      "distribution": "bundled",
+      "status": "passed",
+      "lean_executed": true
+    },
+    {
+      "id": "3f40947825e7e47b7d60",
+      "distribution": "bundled",
+      "status": "passed",
+      "lean_executed": true
+    },
+    {
+      "id": "437d85aeb1cd2673d766",
+      "distribution": "bundled",
+      "status": "passed",
+      "lean_executed": true
+    },
+    {
+      "id": "43b773d143aa2ef624b6",
+      "distribution": "bundled",
+      "status": "passed",
+      "lean_executed": true
+    },
+    {
+      "id": "43ca40f96fdcc2afc124",
+      "distribution": "bundled",
+      "status": "passed",
+      "lean_executed": true
+    },
+    {
+      "id": "450bdd2de16eaf500898",
+      "distribution": "bundled",
+      "status": "passed",
+      "lean_executed": true
+    },
+    {
+      "id": "455c64b05a0627e1340c",
+      "distribution": "bundled",
+      "status": "passed",
+      "lean_executed": true
+    },
+    {
+      "id": "4635d83ddc818c02ef32",
+      "distribution": "indexed-only",
+      "status": "indexed_only",
+      "reason": "No applicable license text located in the pinned repository"
+    },
+    {
+      "id": "4728ac3e7d3d1cd3d9dc",
+      "distribution": "bundled",
+      "status": "passed",
+      "lean_executed": true
+    },
+    {
+      "id": "49ddead9178562c07aee",
+      "distribution": "bundled",
+      "status": "passed",
+      "lean_executed": true
+    },
+    {
+      "id": "49f2abea18693849374a",
+      "distribution": "indexed-only",
+      "status": "indexed_only",
+      "reason": "License identified in upstream README; release obligations need a separate review"
+    },
+    {
+      "id": "4a4601774c261e3cd220",
+      "distribution": "bundled",
+      "status": "passed",
+      "lean_executed": true
+    },
+    {
+      "id": "4b2a583f0b84da244be7",
+      "distribution": "bundled",
+      "status": "passed",
+      "lean_executed": true
+    },
+    {
+      "id": "4bc82feb91e49468a17e",
+      "distribution": "bundled",
+      "status": "passed",
+      "lean_executed": true
+    },
+    {
+      "id": "4ee4b964a4d6c5fa8f51",
+      "distribution": "bundled",
+      "status": "passed",
+      "lean_executed": true
+    },
+    {
+      "id": "4f002a04f1e87cd50dc3",
+      "distribution": "bundled",
+      "status": "passed",
+      "lean_executed": true
+    },
+    {
+      "id": "4f3a7a802806afc921fa",
+      "distribution": "bundled",
+      "status": "passed",
+      "lean_executed": true
+    },
+    {
+      "id": "50a1e16870431c6a833f",
+      "distribution": "bundled",
+      "status": "passed",
+      "lean_executed": true
+    },
+    {
+      "id": "50e3617f1d6acbb101c8",
+      "distribution": "indexed-only",
+      "status": "indexed_only",
+      "reason": "License identified in upstream README; release obligations need a separate review"
+    },
+    {
+      "id": "514409dc84ec2aad96be",
+      "distribution": "bundled",
+      "status": "passed",
+      "lean_executed": true
+    },
+    {
+      "id": "515b9c6d6abd97b24f47",
+      "distribution": "bundled",
+      "status": "passed",
+      "lean_executed": true
+    },
+    {
+      "id": "519ebdf100d6fe4453f2",
+      "distribution": "indexed-only",
+      "status": "indexed_only",
+      "reason": "License identified in upstream README; release obligations need a separate review"
+    },
+    {
+      "id": "53afb9524b5449eb3e4a",
+      "distribution": "indexed-only",
+      "status": "indexed_only",
+      "reason": "License identified in upstream README; release obligations need a separate review"
+    },
+    {
+      "id": "53dcfc17009eafce5bdd",
+      "distribution": "indexed-only",
+      "status": "indexed_only",
+      "reason": "No applicable license text located in the pinned repository"
+    },
+    {
+      "id": "5533338348520f1f12af",
+      "distribution": "indexed-only",
+      "status": "indexed_only",
+      "reason": "License identified in upstream README; release obligations need a separate review"
+    },
+    {
+      "id": "563cab20b3cc46f4b9a4",
+      "distribution": "bundled",
+      "status": "passed",
+      "lean_executed": true
+    },
+    {
+      "id": "57b82639a5dad3e148e6",
+      "distribution": "bundled",
+      "status": "passed",
+      "lean_executed": true
+    },
+    {
+      "id": "59b5ac192cc71884d3cb",
+      "distribution": "bundled",
+      "status": "passed",
+      "lean_executed": true
+    },
+    {
+      "id": "5a98a24ec5d00d87d7c4",
+      "distribution": "bundled",
+      "status": "passed",
+      "lean_executed": true
+    },
+    {
+      "id": "5b2e4fd1ad2e8d56c5c2",
+      "distribution": "bundled",
+      "status": "passed",
+      "lean_executed": true
+    },
+    {
+      "id": "5bd8f72f8fe9f68143bf",
+      "distribution": "indexed-only",
+      "status": "indexed_only",
+      "reason": "License identified in upstream README; release obligations need a separate review"
+    },
+    {
+      "id": "5bdf01ef23881118da9e",
+      "distribution": "indexed-only",
+      "status": "indexed_only",
+      "reason": "No unambiguous redistribution grant confirmed"
+    },
+    {
+      "id": "5e26621259ae228dbf67",
+      "distribution": "indexed-only",
+      "status": "indexed_only",
+      "reason": "Repository declares GPL-3.0 while package metadata declares BSD; scope clarification pending"
+    },
+    {
+      "id": "5ea98ea5e6f3c1a5d313",
+      "distribution": "bundled",
+      "status": "passed",
+      "lean_executed": true
+    },
+    {
+      "id": "5f91e011ad82606215ae",
+      "distribution": "bundled",
+      "status": "passed",
+      "lean_executed": true
+    },
+    {
+      "id": "5fae0a143ba38d352e41",
+      "distribution": "bundled",
+      "status": "passed",
+      "lean_executed": true
+    },
+    {
+      "id": "6060e6d7b74c2975e270",
+      "distribution": "bundled",
+      "status": "passed",
+      "lean_executed": true
+    },
+    {
+      "id": "6093086e2352eeb80e65",
+      "distribution": "bundled",
+      "status": "passed",
+      "lean_executed": true
+    },
+    {
+      "id": "62042f2f2f702446b8a0",
+      "distribution": "bundled",
+      "status": "passed",
+      "lean_executed": true
+    },
+    {
+      "id": "62ab9bce61d47bc9e329",
+      "distribution": "bundled",
+      "status": "passed",
+      "lean_executed": true
+    },
+    {
+      "id": "6331902cbaf1bc07bd46",
+      "distribution": "bundled",
+      "status": "passed",
+      "lean_executed": true
+    },
+    {
+      "id": "63c0e5ab442672d81e90",
+      "distribution": "bundled",
+      "status": "passed",
+      "lean_executed": true
+    },
+    {
+      "id": "6452d622038239bdc6ad",
+      "distribution": "bundled",
+      "status": "passed",
+      "lean_executed": true
+    },
+    {
+      "id": "677dc9a6aa26e469b547",
+      "distribution": "indexed-only",
+      "status": "indexed_only",
+      "reason": "License identified in upstream README; release obligations need a separate review"
+    },
+    {
+      "id": "6bddc35884ebfa7200b7",
+      "distribution": "bundled",
+      "status": "passed",
+      "lean_executed": true
+    },
+    {
+      "id": "6c3d95234e7b8ec0eda5",
+      "distribution": "indexed-only",
+      "status": "indexed_only",
+      "reason": "License identified in upstream README; release obligations need a separate review"
+    },
+    {
+      "id": "6d5bf0f4b51be9efa2bd",
+      "distribution": "bundled",
+      "status": "passed",
+      "lean_executed": true
+    },
+    {
+      "id": "6dc0dd1dd387ffdebac1",
+      "distribution": "bundled",
+      "status": "passed",
+      "lean_executed": true
+    },
+    {
+      "id": "6e08572ac0a68f640234",
+      "distribution": "indexed-only",
+      "status": "indexed_only",
+      "reason": "License identified in upstream README; release obligations need a separate review"
+    },
+    {
+      "id": "6e4ba0a3a7a7e5ed6204",
+      "distribution": "indexed-only",
+      "status": "indexed_only",
+      "reason": "No unambiguous redistribution grant confirmed"
+    },
+    {
+      "id": "6eae940187c95e2de804",
+      "distribution": "indexed-only",
+      "status": "indexed_only",
+      "reason": "No applicable license text located in the pinned repository"
+    },
+    {
+      "id": "6fe2f78f2e5eb8be096b",
+      "distribution": "bundled",
+      "status": "passed",
+      "lean_executed": true
+    },
+    {
+      "id": "735dfde5a310f365a453",
+      "distribution": "indexed-only",
+      "status": "indexed_only",
+      "reason": "No unambiguous redistribution grant confirmed"
+    },
+    {
+      "id": "7390fcc3586fd15d031e",
+      "distribution": "bundled",
+      "status": "passed",
+      "lean_executed": true
+    },
+    {
+      "id": "73a57516987a6eea7e88",
+      "distribution": "indexed-only",
+      "status": "indexed_only",
+      "reason": "License identified in upstream README; release obligations need a separate review"
+    },
+    {
+      "id": "73ac38639c0abdc8f8f8",
+      "distribution": "bundled",
+      "status": "passed",
+      "lean_executed": true
+    },
+    {
+      "id": "73e55138b5be60ed3bd4",
+      "distribution": "bundled",
+      "status": "passed",
+      "lean_executed": true
+    },
+    {
+      "id": "742643932eea9197fd77",
+      "distribution": "indexed-only",
+      "status": "indexed_only",
+      "reason": "License identified in upstream README; release obligations need a separate review"
+    },
+    {
+      "id": "746d7c4042a9f5d8e5db",
+      "distribution": "bundled",
+      "status": "passed",
+      "lean_executed": true
+    },
+    {
+      "id": "75c33ec65300d35e9327",
+      "distribution": "indexed-only",
+      "status": "indexed_only",
+      "reason": "License identified in upstream README; release obligations need a separate review"
+    },
+    {
+      "id": "760999f8f3f9c4cadde9",
+      "distribution": "bundled",
+      "status": "passed",
+      "lean_executed": true
+    },
+    {
+      "id": "7656eb4026f0647c13b3",
+      "distribution": "indexed-only",
+      "status": "indexed_only",
+      "reason": "License identified in upstream README; release obligations need a separate review"
+    },
+    {
+      "id": "7917230866830a44df36",
+      "distribution": "bundled",
+      "status": "passed",
+      "lean_executed": true
+    },
+    {
+      "id": "79d9c061c84fe7093f5d",
+      "distribution": "indexed-only",
+      "status": "indexed_only",
+      "reason": "No unambiguous redistribution grant confirmed"
+    },
+    {
+      "id": "7a8218e66a6a4a525036",
+      "distribution": "indexed-only",
+      "status": "indexed_only",
+      "reason": "No applicable license text located in the pinned repository"
+    },
+    {
+      "id": "7b3b515c16244512780a",
+      "distribution": "bundled",
+      "status": "passed",
+      "lean_executed": true
+    },
+    {
+      "id": "7b4f23ce5a5ccc92a939",
+      "distribution": "bundled",
+      "status": "passed",
+      "lean_executed": true
+    },
+    {
+      "id": "7c4a628f68d81a4f6c4d",
+      "distribution": "indexed-only",
+      "status": "indexed_only",
+      "reason": "License identified in upstream README; release obligations need a separate review"
+    },
+    {
+      "id": "7c5ca36035650b24215b",
+      "distribution": "bundled",
+      "status": "passed",
+      "lean_executed": true
+    },
+    {
+      "id": "7cd98ecf7e44a9934f69",
+      "distribution": "indexed-only",
+      "status": "indexed_only",
+      "reason": "License identified in upstream README; release obligations need a separate review"
+    },
+    {
+      "id": "7ecd655d338e649e3a5a",
+      "distribution": "bundled",
+      "status": "passed",
+      "lean_executed": true
+    },
+    {
+      "id": "7fe5342ad2625b66c859",
+      "distribution": "indexed-only",
+      "status": "indexed_only",
+      "reason": "No unambiguous redistribution grant confirmed"
+    },
+    {
+      "id": "816aeb950f6116e84597",
+      "distribution": "bundled",
+      "status": "passed",
+      "lean_executed": true
+    },
+    {
+      "id": "821a60e8b14cc23a28e7",
+      "distribution": "bundled",
+      "status": "passed",
+      "lean_executed": true
+    },
+    {
+      "id": "829f8d03d0b0c12ccb03",
+      "distribution": "bundled",
+      "status": "passed",
+      "lean_executed": true
+    },
+    {
+      "id": "83cdbedbd1ce3497a62d",
+      "distribution": "bundled",
+      "status": "passed",
+      "lean_executed": true
+    },
+    {
+      "id": "84d2f8a668fc6e4f5e94",
+      "distribution": "indexed-only",
+      "status": "indexed_only",
+      "reason": "Noncommercial or custom restriction"
+    },
+    {
+      "id": "84edfb10e6e999d0b992",
+      "distribution": "bundled",
+      "status": "passed",
+      "lean_executed": true
+    },
+    {
+      "id": "85e7106618057abe4b44",
+      "distribution": "indexed-only",
+      "status": "indexed_only",
+      "reason": "License identified in upstream README; release obligations need a separate review"
+    },
+    {
+      "id": "86718e55597cf5fda863",
+      "distribution": "bundled",
+      "status": "passed",
+      "lean_executed": true
+    },
+    {
+      "id": "87913b0b7309ebc56653",
+      "distribution": "bundled",
+      "status": "passed",
+      "lean_executed": true
+    },
+    {
+      "id": "880aa25962d0235de7f6",
+      "distribution": "bundled",
+      "status": "passed",
+      "lean_executed": true
+    },
+    {
+      "id": "88d12b08bd2e55f269d8",
+      "distribution": "indexed-only",
+      "status": "indexed_only",
+      "reason": "No unambiguous redistribution grant confirmed"
+    },
+    {
+      "id": "8967a1ef37cfef3ae6fe",
+      "distribution": "bundled",
+      "status": "passed",
+      "lean_executed": true
+    },
+    {
+      "id": "89b7c88c307320c857e2",
+      "distribution": "bundled",
+      "status": "passed",
+      "lean_executed": true
+    },
+    {
+      "id": "8d38019f7179fd45ac9f",
+      "distribution": "bundled",
+      "status": "passed",
+      "lean_executed": true
+    },
+    {
+      "id": "900498e901ec83028eb6",
+      "distribution": "bundled",
+      "status": "passed",
+      "lean_executed": true
+    },
+    {
+      "id": "9035dee9f984950dcf23",
+      "distribution": "bundled",
+      "status": "passed",
+      "lean_executed": true
+    },
+    {
+      "id": "904afa1e080ce6368b9d",
+      "distribution": "bundled",
+      "status": "passed",
+      "lean_executed": true
+    },
+    {
+      "id": "91b264e94363120b5be1",
+      "distribution": "indexed-only",
+      "status": "indexed_only",
+      "reason": "License identified in upstream README; release obligations need a separate review"
+    },
+    {
+      "id": "9209d95434de4b7dd84b",
+      "distribution": "bundled",
+      "status": "passed",
+      "lean_executed": true
+    },
+    {
+      "id": "925fd93431920b7b7815",
+      "distribution": "bundled",
+      "status": "passed",
+      "lean_executed": true
+    },
+    {
+      "id": "93d4bbd47360c9632fd7",
+      "distribution": "bundled",
+      "status": "passed",
+      "lean_executed": true
+    },
+    {
+      "id": "93fb6fb67b4a7a71e7f5",
+      "distribution": "bundled",
+      "status": "passed",
+      "lean_executed": true
+    },
+    {
+      "id": "94cb45be54ff23532a09",
+      "distribution": "bundled",
+      "status": "passed",
+      "lean_executed": true
+    },
+    {
+      "id": "950d643c04e7031206f8",
+      "distribution": "bundled",
+      "status": "passed",
+      "lean_executed": true
+    },
+    {
+      "id": "951ed6b183669019d5a5",
+      "distribution": "indexed-only",
+      "status": "indexed_only",
+      "reason": "License identified in upstream README; release obligations need a separate review"
+    },
+    {
+      "id": "963f3c4323826e5f0a18",
+      "distribution": "bundled",
+      "status": "passed",
+      "lean_executed": true
+    },
+    {
+      "id": "9690f64ad396d8dd1ec5",
+      "distribution": "bundled",
+      "status": "passed",
+      "lean_executed": true
+    },
+    {
+      "id": "98578bb9624bd366fc78",
+      "distribution": "bundled",
+      "status": "passed",
+      "lean_executed": true
+    },
+    {
+      "id": "999a94830d07d681cf99",
+      "distribution": "bundled",
+      "status": "passed",
+      "lean_executed": true
+    },
+    {
+      "id": "9a1b637697175944d69b",
+      "distribution": "indexed-only",
+      "status": "indexed_only",
+      "reason": "No unambiguous redistribution grant confirmed"
+    },
+    {
+      "id": "9a2df87793db4c20cff4",
+      "distribution": "bundled",
+      "status": "passed",
+      "lean_executed": true
+    },
+    {
+      "id": "9b31b6ac08f6ccfdbb5a",
+      "distribution": "bundled",
+      "status": "passed",
+      "lean_executed": true
+    },
+    {
+      "id": "9d8b19ead9ffb8f38a91",
+      "distribution": "bundled",
+      "status": "passed",
+      "lean_executed": true
+    },
+    {
+      "id": "9e52891fcbfbd7c86415",
+      "distribution": "bundled",
+      "status": "passed",
+      "lean_executed": true
+    },
+    {
+      "id": "a0b78ef83e4699ea5f7f",
+      "distribution": "bundled",
+      "status": "passed",
+      "lean_executed": true
+    },
+    {
+      "id": "a0e53270fe1711fbaeb9",
+      "distribution": "bundled",
+      "status": "passed",
+      "lean_executed": true
+    },
+    {
+      "id": "a10b04bab32a6042dd6b",
+      "distribution": "bundled",
+      "status": "passed",
+      "lean_executed": true
+    },
+    {
+      "id": "a121c9efec021032cb9e",
+      "distribution": "bundled",
+      "status": "passed",
+      "lean_executed": true
+    },
+    {
+      "id": "a2c8db82ef672d5100cb",
+      "distribution": "bundled",
+      "status": "passed",
+      "lean_executed": true
+    },
+    {
+      "id": "a3557edbf515460b5df9",
+      "distribution": "bundled",
+      "status": "passed",
+      "lean_executed": true
+    },
+    {
+      "id": "a3d1be4a3c24aebe9805",
+      "distribution": "indexed-only",
+      "status": "indexed_only",
+      "reason": "License identified in upstream README; release obligations need a separate review"
+    },
+    {
+      "id": "a42e5352d0cd928e96ba",
+      "distribution": "indexed-only",
+      "status": "indexed_only",
+      "reason": "License identified in upstream README; release obligations need a separate review"
+    },
+    {
+      "id": "a8f43518f0125b465ffb",
+      "distribution": "indexed-only",
+      "status": "indexed_only",
+      "reason": "No unambiguous redistribution grant confirmed"
+    },
+    {
+      "id": "aabdc747afeb10cafb9e",
+      "distribution": "bundled",
+      "status": "passed",
+      "lean_executed": true
+    },
+    {
+      "id": "ab0b45263a150106bcaa",
+      "distribution": "bundled",
+      "status": "passed",
+      "lean_executed": true
+    },
+    {
+      "id": "ab2cf08afa0448f8754d",
+      "distribution": "bundled",
+      "status": "passed",
+      "lean_executed": true
+    },
+    {
+      "id": "ab53af1288c0ecad90c7",
+      "distribution": "bundled",
+      "status": "passed",
+      "lean_executed": true
+    },
+    {
+      "id": "ac8cf2058ab18b983087",
+      "distribution": "bundled",
+      "status": "passed",
+      "lean_executed": true
+    },
+    {
+      "id": "aee9dbd2286d32cbee75",
+      "distribution": "bundled",
+      "status": "passed",
+      "lean_executed": true
+    },
+    {
+      "id": "afb4cc56f2831663e8b2",
+      "distribution": "bundled",
+      "status": "passed",
+      "lean_executed": true
+    },
+    {
+      "id": "afb6ef2764a81c00eaf8",
+      "distribution": "bundled",
+      "status": "passed",
+      "lean_executed": true
+    },
+    {
+      "id": "b014ba36cc213ac6171c",
+      "distribution": "bundled",
+      "status": "passed",
+      "lean_executed": true
+    },
+    {
+      "id": "b0bf7071a57d26f0edea",
+      "distribution": "indexed-only",
+      "status": "indexed_only",
+      "reason": "License identified in upstream README; release obligations need a separate review"
+    },
+    {
+      "id": "b179a5b7e40356b3c1d5",
+      "distribution": "indexed-only",
+      "status": "indexed_only",
+      "reason": "Noncommercial or custom restriction"
+    },
+    {
+      "id": "b27b70241c1338c08ff6",
+      "distribution": "bundled",
+      "status": "passed",
+      "lean_executed": true
+    },
+    {
+      "id": "b48e3bfa49bd60912c88",
+      "distribution": "bundled",
+      "status": "passed",
+      "lean_executed": true
+    },
+    {
+      "id": "b6ca3554fdb914f13abb",
+      "distribution": "bundled",
+      "status": "passed",
+      "lean_executed": true
+    },
+    {
+      "id": "b6d9cbc26698c629dae7",
+      "distribution": "bundled",
+      "status": "passed",
+      "lean_executed": true
+    },
+    {
+      "id": "b77377a4fa78fd716a07",
+      "distribution": "bundled",
+      "status": "passed",
+      "lean_executed": true
+    },
+    {
+      "id": "b79621c170444cd361bc",
+      "distribution": "bundled",
+      "status": "passed",
+      "lean_executed": true
+    },
+    {
+      "id": "b8c55203a535e34eb5df",
+      "distribution": "indexed-only",
+      "status": "indexed_only",
+      "reason": "License identified in upstream README; release obligations need a separate review"
+    },
+    {
+      "id": "bab5c905ab969cef0055",
+      "distribution": "indexed-only",
+      "status": "indexed_only",
+      "reason": "Noncommercial or custom restriction"
+    },
+    {
+      "id": "bb3edbdb611bad580a12",
+      "distribution": "indexed-only",
+      "status": "indexed_only",
+      "reason": "Noncommercial or custom restriction"
+    },
+    {
+      "id": "bb6435969cce2c2fbe5d",
+      "distribution": "bundled",
+      "status": "passed",
+      "lean_executed": true
+    },
+    {
+      "id": "bb6f992fef6ef4e3e9b2",
+      "distribution": "bundled",
+      "status": "passed",
+      "lean_executed": true
+    },
+    {
+      "id": "bc3b53d050ab25c3a2b1",
+      "distribution": "indexed-only",
+      "status": "indexed_only",
+      "reason": "No applicable license text located in the pinned repository"
+    },
+    {
+      "id": "bc92416f2c3012308b07",
+      "distribution": "bundled",
+      "status": "passed",
+      "lean_executed": true
+    },
+    {
+      "id": "bd33cd4f479947911e2a",
+      "distribution": "bundled",
+      "status": "passed",
+      "lean_executed": true
+    },
+    {
+      "id": "bf18ab5637b038bd05c0",
+      "distribution": "bundled",
+      "status": "passed",
+      "lean_executed": true
+    },
+    {
+      "id": "bfbfeb219d5ca32595c6",
+      "distribution": "bundled",
+      "status": "passed",
+      "lean_executed": true
+    },
+    {
+      "id": "c12478cd8b4646621233",
+      "distribution": "indexed-only",
+      "status": "indexed_only",
+      "reason": "License identified in upstream README; release obligations need a separate review"
+    },
+    {
+      "id": "c1911b5ff05031f4098c",
+      "distribution": "bundled",
+      "status": "passed",
+      "lean_executed": true
+    },
+    {
+      "id": "c1c6294dfb4a9b1cffde",
+      "distribution": "bundled",
+      "status": "passed",
+      "lean_executed": true
+    },
+    {
+      "id": "c494f415d61cab1f3d94",
+      "distribution": "bundled",
+      "status": "passed",
+      "lean_executed": true
+    },
+    {
+      "id": "c516770ecf454d0332a1",
+      "distribution": "bundled",
+      "status": "passed",
+      "lean_executed": true
+    },
+    {
+      "id": "c538f6611561dc1bbac9",
+      "distribution": "bundled",
+      "status": "passed",
+      "lean_executed": true
+    },
+    {
+      "id": "c7bd0e8d07187198c760",
+      "distribution": "bundled",
+      "status": "passed",
+      "lean_executed": true
+    },
+    {
+      "id": "cb739e616756e71efa0f",
+      "distribution": "indexed-only",
+      "status": "indexed_only",
+      "reason": "No unambiguous redistribution grant confirmed"
+    },
+    {
+      "id": "cc0f99655a41e29413d7",
+      "distribution": "bundled",
+      "status": "passed",
+      "lean_executed": true
+    },
+    {
+      "id": "ce07d8ae0905cf0138e3",
+      "distribution": "bundled",
+      "status": "passed",
+      "lean_executed": true
+    },
+    {
+      "id": "ce6b9199c20174fd7416",
+      "distribution": "indexed-only",
+      "status": "indexed_only",
+      "reason": "No applicable license text located in the pinned repository"
+    },
+    {
+      "id": "ce7d406d8bfdc0833517",
+      "distribution": "bundled",
+      "status": "passed",
+      "lean_executed": true
+    },
+    {
+      "id": "d18c9fd8bbe7d610b9b2",
+      "distribution": "bundled",
+      "status": "passed",
+      "lean_executed": true
+    },
+    {
+      "id": "d2f30493ee5eac5243c8",
+      "distribution": "bundled",
+      "status": "passed",
+      "lean_executed": true
+    },
+    {
+      "id": "d3396759e4a7cf053bfc",
+      "distribution": "indexed-only",
+      "status": "indexed_only",
+      "reason": "No unambiguous redistribution grant confirmed"
+    },
+    {
+      "id": "d37355dcf804dea7575b",
+      "distribution": "bundled",
+      "status": "passed",
+      "lean_executed": true
+    },
+    {
+      "id": "d4f64e88fe03b442475e",
+      "distribution": "indexed-only",
+      "status": "indexed_only",
+      "reason": "License identified in upstream README; release obligations need a separate review"
+    },
+    {
+      "id": "d564eda3bbc03365225b",
+      "distribution": "bundled",
+      "status": "passed",
+      "lean_executed": true
+    },
+    {
+      "id": "d6535b1c0bafc58e8e46",
+      "distribution": "bundled",
+      "status": "passed",
+      "lean_executed": true
+    },
+    {
+      "id": "d67ab51829943d4dc277",
+      "distribution": "bundled",
+      "status": "passed",
+      "lean_executed": true
+    },
+    {
+      "id": "d6bbec816ad1c4e891b6",
+      "distribution": "bundled",
+      "status": "passed",
+      "lean_executed": true
+    },
+    {
+      "id": "d8ba39b180e62d0f6d23",
+      "distribution": "bundled",
+      "status": "passed",
+      "lean_executed": true
+    },
+    {
+      "id": "da8f9ef5c5da1b50a912",
+      "distribution": "bundled",
+      "status": "passed",
+      "lean_executed": true
+    },
+    {
+      "id": "daf9ce6443351ec69efd",
+      "distribution": "bundled",
+      "status": "passed",
+      "lean_executed": true
+    },
+    {
+      "id": "dc2dd8709addb4d07141",
+      "distribution": "bundled",
+      "status": "passed",
+      "lean_executed": true
+    },
+    {
+      "id": "dc7933f3c677270715e5",
+      "distribution": "bundled",
+      "status": "passed",
+      "lean_executed": true
+    },
+    {
+      "id": "dcfef537fada60f52da3",
+      "distribution": "bundled",
+      "status": "passed",
+      "lean_executed": true
+    },
+    {
+      "id": "de618a11195d5464c131",
+      "distribution": "indexed-only",
+      "status": "indexed_only",
+      "reason": "License identified in upstream README; release obligations need a separate review"
+    },
+    {
+      "id": "dea7d361f7c8b14d460e",
+      "distribution": "bundled",
+      "status": "passed",
+      "lean_executed": true
+    },
+    {
+      "id": "df3a76dd83bd1f17bde6",
+      "distribution": "bundled",
+      "status": "passed",
+      "lean_executed": true
+    },
+    {
+      "id": "df5ada8905978789d842",
+      "distribution": "bundled",
+      "status": "passed",
+      "lean_executed": true
+    },
+    {
+      "id": "dfc6596c05c2b6ecdc31",
+      "distribution": "indexed-only",
+      "status": "indexed_only",
+      "reason": "License identified in upstream README; release obligations need a separate review"
+    },
+    {
+      "id": "e04d7f22b05a23205ee1",
+      "distribution": "indexed-only",
+      "status": "indexed_only",
+      "reason": "No unambiguous redistribution grant confirmed"
+    },
+    {
+      "id": "e059353a2f85899104ff",
+      "distribution": "bundled",
+      "status": "passed",
+      "lean_executed": true
+    },
+    {
+      "id": "e0ff2c40f4458f5dc4cc",
+      "distribution": "indexed-only",
+      "status": "indexed_only",
+      "reason": "No unambiguous redistribution grant confirmed"
+    },
+    {
+      "id": "e235532afa2ee88cd029",
+      "distribution": "bundled",
+      "status": "passed",
+      "lean_executed": true
+    },
+    {
+      "id": "e266564116c12af4efdd",
+      "distribution": "bundled",
+      "status": "passed",
+      "lean_executed": true
+    },
+    {
+      "id": "e2a2e108363fa914d550",
+      "distribution": "bundled",
+      "status": "passed",
+      "lean_executed": true
+    },
+    {
+      "id": "e30d143ea11e5985d9bd",
+      "distribution": "indexed-only",
+      "status": "indexed_only",
+      "reason": "No applicable license text located in the pinned repository"
+    },
+    {
+      "id": "e334eb86d83f6767af63",
+      "distribution": "bundled",
+      "status": "passed",
+      "lean_executed": true
+    },
+    {
+      "id": "e3cdff697169ffc75188",
+      "distribution": "indexed-only",
+      "status": "indexed_only",
+      "reason": "License identified in upstream README; release obligations need a separate review"
+    },
+    {
+      "id": "e4237b979765073cd3e5",
+      "distribution": "bundled",
+      "status": "passed",
+      "lean_executed": true
+    },
+    {
+      "id": "e5991b2438b7c2160992",
+      "distribution": "bundled",
+      "status": "passed",
+      "lean_executed": true
+    },
+    {
+      "id": "e639ee9c86648567ca8b",
+      "distribution": "bundled",
+      "status": "passed",
+      "lean_executed": true
+    },
+    {
+      "id": "e6d503197eee4198869b",
+      "distribution": "bundled",
+      "status": "passed",
+      "lean_executed": true
+    },
+    {
+      "id": "e830f4064003fb5a4c48",
+      "distribution": "bundled",
+      "status": "passed",
+      "lean_executed": true
+    },
+    {
+      "id": "ead7684473e97654f072",
+      "distribution": "bundled",
+      "status": "passed",
+      "lean_executed": true
+    },
+    {
+      "id": "ec146089bdb3c07bfb10",
+      "distribution": "bundled",
+      "status": "passed",
+      "lean_executed": true
+    },
+    {
+      "id": "ec4db2469b03e1b5275b",
+      "distribution": "bundled",
+      "status": "passed",
+      "lean_executed": true
+    },
+    {
+      "id": "edbb3f148575988d0d44",
+      "distribution": "indexed-only",
+      "status": "indexed_only",
+      "reason": "License identified in upstream README; release obligations need a separate review"
+    },
+    {
+      "id": "f12551654c13b919263e",
+      "distribution": "bundled",
+      "status": "passed",
+      "lean_executed": true
+    },
+    {
+      "id": "f15a2c85534744539bf2",
+      "distribution": "bundled",
+      "status": "passed",
+      "lean_executed": true
+    },
+    {
+      "id": "f34d8a3e11f5853b980d",
+      "distribution": "bundled",
+      "status": "passed",
+      "lean_executed": true
+    },
+    {
+      "id": "f3501ecbb40fee19415e",
+      "distribution": "bundled",
+      "status": "passed",
+      "lean_executed": true
+    },
+    {
+      "id": "f3fc31176398c59d56d1",
+      "distribution": "indexed-only",
+      "status": "indexed_only",
+      "reason": "License identified in upstream README; release obligations need a separate review"
+    },
+    {
+      "id": "f424f4418a0d822d0501",
+      "distribution": "bundled",
+      "status": "passed",
+      "lean_executed": true
+    },
+    {
+      "id": "f438e5b659f5abbd5b98",
+      "distribution": "bundled",
+      "status": "passed",
+      "lean_executed": true
+    },
+    {
+      "id": "f64305f0243383756ad8",
+      "distribution": "bundled",
+      "status": "passed",
+      "lean_executed": true
+    },
+    {
+      "id": "f71d404c4708a75486e3",
+      "distribution": "bundled",
+      "status": "passed",
+      "lean_executed": true
+    },
+    {
+      "id": "f8070cc4f46726d78bda",
+      "distribution": "bundled",
+      "status": "passed",
+      "lean_executed": true
+    },
+    {
+      "id": "f865e32c83a9c81108e1",
+      "distribution": "bundled",
+      "status": "passed",
+      "lean_executed": true
+    },
+    {
+      "id": "f94e0ecf99dd71385106",
+      "distribution": "indexed-only",
+      "status": "indexed_only",
+      "reason": "No unambiguous redistribution grant confirmed"
+    },
+    {
+      "id": "f989089a161d5417bd39",
+      "distribution": "bundled",
+      "status": "passed",
+      "lean_executed": true
+    },
+    {
+      "id": "fa2d2ba17cbdf5a66ca7",
+      "distribution": "bundled",
+      "status": "passed",
+      "lean_executed": true
+    },
+    {
+      "id": "fcc237d0aeabc4e0c3b5",
+      "distribution": "bundled",
+      "status": "passed",
+      "lean_executed": true
+    },
+    {
+      "id": "fdb55d4d1bd38bd6c723",
+      "distribution": "bundled",
+      "status": "passed",
+      "lean_executed": true
+    },
+    {
+      "id": "fdf50d9831cfd15eb49e",
+      "distribution": "bundled",
+      "status": "passed",
+      "lean_executed": true
+    },
+    {
+      "id": "fe21276429045134f427",
+      "distribution": "bundled",
+      "status": "passed",
+      "lean_executed": true
+    },
+    {
+      "id": "ff60cb44d1b21dfd2e6c",
+      "distribution": "bundled",
+      "status": "passed",
+      "lean_executed": true
+    },
+    {
+      "id": "ff6ce723d048f747ecb5",
+      "distribution": "bundled",
+      "status": "passed",
+      "lean_executed": true
+    },
+    {
+      "id": "ffb29153b1b072440c06",
+      "distribution": "bundled",
+      "status": "passed",
+      "lean_executed": true
+    },
+    {
+      "id": "fffbb3eebfd09c634128",
+      "distribution": "bundled",
+      "status": "passed",
+      "lean_executed": true
+    }
+  ]
+}

@@ -1,0 +1,1533 @@
+<?xml version="1.0" ?>
+<!-- SPDX-License-Identifier: Apache-2.0 -->
+<!-- Description for "Cookie", a third-generation Upkie wheeled biped -->
+<!-- Conventions: https://github.com/upkie/upkie_description/wiki/Model-conventions -->
+<robot name="cookie">
+  <material name="black">
+    <color rgba="0.1 0.1 0.1 1"/>
+  </material>
+  <material name="dark_blue">
+    <color rgba="0.0 0.1 0.2 1"/>
+  </material>
+  <material name="metallic_gray">
+    <color rgba="0.55 0.57 0.58 1"/>
+  </material>
+  <material name="lipstick_green">
+    <color rgba="0.20 0.92 0.27 1"/>
+  </material>
+  <material name="lipstick_red">
+    <color rgba="0.92 0.20 0.27 1"/>
+  </material>
+  <material name="mango_yellow">
+    <color rgba="0.97 0.73 0.0 1"/>
+  </material>
+  <material name="mj5208_rotor">
+    <color rgba="0.5 0.55 0.6 1.0"/>
+  </material>
+  <material name="mj5208_stator">
+    <color rgba="0.22 0.22 0.25 1.0"/>
+  </material>
+  <!-- Virtual link for the base -->
+  <link name="base">
+    <!-- virtual link: https://upkie.github.io/upkie/kinematics.html#virtual-links -->
+    <visual>
+      <geometry>
+        <box size="0 0 0"/>
+      </geometry>
+    </visual>
+    <inertial>
+      <mass value="0.001"/>
+      <origin rpy="0 0 0" xyz="0 0 0"/>
+      <inertia ixx="0" ixy="0" ixz="0" iyy="0" iyz="0" izz="0"/>
+    </inertial>
+  </link>
+  <!-- Torso comes first -->
+  <link name="torso">
+    <visual>
+      <geometry>
+        <mesh filename="package://cookie_description/meshes/torso.stl"/>
+      </geometry>
+      <material name="mango_yellow"/>
+    </visual>
+    <collision>
+      <origin rpy="0 0 0" xyz="0 0.005 0.08"/>
+      <geometry>
+        <box size="0.02 0.143 0.0105"/>
+      </geometry>
+    </collision>
+    <collision>
+      <origin rpy="0.77 0 0" xyz="0 -0.092 0.054"/>
+      <geometry>
+        <box size="0.02 0.08 0.0105"/>
+      </geometry>
+    </collision>
+    <collision>
+      <origin rpy="-0.77 0 0" xyz="0 0.102 0.054"/>
+      <geometry>
+        <box size="0.02 0.08 0.0105"/>
+      </geometry>
+    </collision>
+    <collision>
+      <origin rpy="0 0 0" xyz="0.001 0.005 -0.025"/>
+      <geometry>
+        <box size="0.14 0.171 0.15"/>
+      </geometry>
+    </collision>
+    <inertial>
+      <origin rpy="0 0 0" xyz="0.001 0.005 -0.025"/>
+      <mass value="1.739"/>
+      <inertia ixx="0.0074981332500000004" ixy="0" ixz="0" iyy="0.006100991666666666" iyz="0" izz="0.007077874916666668"/>
+    </inertial>
+  </link>
+  <joint name="torso_placement" type="fixed">
+    <parent link="base"/>
+    <child link="torso"/>
+    <origin rpy="0 0 0" xyz="0 0 0"/>
+  </joint>
+  <!-- Battery indicator -->
+  <link name="battery_indicator">
+    <visual>
+      <geometry>
+        <box size="0.0025 0.039 0.02"/>
+      </geometry>
+      <material name="dark_blue"/>
+    </visual>
+    <inertial>
+      <origin rpy="0 0 0" xyz="0 0 0"/>
+      <mass value="0.001"/>
+      <inertia ixx="1.6008333333333333e-07" ixy="0" ixz="0" iyy="3.385416666666667e-08" iyz="0" izz="1.2727083333333333e-07"/>
+    </inertial>
+  </link>
+  <joint name="battery_indicator_placement" type="fixed">
+    <parent link="base"/>
+    <child link="battery_indicator"/>
+    <origin rpy="0 -0.8 1.5707963267948966" xyz="0.001 0.1075 0.0535"/>
+  </joint>
+  <!-- Bumpers -->
+  <link name="torso_bumper_01">
+    <visual>
+      <geometry>
+        <box size="0.01 0.01 0.13"/>
+      </geometry>
+      <material name="lipstick_red"/>
+    </visual>
+    <collision>
+      <origin rpy="0 0 0" xyz="0 0 0"/>
+      <geometry>
+        <box size="0.01 0.01 0.13"/>
+      </geometry>
+    </collision>
+    <inertial>
+      <origin rpy="0 0 0" xyz="0 0 0"/>
+      <mass value="0.011648"/>
+      <inertia ixx="1.6501333333333334e-05" ixy="0" ixz="0" iyy="1.6501333333333334e-05" iyz="0" izz="1.9413333333333335e-07"/>
+    </inertial>
+  </link>
+  <joint name="torso_bumper_01_placement" type="fixed">
+    <parent link="torso"/>
+    <child link="torso_bumper_01"/>
+    <origin rpy="0 0.1 0" xyz="0.07 0.085 -0.035"/>
+  </joint>
+  <link name="torso_bumper_02">
+    <visual>
+      <geometry>
+        <box size="0.01 0.01 0.17"/>
+      </geometry>
+      <material name="lipstick_red"/>
+    </visual>
+    <collision>
+      <origin rpy="0 0 0" xyz="0 0 0"/>
+      <geometry>
+        <box size="0.01 0.01 0.17"/>
+      </geometry>
+    </collision>
+    <inertial>
+      <origin rpy="0 0 0" xyz="0 0 0"/>
+      <mass value="0.015232"/>
+      <inertia ixx="3.6810666666666677e-05" ixy="0" ixz="0" iyy="3.6810666666666677e-05" iyz="0" izz="2.5386666666666666e-07"/>
+    </inertial>
+  </link>
+  <joint name="torso_bumper_02_placement" type="fixed">
+    <parent link="torso"/>
+    <child link="torso_bumper_02"/>
+    <origin rpy="1.5707963267948966 0.1 0" xyz="0.065 0.005 -0.095"/>
+  </joint>
+  <link name="torso_bumper_03">
+    <visual>
+      <geometry>
+        <box size="0.01 0.01 0.13"/>
+      </geometry>
+      <material name="lipstick_red"/>
+    </visual>
+    <collision>
+      <origin rpy="0 0 0" xyz="0 0 0"/>
+      <geometry>
+        <box size="0.01 0.01 0.13"/>
+      </geometry>
+    </collision>
+    <inertial>
+      <origin rpy="0 0 0" xyz="0 0 0"/>
+      <mass value="0.011648"/>
+      <inertia ixx="1.6501333333333334e-05" ixy="0" ixz="0" iyy="1.6501333333333334e-05" iyz="0" izz="1.9413333333333335e-07"/>
+    </inertial>
+  </link>
+  <joint name="torso_bumper_03_placement" type="fixed">
+    <parent link="torso"/>
+    <child link="torso_bumper_03"/>
+    <origin rpy="0 0.1 0" xyz="0.07 -0.075 -0.035"/>
+  </joint>
+  <link name="torso_bumper_04">
+    <visual>
+      <geometry>
+        <box size="0.01 0.01 0.135"/>
+      </geometry>
+      <material name="lipstick_red"/>
+    </visual>
+    <collision>
+      <origin rpy="0 0 0" xyz="0 0 0"/>
+      <geometry>
+        <box size="0.01 0.01 0.135"/>
+      </geometry>
+    </collision>
+    <inertial>
+      <origin rpy="0 0 0" xyz="0 0 0"/>
+      <mass value="0.012096"/>
+      <inertia ixx="1.8471600000000005e-05" ixy="0" ixz="0" iyy="1.8471600000000005e-05" iyz="0" izz="2.0160000000000003e-07"/>
+    </inertial>
+  </link>
+  <joint name="torso_bumper_04_placement" type="fixed">
+    <parent link="torso"/>
+    <child link="torso_bumper_04"/>
+    <origin rpy="0 1.5707963267948966 0" xyz="0.0025 -0.075 -0.105"/>
+  </joint>
+  <link name="torso_bumper_05">
+    <visual>
+      <geometry>
+        <box size="0.01 0.01 0.135"/>
+      </geometry>
+      <material name="lipstick_red"/>
+    </visual>
+    <collision>
+      <origin rpy="0 0 0" xyz="0 0 0"/>
+      <geometry>
+        <box size="0.01 0.01 0.135"/>
+      </geometry>
+    </collision>
+    <inertial>
+      <origin rpy="0 0 0" xyz="0 0 0"/>
+      <mass value="0.012096"/>
+      <inertia ixx="1.8471600000000005e-05" ixy="0" ixz="0" iyy="1.8471600000000005e-05" iyz="0" izz="2.0160000000000003e-07"/>
+    </inertial>
+  </link>
+  <joint name="torso_bumper_05_placement" type="fixed">
+    <parent link="torso"/>
+    <child link="torso_bumper_05"/>
+    <origin rpy="0 1.5707963267948966 0" xyz="0.0025 0.085 -0.105"/>
+  </joint>
+  <link name="torso_bumper_06">
+    <visual>
+      <geometry>
+        <box size="0.01 0.01 0.17"/>
+      </geometry>
+      <material name="lipstick_red"/>
+    </visual>
+    <collision>
+      <origin rpy="0 0 0" xyz="0 0 0"/>
+      <geometry>
+        <box size="0.01 0.01 0.17"/>
+      </geometry>
+    </collision>
+    <inertial>
+      <origin rpy="0 0 0" xyz="0 0 0"/>
+      <mass value="0.015232"/>
+      <inertia ixx="3.6810666666666677e-05" ixy="0" ixz="0" iyy="3.6810666666666677e-05" iyz="0" izz="2.5386666666666666e-07"/>
+    </inertial>
+  </link>
+  <joint name="torso_bumper_06_placement" type="fixed">
+    <parent link="torso"/>
+    <child link="torso_bumper_06"/>
+    <origin rpy="1.5707963267948966 -0.1 0" xyz="-0.0615 0.005 -0.095"/>
+  </joint>
+  <link name="torso_bumper_07">
+    <visual>
+      <geometry>
+        <box size="0.01 0.01 0.06"/>
+      </geometry>
+      <material name="lipstick_red"/>
+    </visual>
+    <collision>
+      <origin rpy="0 0 0" xyz="0 0 0"/>
+      <geometry>
+        <box size="0.01 0.01 0.06"/>
+      </geometry>
+    </collision>
+    <inertial>
+      <origin rpy="0 0 0" xyz="0 0 0"/>
+      <mass value="0.005376"/>
+      <inertia ixx="1.6575999999999998e-06" ixy="0" ixz="0" iyy="1.6575999999999998e-06" iyz="0" izz="8.96e-08"/>
+    </inertial>
+  </link>
+  <joint name="torso_bumper_07_placement" type="fixed">
+    <parent link="torso"/>
+    <child link="torso_bumper_07"/>
+    <origin rpy="1.5707963267948966 0 0" xyz="0.076 0.11 0.025"/>
+  </joint>
+  <link name="torso_bumper_08">
+    <visual>
+      <geometry>
+        <box size="0.01 0.01 0.06"/>
+      </geometry>
+      <material name="lipstick_red"/>
+    </visual>
+    <collision>
+      <origin rpy="0 0 0" xyz="0 0 0"/>
+      <geometry>
+        <box size="0.01 0.01 0.06"/>
+      </geometry>
+    </collision>
+    <inertial>
+      <origin rpy="0 0 0" xyz="0 0 0"/>
+      <mass value="0.005376"/>
+      <inertia ixx="1.6575999999999998e-06" ixy="0" ixz="0" iyy="1.6575999999999998e-06" iyz="0" izz="8.96e-08"/>
+    </inertial>
+  </link>
+  <joint name="torso_bumper_08_placement" type="fixed">
+    <parent link="torso"/>
+    <child link="torso_bumper_08"/>
+    <origin rpy="1.5707963267948966 0 0" xyz="0.076 -0.1 0.025"/>
+  </joint>
+  <link name="torso_bumper_09">
+    <visual>
+      <geometry>
+        <box size="0.01 0.01 0.157"/>
+      </geometry>
+      <material name="lipstick_red"/>
+    </visual>
+    <collision>
+      <origin rpy="0 0 0" xyz="0 0 0"/>
+      <geometry>
+        <box size="0.01 0.01 0.157"/>
+      </geometry>
+    </collision>
+    <inertial>
+      <origin rpy="0 0 0" xyz="0 0 0"/>
+      <mass value="0.0140672"/>
+      <inertia ixx="2.9012427733333334e-05" ixy="0" ixz="0" iyy="2.9012427733333334e-05" iyz="0" izz="2.3445333333333336e-07"/>
+    </inertial>
+  </link>
+  <joint name="torso_bumper_09_placement" type="fixed">
+    <parent link="torso"/>
+    <child link="torso_bumper_09"/>
+    <origin rpy="0 1.5707963267948966 0" xyz="0.0025 0.138 0.025"/>
+  </joint>
+  <link name="torso_bumper_10">
+    <visual>
+      <geometry>
+        <box size="0.01 0.01 0.157"/>
+      </geometry>
+      <material name="lipstick_red"/>
+    </visual>
+    <collision>
+      <origin rpy="0 0 0" xyz="0 0 0"/>
+      <geometry>
+        <box size="0.01 0.01 0.157"/>
+      </geometry>
+    </collision>
+    <inertial>
+      <origin rpy="0 0 0" xyz="0 0 0"/>
+      <mass value="0.0140672"/>
+      <inertia ixx="2.9012427733333334e-05" ixy="0" ixz="0" iyy="2.9012427733333334e-05" iyz="0" izz="2.3445333333333336e-07"/>
+    </inertial>
+  </link>
+  <joint name="torso_bumper_10_placement" type="fixed">
+    <parent link="torso"/>
+    <child link="torso_bumper_10"/>
+    <origin rpy="0 1.5707963267948966 0" xyz="0.0025 -0.128 0.025"/>
+  </joint>
+  <link name="torso_bumper_11">
+    <visual>
+      <geometry>
+        <box size="0.01 0.01 0.276"/>
+      </geometry>
+      <material name="lipstick_red"/>
+    </visual>
+    <collision>
+      <origin rpy="0 0 0" xyz="0 0 0"/>
+      <geometry>
+        <box size="0.01 0.01 0.276"/>
+      </geometry>
+    </collision>
+    <inertial>
+      <origin rpy="0 0 0" xyz="0 0 0"/>
+      <mass value="0.0247296"/>
+      <inertia ixx="0.00015718958080000004" ixy="0" ixz="0" iyy="0.00015718958080000004" iyz="0" izz="4.1216e-07"/>
+    </inertial>
+  </link>
+  <joint name="torso_bumper_11_placement" type="fixed">
+    <parent link="torso"/>
+    <child link="torso_bumper_11"/>
+    <origin rpy="1.5707963267948966 0 0" xyz="-0.074 0.005 0.025"/>
+  </joint>
+  <link name="torso_bumper_12">
+    <visual>
+      <geometry>
+        <box size="0.01 0.01 0.1"/>
+      </geometry>
+      <material name="lipstick_red"/>
+    </visual>
+    <collision>
+      <origin rpy="0 0 0" xyz="0 0 0"/>
+      <geometry>
+        <box size="0.01 0.01 0.1"/>
+      </geometry>
+    </collision>
+    <inertial>
+      <origin rpy="0 0 0" xyz="0 0 0"/>
+      <mass value="0.008960000000000001"/>
+      <inertia ixx="7.541333333333335e-06" ixy="0" ixz="0" iyy="7.541333333333335e-06" iyz="0" izz="1.4933333333333337e-07"/>
+    </inertial>
+  </link>
+  <joint name="torso_bumper_12_placement" type="fixed">
+    <parent link="torso"/>
+    <child link="torso_bumper_12"/>
+    <origin rpy="0 -0.5 0" xyz="-0.0396 0.138 -0.023"/>
+  </joint>
+  <link name="torso_bumper_13">
+    <visual>
+      <geometry>
+        <box size="0.01 0.01 0.1"/>
+      </geometry>
+      <material name="lipstick_red"/>
+    </visual>
+    <collision>
+      <origin rpy="0 0 0" xyz="0 0 0"/>
+      <geometry>
+        <box size="0.01 0.01 0.1"/>
+      </geometry>
+    </collision>
+    <inertial>
+      <origin rpy="0 0 0" xyz="0 0 0"/>
+      <mass value="0.008960000000000001"/>
+      <inertia ixx="7.541333333333335e-06" ixy="0" ixz="0" iyy="7.541333333333335e-06" iyz="0" izz="1.4933333333333337e-07"/>
+    </inertial>
+  </link>
+  <joint name="torso_bumper_13_placement" type="fixed">
+    <parent link="torso"/>
+    <child link="torso_bumper_13"/>
+    <origin rpy="0 -0.5 0" xyz="-0.0396 -0.128 -0.023"/>
+  </joint>
+  <link name="torso_bumper_14">
+    <visual>
+      <geometry>
+        <box size="0.01 0.01 0.021"/>
+      </geometry>
+      <material name="lipstick_red"/>
+    </visual>
+    <collision>
+      <origin rpy="0 0 0" xyz="0 0 0"/>
+      <geometry>
+        <box size="0.01 0.01 0.021"/>
+      </geometry>
+    </collision>
+    <inertial>
+      <origin rpy="0 0 0" xyz="0 0 0"/>
+      <mass value="0.0018816000000000002"/>
+      <inertia ixx="8.482880000000003e-08" ixy="0" ixz="0" iyy="8.482880000000003e-08" iyz="0" izz="3.1360000000000004e-08"/>
+    </inertial>
+  </link>
+  <joint name="torso_bumper_14_placement" type="fixed">
+    <parent link="torso"/>
+    <child link="torso_bumper_14"/>
+    <origin rpy="1.5707963267948966 0 0" xyz="-0.0176 0.1325 -0.0695"/>
+  </joint>
+  <link name="torso_bumper_15">
+    <visual>
+      <geometry>
+        <box size="0.01 0.01 0.021"/>
+      </geometry>
+      <material name="lipstick_red"/>
+    </visual>
+    <collision>
+      <origin rpy="0 0 0" xyz="0 0 0"/>
+      <geometry>
+        <box size="0.01 0.01 0.021"/>
+      </geometry>
+    </collision>
+    <inertial>
+      <origin rpy="0 0 0" xyz="0 0 0"/>
+      <mass value="0.0018816000000000002"/>
+      <inertia ixx="8.482880000000003e-08" ixy="0" ixz="0" iyy="8.482880000000003e-08" iyz="0" izz="3.1360000000000004e-08"/>
+    </inertial>
+  </link>
+  <joint name="torso_bumper_15_placement" type="fixed">
+    <parent link="torso"/>
+    <child link="torso_bumper_15"/>
+    <origin rpy="1.5707963267948966 0 0" xyz="-0.0176 -0.1225 -0.0695"/>
+  </joint>
+  <link name="torso_bumper_16">
+    <visual>
+      <geometry>
+        <box size="0.01 0.01 0.021"/>
+      </geometry>
+      <material name="lipstick_red"/>
+    </visual>
+    <collision>
+      <origin rpy="0 0 0" xyz="0 0 0"/>
+      <geometry>
+        <box size="0.01 0.01 0.021"/>
+      </geometry>
+    </collision>
+    <inertial>
+      <origin rpy="0 0 0" xyz="0 0 0"/>
+      <mass value="0.0018816000000000002"/>
+      <inertia ixx="8.482880000000003e-08" ixy="0" ixz="0" iyy="8.482880000000003e-08" iyz="0" izz="3.1360000000000004e-08"/>
+    </inertial>
+  </link>
+  <joint name="torso_bumper_16_placement" type="fixed">
+    <parent link="torso"/>
+    <child link="torso_bumper_16"/>
+    <origin rpy="1.5707963267948966 0 0" xyz="0.0197 -0.1225 -0.0695"/>
+  </joint>
+  <link name="torso_bumper_17">
+    <visual>
+      <geometry>
+        <box size="0.01 0.01 0.1"/>
+      </geometry>
+      <material name="lipstick_red"/>
+    </visual>
+    <collision>
+      <origin rpy="0 0 0" xyz="0 0 0"/>
+      <geometry>
+        <box size="0.01 0.01 0.1"/>
+      </geometry>
+    </collision>
+    <inertial>
+      <origin rpy="0 0 0" xyz="0 0 0"/>
+      <mass value="0.008960000000000001"/>
+      <inertia ixx="7.541333333333335e-06" ixy="0" ixz="0" iyy="7.541333333333335e-06" iyz="0" izz="1.4933333333333337e-07"/>
+    </inertial>
+  </link>
+  <joint name="torso_bumper_17_placement" type="fixed">
+    <parent link="torso"/>
+    <child link="torso_bumper_17"/>
+    <origin rpy="0 0.5 0" xyz="0.042 -0.128 -0.023"/>
+  </joint>
+  <link name="torso_bumper_18">
+    <visual>
+      <geometry>
+        <box size="0.01 0.01 0.021"/>
+      </geometry>
+      <material name="lipstick_red"/>
+    </visual>
+    <collision>
+      <origin rpy="0 0 0" xyz="0 0 0"/>
+      <geometry>
+        <box size="0.01 0.01 0.021"/>
+      </geometry>
+    </collision>
+    <inertial>
+      <origin rpy="0 0 0" xyz="0 0 0"/>
+      <mass value="0.0018816000000000002"/>
+      <inertia ixx="8.482880000000003e-08" ixy="0" ixz="0" iyy="8.482880000000003e-08" iyz="0" izz="3.1360000000000004e-08"/>
+    </inertial>
+  </link>
+  <joint name="torso_bumper_18_placement" type="fixed">
+    <parent link="torso"/>
+    <child link="torso_bumper_18"/>
+    <origin rpy="1.5707963267948966 0 0" xyz="0.0197 0.1325 -0.0695"/>
+  </joint>
+  <link name="torso_bumper_19">
+    <visual>
+      <geometry>
+        <box size="0.01 0.01 0.1"/>
+      </geometry>
+      <material name="lipstick_red"/>
+    </visual>
+    <collision>
+      <origin rpy="0 0 0" xyz="0 0 0"/>
+      <geometry>
+        <box size="0.01 0.01 0.1"/>
+      </geometry>
+    </collision>
+    <inertial>
+      <origin rpy="0 0 0" xyz="0 0 0"/>
+      <mass value="0.008960000000000001"/>
+      <inertia ixx="7.541333333333335e-06" ixy="0" ixz="0" iyy="7.541333333333335e-06" iyz="0" izz="1.4933333333333337e-07"/>
+    </inertial>
+  </link>
+  <joint name="torso_bumper_19_placement" type="fixed">
+    <parent link="torso"/>
+    <child link="torso_bumper_19"/>
+    <origin rpy="0 0.5 0" xyz="0.042 0.138 -0.023"/>
+  </joint>
+  <!-- IMU -->
+  <link name="imu">
+    <!-- virtual link: https://upkie.github.io/upkie/kinematics.html#virtual-links -->
+    <visual>
+      <geometry>
+        <box size="0 0 0"/>
+      </geometry>
+    </visual>
+    <inertial>
+      <mass value="0.001"/>
+      <origin rpy="0 0 0" xyz="0 0 0"/>
+      <inertia ixx="0" ixy="0" ixz="0" iyy="0" iyz="0" izz="0"/>
+    </inertial>
+  </link>
+  <joint name="imu_placement" type="fixed">
+    <parent link="torso"/>
+    <child link="imu"/>
+    <origin rpy="3.141592653589793 0 3.141592653589793" xyz="0 -0.08 0.02"/>
+  </joint>
+  <!-- OAK-D Lite -->
+  <link name="oak_d_lite">
+    <visual>
+      <geometry>
+        <mesh filename="package://cookie_description/meshes/oak_d_lite.stl"/>
+      </geometry>
+      <material name="black"/>
+    </visual>
+    <collision>
+      <origin rpy="0 0 0" xyz="-0.002 0 -0.0015"/>
+      <geometry>
+        <box size="0.091 0.028 0.0175"/>
+      </geometry>
+    </collision>
+    <inertial>
+      <origin rpy="0 0 0" xyz="-0.002 0 -0.0015"/>
+      <mass value="0.061"/>
+      <inertia ixx="5.542104166666667e-06" ixy="0" ixz="0" iyy="4.3651854166666664e-05" iyz="0" izz="4.6080416666666663e-05"/>
+    </inertial>
+  </link>
+  <joint name="oak_d_lite_placement" type="fixed">
+    <parent link="torso"/>
+    <child link="oak_d_lite"/>
+    <origin rpy="1.5707963267948966 0 -1.5707963267948966" xyz="0.059 0.003 0.017"/>
+  </joint>
+  <!-- Power connector -->
+  <link name="power_connector">
+    <visual>
+      <geometry>
+        <mesh filename="package://cookie_description/meshes/power_connector.stl"/>
+      </geometry>
+      <material name="metallic_gray"/>
+    </visual>
+    <collision>
+      <origin rpy="0 0 0" xyz="0 0 0.008"/>
+      <geometry>
+        <cylinder length="0.016" radius="0.006"/>
+      </geometry>
+    </collision>
+    <inertial>
+      <origin rpy="0 0 0" xyz="0 0 0.008"/>
+      <mass value="0.005"/>
+      <inertia ixx="1.6111979166666666e-07" ixy="0" ixz="0" iyy="1.6111979166666666e-07" iyz="0" izz="1.0890625e-07"/>
+    </inertial>
+  </link>
+  <joint name="power_connector_placement" type="fixed">
+    <parent link="base"/>
+    <child link="power_connector"/>
+    <origin rpy="1.5707963267948966 1.5707963267948966 0" xyz="0.015 -0.075 0.052"/>
+  </joint>
+  <!-- Power switch -->
+  <link name="power_switch">
+    <visual>
+      <geometry>
+        <box size="0.0035 0.022 0.015"/>
+      </geometry>
+      <material name="black"/>
+    </visual>
+    <inertial>
+      <origin rpy="0 0 0" xyz="0 0 0"/>
+      <mass value="0.005"/>
+      <inertia ixx="2.9541666666666666e-07" ixy="0" ixz="0" iyy="9.885416666666668e-08" iyz="0" izz="2.0677083333333332e-07"/>
+    </inertial>
+  </link>
+  <joint name="power_switch_placement" type="fixed">
+    <parent link="base"/>
+    <child link="power_switch"/>
+    <origin rpy="0 0 1.5707963267948966" xyz="-0.0085 -0.089 0.052"/>
+  </joint>
+  <!-- Power switch light -->
+  <link name="power_switch_light">
+    <visual>
+      <geometry>
+        <box size="0.0015 0.002 0.01"/>
+      </geometry>
+      <material name="lipstick_green"/>
+    </visual>
+    <inertial>
+      <origin rpy="0 0 0" xyz="0 0 0"/>
+      <mass value="0.001"/>
+      <inertia ixx="8.666666666666667e-09" ixy="0" ixz="0" iyy="8.520833333333334e-09" iyz="0" izz="5.208333333333333e-10"/>
+    </inertial>
+  </link>
+  <joint name="power_switch_light_placement" type="fixed">
+    <parent link="base"/>
+    <child link="power_switch_light"/>
+    <origin rpy="0 0 1.5707963267948966" xyz="-0.015 -0.09075 0.052"/>
+  </joint>
+  <!-- Screen -->
+  <link name="screen">
+    <visual>
+      <geometry>
+        <box size="0.011 0.165 0.103"/>
+      </geometry>
+      <material name="black"/>
+    </visual>
+    <collision>
+      <origin rpy="0 0 0" xyz="0 0 0"/>
+      <geometry>
+        <box size="0.011 0.165 0.103"/>
+      </geometry>
+    </collision>
+    <inertial>
+      <origin rpy="0 0 0" xyz="0 0 0"/>
+      <mass value="0.3"/>
+      <inertia ixx="0.0009458499999999999" ixy="0" ixz="0" iyy="0.00026824999999999993" iyz="0" izz="0.0006836500000000001"/>
+    </inertial>
+  </link>
+  <joint name="screen_placement" type="fixed">
+    <parent link="base"/>
+    <child link="screen"/>
+    <origin rpy="0 -0.1 0" xyz="-0.058 0.005 -0.037"/>
+  </joint>
+  <link name="left_hip_qdd100_stator">
+    <visual>
+      <geometry>
+        <mesh filename="package://cookie_description/meshes/qdd100_stator.stl"/>
+      </geometry>
+      <material name="black"/>
+    </visual>
+    <collision>
+      <origin rpy="0 0 0" xyz="0 0 0.0145"/>
+      <geometry>
+        <cylinder length="0.0295" radius="0.05"/>
+      </geometry>
+    </collision>
+    <inertial>
+      <origin rpy="0 0 0" xyz="0 0 0.0145"/>
+      <mass value="0.47"/>
+      <inertia ixx="0.0003278347916666667" ixy="0" ixz="0" iyy="0.0003278347916666667" iyz="0" izz="0.0005875000000000001"/>
+    </inertial>
+  </link>
+  <joint name="left_hip_qdd100_stator_placement" type="fixed">
+    <parent link="base"/>
+    <child link="left_hip_qdd100_stator"/>
+    <origin rpy="-1.5707963267948966 5.497787143782138 0" xyz="0.001 0.061 -0.045"/>
+  </joint>
+  <link name="left_hip_qdd100_rotor">
+    <visual>
+      <geometry>
+        <mesh filename="package://cookie_description/meshes/qdd100_rotor.stl"/>
+      </geometry>
+      <material name="black"/>
+    </visual>
+    <collision>
+      <origin rpy="0 0 0" xyz="0 0 -0.003"/>
+      <geometry>
+        <cylinder length="0.006" radius="0.0225"/>
+      </geometry>
+    </collision>
+    <inertial>
+      <origin rpy="0 0 0" xyz="0 0 -0.003"/>
+      <mass value="0.015"/>
+      <inertia ixx="1.9434375e-06" ixy="0" ixz="0" iyy="1.9434375e-06" iyz="0" izz="3.7968749999999995e-06"/>
+    </inertial>
+  </link>
+  <joint name="left_hip" type="revolute">
+    <parent link="left_hip_qdd100_stator"/>
+    <child link="left_hip_qdd100_rotor"/>
+    <origin rpy="0 0 0" xyz="0 0 0.0292"/>
+    <!-- negative z-axis: see https://jpieper.com/2021/04/30/moteus-direction-configuration/ -->
+    <axis xyz="0 0 -1"/>
+    <limit effort="16.0" lower="-1.8" upper="1.8" velocity="28.8"/>
+  </joint>
+  <link name="left_hip_rotor_connector">
+    <visual>
+      <geometry>
+        <mesh filename="package://cookie_description/meshes/rotor_connector.stl"/>
+      </geometry>
+      <material name="mango_yellow"/>
+    </visual>
+    <collision>
+      <origin rpy="0 0 0" xyz="0 -0.005 0.0005"/>
+      <geometry>
+        <box size="0.05 0.058 0.031"/>
+      </geometry>
+    </collision>
+    <inertial>
+      <origin rpy="0 0 0" xyz="0 -0.005 0.0005"/>
+      <mass value="0.047"/>
+      <inertia ixx="1.6939583333333333e-05" ixy="0" ixz="0" iyy="1.3555583333333334e-05" iyz="0" izz="2.2967333333333336e-05"/>
+    </inertial>
+  </link>
+  <joint name="left_hip_rotor_connector_placement" type="fixed">
+    <parent link="left_hip_qdd100_rotor"/>
+    <child link="left_hip_rotor_connector"/>
+    <origin rpy="0 0 -2.356194490192345" xyz="0.0 0.0 0.0157"/>
+  </joint>
+  <link name="left_femur_extrusion">
+    <visual>
+      <origin rpy="0 0 0" xyz="0 -0.079 0"/>
+      <geometry>
+        <box size="0.02 0.20 0.02"/>
+      </geometry>
+      <material name="black"/>
+    </visual>
+    <collision>
+      <origin rpy="0 0 0" xyz="0 -0.079 0"/>
+      <geometry>
+        <box size="0.02 0.2 0.02"/>
+      </geometry>
+    </collision>
+    <inertial>
+      <origin rpy="0 0 0" xyz="0 -0.079 0"/>
+      <mass value="0.09"/>
+      <inertia ixx="0.00030300000000000005" ixy="0" ixz="0" iyy="6e-06" iyz="0" izz="0.00030300000000000005"/>
+    </inertial>
+  </link>
+  <joint name="left_femur_extrusion_placement" type="fixed">
+    <parent link="left_hip_rotor_connector"/>
+    <child link="left_femur_extrusion"/>
+    <origin rpy="0 0 0" xyz="0 0 0"/>
+  </joint>
+  <link name="left_knee_stator">
+    <visual>
+      <geometry>
+        <mesh filename="package://cookie_description/meshes/knee_stator.stl"/>
+      </geometry>
+      <material name="mango_yellow"/>
+    </visual>
+    <collision>
+      <origin rpy="0 0 0" xyz="-0.015 0 -0.008"/>
+      <geometry>
+        <box size="0.09 0.047 0.105"/>
+      </geometry>
+    </collision>
+    <inertial>
+      <origin rpy="0 0 0" xyz="-0.015 0 -0.008"/>
+      <mass value="0.145"/>
+      <inertia ixx="0.0001599108333333333" ixy="0" ixz="0" iyy="0.00023109374999999994" iyz="0" izz="0.0001245670833333333"/>
+    </inertial>
+  </link>
+  <joint name="left_knee_stator_placement" type="fixed">
+    <parent link="left_femur_extrusion"/>
+    <child link="left_knee_stator"/>
+    <origin rpy="-1.5707963267948966 -1.5707963267948966 0" xyz="0 -0.173 0"/>
+  </joint>
+  <link name="left_knee_bumper">
+    <visual>
+      <geometry>
+        <mesh filename="package://cookie_description/meshes/knee_bumper.stl"/>
+      </geometry>
+      <material name="lipstick_red"/>
+    </visual>
+    <collision>
+      <origin rpy="0 0 0" xyz="0 0.03 0"/>
+      <geometry>
+        <cylinder length="0.03" radius="0.065"/>
+      </geometry>
+    </collision>
+    <inertial>
+      <origin rpy="0 0 0" xyz="0 0.03 0"/>
+      <mass value="0.109"/>
+      <inertia ixx="0.00020573750000000003" ixy="0" ixz="0" iyy="0.00020573750000000003" iyz="0" izz="0.000395125"/>
+    </inertial>
+  </link>
+  <joint name="left_knee_bumper_placement" type="fixed">
+    <parent link="left_knee_stator"/>
+    <child link="left_knee_bumper"/>
+    <origin rpy="-1.5707963267948966 0 1.5707963267948966" xyz="-0.0305 0 -0.01"/>
+  </joint>
+  <link name="left_knee_qdd100_stator">
+    <visual>
+      <geometry>
+        <mesh filename="package://cookie_description/meshes/qdd100_stator.stl"/>
+      </geometry>
+      <material name="black"/>
+    </visual>
+    <collision>
+      <origin rpy="0 0 0" xyz="0 0 0.0145"/>
+      <geometry>
+        <cylinder length="0.0295" radius="0.05"/>
+      </geometry>
+    </collision>
+    <inertial>
+      <origin rpy="0 0 0" xyz="0 0 0.0145"/>
+      <mass value="0.47"/>
+      <inertia ixx="0.0003278347916666667" ixy="0" ixz="0" iyy="0.0003278347916666667" iyz="0" izz="0.0005875000000000001"/>
+    </inertial>
+  </link>
+  <joint name="left_knee_qdd100_stator_placement" type="fixed">
+    <parent link="left_knee_stator"/>
+    <child link="left_knee_qdd100_stator"/>
+    <origin rpy="-1.5707963267948966 0 -1.5707963267948966" xyz="-0.0453 0.0 -0.04"/>
+  </joint>
+  <link name="left_knee_qdd100_rotor">
+    <visual>
+      <geometry>
+        <mesh filename="package://cookie_description/meshes/qdd100_rotor.stl"/>
+      </geometry>
+      <material name="black"/>
+    </visual>
+    <collision>
+      <origin rpy="0 0 0" xyz="0 0 -0.003"/>
+      <geometry>
+        <cylinder length="0.006" radius="0.0225"/>
+      </geometry>
+    </collision>
+    <inertial>
+      <origin rpy="0 0 0" xyz="0 0 -0.003"/>
+      <mass value="0.015"/>
+      <inertia ixx="1.9434375e-06" ixy="0" ixz="0" iyy="1.9434375e-06" iyz="0" izz="3.7968749999999995e-06"/>
+    </inertial>
+  </link>
+  <joint name="left_knee" type="revolute">
+    <parent link="left_knee_qdd100_stator"/>
+    <child link="left_knee_qdd100_rotor"/>
+    <origin rpy="0 0 0" xyz="0 0 0.0292"/>
+    <!-- negative z-axis: see https://jpieper.com/2021/04/30/moteus-direction-configuration/ -->
+    <axis xyz="0 0 -1"/>
+    <limit effort="16.0" lower="-1.8" upper="1.8" velocity="28.8"/>
+  </joint>
+  <link name="left_knee_rotor_connector">
+    <visual>
+      <geometry>
+        <mesh filename="package://cookie_description/meshes/rotor_connector.stl"/>
+      </geometry>
+      <material name="mango_yellow"/>
+    </visual>
+    <collision>
+      <origin rpy="0 0 0" xyz="0 -0.005 0.0005"/>
+      <geometry>
+        <box size="0.05 0.058 0.031"/>
+      </geometry>
+    </collision>
+    <inertial>
+      <origin rpy="0 0 0" xyz="0 -0.005 0.0005"/>
+      <mass value="0.047"/>
+      <inertia ixx="1.6939583333333333e-05" ixy="0" ixz="0" iyy="1.3555583333333334e-05" iyz="0" izz="2.2967333333333336e-05"/>
+    </inertial>
+  </link>
+  <joint name="left_knee_rotor_connector_placement" type="fixed">
+    <parent link="left_knee_qdd100_rotor"/>
+    <child link="left_knee_rotor_connector"/>
+    <origin rpy="0 0 3.141592653589793" xyz="0.0 0.0 0.0157"/>
+  </joint>
+  <link name="left_tibia_extrusion">
+    <visual>
+      <origin rpy="0 0 0" xyz="0 -0.079 0"/>
+      <geometry>
+        <box size="0.02 0.15 0.02"/>
+      </geometry>
+      <material name="black"/>
+    </visual>
+    <collision>
+      <origin rpy="0 0 0" xyz="0 -0.079 0"/>
+      <geometry>
+        <box size="0.02 0.15 0.02"/>
+      </geometry>
+    </collision>
+    <inertial>
+      <origin rpy="0 0 0" xyz="0 -0.079 0"/>
+      <mass value="0.0675"/>
+      <inertia ixx="0.0001288125" ixy="0" ixz="0" iyy="4.5e-06" iyz="0" izz="0.0001288125"/>
+    </inertial>
+  </link>
+  <joint name="left_tibia_extrusion_placement" type="fixed">
+    <parent link="left_knee_rotor_connector"/>
+    <child link="left_tibia_extrusion"/>
+    <origin rpy="0 0 0" xyz="0 0 0"/>
+  </joint>
+  <link name="left_ankle_stator">
+    <visual>
+      <geometry>
+        <mesh filename="package://cookie_description/meshes/ankle_stator.stl"/>
+      </geometry>
+      <material name="mango_yellow"/>
+    </visual>
+    <collision>
+      <origin rpy="0 0 0" xyz="-0.001 -0.022 0"/>
+      <geometry>
+        <box size="0.08 0.135 0.06"/>
+      </geometry>
+    </collision>
+    <inertial>
+      <origin rpy="0 0 0" xyz="-0.001 -0.022 0"/>
+      <mass value="0.16"/>
+      <inertia ixx="0.000291" ixy="0" ixz="0" iyy="0.00013333333333333334" iyz="0" izz="0.0003283333333333333"/>
+    </inertial>
+  </link>
+  <joint name="left_ankle_stator_placement" type="fixed">
+    <parent link="left_tibia_extrusion"/>
+    <child link="left_ankle_stator"/>
+    <origin rpy="0 -1.5707963267948966 0" xyz="0 -0.177 -0.01"/>
+  </joint>
+  <link name="left_ankle_heat_spreader">
+    <visual>
+      <geometry>
+        <box size="0.002 0.05 0.05"/>
+      </geometry>
+      <material name="black"/>
+    </visual>
+    <collision>
+      <origin rpy="0 0 0" xyz="0 0 0"/>
+      <geometry>
+        <box size="0.002 0.05 0.05"/>
+      </geometry>
+    </collision>
+    <inertial>
+      <origin rpy="0 0 0" xyz="0 0 0"/>
+      <mass value="0.0067"/>
+      <inertia ixx="2.7916666666666673e-06" ixy="0" ixz="0" iyy="1.398066666666667e-06" iyz="0" izz="1.398066666666667e-06"/>
+    </inertial>
+  </link>
+  <joint name="left_ankle_heat_spreader_placement" type="fixed">
+    <parent link="left_ankle_stator"/>
+    <child link="left_ankle_heat_spreader"/>
+    <origin rpy="0 0 0" xyz="-0.0365 -0.058 0"/>
+  </joint>
+  <link name="left_wheel_mj5208_stator">
+    <visual>
+      <geometry>
+        <mesh filename="package://cookie_description/meshes/mj5208_stator.stl"/>
+      </geometry>
+      <material name="mj5208_stator"/>
+    </visual>
+    <collision>
+      <origin rpy="0 0 0" xyz="0 0 0.008"/>
+      <geometry>
+        <cylinder length="0.018" radius="0.0267"/>
+      </geometry>
+    </collision>
+    <inertial>
+      <origin rpy="0 0 0" xyz="0 0 0.008"/>
+      <mass value="0.1721"/>
+      <inertia ixx="3.531879225000001e-05" ixy="0" ixz="0" iyy="3.531879225000001e-05" iyz="0" izz="6.134418450000001e-05"/>
+    </inertial>
+  </link>
+  <joint name="left_wheel_mj5208_stator_placement" type="fixed">
+    <parent link="left_ankle_stator"/>
+    <child link="left_wheel_mj5208_stator"/>
+    <origin rpy="0 1.5707963267948966 0" xyz="-0.025 -0.064 -0.001"/>
+  </joint>
+  <link name="left_wheel_mj5208_rotor">
+    <visual>
+      <geometry>
+        <mesh filename="package://cookie_description/meshes/mj5208_rotor.stl"/>
+      </geometry>
+      <material name="mj5208_rotor"/>
+    </visual>
+    <collision>
+      <origin rpy="0 0 0" xyz="0 0 0.015"/>
+      <geometry>
+        <cylinder length="0.016" radius="0.034"/>
+      </geometry>
+    </collision>
+    <inertial>
+      <origin rpy="0 0 0" xyz="0 0 0.015"/>
+      <mass value="0.05"/>
+      <inertia ixx="1.551666666666667e-05" ixy="0" ixz="0" iyy="1.551666666666667e-05" iyz="0" izz="2.8900000000000005e-05"/>
+    </inertial>
+  </link>
+  <joint name="left_wheel" type="revolute">
+    <parent link="left_wheel_mj5208_stator"/>
+    <child link="left_wheel_mj5208_rotor"/>
+    <origin rpy="0 0 0" xyz="0 0 0"/>
+    <!-- negative z-axis: see https://jpieper.com/2021/04/30/moteus-direction-configuration/ -->
+    <axis xyz="0 0 -1"/>
+    <limit effort="1.7" velocity="111.0"/>
+  </joint>
+  <link name="left_wheel_hub">
+    <visual>
+      <geometry>
+        <mesh filename="package://cookie_description/meshes/wheel_hub.stl"/>
+      </geometry>
+      <material name="mango_yellow"/>
+    </visual>
+    <collision>
+      <origin rpy="0 0 0" xyz="0 0 0"/>
+      <geometry>
+        <cylinder length="0.02" radius="0.045"/>
+      </geometry>
+    </collision>
+    <inertial>
+      <origin rpy="0 0 0" xyz="0 0 0"/>
+      <mass value="0.063"/>
+      <inertia ixx="3.399375e-05" ixy="0" ixz="0" iyy="3.399375e-05" iyz="0" izz="6.37875e-05"/>
+    </inertial>
+  </link>
+  <joint name="left_wheel_hub_placement" type="fixed">
+    <parent link="left_wheel_mj5208_rotor"/>
+    <child link="left_wheel_hub"/>
+    <origin rpy="0 0 0" xyz="0 0 0.035"/>
+  </joint>
+  <link name="left_wheel_tire">
+    <visual>
+      <geometry>
+        <mesh filename="package://cookie_description/meshes/wheel_tire.stl"/>
+      </geometry>
+      <material name="lipstick_red"/>
+    </visual>
+    <contact>
+      <lateral_friction value="0.5"/>
+      <rolling_friction value="0.01"/>
+      <stiffness value="30000"/>
+      <damping value="1000"/>
+    </contact>
+    <collision>
+      <origin rpy="0 0 0" xyz="0 0 0"/>
+      <geometry>
+        <cylinder length="0.02" radius="0.073"/>
+      </geometry>
+    </collision>
+    <inertial>
+      <origin rpy="0 0 0" xyz="0 0 0"/>
+      <mass value="0.095"/>
+      <inertia ixx="0.00017571041666666662" ixy="0" ixz="0" iyy="0.00017571041666666662" iyz="0" izz="0.00034508749999999995"/>
+    </inertial>
+  </link>
+  <joint name="left_wheel_tire_placement" type="fixed">
+    <parent link="left_wheel_hub"/>
+    <child link="left_wheel_tire"/>
+    <origin rpy="0 0 0" xyz="0 0 0"/>
+  </joint>
+  <link name="left_contact">
+    <!-- virtual link: https://upkie.github.io/upkie/kinematics.html#virtual-links -->
+    <visual>
+      <geometry>
+        <box size="0 0 0"/>
+      </geometry>
+    </visual>
+    <inertial>
+      <mass value="0.001"/>
+      <origin rpy="0 0 0" xyz="0 0 0"/>
+      <inertia ixx="0" ixy="0" ixz="0" iyy="0" iyz="0" izz="0"/>
+    </inertial>
+  </link>
+  <joint name="left_contact_placement" type="fixed">
+    <parent link="left_wheel_tire"/>
+    <child link="left_contact"/>
+    <origin rpy="-1.5707963267948966 3.141592653589793 0" xyz="0 -0.073 0"/>
+  </joint>
+  <link name="right_hip_qdd100_stator">
+    <visual>
+      <geometry>
+        <mesh filename="package://cookie_description/meshes/qdd100_stator.stl"/>
+      </geometry>
+      <material name="black"/>
+    </visual>
+    <collision>
+      <origin rpy="0 0 0" xyz="0 0 0.0145"/>
+      <geometry>
+        <cylinder length="0.0295" radius="0.05"/>
+      </geometry>
+    </collision>
+    <inertial>
+      <origin rpy="0 0 0" xyz="0 0 0.0145"/>
+      <mass value="0.47"/>
+      <inertia ixx="0.0003278347916666667" ixy="0" ixz="0" iyy="0.0003278347916666667" iyz="0" izz="0.0005875000000000001"/>
+    </inertial>
+  </link>
+  <joint name="right_hip_qdd100_stator_placement" type="fixed">
+    <parent link="base"/>
+    <child link="right_hip_qdd100_stator"/>
+    <origin rpy="1.5707963267948966 -3.9269908169872414 0" xyz="0.001 -0.051 -0.045"/>
+  </joint>
+  <link name="right_hip_qdd100_rotor">
+    <visual>
+      <geometry>
+        <mesh filename="package://cookie_description/meshes/qdd100_rotor.stl"/>
+      </geometry>
+      <material name="black"/>
+    </visual>
+    <collision>
+      <origin rpy="0 0 0" xyz="0 0 -0.003"/>
+      <geometry>
+        <cylinder length="0.006" radius="0.0225"/>
+      </geometry>
+    </collision>
+    <inertial>
+      <origin rpy="0 0 0" xyz="0 0 -0.003"/>
+      <mass value="0.015"/>
+      <inertia ixx="1.9434375e-06" ixy="0" ixz="0" iyy="1.9434375e-06" iyz="0" izz="3.7968749999999995e-06"/>
+    </inertial>
+  </link>
+  <joint name="right_hip" type="revolute">
+    <parent link="right_hip_qdd100_stator"/>
+    <child link="right_hip_qdd100_rotor"/>
+    <origin rpy="0 0 0" xyz="0 0 0.0292"/>
+    <!-- negative z-axis: see https://jpieper.com/2021/04/30/moteus-direction-configuration/ -->
+    <axis xyz="0 0 -1"/>
+    <limit effort="16.0" lower="-1.8" upper="1.8" velocity="28.8"/>
+  </joint>
+  <link name="right_hip_rotor_connector">
+    <visual>
+      <geometry>
+        <mesh filename="package://cookie_description/meshes/rotor_connector.stl"/>
+      </geometry>
+      <material name="mango_yellow"/>
+    </visual>
+    <collision>
+      <origin rpy="0 0 0" xyz="0 -0.005 0.0005"/>
+      <geometry>
+        <box size="0.05 0.058 0.031"/>
+      </geometry>
+    </collision>
+    <inertial>
+      <origin rpy="0 0 0" xyz="0 -0.005 0.0005"/>
+      <mass value="0.047"/>
+      <inertia ixx="1.6939583333333333e-05" ixy="0" ixz="0" iyy="1.3555583333333334e-05" iyz="0" izz="2.2967333333333336e-05"/>
+    </inertial>
+  </link>
+  <joint name="right_hip_rotor_connector_placement" type="fixed">
+    <parent link="right_hip_qdd100_rotor"/>
+    <child link="right_hip_rotor_connector"/>
+    <origin rpy="0 0 2.356194490192345" xyz="0.0 0.0 0.0157"/>
+  </joint>
+  <link name="right_femur_extrusion">
+    <visual>
+      <origin rpy="0 0 0" xyz="0 -0.079 0"/>
+      <geometry>
+        <box size="0.02 0.20 0.02"/>
+      </geometry>
+      <material name="black"/>
+    </visual>
+    <collision>
+      <origin rpy="0 0 0" xyz="0 -0.079 0"/>
+      <geometry>
+        <box size="0.02 0.2 0.02"/>
+      </geometry>
+    </collision>
+    <inertial>
+      <origin rpy="0 0 0" xyz="0 -0.079 0"/>
+      <mass value="0.09"/>
+      <inertia ixx="0.00030300000000000005" ixy="0" ixz="0" iyy="6e-06" iyz="0" izz="0.00030300000000000005"/>
+    </inertial>
+  </link>
+  <joint name="right_femur_extrusion_placement" type="fixed">
+    <parent link="right_hip_rotor_connector"/>
+    <child link="right_femur_extrusion"/>
+    <origin rpy="0 0 0" xyz="0 0 0"/>
+  </joint>
+  <link name="right_knee_stator">
+    <visual>
+      <geometry>
+        <mesh filename="package://cookie_description/meshes/knee_stator.stl"/>
+      </geometry>
+      <material name="mango_yellow"/>
+    </visual>
+    <collision>
+      <origin rpy="0 0 0" xyz="-0.015 0 -0.008"/>
+      <geometry>
+        <box size="0.09 0.047 0.105"/>
+      </geometry>
+    </collision>
+    <inertial>
+      <origin rpy="0 0 0" xyz="-0.015 0 -0.008"/>
+      <mass value="0.145"/>
+      <inertia ixx="0.0001599108333333333" ixy="0" ixz="0" iyy="0.00023109374999999994" iyz="0" izz="0.0001245670833333333"/>
+    </inertial>
+  </link>
+  <joint name="right_knee_stator_placement" type="fixed">
+    <parent link="right_femur_extrusion"/>
+    <child link="right_knee_stator"/>
+    <origin rpy="-1.5707963267948966 -1.5707963267948966 0" xyz="0 -0.173 0"/>
+  </joint>
+  <link name="right_knee_bumper">
+    <visual>
+      <geometry>
+        <mesh filename="package://cookie_description/meshes/knee_bumper.stl"/>
+      </geometry>
+      <material name="lipstick_red"/>
+    </visual>
+    <collision>
+      <origin rpy="0 0 0" xyz="0 0.03 0"/>
+      <geometry>
+        <cylinder length="0.03" radius="0.065"/>
+      </geometry>
+    </collision>
+    <inertial>
+      <origin rpy="0 0 0" xyz="0 0.03 0"/>
+      <mass value="0.109"/>
+      <inertia ixx="0.00020573750000000003" ixy="0" ixz="0" iyy="0.00020573750000000003" iyz="0" izz="0.000395125"/>
+    </inertial>
+  </link>
+  <joint name="right_knee_bumper_placement" type="fixed">
+    <parent link="right_knee_stator"/>
+    <child link="right_knee_bumper"/>
+    <origin rpy="-1.5707963267948966 0 1.5707963267948966" xyz="-0.0305 0 -0.01"/>
+  </joint>
+  <link name="right_knee_qdd100_stator">
+    <visual>
+      <geometry>
+        <mesh filename="package://cookie_description/meshes/qdd100_stator.stl"/>
+      </geometry>
+      <material name="black"/>
+    </visual>
+    <collision>
+      <origin rpy="0 0 0" xyz="0 0 0.0145"/>
+      <geometry>
+        <cylinder length="0.0295" radius="0.05"/>
+      </geometry>
+    </collision>
+    <inertial>
+      <origin rpy="0 0 0" xyz="0 0 0.0145"/>
+      <mass value="0.47"/>
+      <inertia ixx="0.0003278347916666667" ixy="0" ixz="0" iyy="0.0003278347916666667" iyz="0" izz="0.0005875000000000001"/>
+    </inertial>
+  </link>
+  <joint name="right_knee_qdd100_stator_placement" type="fixed">
+    <parent link="right_knee_stator"/>
+    <child link="right_knee_qdd100_stator"/>
+    <origin rpy="-1.5707963267948966 0 -1.5707963267948966" xyz="-0.0453 0.0 -0.04"/>
+  </joint>
+  <link name="right_knee_qdd100_rotor">
+    <visual>
+      <geometry>
+        <mesh filename="package://cookie_description/meshes/qdd100_rotor.stl"/>
+      </geometry>
+      <material name="black"/>
+    </visual>
+    <collision>
+      <origin rpy="0 0 0" xyz="0 0 -0.003"/>
+      <geometry>
+        <cylinder length="0.006" radius="0.0225"/>
+      </geometry>
+    </collision>
+    <inertial>
+      <origin rpy="0 0 0" xyz="0 0 -0.003"/>
+      <mass value="0.015"/>
+      <inertia ixx="1.9434375e-06" ixy="0" ixz="0" iyy="1.9434375e-06" iyz="0" izz="3.7968749999999995e-06"/>
+    </inertial>
+  </link>
+  <joint name="right_knee" type="revolute">
+    <parent link="right_knee_qdd100_stator"/>
+    <child link="right_knee_qdd100_rotor"/>
+    <origin rpy="0 0 0" xyz="0 0 0.0292"/>
+    <!-- negative z-axis: see https://jpieper.com/2021/04/30/moteus-direction-configuration/ -->
+    <axis xyz="0 0 -1"/>
+    <limit effort="16.0" lower="-1.8" upper="1.8" velocity="28.8"/>
+  </joint>
+  <link name="right_knee_rotor_connector">
+    <visual>
+      <geometry>
+        <mesh filename="package://cookie_description/meshes/rotor_connector.stl"/>
+      </geometry>
+      <material name="mango_yellow"/>
+    </visual>
+    <collision>
+      <origin rpy="0 0 0" xyz="0 -0.005 0.0005"/>
+      <geometry>
+        <box size="0.05 0.058 0.031"/>
+      </geometry>
+    </collision>
+    <inertial>
+      <origin rpy="0 0 0" xyz="0 -0.005 0.0005"/>
+      <mass value="0.047"/>
+      <inertia ixx="1.6939583333333333e-05" ixy="0" ixz="0" iyy="1.3555583333333334e-05" iyz="0" izz="2.2967333333333336e-05"/>
+    </inertial>
+  </link>
+  <joint name="right_knee_rotor_connector_placement" type="fixed">
+    <parent link="right_knee_qdd100_rotor"/>
+    <child link="right_knee_rotor_connector"/>
+    <origin rpy="0 0 3.141592653589793" xyz="0.0 0.0 0.0157"/>
+  </joint>
+  <link name="right_tibia_extrusion">
+    <visual>
+      <origin rpy="0 0 0" xyz="0 -0.079 0"/>
+      <geometry>
+        <box size="0.02 0.15 0.02"/>
+      </geometry>
+      <material name="black"/>
+    </visual>
+    <collision>
+      <origin rpy="0 0 0" xyz="0 -0.079 0"/>
+      <geometry>
+        <box size="0.02 0.15 0.02"/>
+      </geometry>
+    </collision>
+    <inertial>
+      <origin rpy="0 0 0" xyz="0 -0.079 0"/>
+      <mass value="0.0675"/>
+      <inertia ixx="0.0001288125" ixy="0" ixz="0" iyy="4.5e-06" iyz="0" izz="0.0001288125"/>
+    </inertial>
+  </link>
+  <joint name="right_tibia_extrusion_placement" type="fixed">
+    <parent link="right_knee_rotor_connector"/>
+    <child link="right_tibia_extrusion"/>
+    <origin rpy="0 0 0" xyz="0 0 0"/>
+  </joint>
+  <link name="right_ankle_stator">
+    <visual>
+      <geometry>
+        <mesh filename="package://cookie_description/meshes/ankle_stator.stl"/>
+      </geometry>
+      <material name="mango_yellow"/>
+    </visual>
+    <collision>
+      <origin rpy="0 0 0" xyz="-0.001 -0.022 0"/>
+      <geometry>
+        <box size="0.08 0.135 0.06"/>
+      </geometry>
+    </collision>
+    <inertial>
+      <origin rpy="0 0 0" xyz="-0.001 -0.022 0"/>
+      <mass value="0.16"/>
+      <inertia ixx="0.000291" ixy="0" ixz="0" iyy="0.00013333333333333334" iyz="0" izz="0.0003283333333333333"/>
+    </inertial>
+  </link>
+  <joint name="right_ankle_stator_placement" type="fixed">
+    <parent link="right_tibia_extrusion"/>
+    <child link="right_ankle_stator"/>
+    <origin rpy="0 -1.5707963267948966 0" xyz="0 -0.177 -0.01"/>
+  </joint>
+  <link name="right_ankle_heat_spreader">
+    <visual>
+      <geometry>
+        <box size="0.002 0.05 0.05"/>
+      </geometry>
+      <material name="black"/>
+    </visual>
+    <collision>
+      <origin rpy="0 0 0" xyz="0 0 0"/>
+      <geometry>
+        <box size="0.002 0.05 0.05"/>
+      </geometry>
+    </collision>
+    <inertial>
+      <origin rpy="0 0 0" xyz="0 0 0"/>
+      <mass value="0.0067"/>
+      <inertia ixx="2.7916666666666673e-06" ixy="0" ixz="0" iyy="1.398066666666667e-06" iyz="0" izz="1.398066666666667e-06"/>
+    </inertial>
+  </link>
+  <joint name="right_ankle_heat_spreader_placement" type="fixed">
+    <parent link="right_ankle_stator"/>
+    <child link="right_ankle_heat_spreader"/>
+    <origin rpy="0 0 0" xyz="-0.0365 -0.058 0"/>
+  </joint>
+  <link name="right_wheel_mj5208_stator">
+    <visual>
+      <geometry>
+        <mesh filename="package://cookie_description/meshes/mj5208_stator.stl"/>
+      </geometry>
+      <material name="mj5208_stator"/>
+    </visual>
+    <collision>
+      <origin rpy="0 0 0" xyz="0 0 0.008"/>
+      <geometry>
+        <cylinder length="0.018" radius="0.0267"/>
+      </geometry>
+    </collision>
+    <inertial>
+      <origin rpy="0 0 0" xyz="0 0 0.008"/>
+      <mass value="0.1721"/>
+      <inertia ixx="3.531879225000001e-05" ixy="0" ixz="0" iyy="3.531879225000001e-05" iyz="0" izz="6.134418450000001e-05"/>
+    </inertial>
+  </link>
+  <joint name="right_wheel_mj5208_stator_placement" type="fixed">
+    <parent link="right_ankle_stator"/>
+    <child link="right_wheel_mj5208_stator"/>
+    <origin rpy="0 1.5707963267948966 0" xyz="-0.025 -0.064 -0.001"/>
+  </joint>
+  <link name="right_wheel_mj5208_rotor">
+    <visual>
+      <geometry>
+        <mesh filename="package://cookie_description/meshes/mj5208_rotor.stl"/>
+      </geometry>
+      <material name="mj5208_rotor"/>
+    </visual>
+    <collision>
+      <origin rpy="0 0 0" xyz="0 0 0.015"/>
+      <geometry>
+        <cylinder length="0.016" radius="0.034"/>
+      </geometry>
+    </collision>
+    <inertial>
+      <origin rpy="0 0 0" xyz="0 0 0.015"/>
+      <mass value="0.05"/>
+      <inertia ixx="1.551666666666667e-05" ixy="0" ixz="0" iyy="1.551666666666667e-05" iyz="0" izz="2.8900000000000005e-05"/>
+    </inertial>
+  </link>
+  <joint name="right_wheel" type="revolute">
+    <parent link="right_wheel_mj5208_stator"/>
+    <child link="right_wheel_mj5208_rotor"/>
+    <origin rpy="0 0 0" xyz="0 0 0"/>
+    <!-- negative z-axis: see https://jpieper.com/2021/04/30/moteus-direction-configuration/ -->
+    <axis xyz="0 0 -1"/>
+    <limit effort="1.7" velocity="111.0"/>
+  </joint>
+  <link name="right_wheel_hub">
+    <visual>
+      <geometry>
+        <mesh filename="package://cookie_description/meshes/wheel_hub.stl"/>
+      </geometry>
+      <material name="mango_yellow"/>
+    </visual>
+    <collision>
+      <origin rpy="0 0 0" xyz="0 0 0"/>
+      <geometry>
+        <cylinder length="0.02" radius="0.045"/>
+      </geometry>
+    </collision>
+    <inertial>
+      <origin rpy="0 0 0" xyz="0 0 0"/>
+      <mass value="0.063"/>
+      <inertia ixx="3.399375e-05" ixy="0" ixz="0" iyy="3.399375e-05" iyz="0" izz="6.37875e-05"/>
+    </inertial>
+  </link>
+  <joint name="right_wheel_hub_placement" type="fixed">
+    <parent link="right_wheel_mj5208_rotor"/>
+    <child link="right_wheel_hub"/>
+    <origin rpy="0 0 0" xyz="0 0 0.035"/>
+  </joint>
+  <link name="right_wheel_tire">
+    <visual>
+      <geometry>
+        <mesh filename="package://cookie_description/meshes/wheel_tire.stl"/>
+      </geometry>
+      <material name="lipstick_red"/>
+    </visual>
+    <contact>
+      <lateral_friction value="0.5"/>
+      <rolling_friction value="0.01"/>
+      <stiffness value="30000"/>
+      <damping value="1000"/>
+    </contact>
+    <collision>
+      <origin rpy="0 0 0" xyz="0 0 0"/>
+      <geometry>
+        <cylinder length="0.02" radius="0.073"/>
+      </geometry>
+    </collision>
+    <inertial>
+      <origin rpy="0 0 0" xyz="0 0 0"/>
+      <mass value="0.095"/>
+      <inertia ixx="0.00017571041666666662" ixy="0" ixz="0" iyy="0.00017571041666666662" iyz="0" izz="0.00034508749999999995"/>
+    </inertial>
+  </link>
+  <joint name="right_wheel_tire_placement" type="fixed">
+    <parent link="right_wheel_hub"/>
+    <child link="right_wheel_tire"/>
+    <origin rpy="0 0 0" xyz="0 0 0"/>
+  </joint>
+  <link name="right_contact">
+    <!-- virtual link: https://upkie.github.io/upkie/kinematics.html#virtual-links -->
+    <visual>
+      <geometry>
+        <box size="0 0 0"/>
+      </geometry>
+    </visual>
+    <inertial>
+      <mass value="0.001"/>
+      <origin rpy="0 0 0" xyz="0 0 0"/>
+      <inertia ixx="0" ixy="0" ixz="0" iyy="0" iyz="0" izz="0"/>
+    </inertial>
+  </link>
+  <joint name="right_contact_placement" type="fixed">
+    <parent link="right_wheel_tire"/>
+    <child link="right_contact"/>
+    <origin rpy="-1.5707963267948966 0.0 0" xyz="0 -0.073 0"/>
+  </joint>
+</robot>

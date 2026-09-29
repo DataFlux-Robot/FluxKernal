@@ -1,1 +1,5 @@
 fluxkernel/demo/static/vendor/* linguist-vendored -whitespace
+
+robots/models/** -text linguist-vendored -whitespace
+robots/models/**/Robot.lean linguist-generated
+robots/index.json -text

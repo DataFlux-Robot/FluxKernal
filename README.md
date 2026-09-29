@@ -1,21 +1,104 @@
 <div align="center">
 
-# FluxKernel
+# FluxKernal
 
-**An evidence-carrying design and manufacturing kernel for AI agents.**
+**Offline URDF ↔ Lean conversion. Verifiable robot documents. Zero LLM calls.**
 
-Turn a product reference into named parts, CAD artifacts, manufacturing dependencies,
-and a plan whose stated closure conditions can be checked by Lean 4.
+[Robot library](robots/README.md) · [295-case index](robots/CATALOG.md) · [Evidence](docs/BIDIRECTIONAL_CATALOG.md) · [中文](README.zh-CN.md) · [Interactive showcase](https://www.datafluxdynamics.ltd/technology/fluxkernel/)
 
-[Interactive showcase](https://www.datafluxdynamics.ltd/technology/fluxkernel/) · [Quickstart](docs/QUICKSTART.md) · [中文](README.zh-CN.md) · [Contribute](CONTRIBUTING.md)
+![FluxKernal — 295 URDF documents through a local conversion kernel to Lean documents](docs/media/fluxkernal-295-funnel.png)
+
+**295 / 297 document round trips · 62 complete asset packages · OS-enforced offline testing**
 
 </div>
 
-**Native robot personalization (v0.10):** GLM-5.3-Flash can propose, build, inspect and revise an additive Microduck/XGO head accessory in a bounded loop. STEP/STL, native variants, Lean structure evidence and rejected attempts are retained. Mounting and walking remain unverified. [Run the pilot](docs/ROBOT_PERSONALIZATION.md).
+The gallery is a conceptual illustration. **295 counts URDF files/configurations**
+from the tested catalog, and blur is a visual metaphor. Conversion preserves the
+robot description and geometry references; the image does not depict deblurring
+or measured reconstruction quality. [Artwork provenance](docs/media/ARTWORK.md).
 
-> **Development preview.** This repository currently requires access. A checked
-> manufacturing plan is conditional on its declared inputs; it is not a certificate
-> of physical manufacturability, supplier availability, or product performance.
+FluxKernal turns robot descriptions into executable, data-only Lean documents and
+back, preserving XML values, numeric spelling and supported resource bindings.
+**Conversion and verification use local Python and Lean, with no agent, API key or
+model-token charge.** Software installation and asset acquisition can happen online;
+conversion runs offline. Image understanding and agent-driven design are separate,
+optional workflows that may call a model.
+
+## Evidence you can inspect
+
+All **114 URDF-labelled catalog entries / 297 distinct files** received a recorded
+result. Both directions passed for **295 valid XML documents**, including Lean edits
+that must propagate into URDF. Two malformed/non-standalone upstream XML files could
+not seed reverse conversion. Complete asset-package round trips passed **62/297**;
+URI resolution, parent-relative paths, absent assets and Xacro remain open work.
+
+- [Every robot entry](docs/releases/2026-09-29-bidirectional-catalog-evidence/catalog.md)
+- [Every file and both directions](docs/releases/2026-09-29-bidirectional-catalog-evidence/cases.csv)
+- [Independent checks, failure boundaries and reproduction](docs/BIDIRECTIONAL_CATALOG.md)
+- [Offline execution evidence](docs/OFFLINE_URDF.md)
+
+These tests establish document preservation and rejection behavior. Physical robot
+performance, manufacturability and a universal Lean translation theorem remain
+outside the claim.
+
+## URDF and FluxKernal
+
+URDF is the established robot-description exchange format in the ROS ecosystem.
+FluxKernal adds an executable Lean representation and an evidence package while
+keeping URDF as an export target. The comparison concerns the URDF format and
+FluxKernal's current implementation; other URDF tools can provide additional checks.
+
+| Capability | URDF | FluxKernal today |
+| --- | --- | --- |
+| Links, joints, frames, inertia and geometry references | Native XML fields | Preserved in the complete Lean document value |
+| Numerical spelling | Written in XML attributes | Retained as strings through conversion, without float rounding |
+| Execution and checking | Parsed by URDF tooling | Canonical data parser + actual local Lean renderer + equality checks |
+| Resource integrity | Mesh references in the document | SHA-256-bound supported local resources and recursive dependencies |
+| BOM, control contracts and design history | Outside the core robot-description fields | Preserved for native bundles through a bound sidecar |
+| Robotics ecosystem | Broad ROS and simulator support | URDF export; complete asset compatibility remains 62/297 in this audit |
+| Model/agent requirement | None inherent in the format | None for conversion, library rendering and validation |
+| Physical correctness | Requires separate validation | Requires separate validation; serialization checks do not certify dynamics |
+
+URDF definitions: [official urdfdom project](https://github.com/ros/urdfdom).
+Implementation scope: [losslessness ledger](docs/LOSSLESS_ROBOTS.md).
+
+## Try a robot document without a model account
+
+Python 3.12+ and the pinned Lean 4.34.1 toolchain are required for conversion.
+The repository display name is **FluxKernal**; the Python package remains `fluxkernel`,
+the CLI remains `fk`, and Lean imports retain `FluxKernel` for compatibility.
+
+```bash
+git clone https://github.com/DataFlux-Robot/FluxKernal.git
+cd FluxKernal
+python -m pip install -e .
+# One-time online setup, with Elan already installed:
+elan toolchain install leanprover/lean4:v4.34.1
+
+# Offline after setup:
+python scripts/robot_library.py list --query "G1"
+python scripts/robot_library.py verify --execute
+python scripts/robot_library.py render 0cca1c214e6157b37fab --output ./g1.urdf
+
+# For your own URDF with its geometry assets available locally:
+fk robot to-lean ./robot.urdf --output ./robot-lean
+fk robot from-lean ./robot-lean --output ./robot-restored
+```
+
+The [model library](robots/README.md) indexes all **295** successful document cases:
+**220 include Lean and original URDF source files** with upstream licenses and
+notices; **75 are indexed only** while redistribution restrictions or license-scope
+questions remain. The local builder can reproduce all 295 from caller-supplied,
+authorized pinned URDFs, without model calls. External mesh assets are not bundled
+in this document library.
+
+## Design and manufacturing workflows
+
+The kernel also supports named parts, CAD artifacts, manufacturing dependencies,
+cross-product reuse and bounded agent-driven personalization. These workflows have
+their own assumptions and validation scope. A checked manufacturing plan is
+conditional on its declared inputs and does not certify physical manufacture,
+supplier availability or product performance.
 
 ## See the workflow
 

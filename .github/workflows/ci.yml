@@ -43,6 +43,32 @@ jobs:
       - run: python -m pytest tests/test_agent.py -k 'not stdio_complete_revision' -q
         env:
           PYTEST_DISABLE_PLUGIN_AUTOLOAD: '1'
+  robot-library:
+    name: Robot library / offline Lean
+    runs-on: ubuntu-latest
+    timeout-minutes: 10
+    steps:
+      - uses: actions/checkout@v6
+      - uses: actions/setup-python@v6
+        with:
+          python-version: '3.12'
+      - name: Install pinned Lean and local converter
+        run: |
+          curl --proto '=https' --tlsv1.2 -sSf https://raw.githubusercontent.com/leanprover/elan/master/elan-init.sh -o /tmp/elan-init.sh
+          sh /tmp/elan-init.sh -y --default-toolchain none
+          echo "$HOME/.elan/bin" >> "$GITHUB_PATH"
+          "$HOME/.elan/bin/elan" toolchain install "$(cat lean-toolchain)"
+          python -m pip install . pytest
+      - run: python -m pytest tests/test_robot_library.py -q
+        env:
+          PYTEST_DISABLE_PLUGIN_AUTOLOAD: '1'
+      - name: Execute bundled Lean with socket syscalls denied
+        run: python scripts/without_network.py python scripts/robot_library.py verify --execute --output library-verification.json
+      - uses: actions/upload-artifact@v4
+        if: always()
+        with:
+          name: robot-library-verification
+          path: library-verification.json
   studio:
     name: CAD + real Lean + installed wheel
     runs-on: ubuntu-latest

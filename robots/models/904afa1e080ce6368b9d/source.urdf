@@ -1,0 +1,57 @@
+<?xml version="1.0" encoding="UTF-8" standalone="yes"?>
+<!--
+Copyright 2019 Halodi Robotics AS
+Author: Jesper Smith (jesper@halodi.com)
+
+Licensed under the Apache License, Version 2.0 (the "License");
+you may not use this file except in compliance with the License.
+You may obtain a copy of the License at
+
+<http://www.apache.org/licenses/LICENSE-2.0>.
+
+Unless required by applicable law or agreed to in writing, software
+distributed under the License is distributed on an "AS IS" BASIS,
+WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+See the License for the specific language governing permissions and
+limitations under the License.
+-->
+<robot xmlns:ns2="http://www.ros.org" xmlns:xi="http://www.w3.org/2003/XInclude" name="eve_r3_upper_body">
+    <link name="abdomen">
+        <inertial>
+            <origin xyz="-0.055941 0.001616 0.129607" rpy="0.0 0.0 0.0"/>
+            <mass value="3.429553"/>
+            <inertia ixx="0.055816" ixy="6.93E-4" ixz="-0.014517" iyy="0.054022" iyz="-0.001917" izz="0.020076"/>
+        </inertial>
+        <visual>
+            <origin xyz="0.0 0.0 0.0" rpy="1.5707963 0.0 1.5707963"/>
+            <geometry>
+                <mesh filename="package://eve_r3_description/meshes/abdomen.obj" scale="1 1 1"/>
+            </geometry>
+        </visual>
+    </link>
+    <joint name="j_hip_z" type="revolute">
+        <origin xyz="0.0 0.0 0.0" rpy="0.0 0.0 0.0"/>
+        <parent link="abdomen"/>
+        <child link="pelvis"/>
+        <axis xyz="0.0 0.0 1.0"/>
+        <limit lower="-1.0472" upper="1.0472" effort="-1.0" velocity="-1.0"/>
+    </joint>
+    <link name="pelvis">
+        <inertial>
+            <origin xyz="-0.02071479 -0.00544353 0.4100644" rpy="0.0 0.0 0.0"/>
+            <mass value="10.12075049"/>
+            <inertia ixx="0.2085075" ixy="8.581E-4" ixz="0.02176178" iyy="0.20882646" iyz="-0.00715583" izz="0.05515818"/>
+        </inertial>
+        <visual>
+            <origin xyz="0.0 0.0 0.0" rpy="1.5707963 0.0 1.5707963"/>
+            <geometry>
+                <mesh filename="package://eve_r3_description/meshes/torso.obj" scale="1 1 1"/>
+            </geometry>
+        </visual>
+    </link>
+    <xi:include href="eve_r3_right_arm.in.urdf" xpointer="xpointer(//robot/*)"/>
+    <xi:include href="qbhand.right.in.urdf" xpointer="xpointer(//robot/*)"/>
+    <xi:include href="eve_r3_left_arm.in.urdf" xpointer="xpointer(//robot/*)"/>
+    <xi:include href="qbhand.left.in.urdf" xpointer="xpointer(//robot/*)"/>
+    <xi:include href="eve_r3_head.in.urdf" xpointer="xpointer(//robot/*)"/>
+</robot>

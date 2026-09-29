@@ -1,9 +1,7 @@
 # Reporting security issues
 
-Please do not place credentials or sensitive product inputs in issues. While this
-repository is private, report a vulnerability through a private issue to its
-maintainers or the existing collaborator channel. When the repository becomes
-public, a dedicated private reporting route must be enabled before launch.
+Please do not place credentials or sensitive product inputs in public issues.
+Report vulnerabilities through [GitHub private vulnerability reporting](https://github.com/DataFlux-Robot/FluxKernal/security/advisories/new).
 
 Include the affected commit, the smallest reproduction, the expected trust boundary,
 and whether the problem exposes data, executes code or falsely accepts evidence.

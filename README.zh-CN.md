@@ -1,16 +1,43 @@
-# FluxKernel
+# FluxKernal
 
 **面向 AI Agent 的设计与制造证据内核。**
 
 [English](README.md) · [交互演示](https://www.datafluxdynamics.ltd/technology/fluxkernel/) · [快速开始](docs/QUICKSTART.md) · [贡献指南](CONTRIBUTING.md)
 
-把产品图片与需求推进为具名零件、独立 CAD、制造依赖和可复检的证据；允许修改设计，并保留父版本与未变几何。当前仓库保持私有，克隆需要访问权限。
+把产品图片与需求推进为具名零件、独立 CAD、制造依赖和可复检的证据；允许修改设计，并保留父版本与未变几何。仓库发布于 DataFlux-Robot/FluxKernal；Python 包名 `fluxkernel` 和命令 `fk` 保持兼容。
 
 ![FluxKernel Studio](docs/media/studio.png)
 
 当前已有：三类参考设计、真实图片模型调用、STEP/STL 导出、一轮加工设备展开、实际计划的 Lean 4 检查、交付包独立复检。单张图片不能恢复全部隐藏结构，图上的条件化闭合也不等于实物制造、采购或整机性能已经通过。
 
 **个性化零件（v0.10）：** GLM-5.3-Flash 在有限轮闭环中设计、检查和修改 Microduck/XGO 头顶附加装饰件，保留 STEP/STL、原生变体、Lean 结构证据和失败记录。实际安装与行走仍未验证。[运行说明](docs/ROBOT_PERSONALIZATION.md)。
+
+
+## 离线 URDF ↔ Lean：无需 Agent 或模型 token
+
+![FluxKernal 离线机器人文档转换示意](docs/media/fluxkernal-295-funnel.png)
+
+**全量测试 114 个目录条目、297 份 URDF：295 份有效 XML 文档通过两个方向，62 份完整资产包通过。**
+295 表示文件与配置数量。图中的模糊到清晰是组织化表达的示意，转换保留原几何信息；
+该图由图像模型制作，实际格式转换与验证没有模型调用。
+
+| 对比项 | URDF | FluxKernal 当前实现 |
+| --- | --- | --- |
+| 关节、坐标、惯量、几何引用 | 标准 XML 描述 | 在 Lean 数据文档中完整保留 |
+| 数值精度 | XML 属性文本 | 原始数字拼写保留，不经浮点重算 |
+| 检查方式 | URDF 解析器与相关工具 | 严格数据解析、本地 Lean 执行与往返相等性检查 |
+| 外部资源 | 文件或包 URI 引用 | 对已支持本地资源建立 SHA-256 绑定 |
+| BOM、控制合同与版本信息 | 超出基础机器人描述字段 | 原生模型通过绑定 sidecar 保留 |
+| 模型 token | 格式本身无需模型 | 转换、库渲染与校验均无需模型 |
+| 生态与边界 | 广泛用于 ROS 与仿真工具 | 可导出 URDF；完整资产兼容仍有待扩展 |
+
+[295 条目模型库](robots/README.md)收录 **220 份可分发的 Lean 源文件**和原始 URDF、许可与来源。
+其余 **75 个条目**保留来源、哈希、测试结果与本地生成入口，待处理再分发限制或许可范围问题。
+所有 295 份形式都可从有权使用的本地源文件确定性生成。库中不打包外部网格。
+
+[逐机器人清单](docs/releases/2026-09-29-bidirectional-catalog-evidence/catalog.md) ·
+[逐文件双向结果](docs/releases/2026-09-29-bidirectional-catalog-evidence/cases.csv) ·
+[完整验收](docs/BIDIRECTIONAL_CATALOG.md) · [离线命令](docs/LOSSLESS_ROBOTS.md)
 
 ## 原生机器人模型
 
@@ -26,9 +53,9 @@ flowchart LR
   D --> E[数值一致性检查]
 ```
 
-当前尚未实现 Lean ↔ URDF 双向无损转换、通用 URDF 导入接口，或导出语义保持的
-Lean 定理。`.lean` 保存结构检查所需信息，不能独立还原完整机械模型。
-URDF 当前用于显示与运动学交换，未知的执行器限制仍需补齐。
+当前完整文档路径已通过 295/297 份 URDF 的双向转换；完整资产包通过 62/297。
+Lean 数据文档可以独立重建 XML 信息树，格式与注释的逐字节恢复需保留原始快照。
+通用语义保持定理、实物性能和所有 URDF 资源路径的兼容仍未完成。
 [官网介绍](https://www.datafluxdynamics.ltd/technology/fluxkernel/index.html#robot-bridge) ·
 [Microduck 验证](docs/releases/2026-09-28-v0.10-evidence/microduck/independent.json) ·
 [XGO 验证](docs/releases/2026-09-28-v0.10-evidence/xgoduck/independent.json)

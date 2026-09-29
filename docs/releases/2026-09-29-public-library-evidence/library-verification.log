@@ -1,0 +1,8 @@
+{"network_policy": "seccomp-deny-sockets", "probe": "EPERM"}
+{
+  "accepted": true,
+  "indexed": 295,
+  "bundled_passed": 220,
+  "indexed_only": 75,
+  "lean_executed": true
+}
