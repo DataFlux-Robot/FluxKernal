@@ -1,8 +1,38 @@
 # Promotional illustration provenance
 
-## Design and manufacturing overview — 2026-10-07
+## V-model and six building principles — 2026-10-07
 
-`fluxkernal-design-manufacturing-overview.png` is a new conceptual README overview,
+The current README overview uses a V-model: design refinement descends on the
+left, sourcing/fabrication/assembly sit at the base, and verification ascends on
+the right. Horizontal links connect corresponding design and verification
+levels. Production tools support realization; the outer reuse arc connects design
+episodes through a capital library.
+
+Each numbered philosophy has its own illustration, used in the same order in
+the English and Chinese READMEs:
+
+| File | Subject |
+| --- | --- |
+| [Overview](fluxkernal-design-manufacturing-overview.png) | V-model of design, realization and verification |
+| [01 — Agent and tools](philosophy-01-agent-tools.png) | Agent decisions, deterministic execution and feedback |
+| [02 — Reusable capital](philosophy-02-capital.png) | Co-designing production tools for successor builds |
+| [03 — Lean and refinement](philosophy-03-lean.png) | Requirements and their proof obligations |
+| [04 — Evidence](philosophy-04-evidence.png) | Rechecking obligations after a design revision |
+| [05 — Integration](philosophy-05-integration.png) | Multiple functions sharing an implementation |
+| [06 — Search](philosophy-06-search.png) | Contract checks and candidate trade-offs |
+
+Generation used the built-in imagegen tool. The overview received two editing
+passes; the six principle illustrations were generated independently. All final
+images were copied into the repository and visually reviewed. The illustrations
+explain design principles; the trade-off plot is schematic rather than benchmark
+data. No private source screenshot or PDF is reproduced. The robot-document
+funnel below is unchanged.
+
+[Generation and editing prompts](PHILOSOPHY_PROMPTS.md).
+
+## Previous overview — superseded on 2026-10-07
+
+The [previous overview at commit 8aef6ec](https://github.com/DataFlux-Robot/FluxKernal/blob/8aef6ec1bb3b7695e222b9aa3f8b314f3ca38d81/docs/media/fluxkernal-design-manufacturing-overview.png) was a conceptual README overview,
 generated with the built-in `imagegen` tool and corrected in one image-edit call.
 The final image was copied into the repository and visually checked. It introduces
 requirements, contracts, refinement and reintegration, manufacturing dependencies,

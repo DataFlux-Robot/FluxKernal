@@ -7,7 +7,7 @@
 
 [中文](README.zh-CN.md) · [Quickstart](docs/QUICKSTART.md) · [Agent API](docs/AGENT_API.md) · [Architecture](docs/ARCHITECTURE.md) · [Interactive showcase](https://www.datafluxdynamics.ltd/technology/fluxkernel/)
 
-![FluxKernal: intent, requirements and contracts, refinement and integration, parts and manufacturing equipment, and reusable capital](docs/media/fluxkernal-design-manufacturing-overview.png)
+![FluxKernal V-model: design refinement down the left, source and build at the base, verification up the right, capital reused in the next design](docs/media/fluxkernal-design-manufacturing-overview.png)
 
 **Requirements → design → manufacturing means → inheritable capital.**
 
@@ -25,11 +25,6 @@ actual design state, see the consequences of their actions, and align CAD revisi
 with requirements and observations. This [related industry
 discussion](https://news.qq.com/rain/a/20261001A03J5M00) motivates this direction;
 it is contextual reading, not evidence for FluxKernal's capabilities.
-
-The overview illustrates the architecture and intended qualification boundary, not
-an already qualified factory. Hardware labels in the illustration describe target
-roles; actual supply, fabrication and performance need independent evidence.
-[Artwork provenance and prompts](docs/media/ARTWORK.md).
 
 ## What you can do today
 
@@ -51,69 +46,152 @@ plans and design predicates have actual Lean verification. FluxKernal is a
 
 ## Building philosophy
 
-### Why design fits a proof-oriented workflow
+A hardware idea has to become something that can be built, checked and improved.
+Six principles guide that journey: give agents useful actions, make revisions
+traceable, and let today's tools become the starting point for tomorrow's designs.
 
-A system requirement can become a proposition **once its meaning, assumptions and
-acceptance conditions are explicit**. A candidate design then carries obligations:
-why do these subrequirements, interfaces and component guarantees suffice for the
-parent requirement? Which assumptions remain unresolved?
+### 1. Agent-first, with fewer model-dependent steps
 
-This makes a proof-oriented workflow useful from overall architecture to detailed
-design: system → subsystem → mechanism → part → procurement or fabrication route.
-The useful abstraction is a checkable promise, not merely another box in a diagram.
+![An agent chooses local actions; deterministic tools build, check and replay; state and feedback return to the agent](docs/media/philosophy-01-agent-tools.png)
 
-| Proof-oriented idea | Engineering interpretation |
-| --- | --- |
-| Goal | A falsifiable requirement with units, operating conditions and an acceptance rule |
-| Refinement | Subgoals and interfaces that must justify the parent requirement |
-| Composition | Provider guarantees satisfy consumer assumptions, including shared-resource effects |
-| Reusable result | A qualified component or method, usable only within its recorded conditions |
-| Open obligation | A missing parameter, assumption, capability or piece of evidence; visible rather than silently accepted |
-| Revision | A new design identity with affected conclusions reopened or rechecked |
+“Make this housing thinner” raises questions about walls, mounting holes, loads
+and fabrication. **An agent should make an informed local revision to the existing
+design.** FluxKernal gives it readable state, executable actions and feedback
+attached to specific components and requirements.
 
-**Engineering design is not automatically a mathematical proof.** Lean checks
-encoded propositions under their assumptions; it cannot establish that a photograph
-reveals a unique internal mechanism or that an empirical material model is true.
-A catalog entry is not a universally valid lemma. The engineering analogy does not
-mean every `.fcad` operation is already a Lean tactic.
+CLI, `.fcad`, Python and MCP interfaces make those actions available to
+code-oriented models. The model interprets intent, proposes alternatives and chooses
+its next action. Deterministic tools handle parsing, building, numerical checks,
+conversion and replay. Offline URDF ↔ Lean conversion and verification therefore
+need no agent or model tokens; image interpretation and live design iteration use
+inference where it is needed.
 
-### Decompose responsibilities; integrate implementations
+Actions retain parent/child identities, execution results and open obligations.
+A revision can be inspected for impact, replayed in a shadow store, and reuse
+verified unchanged artifacts. These traces also give research on learning to
+advance engineering a more precise unit of work.
+[Agent API](docs/AGENT_API.md) · [MCP](docs/MCP.md)
 
-A decomposition tree is a planning view. The design itself needs a **DAG**: one
-component may satisfy several goals, and several subsystems may share a bus,
-cooling path, structure or manufacturing cell. Refinement may split a function;
-integration may merge it back into a better implementation.
+### 2. Co-design products and processes for a PRSI seed
 
-For example, sensing, control and switching may belong on one board with shared
-power instead of three independently powered boxes connected by protocol adapters.
-Conversely, isolation, thermal conditions, location or serviceability may require
-separation. Neither maximum integration nor maximum decomposition is always best.
+![Product and process choices create fixtures and equipment that enter a reusable library and support successor designs](docs/media/philosophy-02-capital.png)
 
-Physical interfaces have costs: voltage drop, heat, vibration, latency, connectors,
-assembly and failure modes. Express contracts through **assumptions, guarantees,
-resource budgets and effects on shared media**. Model the shared medium explicitly;
-local guarantees do not automatically compose into a valid physical system.
+A bearing housing's bore and material shape its machining route; that route may
+require a new fixture. If the fixture later makes parts for another machine, the
+first project has created value beyond its own product. **Design the product,
+its manufacturing process and its production tools together.**
 
-The existing `integrate` operation checks supported contract combinations and
-coverage of declared goals. `abstract` preserves history when retreating; affected
-process plans must be revised and checked. Full multiphysics composition and automatic
-optimal integration remain research work. [Implementation](fluxkernel/semantics/operators.py).
+Physical recursive self-improvement (PRSI) asks how producing tools can improve
+the ability to produce successor tools. FluxKernal records equipment identities as
+process inputs: where the tool comes from, how it is built, when it is available
+and which tasks it can perform. Components, modules, processes and equipment become
+capital candidates with provenance and conditions to recheck in the next design.
+Studio currently expands one equipment generation; the general graph records
+printer, machine-tool and successor-process dependencies.
+[Progress](PROGRESS.md) · [Cross-product assets](docs/CROSS_PRODUCT_ASSETS.md)
 
-### Optimization proposes; contracts decide admissibility
+Those records make recursive gain a testable question: how much time, cost or
+resource use does the next build actually save? Evaluation must include tool
+design, construction, calibration, maintenance and failures.
+[Machines That Accelerate Machine-Making](https://www.datafluxdynamics.ltd/research/machines-that-accelerate-machine-making.pdf)
+and [MechanogenesisBench](https://github.com/DataFlux-Robot/MechanogenesisBench)
+set out the wider research direction. This work can begin with frozen LLM weights.
 
-First establish an executable path. Then compare admissible candidates using declared
-metrics: cost, mass, time, energy, performance and maintainability. Search can change
-parameters, select catalog parts or reconsider buy/print/manufacture choices.
-Keep hard constraints separate from soft objectives, account for interface costs,
-and retain rejected candidates and selection reasons.
+### 3. Why Lean fits the design process
 
-Evolutionary search is one strategy, **not a guarantee of global optimality**.
-The current `fk evolve` is an experimental sampling/selection/archive loop; it does
-not implement a complete inherited-parent crossover algorithm or a general Pareto
-optimizer. Reliable multiobjective and topology search are development directions.
-[Current strategy](fluxkernel/strategy/evolve.py).
+![System requirements refine into subsystem contracts and parts, alongside goals, obligations and conditional checks](docs/media/philosophy-03-lean.png)
 
-### Manufacturing closure requires evidence
+From an aircraft's overall layout to its wing, structure and fabrication route,
+each level faces the same question: **why do these choices satisfy the requirement
+above them?** A motor catalog supplies ratings. Whether the motor is suitable also
+depends on load, power, transmission and operating conditions. Those premises need
+to survive every step of the design.
+
+Lean's goals, refinement and composition offer a useful way to organize this
+reasoning. Once a requirement has explicit meaning, units, assumptions and
+acceptance conditions, it can become a proposition. A candidate carries obligations:
+component guarantees must support the parent goal, interfaces must agree, shared
+resources must balance, and unresolved questions must remain open.
+
+In this sense, **system design can be organized as the gradual construction of a
+proof**: each step toward implementation explains how it supports the overall
+goal. Lean checks encoded propositions under their premises; material models and
+physical data supply the relevant engineering evidence. The current general
+`.fcad` graph uses Python contract checks, while concrete Studio plans and selected
+design predicates have actual Lean verification.
+[Architecture](docs/ARCHITECTURE.md) · [Proof package](PROOF_PACKAGE.md)
+
+### 4. Rigor: what to prove, and what is proved today
+
+![Changing a mounting plate from v1 to v2 reopens obligations and binds geometry, formal checks and physical-test evidence to the new version](docs/media/philosophy-04-evidence.png)
+
+Changing a mounting hole from 20 mm to 24 mm takes one edit. It may also change
+fit, edge clearance, load capacity and the machining route. An old acceptance
+record cannot automatically answer for the new design. **Rigor means knowing what
+each conclusion depends on, and when it needs to be checked again.**
+
+The useful obligations constrain real design decisions: do subrequirements support
+the parent goal, do interfaces meet their assumptions, are resources counted once,
+are manufacturing branches closed, and is equipment available before use?
+Evidence belongs to explicit inputs, versions, configurations and conditions.
+A missing condition should become a specific next task for the agent.
+
+Today, Python checks the general graph and supported contracts; Lean covers
+concrete manufacturing plans and selected design predicates. Input bindings and
+independent rechecks keep evidence traceable. Geometry checks, formal proofs and
+physical experiments answer different questions and report separate results.
+The [current verification coverage](#current-verification-coverage) below maps
+these obligations to implemented checks and remaining work.
+
+### 5. Decompose responsibilities; integrate implementations
+
+![Sensing, control and actuation goals converge on one board with shared power, cooling and structure](docs/media/philosophy-05-integration.png)
+
+Separately specifying temperature sensing, control logic and power switching
+helps us understand their responsibilities. In the finished product, they may
+share a board, a power supply and an enclosure. Removing connectors, protocol
+adapters and assembly steps can be worth more than another layer of decomposition.
+**Split to understand; integrate to build a better product.**
+
+A decomposition tree is therefore one planning view. The actual dependencies need
+a graph: one component can serve several goals, while modules share a bus, cooling
+path, structure or machining cell. Isolation, environment and maintenance may
+favor separation; resource and interface costs may favor integration.
+The design process must make those trade-offs visible.
+
+FluxKernal's `integrate` checks supported contract combinations and declared goal
+coverage. `abstract` permits retreat while preserving history. Shared-medium
+budgets and effects must be explicit, and changes to parts or processes require
+revised dependencies. Development can move between decomposition, composition and
+abstraction as understanding improves.
+[Operators](fluxkernel/semantics/operators.py) · [Contracts](fluxkernel/semantics/contracts.py)
+
+### 6. Optimization finds candidates; contracts preserve constraints
+
+![Alternative parts pass contract checks; rejected attempts are retained and admissible candidates are compared on cost and mass](docs/media/philosophy-06-search.png)
+
+A bracket might be purchased, printed or machined from plate. Making it lighter,
+cheaper or faster to produce can lead to different choices. Establishing one
+executable manufacturing route gives the next candidate something concrete to
+improve. **Search proposes possibilities; contracts determine which are admissible.**
+
+Hard conditions such as strength, interfaces and equipment capability gate
+acceptance. Cost, mass, cycle time, energy and maintainability guide the choice
+among admissible designs. Search actions can adjust parameters, replace catalog
+parts, change processes or integrate functions. Failed candidates are useful
+records of which constraints blocked a route.
+
+The current `fk evolve` provides experimental parameter sampling, selection and
+archiving. Inherited-parent crossover and fuller multiobjective optimization are
+development directions; the illustration shows how checks and comparisons fit
+together. Evolutionary algorithms and other optimizers can use the same kernel.
+A finite-budget result should be delivered with its evaluation basis and search
+record.
+[Search implementation](fluxkernel/strategy/evolve.py)
+
+## Manufacturing closure and verification
+
+### What closes a manufacturing route
 
 Calling a leaf “standard part” or “printable” must never be sufficient to close a
 design. The following is the **closure contract we are building toward**; current
@@ -138,25 +216,23 @@ Current process estimates include simple rule models; checked plan closure is
 conditional and does not qualify a real process. [Plan theorem](PROOF_PACKAGE.md),
 [current process model](fluxkernel/solvers/process.py).
 
-## Agent-first, with fewer model-dependent steps
+### Current verification coverage
 
-The goal is to move from **rewriting a whole CAD program** to **choosing an effective
-local action in an existing engineering state**. This fits code-oriented agents
-through `.fcad`, CLI, Python and MCP interfaces.
+| Verification obligation | Target | Current boundary |
+| --- | --- | --- |
+| Requirement refinement | Subrequirements and interfaces imply the parent goal | Python contract checks cover declared cases; no universal Lean refinement theorem |
+| Contract composition | Provider guarantees discharge consumer assumptions | Finite contract/medium checks; general physical composition remains open |
+| Resource accounting | Units, quantities, shared budgets and no double counting | Python ledgers; exact dimensional expressions in `fk design`; no whole-project resource proof |
+| Manufacturing closure | Every necessary branch reaches an admissible terminal | Lean checks concrete Studio plan dependencies, route rules and coverage |
+| Equipment availability | Equipment exists before use and is capable of the operation | Identity/dependency and finite plan-order checks; real capability needs qualification |
+| Evidence validity | Evidence matches current inputs, versions and conditions | Hash bindings, receipts and independently checkable bundles; provenance is not physical truth |
+| Design modification | A change invalidates the conclusions it affects | Revision/replay and certificate input checks; comprehensive automatic Lean reproving is not implemented |
 
-- Associate feedback with requirements, parts, interfaces and verification obligations.
-- Preserve parent/child identities and verified unchanged artifacts across revisions.
-- Inspect change impact, replay in a shadow store and recheck affected results.
-- Represent components, processes, equipment and their dependencies as reusable assets.
-- Keep deterministic parsing, validation, conversion and replay outside the LLM.
+The aim is to reduce opportunities for hallucination by making obligations explicit,
+not to rename assumptions as proofs. Missing evidence remains missing.
+[Exact scope](PROOF_PACKAGE.md) · [Architecture](docs/ARCHITECTURE.md)
 
-This may improve feedback attribution and learning efficiency, but that benefit
-needs experiments. Agents propose actions; deterministic checks decide what the
-current contract permits. The MCP server itself does not call a model. Offline
-URDF ↔ Lean conversion, library rendering and validation also need no agent or
-model tokens; image interpretation and live design iteration do use inference.
-
-### Image → requirements → architecture → geometry → feedback
+## Image → requirements → architecture → geometry → feedback
 
 Separate four information sources: **observed**, **user-specified**, **inferred**
 and **chosen**. Current Studio records `visible/inferred/selected` part provenance;
@@ -178,45 +254,6 @@ fk perceive ./runs/<id> --rounds 3 --output ./visual-runs --require-proof --json
 
 [Workflow and limits](docs/PERCEPTION_ACTION_LOOP.md) ·
 [Detailed Chinese implementation summary](docs/GLM_5_3_FLASH_MULTIMODAL_LOOP.zh-CN.md)
-
-## Rigor: what Lean should check, and what it checks now
-
-| Verification obligation | Target | Current boundary |
-| --- | --- | --- |
-| Requirement refinement | Subrequirements and interfaces imply the parent goal | Python contract checks cover declared cases; no universal Lean refinement theorem |
-| Contract composition | Provider guarantees discharge consumer assumptions | Finite contract/medium checks; general physical composition remains open |
-| Resource accounting | Units, quantities, shared budgets and no double counting | Python ledgers; exact dimensional expressions in `fk design`; no whole-project resource proof |
-| Manufacturing closure | Every necessary branch reaches an admissible terminal | Lean checks concrete Studio plan dependencies, route rules and coverage |
-| Equipment availability | Equipment exists before use and is capable of the operation | Identity/dependency and finite plan-order checks; real capability needs qualification |
-| Evidence validity | Evidence matches current inputs, versions and conditions | Hash bindings, receipts and independently checkable bundles; provenance is not physical truth |
-| Design modification | A change invalidates the conclusions it affects | Revision/replay and certificate input checks; comprehensive automatic Lean reproving is not implemented |
-
-The aim is to reduce opportunities for hallucination by making obligations explicit,
-not to rename assumptions as proofs. Missing evidence remains missing.
-[Exact scope](PROOF_PACKAGE.md) · [Architecture](docs/ARCHITECTURE.md)
-
-## A seed for physical recursive self-improvement
-
-**PRSI** means physical recursive self-improvement: producing tools that improve
-the ability to produce successor tools. FluxKernal helps represent the R&D state,
-local actions and inheritable capital for that research.
-
-A manufacturing edge records the actual equipment identity as an input, not just
-a picture of a machine. The graph can link a designed printer or machining cell
-to a successor operation using it. Cross-product assets carry identities and
-conditions into new designs, where applicability must be checked again.
-
-The Studio demo expands one equipment generation into catalog candidates and printed
-structures. These dependency links are inspectable in [PROGRESS.md](PROGRESS.md).
-Showing a chain establishes recorded dependence, **not measured recursive gain**.
-To establish gain, independently test whether the built tool improves successor
-production after charging design, build, calibration, maintenance and failure costs.
-
-The [research agenda](https://www.datafluxdynamics.ltd/research/machines-that-accelerate-machine-making.pdf)
-and [MechanogenesisBench](https://github.com/DataFlux-Robot/MechanogenesisBench)
-provide the wider evaluation direction. The current
-[trace adapter](fluxkernel/adapters/mbench.py) exports graph evidence; it does not
-itself certify physical improvement. This research can start with frozen LLM weights.
 
 ## Start with the kernel
 
